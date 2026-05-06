@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
   SignInButton,
   SignUpButton,
@@ -93,6 +93,7 @@ export default function Home() {
   );
   const [savedMessage, setSavedMessage] = useState('');
   const [savedLoading, setSavedLoading] = useState(false);
+  const [currentExampleIndex, setCurrentExampleIndex] = useState(0);
 
   const MAX_FREE = 10;
   const MAX_SAVED = 20;
@@ -101,7 +102,7 @@ export default function Home() {
     { id: 'professional', label: 'Professional' },
     { id: 'casual', label: 'Casual' },
     { id: 'energetic', label: 'Energetic' },
-    { id: 'authoritative', label: 'Authoritative' },
+    { id: 'authoritative', label: 'Authority' },
     { id: 'witty', label: 'Witty' },
     { id: 'storytelling', label: 'Storytelling' },
   ];
@@ -134,8 +135,6 @@ export default function Home() {
     generationMode === 'viral_hooks'
       ? hookLoadingMessages
       : growthLoadingMessages;
-
-  const [currentExampleIndex, setCurrentExampleIndex] = useState(0);
 
   useEffect(() => {
     const savedUsed = localStorage.getItem('generationsUsed');
@@ -407,7 +406,6 @@ export default function Home() {
     }
 
     const confirmed = window.confirm('Delete all saved generations?');
-
     if (!confirmed) return;
 
     try {
@@ -470,114 +468,221 @@ export default function Home() {
 
   const activeTabs = generationMode === 'viral_hooks' ? hooksTabs : growthTabs;
 
+  const savedGenerationsCard = (
+    <div className="rounded-3xl border border-zinc-800 bg-zinc-900/90 p-4 sm:p-6">
+      <div className="mb-3 flex items-center justify-between gap-4">
+        <div>
+          <h2 className="text-lg font-semibold sm:text-2xl">
+            Saved Generations
+          </h2>
+          <p className="text-xs text-zinc-500 sm:text-sm">
+            Reopen your best outputs across devices.
+          </p>
+        </div>
+
+        {signedIn && savedGenerations.length > 0 && (
+          <button
+            onClick={clearAllSavedGenerations}
+            className="rounded-xl bg-zinc-800 px-3 py-2 text-xs text-zinc-300 transition hover:bg-zinc-700"
+          >
+            Clear All
+          </button>
+        )}
+      </div>
+
+      {!isLoaded || savedLoading ? (
+        <div className="rounded-2xl border border-dashed border-zinc-700 p-3 text-center">
+          <p className="text-xs text-zinc-400">Loading saved generations...</p>
+        </div>
+      ) : !signedIn ? (
+        <div className="rounded-2xl border border-dashed border-zinc-700 p-3 text-center">
+          <p className="text-xs text-zinc-400">
+            Sign in after generating to save your best result.
+          </p>
+        </div>
+      ) : savedGenerations.length === 0 ? (
+        <div className="rounded-2xl border border-dashed border-zinc-700 p-3 text-center">
+          <p className="text-xs text-zinc-400">No saved generations yet.</p>
+        </div>
+      ) : (
+        <div className="max-h-[260px] space-y-3 overflow-y-auto pr-1">
+          {savedGenerations.map((saved) => (
+            <div
+              key={saved.id}
+              className="rounded-2xl border border-zinc-700 bg-zinc-800 p-4"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium text-zinc-100 sm:text-base">
+                    {saved.title}
+                  </p>
+                  <p className="mt-1 text-xs text-zinc-500">
+                    {saved.mode === 'viral_hooks'
+                      ? '🔥 Viral Hooks'
+                      : '🚀 Growth System'}{' '}
+                    • {saved.goal} • {formatSavedDate(saved.createdAt)}
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => deleteSavedGeneration(saved.id)}
+                  className="text-xs text-zinc-500 transition hover:text-red-400"
+                >
+                  Delete
+                </button>
+              </div>
+
+              <button
+                onClick={() => loadSavedGeneration(saved)}
+                className="mt-3 w-full rounded-xl bg-zinc-700 py-2 text-sm transition hover:bg-zinc-600"
+              >
+                Open Saved
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+
+  const accountPanel = (
+    <div className="rounded-3xl bg-white p-4 text-black shadow-2xl sm:p-6">
+      {!isLoaded ? (
+        <>
+          <p className="mb-1 text-base font-semibold sm:text-lg">
+            Loading account...
+          </p>
+          <p className="text-sm text-zinc-600">Checking your sign-in status.</p>
+        </>
+      ) : !signedIn ? (
+        <>
+          <p className="mb-1 text-lg font-semibold sm:text-xl">
+            Save and unlock your workspace
+          </p>
+          <p className="mb-3 text-sm leading-relaxed text-zinc-600">
+            Create an account after your first result to save generations across
+            devices.
+          </p>
+
+          <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-1">
+            <SignInButton mode="modal">
+              <button className="w-full rounded-2xl bg-black py-3 text-sm font-semibold text-white transition hover:scale-[1.02]">
+                Sign In
+              </button>
+            </SignInButton>
+
+            <SignUpButton mode="modal">
+              <button className="w-full rounded-2xl border border-zinc-300 bg-zinc-100 py-3 text-sm font-semibold text-black transition hover:scale-[1.02]">
+                Create Account
+              </button>
+            </SignUpButton>
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="mb-3 flex items-center justify-between gap-4">
+            <div>
+              <p className="text-base font-semibold sm:text-lg">Account</p>
+              <p className="text-sm text-zinc-600">You are signed in.</p>
+            </div>
+
+            <UserButton />
+          </div>
+
+          <p className="mb-1 text-base font-semibold sm:text-lg">
+            Founder Price — $19/mo
+          </p>
+          <p className="mb-3 text-sm leading-relaxed text-zinc-600">
+            Lock in unlimited content systems and viral hooks before pricing
+            increases.
+          </p>
+
+          <button
+            onClick={handleUpgrade}
+            disabled={upgradeLoading}
+            className="w-full rounded-2xl bg-black py-3 text-sm font-semibold text-white transition hover:scale-[1.02] disabled:opacity-60 disabled:hover:scale-100"
+          >
+            {upgradeLoading ? 'Opening checkout...' : 'Upgrade $19/mo'}
+          </button>
+        </>
+      )}
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
-      <div className="max-w-7xl mx-auto px-6 py-6">
-        <div className="flex flex-col lg:flex-row justify-between gap-6 mb-8">
+      <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 sm:py-8">
+        <div className="mb-4 grid gap-4 lg:mb-8 lg:grid-cols-[1.25fr_0.75fr] lg:items-start">
           <div className="max-w-4xl">
-            <div className="inline-flex items-center gap-2 bg-zinc-900 border border-zinc-800 px-4 py-2 rounded-full text-sm text-zinc-300 mb-4">
+            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900 px-3 py-1.5 text-xs text-zinc-300 sm:px-4 sm:py-2 sm:text-sm">
               <span className="text-purple-400">✦</span>
               AI Growth Engine for Creators
             </div>
 
-            <h1 className="text-4xl font-bold text-purple-400 mb-4">
+            <h1 className="mb-2 text-[2.35rem] font-bold leading-none text-purple-400 sm:text-5xl lg:mb-4">
               Hummingbird AI
             </h1>
 
-            <h2 className="text-4xl lg:text-5xl font-semibold tracking-tight leading-tight max-w-4xl">
-              Turn one idea into content, hooks, strategy, and monetization.
+            <h2 className="max-w-4xl text-[1.95rem] font-semibold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl">
+              Turn one idea into viral hooks, content, and monetization.
             </h2>
 
-            <p className="text-zinc-400 text-base lg:text-lg mt-5 max-w-2xl">
-              Generate platform-ready posts, viral hooks, growth strategy, and
-              revenue angles from one simple idea.
+            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-zinc-400 sm:mt-5 sm:text-lg">
+              Paste your idea below. Hummingbird builds platform-ready content,
+              growth strategy, and revenue angles in seconds.
             </p>
           </div>
 
-          <div className="bg-white text-black rounded-3xl p-6 h-fit min-w-[280px] lg:max-w-[380px] shadow-2xl">
-            {!isLoaded ? (
-              <>
-                <p className="font-semibold text-lg mb-2">Loading account...</p>
-                <p className="text-sm text-zinc-600">
-                  Checking your sign-in status.
-                </p>
-              </>
-            ) : !signedIn ? (
-              <>
-                <p className="font-semibold text-lg mb-2">
-                  Start using Hummingbird
-                </p>
-                <p className="text-sm text-zinc-600 mb-5">
-                  Sign in to generate content systems, viral hooks, and save your
-                  best results.
-                </p>
-
-                <div className="space-y-3">
-                  <SignInButton mode="modal">
-                    <button className="w-full bg-black text-white py-3 rounded-2xl font-semibold hover:scale-105 transition">
-                      Sign In
-                    </button>
-                  </SignInButton>
-
-                  <SignUpButton mode="modal">
-                    <button className="w-full bg-zinc-100 text-black py-3 rounded-2xl font-semibold hover:scale-105 transition border border-zinc-300">
-                      Create Account
-                    </button>
-                  </SignUpButton>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="flex items-center justify-between gap-4 mb-5">
-                  <div>
-                    <p className="font-semibold text-lg">Account</p>
-                    <p className="text-sm text-zinc-600">You are signed in.</p>
-                  </div>
-
-                  <UserButton />
-                </div>
-
-                <p className="font-semibold text-lg mb-2">
-                  Founder Price — $19/mo
-                </p>
-                <p className="text-sm text-zinc-600 mb-5">
-                  Lock in unlimited content systems and viral hooks before
-                  pricing increases.
-                </p>
-
-                <button
-                  onClick={handleUpgrade}
-                  disabled={upgradeLoading}
-                  className="w-full bg-black text-white py-3 rounded-2xl font-semibold hover:scale-105 transition disabled:opacity-60 disabled:hover:scale-100"
-                >
-                  {upgradeLoading ? 'Opening checkout...' : 'Upgrade $19/mo'}
-                </button>
-              </>
-            )}
-          </div>
+          <div className="hidden lg:block">{accountPanel}</div>
         </div>
 
-        <div className="grid lg:grid-cols-[0.92fr_1.28fr] gap-8 items-start">
-          <div className="space-y-6">
-            <div className="bg-zinc-900 border border-zinc-800 p-6 rounded-3xl">
-              <div className="mb-6">
-                <p className="mb-3 text-zinc-400 font-medium">
-                  Choose generation mode:
+        <div className="grid gap-4 lg:grid-cols-[0.95fr_1.2fr] lg:items-start lg:gap-8">
+          <div className="order-1">
+            <div className="rounded-3xl border border-zinc-800 bg-zinc-900/90 p-4 sm:p-6">
+              <div className="mb-4">
+                <div className="mb-2 flex items-center justify-between gap-3">
+                  <p className="text-sm font-medium text-zinc-400">
+                    What do you want to create?
+                  </p>
+
+                  <button
+                    onClick={loadNextExample}
+                    className="text-xs font-medium text-purple-400 hover:text-purple-300"
+                  >
+                    ✨ Example
+                  </button>
+                </div>
+
+                <textarea
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  placeholder={
+                    generationMode === 'viral_hooks'
+                      ? 'Example: My 7-day content calendar that grew my Instagram to 50k followers...'
+                      : 'Example: How I turned one viral TikTok into $8k in affiliate sales...'
+                  }
+                  className="h-28 w-full resize-none rounded-2xl border border-zinc-700 bg-zinc-800 p-4 text-sm text-zinc-100 outline-none placeholder:text-zinc-500 focus:border-purple-500 sm:h-48 sm:p-5 sm:text-base"
+                />
+              </div>
+
+              <div className="mb-4">
+                <p className="mb-2 text-xs font-medium uppercase tracking-wide text-zinc-500">
+                  Mode
                 </p>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-2">
                   <button
                     onClick={() => {
                       setGenerationMode('growth_system');
                       setActiveTab('content');
                       setResults(null);
                     }}
-                    className={`px-4 py-3 rounded-2xl font-medium transition ${
+                    className={`rounded-2xl px-3 py-2.5 text-sm font-medium transition ${
                       generationMode === 'growth_system'
                         ? 'bg-purple-600 text-white shadow-lg shadow-purple-900/30'
                         : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
                     }`}
                   >
-                    🚀 Growth System
+                    🚀 System
                   </button>
 
                   <button
@@ -586,31 +691,31 @@ export default function Home() {
                       setActiveTab('hooks');
                       setResults(null);
                     }}
-                    className={`px-4 py-3 rounded-2xl font-medium transition ${
+                    className={`rounded-2xl px-3 py-2.5 text-sm font-medium transition ${
                       generationMode === 'viral_hooks'
                         ? 'bg-pink-600 text-white shadow-lg shadow-pink-900/30'
                         : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
                     }`}
                   >
-                    🔥 Viral Hooks
+                    🔥 Hooks
                   </button>
                 </div>
               </div>
 
-              <div className="mb-6">
-                <p className="mb-3 text-zinc-400 font-medium">
-                  Choose your goal:
+              <div className="mb-4">
+                <p className="mb-2 text-xs font-medium uppercase tracking-wide text-zinc-500">
+                  Goal
                 </p>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-3 gap-2">
                   {[
                     { id: 'growth', label: 'Grow' },
-                    { id: 'viral', label: 'Go Viral' },
-                    { id: 'sales', label: 'Make Money' },
+                    { id: 'viral', label: 'Viral' },
+                    { id: 'sales', label: 'Sales' },
                   ].map((g) => (
                     <button
                       key={g.id}
                       onClick={() => setGoal(g.id)}
-                      className={`px-4 py-3 rounded-2xl font-medium transition ${
+                      className={`rounded-2xl px-2 py-2.5 text-sm font-medium transition ${
                         goal === g.id
                           ? 'bg-purple-600 text-white shadow-lg shadow-purple-900/30'
                           : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
@@ -622,16 +727,16 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="mb-6">
-                <p className="mb-3 text-zinc-400 font-medium">
-                  Choose your brand voice:
+              <div className="mb-4">
+                <p className="mb-2 text-xs font-medium uppercase tracking-wide text-zinc-500">
+                  Voice
                 </p>
-                <div className="flex flex-wrap gap-3">
+                <div className="flex gap-2 overflow-x-auto pb-1">
                   {voices.map((v) => (
                     <button
                       key={v.id}
                       onClick={() => setSelectedVoice(v.id)}
-                      className={`px-4 py-2.5 rounded-2xl transition ${
+                      className={`shrink-0 rounded-2xl px-3 py-2 text-xs transition sm:text-sm ${
                         selectedVoice === v.id
                           ? 'bg-purple-600 text-white'
                           : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
@@ -643,137 +748,64 @@ export default function Home() {
                 </div>
               </div>
 
-              <button
-                onClick={loadNextExample}
-                className="mb-4 text-purple-400 hover:text-purple-300 text-sm font-medium"
-              >
-                ✨ Try a high-performing example
-              </button>
+              {signedIn ? (
+                <button
+                  onClick={generateContent}
+                  disabled={loading || !content.trim() || !isLoaded}
+                  className={`w-full rounded-2xl py-3.5 text-sm font-semibold transition hover:scale-[1.02] disabled:opacity-50 disabled:hover:scale-100 sm:py-5 sm:text-lg ${
+                    generationMode === 'viral_hooks'
+                      ? 'bg-gradient-to-r from-orange-500 via-pink-600 to-purple-600'
+                      : 'bg-gradient-to-r from-purple-600 to-pink-600'
+                  }`}
+                >
+                  {loading
+                    ? generationMode === 'viral_hooks'
+                      ? 'Generating hooks...'
+                      : 'Building system...'
+                    : generationMode === 'viral_hooks'
+                      ? 'Generate 10 Viral Hooks'
+                      : 'Generate My Growth System'}
+                </button>
+              ) : (
+                <SignInButton mode="modal">
+                  <button
+                    disabled={!content.trim() || !isLoaded}
+                    className={`w-full rounded-2xl py-3.5 text-sm font-semibold transition hover:scale-[1.02] disabled:opacity-50 disabled:hover:scale-100 sm:py-5 sm:text-lg ${
+                      generationMode === 'viral_hooks'
+                        ? 'bg-gradient-to-r from-orange-500 via-pink-600 to-purple-600'
+                        : 'bg-gradient-to-r from-purple-600 to-pink-600'
+                    }`}
+                  >
+                    Sign In to Generate Free Result
+                  </button>
+                </SignInButton>
+              )}
 
-              <textarea
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                placeholder={
-                  generationMode === 'viral_hooks'
-                    ? 'Enter a content idea and Hummingbird will generate 10 viral hooks...'
-                    : 'Enter your content idea, video topic, blog post, podcast concept, or raw thought...'
-                }
-                className="w-full h-56 bg-zinc-800 border border-zinc-700 focus:border-purple-500 outline-none p-5 rounded-2xl text-zinc-100 placeholder:text-zinc-500 resize-none"
-              />
-
-              <button
-                onClick={generateContent}
-                disabled={loading || !content.trim() || !isLoaded}
-                className={`mt-5 w-full py-5 rounded-2xl font-semibold text-lg hover:scale-[1.02] transition disabled:opacity-50 disabled:hover:scale-100 ${
-                  generationMode === 'viral_hooks'
-                    ? 'bg-gradient-to-r from-orange-500 via-pink-600 to-purple-600'
-                    : 'bg-gradient-to-r from-purple-600 to-pink-600'
-                }`}
-              >
-                {loading
-                  ? generationMode === 'viral_hooks'
-                    ? 'Generating 10 viral hooks...'
-                    : 'Building your content system...'
-                  : generationMode === 'viral_hooks'
-                    ? 'Generate 10 Viral Hooks'
-                    : 'Generate Growth System'}
-              </button>
-
-              <div className="flex justify-between items-center mt-4 text-sm text-zinc-400">
+              <div className="mt-2.5 flex items-center justify-between text-xs text-zinc-400">
                 <p>{freeLeft} free generations left</p>
                 <p>
-                  {isPro ? 'Pro active' : signedIn ? 'Free plan' : 'Signed out'}
+                  {isPro
+                    ? 'Pro active'
+                    : signedIn
+                      ? 'Free plan'
+                      : 'Sign in required'}
                 </p>
               </div>
             </div>
 
-            <div className="bg-zinc-900 border border-zinc-800 p-6 rounded-3xl">
-              <div className="flex justify-between items-center gap-4 mb-4">
-                <div>
-                  <h2 className="text-xl font-semibold">Saved Generations</h2>
-                  <p className="text-sm text-zinc-500">
-                    Database-backed saves across devices.
-                  </p>
-                </div>
-
-                {signedIn && savedGenerations.length > 0 && (
-                  <button
-                    onClick={clearAllSavedGenerations}
-                    className="text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-3 py-2 rounded-xl transition"
-                  >
-                    Clear All
-                  </button>
-                )}
-              </div>
-
-              {!isLoaded || savedLoading ? (
-                <div className="border border-dashed border-zinc-700 rounded-2xl p-5 text-center">
-                  <p className="text-zinc-400 text-sm">
-                    Loading saved generations...
-                  </p>
-                </div>
-              ) : !signedIn ? (
-                <div className="border border-dashed border-zinc-700 rounded-2xl p-5 text-center">
-                  <p className="text-zinc-400 text-sm">
-                    Sign in to save and reopen generations.
-                  </p>
-                </div>
-              ) : savedGenerations.length === 0 ? (
-                <div className="border border-dashed border-zinc-700 rounded-2xl p-5 text-center">
-                  <p className="text-zinc-400 text-sm">
-                    No saved generations yet.
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-3 max-h-[280px] overflow-y-auto pr-1">
-                  {savedGenerations.map((saved) => (
-                    <div
-                      key={saved.id}
-                      className="bg-zinc-800 border border-zinc-700 rounded-2xl p-4"
-                    >
-                      <div className="flex justify-between gap-3 items-start">
-                        <div className="min-w-0">
-                          <p className="font-medium text-zinc-100 truncate">
-                            {saved.title}
-                          </p>
-                          <p className="text-xs text-zinc-500 mt-1">
-                            {saved.mode === 'viral_hooks'
-                              ? '🔥 Viral Hooks'
-                              : '🚀 Growth System'}{' '}
-                            • {saved.goal} • {formatSavedDate(saved.createdAt)}
-                          </p>
-                        </div>
-
-                        <button
-                          onClick={() => deleteSavedGeneration(saved.id)}
-                          className="text-xs text-zinc-500 hover:text-red-400 transition"
-                        >
-                          Delete
-                        </button>
-                      </div>
-
-                      <button
-                        onClick={() => loadSavedGeneration(saved)}
-                        className="mt-3 w-full bg-zinc-700 hover:bg-zinc-600 text-sm py-2 rounded-xl transition"
-                      >
-                        Open Saved
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+            <div className="mt-4 lg:hidden">{accountPanel}</div>
+            <div className="mt-4 hidden lg:block">{savedGenerationsCard}</div>
           </div>
 
-          <div className="bg-zinc-900 border border-zinc-800 p-6 rounded-3xl flex flex-col h-[760px] lg:sticky lg:top-6">
-            <div className="mb-5 flex flex-col sm:flex-row justify-between gap-4 sm:items-start shrink-0">
+          <div className="order-2 rounded-3xl border border-zinc-800 bg-zinc-900/90 p-4 sm:p-6 lg:sticky lg:top-6 lg:flex lg:h-[760px] lg:flex-col">
+            <div className="mb-3 flex shrink-0 flex-col gap-3 sm:mb-4 sm:flex-row sm:items-start sm:justify-between">
               <div>
-                <h2 className="text-2xl font-semibold">
+                <h2 className="text-2xl font-semibold sm:text-3xl">
                   {generationMode === 'viral_hooks'
                     ? 'Your Viral Hook Engine'
                     : 'Your AI Growth System'}
                 </h2>
-                <p className="text-zinc-400 mt-1">
+                <p className="mt-1 text-sm leading-relaxed text-zinc-400 sm:text-lg">
                   {generationMode === 'viral_hooks'
                     ? 'Scroll-stopping hooks designed to earn attention fast.'
                     : 'Strategy, platform-ready content, and monetization angles.'}
@@ -783,19 +815,19 @@ export default function Home() {
               {results && signedIn && (
                 <button
                   onClick={saveCurrentGeneration}
-                  className="bg-white text-black px-4 py-2.5 rounded-2xl font-semibold hover:scale-105 transition"
+                  className="rounded-2xl bg-white px-4 py-2.5 text-sm font-semibold text-black transition hover:scale-105"
                 >
                   {savedMessage || 'Save Result'}
                 </button>
               )}
             </div>
 
-            <div className="flex flex-wrap gap-3 mb-5 shrink-0">
+            <div className="mb-3 flex shrink-0 flex-wrap gap-2">
               {activeTabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`px-4 py-2.5 rounded-2xl font-medium transition ${
+                  className={`rounded-2xl px-3 py-2 text-sm font-medium transition ${
                     activeTab === tab.id
                       ? 'bg-purple-600 text-white'
                       : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
@@ -806,46 +838,45 @@ export default function Home() {
               ))}
             </div>
 
-            <div className="flex-1 min-h-0 overflow-y-auto pr-1">
+            <div className="min-h-0 lg:flex-1 lg:overflow-y-auto lg:pr-1">
               {!results && !loading && (
-                <div className="h-full border border-dashed border-zinc-700 rounded-3xl flex flex-col items-center justify-center text-center p-8">
-                  <div className="text-5xl mb-4">
+                <div className="flex min-h-[220px] flex-col items-center justify-center rounded-3xl border border-dashed border-zinc-700 p-5 text-center sm:min-h-[420px] lg:h-full">
+                  <div className="mb-2 text-4xl">
                     {generationMode === 'viral_hooks' ? '🔥' : '✦'}
                   </div>
-                  <p className="text-xl font-semibold mb-2">
+                  <p className="mb-2 text-lg font-semibold">
                     {generationMode === 'viral_hooks'
                       ? 'Your viral hooks will appear here'
                       : 'Your results will appear here'}
                   </p>
-                  <p className="text-zinc-500 max-w-md">
-                    {generationMode === 'viral_hooks'
-                      ? 'Add an idea and Hummingbird will generate hooks built for attention.'
-                      : 'Add an idea, choose a goal, and Hummingbird will build your content system.'}
+                  <p className="max-w-md text-sm leading-relaxed text-zinc-500">
+                    Paste an idea, choose your settings, and generate your first
+                    result.
                   </p>
                 </div>
               )}
 
               {loading && (
-                <div className="h-full flex flex-col items-center justify-center text-center border border-zinc-800 rounded-3xl bg-zinc-950/40 p-8 overflow-hidden">
-                  <div className="relative mb-8">
-                    <div className="w-24 h-24 rounded-full border-4 border-zinc-800"></div>
-                    <div className="absolute inset-0 w-24 h-24 rounded-full border-4 border-transparent border-t-purple-500 border-r-pink-500 animate-spin"></div>
-                    <div className="absolute inset-0 flex items-center justify-center text-3xl">
+                <div className="flex min-h-[280px] flex-col items-center justify-center overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950/40 p-6 text-center sm:min-h-[480px] lg:h-full">
+                  <div className="relative mb-5">
+                    <div className="h-16 w-16 rounded-full border-4 border-zinc-800 sm:h-24 sm:w-24"></div>
+                    <div className="absolute inset-0 h-16 w-16 animate-spin rounded-full border-4 border-transparent border-r-pink-500 border-t-purple-500 sm:h-24 sm:w-24"></div>
+                    <div className="absolute inset-0 flex items-center justify-center text-2xl sm:text-3xl">
                       {generationMode === 'viral_hooks' ? '🔥' : '✦'}
                     </div>
                   </div>
 
-                  <h3 className="text-2xl font-semibold mb-3">
+                  <h3 className="mb-2 text-xl font-semibold sm:text-2xl">
                     {generationMode === 'viral_hooks'
                       ? 'Generating 10 viral hooks...'
                       : 'Building your growth system...'}
                   </h3>
 
-                  <p className="text-zinc-300 max-w-md min-h-[28px]">
+                  <p className="min-h-[24px] max-w-md text-sm text-zinc-300 sm:text-base">
                     {activeLoadingMessages[loadingStep]}
                   </p>
 
-                  <p className="text-zinc-500 text-sm mt-4">
+                  <p className="mt-3 text-xs text-zinc-500 sm:text-sm">
                     This usually takes 15–25 seconds for higher-quality output.
                   </p>
                 </div>
@@ -854,16 +885,16 @@ export default function Home() {
               {results &&
                 activeTab === 'hooks' &&
                 generationMode === 'viral_hooks' && (
-                  <div className="space-y-5">
+                  <div className="space-y-4">
                     {results.best_hook && (
-                      <div className="bg-gradient-to-r from-orange-500 via-pink-600 to-purple-600 p-5 rounded-2xl">
-                        <h3 className="text-lg font-semibold mb-2">
+                      <div className="rounded-2xl bg-gradient-to-r from-orange-500 via-pink-600 to-purple-600 p-5">
+                        <h3 className="mb-2 text-lg font-semibold">
                           🔥 Strongest Viral Hook
                         </h3>
-                        <p className="text-sm opacity-90 mb-4">
+                        <p className="mb-4 text-sm opacity-90">
                           {results.best_hook.reason}
                         </p>
-                        <div className="bg-black/25 p-4 rounded-xl">
+                        <div className="rounded-xl bg-black/25 p-4">
                           <p className="text-lg font-semibold">
                             {results.best_hook.hook}
                           </p>
@@ -874,14 +905,14 @@ export default function Home() {
                     {(results.hooks || []).map((item, i) => (
                       <div
                         key={i}
-                        className="bg-zinc-800 border border-zinc-700 p-5 rounded-2xl"
+                        className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5"
                       >
-                        <div className="flex justify-between gap-4 items-start mb-4">
+                        <div className="mb-4 flex items-start justify-between gap-4">
                           <div>
-                            <h3 className="text-pink-400 font-semibold">
+                            <h3 className="font-semibold text-pink-400">
                               🔥 Hook #{i + 1}
                             </h3>
-                            <p className="text-xs text-zinc-500 mt-1 capitalize">
+                            <p className="mt-1 text-xs capitalize text-zinc-500">
                               {item.angle || 'Attention-driven hook'}
                             </p>
                           </div>
@@ -890,7 +921,7 @@ export default function Home() {
                             onClick={() =>
                               copyToClipboard(item.hook || '', `Hook ${i + 1}`)
                             }
-                            className="text-xs bg-zinc-700 px-3 py-1.5 rounded-xl hover:bg-zinc-600 transition"
+                            className="rounded-xl bg-zinc-700 px-3 py-1.5 text-xs transition hover:bg-zinc-600"
                           >
                             {copiedItem === `Hook ${i + 1}`
                               ? 'Copied!'
@@ -898,12 +929,12 @@ export default function Home() {
                           </button>
                         </div>
 
-                        <p className="text-zinc-100 text-lg font-medium leading-relaxed">
+                        <p className="text-lg font-medium leading-relaxed text-zinc-100">
                           {item.hook}
                         </p>
 
                         {item.why_it_works && (
-                          <p className="text-zinc-400 text-sm mt-3">
+                          <p className="mt-3 text-sm text-zinc-400">
                             Why it works: {item.why_it_works}
                           </p>
                         )}
@@ -915,9 +946,9 @@ export default function Home() {
               {results &&
                 activeTab === 'strategy' &&
                 generationMode === 'growth_system' && (
-                  <div className="space-y-5">
-                    <div className="bg-zinc-800 border border-zinc-700 p-5 rounded-2xl">
-                      <h3 className="text-purple-400 font-semibold mb-2">
+                  <div className="space-y-4">
+                    <div className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5">
+                      <h3 className="mb-2 font-semibold text-purple-400">
                         🎯 Target Audience
                       </h3>
                       <p className="text-zinc-200">
@@ -926,8 +957,8 @@ export default function Home() {
                       </p>
                     </div>
 
-                    <div className="bg-zinc-800 border border-zinc-700 p-5 rounded-2xl">
-                      <h3 className="text-purple-400 font-semibold mb-2">
+                    <div className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5">
+                      <h3 className="mb-2 font-semibold text-purple-400">
                         🧠 Core Content Angle
                       </h3>
                       <p className="text-zinc-200">
@@ -936,8 +967,8 @@ export default function Home() {
                       </p>
                     </div>
 
-                    <div className="bg-zinc-800 border border-zinc-700 p-5 rounded-2xl">
-                      <h3 className="text-purple-400 font-semibold mb-3">
+                    <div className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5">
+                      <h3 className="mb-3 font-semibold text-purple-400">
                         🔥 High-Performing Hooks
                       </h3>
                       <div className="space-y-2">
@@ -951,8 +982,8 @@ export default function Home() {
                       </div>
                     </div>
 
-                    <div className="bg-zinc-800 border border-zinc-700 p-5 rounded-2xl">
-                      <h3 className="text-purple-400 font-semibold mb-2">
+                    <div className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5">
+                      <h3 className="mb-2 font-semibold text-purple-400">
                         📈 Why This Will Work
                       </h3>
                       <p className="text-zinc-200">
@@ -966,19 +997,19 @@ export default function Home() {
               {results &&
                 activeTab === 'content' &&
                 generationMode === 'growth_system' && (
-                  <div className="space-y-5">
+                  <div className="space-y-4">
                     {results.best_output && (
-                      <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-5 rounded-2xl">
-                        <h3 className="text-lg font-semibold mb-2">
+                      <div className="rounded-2xl bg-gradient-to-r from-purple-600 to-pink-600 p-5">
+                        <h3 className="mb-2 text-lg font-semibold">
                           ⭐ Best Performing Content
                         </h3>
-                        <p className="text-sm opacity-80 mb-2">
+                        <p className="mb-2 text-sm opacity-80">
                           {results.best_output.platform}
                         </p>
-                        <p className="text-sm mb-4 opacity-90">
+                        <p className="mb-4 text-sm opacity-90">
                           {results.best_output.reason}
                         </p>
-                        <div className="bg-black/25 p-4 rounded-xl">
+                        <div className="rounded-xl bg-black/25 p-4">
                           <p className="whitespace-pre-wrap text-sm leading-relaxed">
                             {results.best_output.content}
                           </p>
@@ -990,27 +1021,27 @@ export default function Home() {
                       ([platform, text]) => (
                         <div
                           key={platform}
-                          className="bg-zinc-800 border border-zinc-700 p-5 rounded-2xl"
+                          className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5"
                         >
-                          <div className="flex justify-between gap-4 items-start mb-4">
+                          <div className="mb-4 flex items-start justify-between gap-4">
                             <div>
-                              <h3 className="text-purple-400 font-semibold">
+                              <h3 className="font-semibold text-purple-400">
                                 🚀 {platform}
                               </h3>
-                              <p className="text-xs text-zinc-500 mt-1">
+                              <p className="mt-1 text-xs text-zinc-500">
                                 Optimized for platform-native performance
                               </p>
                             </div>
 
                             <button
                               onClick={() => copyToClipboard(text, platform)}
-                              className="text-xs bg-zinc-700 px-3 py-1.5 rounded-xl hover:bg-zinc-600 transition"
+                              className="rounded-xl bg-zinc-700 px-3 py-1.5 text-xs transition hover:bg-zinc-600"
                             >
                               {copiedItem === platform ? 'Copied!' : 'Copy'}
                             </button>
                           </div>
 
-                          <p className="whitespace-pre-wrap text-zinc-200 leading-relaxed">
+                          <p className="whitespace-pre-wrap leading-relaxed text-zinc-200">
                             {text}
                           </p>
                         </div>
@@ -1022,9 +1053,9 @@ export default function Home() {
               {results &&
                 activeTab === 'monetization' &&
                 generationMode === 'growth_system' && (
-                  <div className="space-y-5">
-                    <div className="bg-zinc-800 border border-zinc-700 p-5 rounded-2xl">
-                      <h3 className="text-purple-400 font-semibold mb-3">
+                  <div className="space-y-4">
+                    <div className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5">
+                      <h3 className="mb-3 font-semibold text-purple-400">
                         💰 Revenue Opportunities
                       </h3>
                       <div className="space-y-2">
@@ -1038,8 +1069,8 @@ export default function Home() {
                       </div>
                     </div>
 
-                    <div className="bg-zinc-800 border border-zinc-700 p-5 rounded-2xl">
-                      <h3 className="text-purple-400 font-semibold mb-3">
+                    <div className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5">
+                      <h3 className="mb-3 font-semibold text-purple-400">
                         🧲 Lead Magnet Idea
                       </h3>
                       <p className="text-zinc-200">
@@ -1048,8 +1079,8 @@ export default function Home() {
                       </p>
                     </div>
 
-                    <div className="bg-zinc-800 border border-zinc-700 p-5 rounded-2xl">
-                      <h3 className="text-purple-400 font-semibold mb-3">
+                    <div className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5">
+                      <h3 className="mb-3 font-semibold text-purple-400">
                         ⚡ Conversion Strategy
                       </h3>
                       <p className="text-zinc-200">
@@ -1061,6 +1092,8 @@ export default function Home() {
                 )}
             </div>
           </div>
+
+          <div className="order-3 lg:hidden">{savedGenerationsCard}</div>
         </div>
       </div>
     </div>
