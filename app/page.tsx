@@ -78,6 +78,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [loadingStep, setLoadingStep] = useState(0);
   const [upgradeLoading, setUpgradeLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [generationsUsed, setGenerationsUsed] = useState(0);
   const [isPro, setIsPro] = useState(false);
   const [activeTab, setActiveTab] = useState<
@@ -137,28 +138,32 @@ export default function Home() {
       : growthLoadingMessages;
 
   useEffect(() => {
-    const savedUsed = localStorage.getItem('generationsUsed');
-    const savedPro = localStorage.getItem('isPro');
+    const timer = window.setTimeout(() => {
+      setMounted(true);
 
-    if (savedUsed) setGenerationsUsed(parseInt(savedUsed));
-    if (savedPro === 'true') setIsPro(true);
+      const savedUsed = localStorage.getItem('generationsUsed');
+      const savedPro = localStorage.getItem('isPro');
+      const params = new URLSearchParams(window.location.search);
+
+      if (savedUsed) {
+        setGenerationsUsed(parseInt(savedUsed));
+      }
+
+      if (savedPro === 'true' || params.get('success') === 'true') {
+        setIsPro(true);
+      }
+
+      if (params.get('success') === 'true') {
+        localStorage.setItem('isPro', 'true');
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    }, 0);
+
+    return () => window.clearTimeout(timer);
   }, []);
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-
-    if (params.get('success') === 'true') {
-      setIsPro(true);
-      localStorage.setItem('isPro', 'true');
-      window.history.replaceState({}, document.title, window.location.pathname);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!loading) {
-      setLoadingStep(0);
-      return;
-    }
+    if (!loading) return;
 
     const interval = window.setInterval(() => {
       setLoadingStep((prev) => (prev + 1) % activeLoadingMessages.length);
@@ -456,7 +461,11 @@ export default function Home() {
     }
   };
 
-  const freeLeft = isPro ? '∞' : Math.max(0, MAX_FREE - generationsUsed);
+  const freeLeft = mounted
+    ? isPro
+      ? '∞'
+      : Math.max(0, MAX_FREE - generationsUsed)
+    : MAX_FREE;
 
   const growthTabs = [
     { id: 'strategy', label: 'Strategy', icon: '🎯' },
@@ -469,7 +478,7 @@ export default function Home() {
   const activeTabs = generationMode === 'viral_hooks' ? hooksTabs : growthTabs;
 
   const savedGenerationsCard = (
-    <div className="rounded-3xl border border-zinc-800 bg-zinc-900/90 p-4 sm:p-6">
+    <div className="w-full min-w-0 rounded-3xl border border-zinc-800 bg-zinc-900/90 p-4 sm:p-6">
       <div className="mb-3 flex items-center justify-between gap-4">
         <div>
           <h2 className="text-lg font-semibold sm:text-2xl">
@@ -564,7 +573,7 @@ export default function Home() {
             devices.
           </p>
 
-          <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-1">
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-1">
             <SignInButton mode="modal">
               <button className="w-full rounded-2xl bg-black py-3 text-sm font-semibold text-white transition hover:scale-[1.02]">
                 Sign In
@@ -610,8 +619,8 @@ export default function Home() {
   );
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white">
-      <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 sm:py-8">
+    <div className="min-h-screen overflow-x-hidden bg-zinc-950 text-white">
+      <div className="mx-auto w-full max-w-7xl overflow-x-hidden px-4 py-4 sm:px-6 sm:py-8">
         <div className="mb-4 grid gap-4 lg:mb-8 lg:grid-cols-[1.25fr_0.75fr] lg:items-start">
           <div className="max-w-4xl">
             <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900 px-3 py-1.5 text-xs text-zinc-300 sm:px-4 sm:py-2 sm:text-sm">
@@ -636,8 +645,8 @@ export default function Home() {
           <div className="hidden lg:block">{accountPanel}</div>
         </div>
 
-        <div className="grid gap-4 lg:grid-cols-[0.95fr_1.2fr] lg:items-start lg:gap-8">
-          <div className="order-1">
+        <div className="grid w-full min-w-0 gap-4 lg:grid-cols-[0.95fr_1.2fr] lg:items-start lg:gap-8">
+          <div className="order-1 min-w-0">
             <div className="rounded-3xl border border-zinc-800 bg-zinc-900/90 p-4 sm:p-6">
               <div className="mb-4">
                 <div className="mb-2 flex items-center justify-between gap-3">
@@ -661,7 +670,7 @@ export default function Home() {
                       ? 'Example: My 7-day content calendar that grew my Instagram to 50k followers...'
                       : 'Example: How I turned one viral TikTok into $8k in affiliate sales...'
                   }
-                  className="h-28 w-full resize-none rounded-2xl border border-zinc-700 bg-zinc-800 p-4 text-sm text-zinc-100 outline-none placeholder:text-zinc-500 focus:border-purple-500 sm:h-48 sm:p-5 sm:text-base"
+                  className="h-28 w-full max-w-full resize-none rounded-2xl border border-zinc-700 bg-zinc-800 p-4 text-sm text-zinc-100 outline-none placeholder:text-zinc-500 focus:border-purple-500 sm:h-48 sm:p-5 sm:text-base"
                 />
               </div>
 
@@ -669,7 +678,7 @@ export default function Home() {
                 <p className="mb-2 text-xs font-medium uppercase tracking-wide text-zinc-500">
                   Mode
                 </p>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid min-w-0 grid-cols-2 gap-2">
                   <button
                     onClick={() => {
                       setGenerationMode('growth_system');
@@ -706,7 +715,7 @@ export default function Home() {
                 <p className="mb-2 text-xs font-medium uppercase tracking-wide text-zinc-500">
                   Goal
                 </p>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid min-w-0 grid-cols-3 gap-2">
                   {[
                     { id: 'growth', label: 'Grow' },
                     { id: 'viral', label: 'Viral' },
@@ -731,7 +740,7 @@ export default function Home() {
                 <p className="mb-2 text-xs font-medium uppercase tracking-wide text-zinc-500">
                   Voice
                 </p>
-                <div className="flex gap-2 overflow-x-auto pb-1">
+                <div className="flex max-w-full gap-2 overflow-x-auto pb-1">
                   {voices.map((v) => (
                     <button
                       key={v.id}
@@ -792,12 +801,10 @@ export default function Home() {
                 </p>
               </div>
             </div>
-
-            <div className="mt-4 lg:hidden">{accountPanel}</div>
             <div className="mt-4 hidden lg:block">{savedGenerationsCard}</div>
           </div>
 
-          <div className="order-2 rounded-3xl border border-zinc-800 bg-zinc-900/90 p-4 sm:p-6 lg:sticky lg:top-6 lg:flex lg:h-[760px] lg:flex-col">
+          <div className="order-2 min-w-0 rounded-3xl border border-zinc-800 bg-zinc-900/90 p-4 sm:p-6 lg:sticky lg:top-6 lg:flex lg:h-[760px] lg:flex-col">
             <div className="mb-3 flex shrink-0 flex-col gap-3 sm:mb-4 sm:flex-row sm:items-start sm:justify-between">
               <div>
                 <h2 className="text-2xl font-semibold sm:text-3xl">
@@ -822,12 +829,12 @@ export default function Home() {
               )}
             </div>
 
-            <div className="mb-3 flex shrink-0 flex-wrap gap-2">
+            <div className="mb-3 flex min-w-0 shrink-0 flex-wrap gap-2">
               {activeTabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`rounded-2xl px-3 py-2 text-sm font-medium transition ${
+                  className={`min-w-0 rounded-2xl px-3 py-2 text-sm font-medium transition ${
                     activeTab === tab.id
                       ? 'bg-purple-600 text-white'
                       : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
@@ -839,22 +846,39 @@ export default function Home() {
             </div>
 
             <div className="min-h-0 lg:flex-1 lg:overflow-y-auto lg:pr-1">
-              {!results && !loading && (
-                <div className="flex min-h-[220px] flex-col items-center justify-center rounded-3xl border border-dashed border-zinc-700 p-5 text-center sm:min-h-[420px] lg:h-full">
-                  <div className="mb-2 text-4xl">
-                    {generationMode === 'viral_hooks' ? '🔥' : '✦'}
+                {!results && !loading && (
+                  <div className="flex min-h-[300px] flex-col items-center justify-center rounded-3xl border border-dashed border-zinc-700 bg-zinc-950/30 p-5 text-center sm:min-h-[420px] lg:h-full">
+                    <div className="mb-3 text-4xl">
+                      {generationMode === 'viral_hooks' ? '🔥' : '✦'}
+                    </div>
+
+                    <p className="mb-2 text-xl font-semibold sm:text-2xl">
+                      {generationMode === 'viral_hooks'
+                        ? 'Turn your idea into scroll-stopping hooks'
+                        : 'Turn your idea into a complete growth system'}
+                    </p>
+
+                    <p className="max-w-md text-sm leading-relaxed text-zinc-400 sm:text-base">
+                      {generationMode === 'viral_hooks'
+                        ? 'Generate 10 attention-grabbing hooks with angles, explanations, and a strongest-hook pick.'
+                        : 'Get strategy, platform-ready content, high-performing hooks, and monetization angles in one run.'}
+                    </p>
+
+                    <div className="mt-5 grid w-full max-w-md grid-cols-1 gap-2 text-xs text-zinc-300 sm:grid-cols-3">
+                      {(generationMode === 'viral_hooks'
+                        ? ['10 hooks', 'Best hook', 'Why it works']
+                        : ['Strategy', 'Content', 'Money plan']
+                      ).map((item) => (
+                        <div
+                          key={item}
+                          className="rounded-2xl border border-zinc-800 bg-zinc-900 px-3 py-2 text-center"
+                        >
+                          {item}
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  <p className="mb-2 text-lg font-semibold">
-                    {generationMode === 'viral_hooks'
-                      ? 'Your viral hooks will appear here'
-                      : 'Your results will appear here'}
-                  </p>
-                  <p className="max-w-md text-sm leading-relaxed text-zinc-500">
-                    Paste an idea, choose your settings, and generate your first
-                    result.
-                  </p>
-                </div>
-              )}
+                )}
 
               {loading && (
                 <div className="flex min-h-[280px] flex-col items-center justify-center overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950/40 p-6 text-center sm:min-h-[480px] lg:h-full">
@@ -1093,7 +1117,11 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="order-3 lg:hidden">{savedGenerationsCard}</div>
+          <div className="order-3 min-w-0 lg:hidden">{accountPanel}</div>
+
+
+
+          <div className="order-4 min-w-0 lg:hidden">{savedGenerationsCard}</div>
         </div>
       </div>
     </div>
