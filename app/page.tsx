@@ -803,7 +803,7 @@ export default function Home() {
                         : 'bg-gradient-to-r from-purple-600 to-pink-600'
                     }`}
                   >
-                    Sign In to Generate Free Result
+                    Create Free Workspace to Generate
                   </button>
                 </SignInButton>
               )}
