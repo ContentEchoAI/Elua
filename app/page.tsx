@@ -506,7 +506,7 @@ export default function Home() {
       ) : !signedIn ? (
         <div className="rounded-2xl border border-dashed border-zinc-700 p-3 text-center">
           <p className="text-xs text-zinc-400">
-            Sign in after generating to save your best result.
+            Create a free workspace to save your best content systems and reopen them anytime.
           </p>
         </div>
       ) : savedGenerations.length === 0 ? (
