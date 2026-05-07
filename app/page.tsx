@@ -598,21 +598,39 @@ export default function Home() {
             <UserButton />
           </div>
 
-          <p className="mb-1 text-base font-semibold sm:text-lg">
-            Founder Price — $19/mo
-          </p>
-          <p className="mb-3 text-sm leading-relaxed text-zinc-600">
-            Lock in unlimited content systems and viral hooks before pricing
-            increases.
-          </p>
+            {isPro ? (
+              <>
+                <p className="mb-1 text-base font-semibold sm:text-lg">
+                  Founder Plan Active
+                </p>
+                <p className="mb-3 text-sm leading-relaxed text-zinc-600">
+                  You have unlimited growth systems, viral hooks, saved generations,
+                  and creator strategy.
+                </p>
 
-          <button
-            onClick={handleUpgrade}
-            disabled={upgradeLoading}
-            className="w-full rounded-2xl bg-black py-3 text-sm font-semibold text-white transition hover:scale-[1.02] disabled:opacity-60 disabled:hover:scale-100"
-          >
-            {upgradeLoading ? 'Opening checkout...' : 'Upgrade $19/mo'}
-          </button>
+                <div className="rounded-2xl bg-black px-4 py-3 text-center text-sm font-semibold text-white">
+                  Pro active — unlimited generations
+                </div>
+              </>
+            ) : (
+              <>
+                <p className="mb-1 text-base font-semibold sm:text-lg">
+                  Founder Plan — $19/mo
+                </p>
+                <p className="mb-3 text-sm leading-relaxed text-zinc-600">
+                  Unlock unlimited growth systems, viral hooks, saved generations,
+                  and creator strategy before pricing increases.
+                </p>
+
+                <button
+                  onClick={handleUpgrade}
+                  disabled={upgradeLoading}
+                  className="w-full rounded-2xl bg-black py-3 text-sm font-semibold text-white transition hover:scale-[1.02] disabled:opacity-60 disabled:hover:scale-100"
+                >
+                  {upgradeLoading ? 'Opening checkout...' : 'Upgrade to Founder Plan'}
+                </button>
+              </>
+            )}
         </>
       )}
     </div>
