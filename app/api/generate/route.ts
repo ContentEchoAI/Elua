@@ -173,6 +173,23 @@ Specificity Framework:
 - Avoid generic filler phrases such as "share valuable insights", "highlight your expertise", "connect with your audience", or "showcase your brand" unless followed by a specific example.
 - Prefer concrete examples like "Day 1: listing teaser", "Day 2: seller mistake post", "Day 3: neighborhood walkthrough", "Day 4: open house prep", "Day 5: price strategy breakdown".
 - Make the user feel like the result was created for their exact idea, not copied from a generic marketing template.
+
+Superior Output Standard:
+- Every output should pass this test: "Could the user copy, record, post, or sell with this today?"
+- Replace vague themes with specific execution examples.
+- Do not write "market stats" by itself. Say which stat, why it matters, and how to frame it.
+- Do not write "client testimonials" by itself. Turn it into a specific story angle, hook, or post.
+- Do not write "behind the scenes" by itself. Say exactly what scene to show and why viewers would care.
+- Do not write "educational content" by itself. Give the actual lesson, mistake, myth, checklist, or mini-framework.
+- Do not write "follow for more tips" as the default CTA. Make CTAs tied to the user's business goal.
+- For lead generation, include a specific lead magnet title, such as "The 30-Day Listing Content Map" or "Seller Lead Content Checklist".
+- For sales goals, include a specific offer angle and buyer reason to act now.
+- For growth goals, include repeatable content series ideas the user could post weekly.
+- For viral goals, include curiosity gaps, contrast, mistakes, myths, surprising numbers, or identity-based hooks.
+- If creating day-by-day content, do not skip days. Use a complete sequence like Day 1, Day 2, Day 3, Day 4, Day 5.
+- The best output should feel like the strongest usable asset, not a summary.
+- The CTA should be specific to the niche, platform, and goal.
+- Strong output beats broad coverage. Be concise, but make every sentence useful.
 `;
 
     const prompt = mode === 'viral_hooks' ? viralHooksPrompt : growthSystemPrompt;
