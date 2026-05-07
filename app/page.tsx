@@ -482,10 +482,10 @@ export default function Home() {
       <div className="mb-3 flex items-center justify-between gap-4">
         <div>
           <h2 className="text-lg font-semibold sm:text-2xl">
-            Saved Generations
+            Saved Workspace
           </h2>
           <p className="text-xs text-zinc-500 sm:text-sm">
-            Reopen your best outputs across devices.
+            Reopen your best content systems, hooks, and monetization ideas.
           </p>
         </div>
 
@@ -511,7 +511,7 @@ export default function Home() {
         </div>
       ) : savedGenerations.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-zinc-700 p-3 text-center">
-          <p className="text-xs text-zinc-400">No saved generations yet.</p>
+          <p className="text-xs text-zinc-400">No saved generations yet. Generate something worth keeping, then save it here.</p>
         </div>
       ) : (
         <div className="max-h-[260px] space-y-3 overflow-y-auto pr-1">
@@ -545,7 +545,7 @@ export default function Home() {
                 onClick={() => loadSavedGeneration(saved)}
                 className="mt-3 w-full rounded-xl bg-zinc-700 py-2 text-sm transition hover:bg-zinc-600"
               >
-                Open Saved
+                Open in Workspace
               </button>
             </div>
           ))}
@@ -663,7 +663,7 @@ export default function Home() {
           <div className="hidden lg:block">{accountPanel}</div>
         </div>
 
-        <div className="grid w-full min-w-0 gap-4 lg:grid-cols-[0.95fr_1.2fr] lg:items-start lg:gap-8">
+        <div className="grid w-full min-w-0 items-stretch gap-4 lg:grid-cols-[0.95fr_1.2fr] lg:gap-8">
           <div className="order-1 min-w-0">
             <div className="rounded-3xl border border-zinc-800 bg-zinc-900/90 p-4 sm:p-6">
               <div className="mb-4">
@@ -822,7 +822,7 @@ export default function Home() {
             <div className="mt-4 hidden lg:block">{savedGenerationsCard}</div>
           </div>
 
-          <div className="order-2 min-w-0 rounded-3xl border border-zinc-800 bg-zinc-900/90 p-4 sm:p-6 lg:sticky lg:top-6 lg:flex lg:h-[760px] lg:flex-col">
+          <div className="order-2 min-w-0 rounded-3xl border border-zinc-800 bg-zinc-900/90 p-4 sm:p-6 lg:flex lg:h-full lg:min-h-[760px] lg:flex-col">
             <div className="mb-3 flex shrink-0 flex-col gap-3 sm:mb-4 sm:flex-row sm:items-start sm:justify-between">
               <div>
                 <h2 className="text-2xl font-semibold sm:text-3xl">
