@@ -190,6 +190,18 @@ Superior Output Standard:
 - The best output should feel like the strongest usable asset, not a summary.
 - The CTA should be specific to the niche, platform, and goal.
 - Strong output beats broad coverage. Be concise, but make every sentence useful.
+
+Format Intelligence Rules:
+- Choose the structure that best fits the user's idea instead of forcing every result into the same format.
+- If the idea is about a content calendar, repurposing, weekly plan, or "30 days of content", use a day-by-day or post-by-post sequence.
+- If using a day-by-day or post-by-post sequence, include a specific topic, hook, and CTA for each item when space allows.
+- If the idea is about selling, offers, leads, or clients, prioritize buyer pain points, offer angle, lead magnet, objection handling, and conversion CTA.
+- If the idea is about going viral, prioritize curiosity gaps, contrast, mistakes, myths, surprising numbers, identity tension, and shareable hooks.
+- If the idea is about authority or trust, prioritize frameworks, proof, stories, mistakes, lessons, and repeatable content series.
+- If the idea is about a local business, prioritize local proof, customer problem, booking CTA, neighborhood relevance, and repeat visits.
+- If the idea is about a personal story or transformation, prioritize before/after contrast, emotional stakes, turning point, lesson, and practical takeaway.
+- If the idea is about an educational topic, use a clear teaching structure such as myth/truth, mistake/fix, checklist, framework, or step-by-step tutorial.
+- The chosen format should make the output easier to use, not just more organized.
 `;
 
     const prompt = mode === 'viral_hooks' ? viralHooksPrompt : growthSystemPrompt;
