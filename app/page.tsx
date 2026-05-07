@@ -109,10 +109,22 @@ export default function Home() {
   ];
 
   const examples = [
-    'How I grew my YouTube channel from 0 to 100k subscribers in 8 months',
-    'The exact strategy that took my podcast from 0 to 50k downloads',
-    'I turned one viral TikTok into $8k in affiliate sales — here’s how',
+    'One real estate listing became 30 days of content and a seller lead system',
+    'The exact strategy that took my podcast from 0 to 50k downloads without paid ads',
+    'I turned one viral TikTok into $8k in affiliate sales',
     'My 7-day content calendar that grew my Instagram to 50k followers',
+    'A fitness coach turned three client transformations into a month of sales content',
+    'What a local restaurant should post for 7 days to sell one signature menu item',
+    'Turn one course lesson into hooks, emails, sales posts, and a lead magnet',
+    'A beauty creator product demo broken into 10 viral short-form video ideas',
+    'Make a boring money topic simple enough for TikTok, LinkedIn, and email',
+    'Turn one client win into a LinkedIn post that attracts consulting leads',
+    'One YouTube video idea turned into shorts, posts, emails, and a monetization plan',
+    'A coach answers one client question and turns it into a full week of authority content',
+    'Turn one affiliate product review into content that drives commissions',
+    'A newsletter writer turns one insight into a full content system',
+    'Turn one photography shoot into reels, carousels, captions, and client leads',
+    'What a service business should post from its top 10 customer FAQs',
   ];
 
   const growthLoadingMessages = [
@@ -434,7 +446,12 @@ export default function Home() {
   };
 
   const loadNextExample = () => {
-    const nextIndex = (currentExampleIndex + 1) % examples.length;
+    let nextIndex = Math.floor(Math.random() * examples.length);
+
+    if (examples.length > 1 && nextIndex === currentExampleIndex) {
+      nextIndex = (nextIndex + 1) % examples.length;
+    }
+
     setCurrentExampleIndex(nextIndex);
     setContent(examples[nextIndex]);
   };
