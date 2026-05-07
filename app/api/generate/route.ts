@@ -164,6 +164,15 @@ Quality Rules:
 - If goal is "sales", optimize for buyer pain points, offer clarity, proof, desire, and conversion.
 - Match the selected brand voice.
 - The final result should feel like a practical content plan, not a generic AI brainstorm.
+
+Specificity Framework:
+- Before writing, identify the user's likely niche, audience, desired outcome, and hidden pain point from the content idea.
+- Every generated platform output should include at least one concrete example, scenario, mini-step, or specific talking point.
+- For content calendar or repurposing ideas, include specific day-by-day or post-by-post examples when helpful.
+- For business, sales, or lead-generation ideas, include a concrete lead magnet, CTA, or offer angle tied to the user's exact niche.
+- Avoid generic filler phrases such as "share valuable insights", "highlight your expertise", "connect with your audience", or "showcase your brand" unless followed by a specific example.
+- Prefer concrete examples like "Day 1: listing teaser", "Day 2: seller mistake post", "Day 3: neighborhood walkthrough", "Day 4: open house prep", "Day 5: price strategy breakdown".
+- Make the user feel like the result was created for their exact idea, not copied from a generic marketing template.
 `;
 
     const prompt = mode === 'viral_hooks' ? viralHooksPrompt : growthSystemPrompt;
