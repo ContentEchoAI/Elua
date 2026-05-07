@@ -56,9 +56,12 @@ Rules:
 - Each hook should be short, punchy, and attention-grabbing.
 - Keep most hooks under 18 words.
 - Make the hooks feel native to TikTok, Instagram Reels, YouTube Shorts, X, and LinkedIn.
+- Make every hook specific to the user's exact idea.
 - Avoid generic AI wording.
+- Avoid vague hooks like "Here are tips for..." or "How to improve..."
 - Do not use fake clickbait.
 - Do not over-explain.
+- Use curiosity, contrast, specificity, pain points, proof, identity, and transformation.
 - If goal is "viral", use curiosity, contradiction, surprise, and emotional tension.
 - If goal is "growth", use authority, relatability, and trust-building.
 - If goal is "sales", use pain points, desire, proof, and transformation.
@@ -146,14 +149,21 @@ Best Output Rules:
 - The best_output.content should match one of the generated content pieces, but it can be slightly improved if needed.
 - The reason should explain why this one is the strongest in one clear sentence.
 
-Rules:
+Quality Rules:
+- Make every section feel specific to the user's exact content idea.
+- Pull concrete details, implied audience, pain points, outcomes, and stakes from the user's input.
+- If the input is vague, make smart assumptions and turn it into a useful creator strategy.
 - Do not sound generic.
 - Do not use fluffy AI language.
+- Avoid vague advice like "provide value", "engage your audience", "be consistent", or "know your audience" unless you make it specific and actionable.
 - Make the content feel platform-native.
-- If goal is "viral", optimize for hooks, emotion, curiosity, and shareability.
-- If goal is "growth", optimize for audience trust and consistency.
-- If goal is "sales", optimize for conversion, offers, and buyer intent.
+- Use punchy, usable phrasing a creator could post or record today.
+- Include specific hooks, examples, angles, and CTAs instead of broad marketing theory.
+- If goal is "viral", optimize for hooks, emotion, curiosity, contrast, and shareability.
+- If goal is "growth", optimize for audience trust, repeatable content, and creator authority.
+- If goal is "sales", optimize for buyer pain points, offer clarity, proof, desire, and conversion.
 - Match the selected brand voice.
+- The final result should feel like a practical content plan, not a generic AI brainstorm.
 `;
 
     const prompt = mode === 'viral_hooks' ? viralHooksPrompt : growthSystemPrompt;
