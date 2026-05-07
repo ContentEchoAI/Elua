@@ -566,11 +566,11 @@ export default function Home() {
       ) : !signedIn ? (
         <>
           <p className="mb-1 text-lg font-semibold sm:text-xl">
-            Save and unlock your workspace
+            Create your free Hummingbird workspace
           </p>
           <p className="mb-3 text-sm leading-relaxed text-zinc-600">
-            Create an account after your first result to save generations across
-            devices.
+              Save your best generations, reopen them later, and build a
+              repeatable content system.
           </p>
 
           <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-1">
@@ -582,7 +582,7 @@ export default function Home() {
 
             <SignUpButton mode="modal">
               <button className="w-full rounded-2xl border border-zinc-300 bg-zinc-100 py-3 text-sm font-semibold text-black transition hover:scale-[1.02]">
-                Create Account
+                Create Free Workspace
               </button>
             </SignUpButton>
           </div>
