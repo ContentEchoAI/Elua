@@ -618,8 +618,8 @@ export default function Home() {
                   Founder Plan — $19/mo
                 </p>
                 <p className="mb-3 text-sm leading-relaxed text-zinc-600">
-                  Unlock unlimited growth systems, viral hooks, saved generations,
-                  and creator strategy before pricing increases.
+                    Turn unlimited ideas into growth systems, viral hooks, saved
+                    generations, and creator strategy without hitting free limits.
                 </p>
 
                 <button
