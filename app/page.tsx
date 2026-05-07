@@ -353,7 +353,7 @@ export default function Home() {
         [savedGeneration, ...prev].slice(0, MAX_SAVED)
       );
 
-      setSavedMessage('Saved!');
+      setSavedMessage('Saved to Workspace!');
       setTimeout(() => setSavedMessage(''), 1500);
     } catch (error) {
       console.error('Save generation error:', error);
@@ -842,7 +842,7 @@ export default function Home() {
                   onClick={saveCurrentGeneration}
                   className="rounded-2xl bg-white px-4 py-2.5 text-sm font-semibold text-black transition hover:scale-105"
                 >
-                  {savedMessage || 'Save Result'}
+                  {savedMessage || 'Save to Workspace'}
                 </button>
               )}
             </div>
