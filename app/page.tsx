@@ -99,6 +99,40 @@ export default function Home() {
   const MAX_FREE = 10;
   const MAX_SAVED = 20;
 
+  const formatGeneratedText = (value: unknown, fallback = ''): string => {
+    if (typeof value === 'string') return value;
+    if (typeof value === 'number' || typeof value === 'boolean') {
+      return String(value);
+    }
+    if (Array.isArray(value)) {
+      return value.map((item) => formatGeneratedText(item)).filter(Boolean).join('\n');
+    }
+    if (value && typeof value === 'object') {
+      return Object.values(value)
+        .map((item) => formatGeneratedText(item))
+        .filter(Boolean)
+        .join('\n');
+    }
+
+    return fallback;
+  };
+
+  const formatGeneratedList = (value: unknown): string[] => {
+    if (Array.isArray(value)) {
+      return value.map((item) => formatGeneratedText(item)).filter(Boolean);
+    }
+    if (value && typeof value === 'object') {
+      return Object.values(value)
+        .map((item) => formatGeneratedText(item))
+        .filter(Boolean);
+    }
+    if (typeof value === 'string' && value.trim()) {
+      return [value];
+    }
+
+    return [];
+  };
+
   const voices = [
     { id: 'professional', label: 'Professional' },
     { id: 'casual', label: 'Casual' },
@@ -1012,8 +1046,10 @@ export default function Home() {
                         🎯 Target Audience
                       </h3>
                       <p className="text-zinc-200">
-                        {results.strategy?.target_audience ||
-                          'Creators, entrepreneurs, and online businesses trying to grow.'}
+                        {formatGeneratedText(
+                          results.strategy?.target_audience,
+                          'Creators, entrepreneurs, and online businesses trying to grow.'
+                        )}
                       </p>
                     </div>
 
@@ -1022,8 +1058,10 @@ export default function Home() {
                         🧠 Core Content Angle
                       </h3>
                       <p className="text-zinc-200">
-                        {results.strategy?.core_angle ||
-                          'Position the idea as a practical, high-value system that saves time and creates results.'}
+                        {formatGeneratedText(
+                          results.strategy?.core_angle,
+                          'Position the idea as a practical, high-value system that saves time and creates results.'
+                        )}
                       </p>
                     </div>
 
@@ -1032,7 +1070,7 @@ export default function Home() {
                         🔥 High-Performing Hooks
                       </h3>
                       <div className="space-y-2">
-                        {(results.strategy?.hook_strategies || []).map(
+                        {formatGeneratedList(results.strategy?.hook_strategies).map(
                           (hook, i) => (
                             <p key={i} className="text-zinc-200">
                               • {hook}
@@ -1047,8 +1085,10 @@ export default function Home() {
                         📈 Why This Will Work
                       </h3>
                       <p className="text-zinc-200">
-                        {results.strategy?.why_it_works ||
-                          'This strategy is designed to create curiosity, make the content feel useful immediately, and guide the audience toward action.'}
+                        {formatGeneratedText(
+                          results.strategy?.why_it_works,
+                          'This strategy is designed to create curiosity, make the content feel useful immediately, and guide the audience toward action.'
+                        )}
                       </p>
                     </div>
                   </div>
