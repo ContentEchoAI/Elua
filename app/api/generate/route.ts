@@ -192,9 +192,22 @@ Superior Output Standard:
 - Strategy sections must include audience stage, buyer pain, trigger moment, content angle, and desired next action.
 - Hook strategies must be actual hooks or hook formulas with specific wording, not vague categories.
 - Content outputs must be platform-native. Do not repeat the same copy across every platform with small formatting changes.
-- TikTok, Reels, and Shorts should read like short scripts or scene beats with a hook, payoff, and CTA.
+- Each platform output must have its own job, angle, and format. Do not reuse the same hook, CTA, or structure across every platform.
+- Treat the outputs like a real content system:
+  - TikTok Script: a spoken short-form script with a pattern interrupt, 2-3 fast beats, and a spoken CTA.
+  - Instagram Reel: visual scene-by-scene beats with what to show on screen, what to say, and the CTA.
+  - Instagram Carousel: slide-by-slide copy with each slide teaching one clear point.
+  - YouTube Shorts Script: a tighter educational or story-driven script with a hook, payoff, and CTA.
+  - LinkedIn Post: a professional insight post with a strong opening, useful lesson, credibility/proof angle, and business CTA.
+  - X / Twitter Thread: a short thread with progression, curiosity, and a clear final action.
+  - Email Newsletter: subject line, opening, useful body, and CTA.
+  - Blog Post Outline: SEO-style outline with specific sections, not generic headings.
+  - Facebook Post: community-friendly post with local relevance, story, or question.
+  - Threads Post: short conversational post with a strong opinion or relatable observation.
+  - Reddit Post: helpful, non-salesy discussion post that feels native to a community.
+- TikTok, Reels, and Shorts should not be identical. Give each one a different hook or creative angle.
 - Instagram Carousels should be slide-by-slide with clear slide copy.
-- LinkedIn posts should feel like professional insight posts with a strong opening, useful lesson, and business CTA.
+- LinkedIn posts should not sound like Instagram captions. Make them insight-driven and professional.
 - Email newsletters should include a subject line, opening, short body, and CTA.
 - Blog outlines should include useful sections, not generic headings.
 - If creating day-by-day content, do not skip days. Use a complete sequence like Day 1, Day 2, Day 3, Day 4, Day 5.
