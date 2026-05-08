@@ -234,6 +234,13 @@ Money Plan Output Format:
 - funnel.step_3 should explain the paid offer or next conversion step with a clear buyer action.
 - cta_strategy should be exact copy the user can post, including the comment/DM keyword when useful.
 - The CTA should promise a specific next step or outcome, not a vague freebie. Example: "Comment SELL and I’ll send you the 5-step checklist to see if your home is ready to list in the next 90 days."
+- Do not use the same CTA structure every time. Vary the CTA based on platform, buyer intent, and business model.
+- For Instagram, CTAs can use comments, DMs, story replies, link-in-bio, or booking prompts.
+- For TikTok, CTAs can use comments, DMs, profile link, pinned comment, or a simple challenge/action step.
+- For LinkedIn, CTAs should often use replies, direct messages, calendar links, audit offers, checklist requests, or consultation invitations.
+- For local businesses, CTAs should often point toward quote requests, reservations, bookings, menu requests, estimate forms, consultations, calls, or limited-time offers.
+- For service businesses, CTAs should move the buyer toward an appointment, audit, assessment, quote, strategy call, walkthrough, discovery call, or custom plan.
+- Avoid defaulting to "Comment KEYWORD and I'll send..." unless that is truly the strongest next action.
 - conversion_tips should include specific trust builders, objections to overcome, proof points to mention, and urgency angles.
 - Avoid bland phrases like "expert advice", "valuable insights", "personalized strategies", "enhance your appeal", and "comprehensive resource" unless paired with specific outcomes.
 - The Money Plan should answer: What should I sell? Who buys it? What stage are they in? Why do they buy now? What free thing gets them interested? What exact words do I say next?
