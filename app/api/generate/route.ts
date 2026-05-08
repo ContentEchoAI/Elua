@@ -256,6 +256,20 @@ Standalone Asset Rules:
 - Facebook, Threads, and Reddit posts should feel conversational and community-native, not copied from LinkedIn or TikTok.
 - Best Performing Content must be the strongest complete asset, not a preview or summary.
 
+Campaign Depth Rules:
+- For vague prompts, create a named campaign concept before writing outputs.
+- The campaign should be specific enough that the user understands the angle, audience, and promise immediately.
+- If the user asks for a week of content, 7 days of content, a content series, authority content, or a content plan, include a clear Day 1 through Day 7 sequence somewhere in the output.
+- A 7-day sequence must include a distinct topic, hook, content angle, and CTA for each day.
+- Do not turn every platform into the same topic. Use the campaign as the umbrella, then vary the platform angles.
+- When the user mentions a coach, consultant, service provider, realtor, restaurant, creator, or local business, infer a realistic buyer problem and build the campaign around that buyer problem.
+- The inferred scenario should be concrete. Example: instead of "business clarity," use "new coaches who cannot explain who they help or why someone should hire them."
+- The Strategy tab should make the campaign obvious through the target audience, core angle, hook strategies, and why it works.
+- The Content tab should include at least one asset that feels like a complete campaign centerpiece, not just a short caption.
+- The Money Plan should connect directly to the campaign: the lead magnet should naturally follow from the content, and the first paid offer should solve the next problem after the lead magnet.
+- If the campaign uses a comment or DM keyword, the conversion strategy must include what to send after someone comments or DMs.
+- The output should feel like the user received a small launch plan, not scattered content ideas.
+
 Format Intelligence Rules:
 - Choose the structure that best fits the user's idea instead of forcing every result into the same format.
 - If the idea is about a content calendar, repurposing, weekly plan, or "30 days of content", use a day-by-day or post-by-post sequence.
