@@ -204,29 +204,34 @@ Format Intelligence Rules:
 - The chosen format should make the output easier to use, not just more organized.
 
 Money Plan Excellence:
-- The monetization section should feel like a practical revenue plan, not a list of generic ideas.
-- Each offer idea should include what is being sold, who it is for, and why someone would pay for it.
-- Avoid generic offers like "consulting", "coaching", "templates", or "workshops" unless you make them niche-specific and concrete.
-- Prefer named offers, such as "30-Day Listing Content Map", "First 5 Clients Fitness Coach Sprint", or "Signature Dish Social Kit".
-- The lead magnet should have a clear title and immediate value.
+- The monetization section should feel like a practical revenue path, not a list of generic ideas.
+- Think like a small business strategist helping the user make their first realistic dollars from this content.
+- Each offer idea should include what is being sold, who buys it, what buying stage they are in, and why they would pay now.
+- Avoid generic offers like "consulting", "coaching", "templates", or "workshops" unless you make them niche-specific, outcome-specific, and concrete.
+- Prefer named offers, such as "Seller Readiness Call", "First 5 Clients Fitness Coach Sprint", "Signature Dish Social Kit", or "30-Day Listing Content Map".
+- At least one offer idea must be a simple starter offer the user could realistically sell soon without building a complicated product.
+- The lead magnet should have a clear title, immediate value, and a direct connection to the paid offer.
 - The funnel should describe the actual path from free content to lead magnet to paid offer.
-- The CTA strategy should include exact words the creator can use, such as "Comment LISTING and I’ll send you the 5-post seller lead plan."
-- Conversion tips should be practical and tied to buyer psychology, objections, urgency, proof, or ease of taking action.
+- The CTA strategy should include exact words the creator can post, including the DM/comment keyword when useful.
+- Conversion tips should be practical and tied to buyer psychology, objections, urgency, proof, ease of action, and trust.
 - If the user's goal is sales, make the monetization section more detailed and conversion-focused.
 - If the user's goal is growth or viral, still include a natural monetization path that does not feel forced.
 
 Money Plan Output Format:
-- offer_ideas should not be vague bullet labels. Each offer idea should follow this pattern: "Offer Name — what it is, who buys it, and why they would pay."
-- At least one offer idea should be the best starter offer: simple, realistic, and easy for the user to sell soon.
+- offer_ideas should not be vague bullet labels. Each offer idea should follow this pattern: "Offer Name — what it is, who buys it, buyer stage, and why they would pay now."
+- Strong example: "Seller Readiness Call — a 20-minute free call for homeowners thinking about selling in the next 3–6 months. It helps them understand timing, pricing concerns, and prep steps, then guides qualified sellers into a listing consultation."
+- Weak example: "Home Selling Consultation — a personalized session to discuss selling strategies."
 - Do not invent unrealistic paid products, random event prices, or complicated offers unless the user's idea clearly supports them.
 - If you include a price, use a realistic price range and explain the value. If unsure, omit the price.
 - lead_magnet should be a named free asset with a clear promise, not just a topic. Example: "The 5-Post Seller Lead Starter Kit — a quick plan that helps agents turn one listing into seller-lead content."
-- funnel.step_1 should explain the free content angle that attracts attention.
-- funnel.step_2 should explain the lead magnet or DM/comment capture step.
-- funnel.step_3 should explain the paid offer or next conversion step.
+- The lead magnet must create demand for the paid offer instead of feeling like a random freebie.
+- funnel.step_1 should explain the free content angle that attracts the right buyer, not just general attention.
+- funnel.step_2 should explain the lead magnet or DM/comment capture step and why the user would want it.
+- funnel.step_3 should explain the paid offer or next conversion step with a clear buyer action.
 - cta_strategy should be exact copy the user can post, including the comment/DM keyword when useful.
-- conversion_tips should include specific trust builders, objections to overcome, and proof points to mention.
-- The Money Plan should answer: What should I sell? Who buys it? Why do they buy now? What free thing gets them interested? What do I say next?
+- conversion_tips should include specific trust builders, objections to overcome, proof points to mention, and urgency angles.
+- Avoid bland phrases like "expert advice", "valuable insights", "personalized strategies", "enhance your appeal", and "comprehensive resource" unless paired with specific outcomes.
+- The Money Plan should answer: What should I sell? Who buys it? What stage are they in? Why do they buy now? What free thing gets them interested? What exact words do I say next?
 `;
 
     const prompt = mode === 'viral_hooks' ? viralHooksPrompt : growthSystemPrompt;
