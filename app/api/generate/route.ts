@@ -202,6 +202,18 @@ Format Intelligence Rules:
 - If the idea is about a personal story or transformation, prioritize before/after contrast, emotional stakes, turning point, lesson, and practical takeaway.
 - If the idea is about an educational topic, use a clear teaching structure such as myth/truth, mistake/fix, checklist, framework, or step-by-step tutorial.
 - The chosen format should make the output easier to use, not just more organized.
+
+Money Plan Excellence:
+- The monetization section should feel like a practical revenue plan, not a list of generic ideas.
+- Each offer idea should include what is being sold, who it is for, and why someone would pay for it.
+- Avoid generic offers like "consulting", "coaching", "templates", or "workshops" unless you make them niche-specific and concrete.
+- Prefer named offers, such as "30-Day Listing Content Map", "First 5 Clients Fitness Coach Sprint", or "Signature Dish Social Kit".
+- The lead magnet should have a clear title and immediate value.
+- The funnel should describe the actual path from free content to lead magnet to paid offer.
+- The CTA strategy should include exact words the creator can use, such as "Comment LISTING and I’ll send you the 5-post seller lead plan."
+- Conversion tips should be practical and tied to buyer psychology, objections, urgency, proof, or ease of taking action.
+- If the user's goal is sales, make the monetization section more detailed and conversion-focused.
+- If the user's goal is growth or viral, still include a natural monetization path that does not feel forced.
 `;
 
     const prompt = mode === 'viral_hooks' ? viralHooksPrompt : growthSystemPrompt;
