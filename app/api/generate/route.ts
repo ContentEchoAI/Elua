@@ -229,11 +229,17 @@ Money Plan Output Format:
 - If you include a price, use a realistic price range and explain the value. If unsure, omit the price.
 - lead_magnet should be a named free asset with a clear promise, not just a topic. Example: "The 5-Post Seller Lead Starter Kit — a quick plan that helps agents turn one listing into seller-lead content."
 - The lead magnet must create demand for the paid offer instead of feeling like a random freebie.
+- The lead magnet should be specific enough that the user can imagine creating it today. Include the format, the buyer problem it solves, and how it leads naturally to the paid offer.
+- Avoid generic lead magnet names like "Ultimate Guide", "Checklist", "Free Guide", or "Resource" unless the title includes a specific outcome, audience, and next step.
+- Strong lead magnet examples: "Event Catering Headcount & Menu Planner — a one-page worksheet that helps hosts estimate guest count, serving style, menu needs, and budget before requesting a catering quote." or "90-Day Seller Readiness Checklist — a homeowner prep list that shows what to fix, when to list, and when to book a listing consultation."
 - funnel.step_1 should explain the free content angle that attracts the right buyer, not just general attention.
 - funnel.step_2 should explain the lead magnet or DM/comment capture step and why the user would want it.
 - funnel.step_3 should explain the paid offer or next conversion step with a clear buyer action.
 - cta_strategy should be exact copy the user can post, including the comment/DM keyword when useful.
 - The CTA should promise a specific next step or outcome, not a vague freebie. Example: "Comment SELL and I’ll send you the 5-step checklist to see if your home is ready to list in the next 90 days."
+- The CTA must include: who it is for, the action to take, what they receive, and the next business step when appropriate.
+- Avoid generic hype endings like "make your event unforgettable", "start your journey", "unlock success", "level up", or "transform your business" unless paired with a concrete next step.
+- Strong CTA examples: "Planning an event for 20+ people? DM CATERING and I’ll send you our menu planner plus a quick quote form so you can check package options and availability." or "Thinking about selling in the next 90 days? Comment SELL and I’ll send the readiness checklist, then you can book a free pricing walkthrough."
 - Do not use the same CTA structure every time. Vary the CTA based on platform, buyer intent, and business model.
 - For Instagram, CTAs can use comments, DMs, story replies, link-in-bio, or booking prompts.
 - For TikTok, CTAs can use comments, DMs, profile link, pinned comment, or a simple challenge/action step.
