@@ -223,7 +223,9 @@ Money Plan Output Format:
 - Weak example: "Home Selling Consultation — a personalized session to discuss selling strategies."
 - Do not invent unrealistic paid products, random event prices, or complicated offers unless the user's idea clearly supports them.
 - Match the offer to the user's real business model. If the user needs leads, clients, bookings, listings, consultations, demos, subscribers, or customers, prioritize offers that create those outcomes.
+- For service businesses, local businesses, realtors, coaches, consultants, agencies, creators selling services, or anyone trying to get clients, prioritize offers like audits, evaluations, readiness calls, walkthroughs, quote requests, custom plans, discovery calls, listing consultations, booking incentives, or subscription trials.
 - Avoid low-ticket digital products like generic eBooks, paid PDFs, or random courses when the user's stronger monetization path is service leads, appointments, clients, listings, retainers, subscriptions, or higher-value sales.
+- Do not suggest offers where the buyer has to do the core work themselves if the user makes money by helping, booking, advising, servicing, consulting, listing, selling, installing, designing, or managing.
 - If you include a price, use a realistic price range and explain the value. If unsure, omit the price.
 - lead_magnet should be a named free asset with a clear promise, not just a topic. Example: "The 5-Post Seller Lead Starter Kit — a quick plan that helps agents turn one listing into seller-lead content."
 - The lead magnet must create demand for the paid offer instead of feeling like a random freebie.
@@ -231,6 +233,7 @@ Money Plan Output Format:
 - funnel.step_2 should explain the lead magnet or DM/comment capture step and why the user would want it.
 - funnel.step_3 should explain the paid offer or next conversion step with a clear buyer action.
 - cta_strategy should be exact copy the user can post, including the comment/DM keyword when useful.
+- The CTA should promise a specific next step or outcome, not a vague freebie. Example: "Comment SELL and I’ll send you the 5-step checklist to see if your home is ready to list in the next 90 days."
 - conversion_tips should include specific trust builders, objections to overcome, proof points to mention, and urgency angles.
 - Avoid bland phrases like "expert advice", "valuable insights", "personalized strategies", "enhance your appeal", and "comprehensive resource" unless paired with specific outcomes.
 - The Money Plan should answer: What should I sell? Who buys it? What stage are they in? Why do they buy now? What free thing gets them interested? What exact words do I say next?
