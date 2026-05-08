@@ -1104,14 +1104,14 @@ export default function Home() {
                           ⭐ Best Performing Content
                         </h3>
                         <p className="mb-2 text-sm opacity-80">
-                          {results.best_output.platform}
+                          {formatGeneratedText(results.best_output.platform)}
                         </p>
                         <p className="mb-4 text-sm opacity-90">
-                          {results.best_output.reason}
+                          {formatGeneratedText(results.best_output.reason)}
                         </p>
                         <div className="rounded-xl bg-black/25 p-4">
                           <p className="whitespace-pre-wrap text-sm leading-relaxed">
-                            {results.best_output.content}
+                            {formatGeneratedText(results.best_output.content)}
                           </p>
                         </div>
                       </div>
@@ -1134,7 +1134,9 @@ export default function Home() {
                             </div>
 
                             <button
-                              onClick={() => copyToClipboard(text, platform)}
+                              onClick={() =>
+                                copyToClipboard(formatGeneratedText(text), platform)
+                              }
                               className="rounded-xl bg-zinc-700 px-3 py-1.5 text-xs transition hover:bg-zinc-600"
                             >
                               {copiedItem === platform ? 'Copied!' : 'Copy'}
@@ -1142,7 +1144,7 @@ export default function Home() {
                           </div>
 
                           <p className="whitespace-pre-wrap leading-relaxed text-zinc-200">
-                            {text}
+                            {formatGeneratedText(text)}
                           </p>
                         </div>
                       )
