@@ -75,3 +75,18 @@ https://hummingbird-ai.vercel.app/
 - Wider public launch ready: Not yet
 - Paid traffic ready: Not yet
 - Main next learning goal: find out whether real users understand the app, like the output, and would reuse/save/pay for it.
+
+### Mobile Desktop Preview Test
+
+| Date | Test | Result | Notes |
+|---|---|---|---|
+| 2026-05-08 | Mobile preview layout | Pass | Hero, generator, results, account, and saved workspace appear in usable order |
+| 2026-05-08 | Generate on mobile preview | Pass | Generation worked |
+| 2026-05-08 | Save/reopen on mobile preview | Pass | Saved Workspace appeared and saved item was visible |
+| 2026-05-08 | Money Plan CTA quality | Needs improvement | Conversion Strategy feels repetitive across generations |
+
+### New Output Quality Issue
+
+| Priority | Issue | Evidence | Possible Fix | Status |
+|---|---|---|---|---|
+| High | Conversion Strategy repeats the same comment-keyword pattern too often | Multiple test generations used similar "Comment KEYWORD and I'll send..." structure | Add prompt rules for CTA variation by platform, business model, and buyer action | Not started |
