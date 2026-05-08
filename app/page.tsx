@@ -936,7 +936,7 @@ export default function Home() {
                   </p>
 
                   <p className="mt-3 text-xs text-zinc-500 sm:text-sm">
-                    High-quality generations usually take 20–45 seconds. Keep this
+                    High-quality generations usually take 30–45 seconds. Keep this
                       page open while Hummingbird builds your result.
                   </p>
                 </div>
