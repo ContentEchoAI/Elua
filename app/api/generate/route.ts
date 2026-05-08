@@ -214,6 +214,19 @@ Money Plan Excellence:
 - Conversion tips should be practical and tied to buyer psychology, objections, urgency, proof, or ease of taking action.
 - If the user's goal is sales, make the monetization section more detailed and conversion-focused.
 - If the user's goal is growth or viral, still include a natural monetization path that does not feel forced.
+
+Money Plan Output Format:
+- offer_ideas should not be vague bullet labels. Each offer idea should follow this pattern: "Offer Name — what it is, who buys it, and why they would pay."
+- At least one offer idea should be the best starter offer: simple, realistic, and easy for the user to sell soon.
+- Do not invent unrealistic paid products, random event prices, or complicated offers unless the user's idea clearly supports them.
+- If you include a price, use a realistic price range and explain the value. If unsure, omit the price.
+- lead_magnet should be a named free asset with a clear promise, not just a topic. Example: "The 5-Post Seller Lead Starter Kit — a quick plan that helps agents turn one listing into seller-lead content."
+- funnel.step_1 should explain the free content angle that attracts attention.
+- funnel.step_2 should explain the lead magnet or DM/comment capture step.
+- funnel.step_3 should explain the paid offer or next conversion step.
+- cta_strategy should be exact copy the user can post, including the comment/DM keyword when useful.
+- conversion_tips should include specific trust builders, objections to overcome, and proof points to mention.
+- The Money Plan should answer: What should I sell? Who buys it? Why do they buy now? What free thing gets them interested? What do I say next?
 `;
 
     const prompt = mode === 'viral_hooks' ? viralHooksPrompt : growthSystemPrompt;

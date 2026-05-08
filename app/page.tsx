@@ -1114,18 +1114,33 @@ export default function Home() {
                 activeTab === 'monetization' &&
                 generationMode === 'growth_system' && (
                   <div className="space-y-4">
+                    <div className="rounded-2xl bg-gradient-to-r from-purple-600 to-pink-600 p-5">
+                      <h3 className="mb-2 text-lg font-semibold">
+                        💰 Your Revenue Path
+                      </h3>
+                      <p className="text-sm leading-relaxed opacity-90">
+                        Start with a simple audience-building offer, capture interested leads,
+                        then guide them toward a clear paid next step.
+                      </p>
+                    </div>
+
                     <div className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5">
                       <h3 className="mb-3 font-semibold text-purple-400">
                         💰 Revenue Opportunities
                       </h3>
-                      <div className="space-y-2">
-                        {(results.monetization?.offer_ideas || []).map(
-                          (offer, i) => (
-                            <p key={i} className="text-zinc-200">
-                              • {offer}
+
+                      <div className="space-y-3">
+                        {(results.monetization?.offer_ideas || []).map((offer, i) => (
+                          <div
+                            key={i}
+                            className="rounded-xl border border-zinc-700 bg-zinc-900/70 p-4"
+                          >
+                            <p className="mb-1 text-xs font-medium uppercase tracking-wide text-zinc-500">
+                              Offer #{i + 1}
                             </p>
-                          )
-                        )}
+                            <p className="leading-relaxed text-zinc-200">{offer}</p>
+                          </div>
+                        ))}
                       </div>
                     </div>
 
@@ -1133,20 +1148,72 @@ export default function Home() {
                       <h3 className="mb-3 font-semibold text-purple-400">
                         🧲 Lead Magnet Idea
                       </h3>
-                      <p className="text-zinc-200">
+                      <p className="leading-relaxed text-zinc-200">
                         {results.monetization?.lead_magnet ||
                           'Create a simple checklist, template, or guide related to this content idea.'}
                       </p>
                     </div>
 
                     <div className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5">
+                      <h3 className="mb-4 font-semibold text-purple-400">
+                        🪜 Simple Funnel
+                      </h3>
+
+                      <div className="space-y-3">
+                        <div className="rounded-xl border border-zinc-700 bg-zinc-900/70 p-4">
+                          <p className="mb-1 text-xs font-medium uppercase tracking-wide text-zinc-500">
+                            Step 1 — Attract
+                          </p>
+                          <p className="leading-relaxed text-zinc-200">
+                            {results.monetization?.funnel?.step_1 ||
+                              'Use the strongest content piece to attract the right audience with a clear problem, promise, or result.'}
+                          </p>
+                        </div>
+
+                        <div className="rounded-xl border border-zinc-700 bg-zinc-900/70 p-4">
+                          <p className="mb-1 text-xs font-medium uppercase tracking-wide text-zinc-500">
+                            Step 2 — Capture
+                          </p>
+                          <p className="leading-relaxed text-zinc-200">
+                            {results.monetization?.funnel?.step_2 ||
+                              'Send interested people to the lead magnet so they can take the next step and join your audience.'}
+                          </p>
+                        </div>
+
+                        <div className="rounded-xl border border-zinc-700 bg-zinc-900/70 p-4">
+                          <p className="mb-1 text-xs font-medium uppercase tracking-wide text-zinc-500">
+                            Step 3 — Convert
+                          </p>
+                          <p className="leading-relaxed text-zinc-200">
+                            {results.monetization?.funnel?.step_3 ||
+                              'Follow up with a simple paid offer that directly solves the problem introduced in the content.'}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5">
                       <h3 className="mb-3 font-semibold text-purple-400">
                         ⚡ Conversion Strategy
                       </h3>
-                      <p className="text-zinc-200">
+                      <p className="leading-relaxed text-zinc-200">
                         {results.monetization?.cta_strategy ||
                           'Use a direct CTA that connects the content promise to a clear next step.'}
                       </p>
+                    </div>
+
+                    <div className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5">
+                      <h3 className="mb-3 font-semibold text-purple-400">
+                        🎯 Conversion Tips
+                      </h3>
+
+                      <div className="space-y-2">
+                        {(results.monetization?.conversion_tips || []).map((tip, i) => (
+                          <p key={i} className="leading-relaxed text-zinc-200">
+                            • {tip}
+                          </p>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 )}
