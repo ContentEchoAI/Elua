@@ -233,6 +233,29 @@ Showpiece Output Depth Rules:
 - Avoid vague offers like "coaching package", "consultation", "workshop", or "guide" unless the name, buyer, promise, deliverable, and next step are specific.
 - The output should answer: What exactly should I post? Why will this attract the right person? What should they do next? What do I sell them? Why would they care now?
 
+Output Cleanliness Rules:
+- Never mention or reference internal JSON fields, schema names, tab names, or previous sections.
+- Never write phrases like "as above", "as mentioned", "same as", "as per best_output.content", "refer to", or "see previous".
+- Every field must be complete and standalone because the user may view, copy, or save each section separately.
+- Every platform content item must contain the actual finished copy for that platform, not instructions to reuse another section.
+- If a platform should share the same campaign idea, rewrite it in that platform's native style instead of repeating or referencing another output.
+- Do not output placeholders like "[Insert here]", "[Your business]", "[Client name]", or "[Explain]" unless the user specifically asked for a fill-in template.
+- Avoid generic labels like "valuable insights", "actionable tips", "engaging content", or "business clarity" unless they are attached to a specific example.
+- If the user gives a vague prompt, choose one realistic concrete scenario and build around it consistently.
+- If you infer a scenario, make it useful and specific, but do not claim it is factual.
+- The final JSON must contain polished user-facing text only.
+
+Standalone Asset Rules:
+- Each content platform must feel like a separate useful asset.
+- TikTok, Reels, and Shorts must include a hook, visual/scene idea, payoff, and CTA.
+- Instagram Carousel must include slide-by-slide copy with clear slide text.
+- LinkedIn must include a professional opening, useful insight, proof/example angle, and soft CTA.
+- X / Twitter Thread must include numbered posts with a progression, not one repeated sentence split into parts.
+- Email Newsletter must include a subject line, greeting/opening, useful body, and CTA.
+- Blog Post Outline must include a useful title, sections, and what each section teaches.
+- Facebook, Threads, and Reddit posts should feel conversational and community-native, not copied from LinkedIn or TikTok.
+- Best Performing Content must be the strongest complete asset, not a preview or summary.
+
 Format Intelligence Rules:
 - Choose the structure that best fits the user's idea instead of forcing every result into the same format.
 - If the idea is about a content calendar, repurposing, weekly plan, or "30 days of content", use a day-by-day or post-by-post sequence.
