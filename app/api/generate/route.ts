@@ -222,6 +222,8 @@ Money Plan Output Format:
 - Strong example: "Seller Readiness Call — a 20-minute free call for homeowners thinking about selling in the next 3–6 months. It helps them understand timing, pricing concerns, and prep steps, then guides qualified sellers into a listing consultation."
 - Weak example: "Home Selling Consultation — a personalized session to discuss selling strategies."
 - Do not invent unrealistic paid products, random event prices, or complicated offers unless the user's idea clearly supports them.
+- Match the offer to the user's real business model. If the user needs leads, clients, bookings, listings, consultations, demos, subscribers, or customers, prioritize offers that create those outcomes.
+- Avoid low-ticket digital products like generic eBooks, paid PDFs, or random courses when the user's stronger monetization path is service leads, appointments, clients, listings, retainers, subscriptions, or higher-value sales.
 - If you include a price, use a realistic price range and explain the value. If unsure, omit the price.
 - lead_magnet should be a named free asset with a clear promise, not just a topic. Example: "The 5-Post Seller Lead Starter Kit — a quick plan that helps agents turn one listing into seller-lead content."
 - The lead magnet must create demand for the paid offer instead of feeling like a random freebie.
