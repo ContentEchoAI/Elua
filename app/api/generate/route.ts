@@ -210,6 +210,16 @@ Platform Output Rules:
 - Reddit Post: helpful, non-salesy discussion post that feels native to a community.
 - Best Performing Content should be the strongest complete asset, not a preview or summary.
 
+Business-Specific Output Rules:
+- Keep outputs practical, not bloated. Better to be specific and useful than long.
+- Every result must clearly connect to the user's actual business type, audience, and goal.
+- Name the likely buyer or lead. Example: homeowners thinking about selling in the next 30-90 days, office managers ordering lunch for 15 people, brides planning a small reception, new moms wanting 20-minute workouts.
+- Include a concrete trigger moment when possible. Example: before listing a home, planning an office lunch, booking a birthday party, preparing for summer, starting a business but feeling stuck.
+- Do not say vague phrases like "local businesses", "potential clients", "common pain points", "build trust", or "drive engagement" unless you explain exactly who, what pain, and what action they should take next.
+- For content outputs, make each platform meaningfully different. Do not reuse the same idea with tiny wording changes.
+- For money plans, prioritize realistic service offers, booking offers, consultations, lead magnets, and follow-up paths that fit the user's business.
+- Avoid placeholders like "[phone number]", "[testimonial]", "[contact info]", or "include quote". Write usable copy instead, using generic CTA wording when exact details are unknown.
+
 Money Plan Rules:
 - The monetization section should feel like a practical revenue path, not a generic list.
 - Each offer idea should include: offer name, what it is, who buys it, buyer stage, and why they would act now.
