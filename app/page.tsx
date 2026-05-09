@@ -1198,7 +1198,7 @@ export default function Home() {
 
                     <div className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5">
                       <h3 className="mb-4 font-semibold text-purple-400">
-                        🪜 Simple Funnel
+                        🧭 Simple Funnel
                       </h3>
 
                       <div className="space-y-3">
