@@ -617,7 +617,7 @@ export default function Home() {
       ) : !signedIn ? (
         <>
           <p className="mb-1 text-lg font-semibold sm:text-xl">
-            Create your free Hummingbird workspace
+            Create your Hummingbird workspace
           </p>
           <p className="mb-3 text-sm leading-relaxed text-zinc-600">
               Save your best generations, reopen them later, and build a
@@ -633,7 +633,7 @@ export default function Home() {
 
             <SignUpButton mode="modal">
               <button className="w-full rounded-2xl border border-zinc-300 bg-zinc-100 py-3 text-sm font-semibold text-black transition hover:scale-[1.02]">
-                Create Free Workspace
+                Create Workspace
               </button>
             </SignUpButton>
           </div>
@@ -706,7 +706,7 @@ export default function Home() {
             </h2>
 
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-zinc-400 sm:mt-5 sm:text-lg">
-              Paste your idea below. Hummingbird builds platform-ready content,
+              Enter your idea below. Hummingbird builds platform-ready content,
               growth strategy, and revenue angles in seconds.
             </p>
           </div>
@@ -854,7 +854,7 @@ export default function Home() {
                         : 'bg-gradient-to-r from-purple-600 to-pink-600'
                     }`}
                   >
-                    Create Free Workspace to Generate
+                    Create Workspace to Generate
                   </button>
                 </SignInButton>
               )}
