@@ -77,7 +77,7 @@ export default function Home() {
   const [selectedOutputs, setSelectedOutputs] = useState<string[]>([
     'Instagram Reel',
     'Instagram Carousel',
-    'Money Plan',
+    'LinkedIn Post',
   ]);
   const [results, setResults] = useState<Results | null>(null);
   const [loading, setLoading] = useState(false);
@@ -152,8 +152,8 @@ export default function Home() {
     { id: 'Instagram Carousel', label: 'Instagram Carousel', emoji: '📸' },
     { id: 'TikTok Script', label: 'TikTok Script', emoji: '🎵' },
     { id: 'LinkedIn Post', label: 'LinkedIn Post', emoji: '💼' },
-    { id: 'Email Newsletter', label: 'Email Newsletter', emoji: '✉️' },
-    { id: 'Money Plan', label: 'Money Plan', emoji: '💰' },
+    { id: 'Facebook Post', label: 'Facebook Post', emoji: '📘' },
+    { id: 'YouTube Shorts', label: 'YouTube Shorts', emoji: '▶️' },
   ];
 
   const toggleOutput = (outputId: string) => {
