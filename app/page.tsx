@@ -879,12 +879,12 @@ export default function Home() {
                 <h2 className="text-2xl font-semibold sm:text-3xl">
                   {generationMode === 'viral_hooks'
                     ? 'Your Viral Hook Engine'
-                    : 'Your AI Growth System'}
+                    : 'Your AI Content + Money Plan Workspace'}
                 </h2>
                 <p className="mt-1 text-sm leading-relaxed text-zinc-400 sm:text-lg">
                   {generationMode === 'viral_hooks'
                     ? 'Scroll-stopping hooks designed to earn attention fast.'
-                    : 'Strategy, platform-ready content, and monetization angles.'}
+                    : 'Turn one business goal into platform-ready content, viral hooks, and a simple path to revenue.'}
                 </p>
               </div>
 
