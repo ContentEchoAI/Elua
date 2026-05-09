@@ -1180,7 +1180,7 @@ export default function Home() {
                             <p className="mb-1 text-xs font-medium uppercase tracking-wide text-zinc-500">
                               Offer #{i + 1}
                             </p>
-                            <p className="leading-relaxed text-zinc-200">{offer}</p>
+                            <p className="leading-relaxed text-zinc-200">{formatGeneratedText(offer)}</p>
                           </div>
                         ))}
                       </div>
@@ -1191,8 +1191,10 @@ export default function Home() {
                         🧲 Lead Magnet Idea
                       </h3>
                       <p className="leading-relaxed text-zinc-200">
-                        {results.monetization?.lead_magnet ||
-                          'Create a simple checklist, template, or guide related to this content idea.'}
+                        {formatGeneratedText(
+                          results.monetization?.lead_magnet ||
+                            'Create a simple checklist, template, or guide related to this content idea.'
+                        )}
                       </p>
                     </div>
 
@@ -1207,8 +1209,10 @@ export default function Home() {
                             Step 1 — Attract
                           </p>
                           <p className="leading-relaxed text-zinc-200">
-                            {results.monetization?.funnel?.step_1 ||
-                              'Use the strongest content piece to attract the right audience with a clear problem, promise, or result.'}
+                            {formatGeneratedText(
+                              results.monetization?.funnel?.step_1 ||
+                                'Use the strongest content piece to attract the right audience with a clear problem, promise, or result.'
+                            )}
                           </p>
                         </div>
 
@@ -1217,8 +1221,10 @@ export default function Home() {
                             Step 2 — Capture
                           </p>
                           <p className="leading-relaxed text-zinc-200">
-                            {results.monetization?.funnel?.step_2 ||
-                              'Send interested people to the lead magnet so they can take the next step and join your audience.'}
+                            {formatGeneratedText(
+                              results.monetization?.funnel?.step_2 ||
+                                'Send interested people to the lead magnet so they can take the next step and join your audience.'
+                            )}
                           </p>
                         </div>
 
@@ -1227,8 +1233,10 @@ export default function Home() {
                             Step 3 — Convert
                           </p>
                           <p className="leading-relaxed text-zinc-200">
-                            {results.monetization?.funnel?.step_3 ||
-                              'Follow up with a simple paid offer that directly solves the problem introduced in the content.'}
+                            {formatGeneratedText(
+                              results.monetization?.funnel?.step_3 ||
+                                'Follow up with a simple paid offer that directly solves the problem introduced in the content.'
+                            )}
                           </p>
                         </div>
                       </div>
@@ -1239,8 +1247,10 @@ export default function Home() {
                         ⚡ Conversion Strategy
                       </h3>
                       <p className="leading-relaxed text-zinc-200">
-                        {results.monetization?.cta_strategy ||
-                          'Use a direct CTA that connects the content promise to a clear next step.'}
+                        {formatGeneratedText(
+                          results.monetization?.cta_strategy ||
+                            'Use a direct CTA that connects the content promise to a clear next step.'
+                        )}
                       </p>
                     </div>
 
@@ -1252,7 +1262,7 @@ export default function Home() {
                       <div className="space-y-2">
                         {(results.monetization?.conversion_tips || []).map((tip, i) => (
                           <p key={i} className="leading-relaxed text-zinc-200">
-                            • {tip}
+                            • {formatGeneratedText(tip)}
                           </p>
                         ))}
                       </div>
