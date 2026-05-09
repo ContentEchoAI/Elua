@@ -74,6 +74,11 @@ export default function Home() {
 
   const [content, setContent] = useState('');
   const [selectedVoice, setSelectedVoice] = useState('professional');
+  const [selectedOutputs, setSelectedOutputs] = useState<string[]>([
+    'Instagram Reel',
+    'Instagram Carousel',
+    'Money Plan',
+  ]);
   const [results, setResults] = useState<Results | null>(null);
   const [loading, setLoading] = useState(false);
   const [loadingStep, setLoadingStep] = useState(0);
@@ -141,6 +146,27 @@ export default function Home() {
     { id: 'witty', label: 'Witty' },
     { id: 'storytelling', label: 'Storytelling' },
   ];
+
+  const outputOptions = [
+    { id: 'Instagram Reel', label: 'Instagram Reel', emoji: '🎬' },
+    { id: 'Instagram Carousel', label: 'Instagram Carousel', emoji: '📸' },
+    { id: 'TikTok Script', label: 'TikTok Script', emoji: '🎵' },
+    { id: 'LinkedIn Post', label: 'LinkedIn Post', emoji: '💼' },
+    { id: 'Email Newsletter', label: 'Email Newsletter', emoji: '✉️' },
+    { id: 'Money Plan', label: 'Money Plan', emoji: '💰' },
+  ];
+
+  const toggleOutput = (outputId: string) => {
+    setSelectedOutputs((current) => {
+      if (current.includes(outputId)) {
+        return current.length === 1
+          ? current
+          : current.filter((item) => item !== outputId);
+      }
+
+      return [...current, outputId];
+    });
+  };
 
   const examples = [
     'One real estate listing became 30 days of content and a seller lead system',
@@ -826,6 +852,41 @@ export default function Home() {
                 </div>
               </div>
 
+              {generationMode === 'growth_system' && (
+                <div className="mb-4">
+                  <div className="mb-2 flex items-center justify-between gap-3">
+                    <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
+                      Choose Outputs
+                    </p>
+                    <p className="text-[11px] text-zinc-500">
+                      Pick only what you need
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                    {outputOptions.map((output) => {
+                      const selected = selectedOutputs.includes(output.id);
+
+                      return (
+                        <button
+                          key={output.id}
+                          onClick={() => toggleOutput(output.id)}
+                          type="button"
+                          className={`rounded-2xl border px-3 py-2.5 text-left text-xs transition sm:text-sm ${
+                            selected
+                              ? 'border-purple-500 bg-purple-600/20 text-white shadow-lg shadow-purple-950/20'
+                              : 'border-zinc-700 bg-zinc-800 text-zinc-300 hover:border-zinc-600 hover:bg-zinc-700'
+                          }`}
+                        >
+                          <span className="mr-1.5">{output.emoji}</span>
+                          {output.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
               {signedIn ? (
                 <button
                   onClick={generateContent}
@@ -1117,8 +1178,9 @@ export default function Home() {
                       </div>
                     )}
 
-                    {Object.entries(results.content || {}).map(
-                      ([platform, text]) => (
+                    {Object.entries(results.content || {})
+                      .filter(([platform]) => selectedOutputs.includes(platform))
+                      .map(([platform, text]) => (
                         <div
                           key={platform}
                           className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5"
