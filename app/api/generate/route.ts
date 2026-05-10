@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
   try {
-    const { content, selectedVoice, goal, generationMode } = await req.json();
+    const { content, selectedVoice, goal, generationMode, selectedOutputs } =
+      await req.json();
 
     if (!content || !content.trim()) {
       return NextResponse.json(
@@ -21,6 +22,33 @@ export async function POST(req: Request) {
     }
 
     const mode = generationMode || 'growth_system';
+
+    const allowedContentOutputs = [
+      'Instagram Reel',
+      'Instagram Carousel',
+      'TikTok Script',
+      'LinkedIn Post',
+      'Facebook Post',
+      'YouTube Shorts Script',
+    ];
+
+    const requestedContentOutputs =
+      Array.isArray(selectedOutputs) && selectedOutputs.length > 0
+        ? selectedOutputs.filter((output) =>
+            allowedContentOutputs.includes(output)
+          )
+        : ['Instagram Reel', 'Instagram Carousel', 'LinkedIn Post'];
+
+    const finalContentOutputs =
+      requestedContentOutputs.length > 0
+        ? requestedContentOutputs
+        : ['Instagram Reel', 'Instagram Carousel', 'LinkedIn Post'];
+
+    const contentJsonShape = finalContentOutputs
+      .map((output) => `    "${output}": ""`)
+      .join(',\n');
+
+    const selectedOutputList = finalContentOutputs.join(', ');
 
     const viralHooksPrompt = `
 You are Hummingbird AI, an elite viral hook strategist for creators.
@@ -102,17 +130,7 @@ The JSON must follow this exact structure:
     "content": ""
   },
   "content": {
-    "TikTok Script": "",
-    "Instagram Reel": "",
-    "Instagram Carousel": "",
-    "YouTube Shorts Script": "",
-    "LinkedIn Post": "",
-    "X / Twitter Thread": "",
-    "Email Newsletter": "",
-    "Blog Post Outline": "",
-    "Facebook Post": "",
-    "Threads Post": "",
-    "Reddit Post": ""
+${contentJsonShape}
   },
   "monetization": {
     "offer_ideas": ["", "", ""],
@@ -127,16 +145,20 @@ The JSON must follow this exact structure:
   }
 }
 
+Selected Content Outputs:
+- Only generate these content outputs: ${selectedOutputList}
+- Do not generate any other platform content keys.
+- Put extra effort into making the selected outputs specific, complete, and ready to use.
+- The content object must include exactly the selected content output keys and no others.
+
 Output length rules:
-- Keep each platform output useful but concise.
+- Keep each selected platform output useful but concise.
 - TikTok Script: 45-75 seconds.
 - Instagram Reel: 45-75 seconds.
+- Instagram Carousel: 5-7 useful slides.
 - YouTube Shorts Script: 45-75 seconds.
 - LinkedIn Post: under 1,200 characters.
-- X / Twitter Thread: 5-7 short tweets.
-- Email Newsletter: short newsletter format, not a long essay.
-- Blog Post Outline: outline only, not a full blog post.
-- Facebook, Threads, Reddit: concise and platform-native.
+- Facebook Post: concise, community-friendly, and lead-focused.
 - Strategy fields should be direct and specific.
 - Monetization should be practical and short.
 
@@ -151,8 +173,8 @@ Best Output Rules:
 
 Showpiece Priority Rules:
 - The result should feel like a focused client-ready mini plan, not a pile of generic posts.
-- Prioritize making the Strategy, Best Performing Content, Instagram Reel, LinkedIn Post, and Money Plan excellent.
-- It is better to make 4-5 outputs highly useful than to make every platform long and generic.
+- Prioritize making the Strategy, Best Performing Content, selected content outputs, and Money Plan excellent.
+- It is better to make the selected outputs highly useful than to make every platform long and generic.
 - Each content output must include a specific buyer, a specific problem, a clear next action, and copy the user could actually post.
 - Avoid unsupported claims like "significantly boost value", "market statistics", "homes are selling faster", "record prices", or "recent sales" unless the user provided those facts.
 - For real estate, use safe phrasing: "understand your home's current value", "prepare before listing", "avoid common seller mistakes", "know what buyers notice", and "get a simple selling plan".
@@ -253,7 +275,7 @@ Final Quality Check:
           },
         ],
         temperature: mode === 'viral_hooks' ? 0.75 : 0.65,
-        max_tokens: mode === 'viral_hooks' ? 1800 : 3800,
+        max_tokens: mode === 'viral_hooks' ? 1800 : 3200,
         response_format: { type: 'json_object' },
       }),
     });
@@ -279,6 +301,31 @@ Final Quality Check:
     }
 
     const parsed = JSON.parse(messageContent);
+
+    if (mode === 'growth_system') {
+      const normalizedContent: Record<string, string> = {};
+
+      finalContentOutputs.forEach((output) => {
+        const generatedValue = parsed?.content?.[output];
+
+        normalizedContent[output] =
+          typeof generatedValue === 'string' && generatedValue.trim()
+            ? generatedValue
+            : `Hummingbird could not generate ${output} in this run. Please regenerate or choose fewer outputs.`;
+      });
+
+      parsed.content = normalizedContent;
+
+      if (
+        parsed.best_output?.platform &&
+        !finalContentOutputs.includes(parsed.best_output.platform)
+      ) {
+        parsed.best_output.platform = finalContentOutputs[0];
+        parsed.best_output.content = normalizedContent[finalContentOutputs[0]];
+        parsed.best_output.reason =
+          'This selected output is the strongest fit for the current goal.';
+      }
+    }
 
     return NextResponse.json(parsed);
   } catch (error) {

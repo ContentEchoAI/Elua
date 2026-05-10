@@ -153,7 +153,7 @@ export default function Home() {
     { id: 'TikTok Script', label: 'TikTok Script', emoji: '🎵' },
     { id: 'LinkedIn Post', label: 'LinkedIn Post', emoji: '💼' },
     { id: 'Facebook Post', label: 'Facebook Post', emoji: '📘' },
-    { id: 'YouTube Shorts', label: 'YouTube Shorts', emoji: '▶️' },
+    { id: 'YouTube Shorts Script', label: 'YouTube Shorts', emoji: '▶️' },
   ];
 
   const toggleOutput = (outputId: string) => {
@@ -354,7 +354,13 @@ export default function Home() {
       const res = await fetch('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content, selectedVoice, goal, generationMode }),
+        body: JSON.stringify({
+          content,
+          selectedVoice,
+          goal,
+          generationMode,
+          selectedOutputs,
+        }),
       });
 
       const data = await res.json();
@@ -1178,9 +1184,10 @@ export default function Home() {
                       </div>
                     )}
 
-                    {Object.entries(results.content || {})
-                      .filter(([platform]) => selectedOutputs.includes(platform))
-                      .map(([platform, text]) => (
+                    {selectedOutputs.map((platform) => {
+                      const text = results.content?.[platform];
+
+                      return (
                         <div
                           key={platform}
                           className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5"
@@ -1209,8 +1216,8 @@ export default function Home() {
                             {formatGeneratedText(text)}
                           </p>
                         </div>
-                      )
-                    )}
+                      );
+                    })}
                   </div>
                 )}
 
