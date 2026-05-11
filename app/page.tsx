@@ -74,11 +74,7 @@ export default function Home() {
 
   const [content, setContent] = useState('');
   const [selectedVoice, setSelectedVoice] = useState('professional');
-  const [selectedOutputs, setSelectedOutputs] = useState<string[]>([
-    'Instagram Reel',
-    'Instagram Carousel',
-    'LinkedIn Post',
-  ]);
+  const [selectedOutputs, setSelectedOutputs] = useState<string[]>([]);
   const [results, setResults] = useState<Results | null>(null);
   const [loading, setLoading] = useState(false);
   const [loadingStep, setLoadingStep] = useState(0);
@@ -159,9 +155,7 @@ export default function Home() {
   const toggleOutput = (outputId: string) => {
     setSelectedOutputs((current) => {
       if (current.includes(outputId)) {
-        return current.length === 1
-          ? current
-          : current.filter((item) => item !== outputId);
+        return current.filter((item) => item !== outputId);
       }
 
       return [...current, outputId];
@@ -332,6 +326,11 @@ export default function Home() {
 
     if (!content.trim()) {
       alert('Please enter a content idea first.');
+      return;
+    }
+
+    if (generationMode === 'growth_system' && selectedOutputs.length === 0) {
+      alert('Please select at least one platform.');
       return;
     }
 
@@ -862,7 +861,7 @@ export default function Home() {
                 <div className="mb-4">
                   <div className="mb-2">
                     <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
-                      Platforms
+                      Select Platforms
                     </p>
                   </div>
 
@@ -1162,25 +1161,6 @@ export default function Home() {
                 activeTab === 'content' &&
                 generationMode === 'growth_system' && (
                   <div className="space-y-4">
-                    {results.best_output && (
-                      <div className="rounded-2xl bg-gradient-to-r from-purple-600 to-pink-600 p-5">
-                        <h3 className="mb-2 text-lg font-semibold">
-                          ⭐ Best Performing Content
-                        </h3>
-                        <p className="mb-2 text-sm opacity-80">
-                          {formatGeneratedText(results.best_output.platform)}
-                        </p>
-                        <p className="mb-4 text-sm opacity-90">
-                          {formatGeneratedText(results.best_output.reason)}
-                        </p>
-                        <div className="rounded-xl bg-black/25 p-4">
-                          <p className="whitespace-pre-wrap text-sm leading-relaxed">
-                            {formatGeneratedText(results.best_output.content)}
-                          </p>
-                        </div>
-                      </div>
-                    )}
-
                     {selectedOutputs.map((platform) => {
                       const text = results.content?.[platform];
 
@@ -1191,9 +1171,25 @@ export default function Home() {
                         >
                           <div className="mb-4 flex items-start justify-between gap-4">
                             <div>
-                              <h3 className="font-semibold text-purple-400">
-                                🚀 {platform}
-                              </h3>
+                              <div className="flex flex-wrap items-center gap-2">
+                                <h3 className="font-semibold text-purple-400">
+                                  🚀 {platform}
+                                </h3>
+
+                                {results.best_output?.platform === platform && (
+                                  <span className="rounded-full bg-purple-600/20 px-2 py-0.5 text-[11px] font-semibold text-purple-300">
+                                    ⭐ Best Pick
+                                  </span>
+                                )}
+                              </div>
+
+                              {results.best_output?.platform === platform &&
+                                results.best_output.reason && (
+                                  <p className="mt-1 text-xs text-zinc-400">
+                                    {formatGeneratedText(results.best_output.reason)}
+                                  </p>
+                                )}
+
                               <p className="mt-1 text-xs text-zinc-500">
                                 Optimized for platform-native performance
                               </p>
