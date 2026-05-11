@@ -860,12 +860,9 @@ export default function Home() {
 
               {generationMode === 'growth_system' && (
                 <div className="mb-4">
-                  <div className="mb-2 flex items-center justify-between gap-3">
+                  <div className="mb-2">
                     <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
-                      Choose Outputs
-                    </p>
-                    <p className="text-[11px] text-zinc-500">
-                      Pick only what you need
+                      Platforms
                     </p>
                   </div>
 
