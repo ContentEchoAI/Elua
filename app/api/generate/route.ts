@@ -1,5 +1,69 @@
 import { NextResponse } from 'next/server';
 
+type GeneratedResponse = {
+  mode?: string;
+  strategy?: {
+    target_audience?: string;
+    core_angle?: string;
+    content_goal?: string;
+    hook_strategies?: string[];
+    emotional_triggers?: string[];
+    content_style?: string;
+    why_it_works?: string;
+    best_platform?: string;
+  };
+  best_output?: {
+    platform?: string;
+    reason?: string;
+    content?: string;
+  };
+  content?: Record<string, string>;
+  monetization?: {
+    offer_ideas?: string[];
+    lead_magnet?: string;
+    funnel?: {
+      step_1?: string;
+      step_2?: string;
+      step_3?: string;
+    };
+    cta_strategy?: string;
+    conversion_tips?: string[];
+  };
+};
+
+function normalizeKey(value: string) {
+  return value.toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
+function findGeneratedOutput(
+  content: Record<string, string> | undefined,
+  requestedOutput: string
+) {
+  if (!content) {
+    return '';
+  }
+
+  const exactValue = content[requestedOutput];
+
+  if (typeof exactValue === 'string' && exactValue.trim()) {
+    return exactValue;
+  }
+
+  const requestedKey = normalizeKey(requestedOutput);
+
+  for (const [key, value] of Object.entries(content)) {
+    if (
+      normalizeKey(key) === requestedKey &&
+      typeof value === 'string' &&
+      value.trim()
+    ) {
+      return value;
+    }
+  }
+
+  return '';
+}
+
 export async function POST(req: Request) {
   try {
     const { content, selectedVoice, goal, generationMode, selectedOutputs } =
@@ -50,27 +114,19 @@ export async function POST(req: Request) {
 
     const selectedOutputList = finalContentOutputs.join(', ');
 
-    const selectedOutputContract = finalContentOutputs
-      .map(
-        (output) =>
-          `- ${output}: must be a complete, ready-to-use platform asset with a clear CTA.`
-      )
-      .join('\n');
-
     const viralHooksPrompt = `
-You are Hummingbird AI, an elite viral hook strategist for creators.
+You are Hummingbird AI's Master Hook Writer.
 
-Your job is to turn one content idea into 10 scroll-stopping hooks.
+The user gives one business/content idea. Your job is to create 10 strong hooks that help them get attention without fake claims.
 
 USER INPUT:
 Content idea: ${content}
 Goal: ${goal}
 Brand voice: ${selectedVoice}
 
-Return ONLY valid JSON. Do not include markdown. Do not include explanations outside the JSON.
+Return ONLY valid JSON. Do not include markdown or explanation outside JSON.
 
-The JSON must follow this exact structure:
-
+JSON shape:
 {
   "mode": "viral_hooks",
   "best_hook": {
@@ -87,33 +143,47 @@ The JSON must follow this exact structure:
 }
 
 Rules:
-- Return exactly 10 hooks inside the hooks array.
-- Each hook should be short, punchy, and attention-grabbing.
-- Keep most hooks under 18 words.
-- Make the hooks feel native to TikTok, Instagram Reels, YouTube Shorts, X, and LinkedIn.
-- Make every hook specific to the user's exact idea.
-- Avoid generic AI wording.
+- Return exactly 10 hooks.
+- Hooks should be short, specific, and scroll-stopping.
 - Avoid vague hooks like "Here are tips for..." or "How to improve..."
-- Do not use fake clickbait.
-- Do not over-explain.
-- Use curiosity, contrast, specificity, pain points, proof, identity, and transformation.
-- If goal is "viral", use curiosity, contradiction, surprise, and emotional tension.
-- If goal is "growth", use authority, relatability, and trust-building.
-- If goal is "sales", use pain points, desire, proof, and transformation.
-- Match the selected brand voice.
-- best_hook should be the strongest hook from the list.
-- best_hook.reason should explain in one short sentence why it is strongest.
+- Do not invent numbers, results, proof, income, testimonials, or guarantees.
+- Match the user's selected goal and brand voice.
+- best_hook must be one of the 10 hooks.
 `;
 
     const growthSystemPrompt = `
-You are Hummingbird AI, an elite creator growth strategist.
+You are Hummingbird AI, a business-growth workspace.
 
-Your job is to turn one content idea into a complete but concise creator growth system.
+The user's core problem is:
+"What should I post, and how does this help me make money?"
+
+Think like three experts working together:
+
+1. MASTER STRATEGIST
+- Decide the specific audience.
+- Identify the buyer moment.
+- Choose one core content angle.
+- Choose one clear CTA.
+- Choose the safe money path.
+- Identify what claims must be avoided.
+
+2. MASTER CONTENT CREATOR
+- Write only the selected platform assets.
+- Make every platform output ready to use.
+- Keep the selected outputs connected as one mini-campaign.
+- Use the same audience, angle, CTA, and money path.
+
+3. MASTER MONEY PLAN WIZARD
+- Turn the content into a simple revenue path.
+- Suggest realistic offers.
+- Create a lead magnet that connects to the paid next step.
+- Give a simple funnel and practical conversion tips.
 
 USER INPUT:
 Content idea: ${content}
 Goal: ${goal}
 Brand voice: ${selectedVoice}
+Selected platforms: ${selectedOutputList}
 
 Return ONLY valid JSON. Do not include markdown. Do not include explanations outside the JSON.
 
@@ -152,132 +222,109 @@ ${contentJsonShape}
   }
 }
 
-Selected Content Outputs:
-- Only generate these content outputs: ${selectedOutputList}
-- Do not generate any other platform content keys.
-- The content object must include exactly the selected content output keys and no others.
-- Every selected output is mandatory. Never skip a selected output.
-- Do not return empty strings for selected outputs.
+Selected platform rules:
+- Generate ONLY these content keys: ${selectedOutputList}
+- The content object must include exactly those selected keys and no others.
+- Every selected output is mandatory.
+- Never return empty strings for selected outputs.
 - Do not summarize selected outputs. Write the actual content asset.
-- Treat selected outputs as the user's chosen business channels.
-- Each selected output must connect to the same audience, CTA, and lead/sales path.
-- Do not create disconnected posts. The selected content should feel like one coordinated mini-campaign.
+- best_output.platform must exactly match one selected platform key.
+- best_output.content must contain the full strongest selected content asset.
 
-Mandatory selected output checklist:
-${selectedOutputContract}
+Platform writing rules:
+- Instagram Reel: scene-by-scene filming plan with visual, spoken line, on-screen text, and CTA.
+- Instagram Carousel: 5-7 slides with exact slide text and a CTA slide. Do not use image placeholders.
+- TikTok Script: spoken script with hook, 2-3 fast points, payoff, and CTA.
+- YouTube Shorts Script: tight spoken short-form script with hook, useful payoff, and CTA.
+- LinkedIn Post: professional post with strong opening, useful insight, practical example, and soft CTA.
+- Facebook Post: community-friendly post that feels natural, useful, and lead-focused.
 
-Output length rules:
-- Keep each selected platform output useful but concise.
-- TikTok Script: 45-75 seconds.
-- Instagram Reel: 45-75 seconds.
-- Instagram Carousel: 5-7 useful slides.
-- YouTube Shorts Script: 45-75 seconds.
-- LinkedIn Post: under 1,200 characters.
-- Facebook Post: concise, community-friendly, and lead-focused.
-- Strategy fields should be direct and specific.
-- Monetization should be practical and short.
+Strict trust and safety rules:
+- Never invent names.
+- Never invent statistics.
+- Never invent testimonials.
+- Never invent quotes.
+- Never invent before-and-after numbers.
+- Never invent timelines.
+- Never invent income, revenue, health, legal, or financial claims.
+- Never invent client results.
+- Never invent market claims.
+- Never invent guarantees.
+- Never use fake urgency or fake scarcity.
+- Never use square-bracket placeholders like [insert link], [client name], [image], or [testimonial].
+- If the user says they have client transformations, case studies, testimonials, or proof but does not provide the exact details, refer to them generally.
+- Safe proof language: "three real client transformations", "what changed for these clients", "the pattern behind the results", "the first step they took", "what helped them stay consistent".
+- CRITICAL: If proof details are missing, write about the content strategy or lesson framework, not the proof itself.
+- For vague transformation prompts, do not create separate transformation stories.
+- Do not write "Transformation 1", "Transformation 2", "Transformation 3", "our first client", "our second client", "our last client", "client story", "success story", "testimonial", or "before-and-after" unless the user gave those exact details.
+- Do not say what changed for a client unless the user provided the exact change.
+- Do not say coaching caused the result unless the user provided that fact.
+- Do not say "results", "achievable results", "incredible results", "healthy habits", "confidence", "strength", "weight loss", "energy", "consistency was key", or "accountability made the difference" as client outcomes unless the user provided those exact facts.
+- Better approach for vague proof prompts: create content that says, "Here are the 3 questions I ask before turning a client win into content," or "Here is how to turn client progress into a month of ethical sales content."
+- If the user mentions transformations but gives no exact details, DO NOT describe what happened in the transformations.
+- Do not write "Client 1", "Client 2", "Client 3", "before photo", "after photo", "lost weight", "gained strength", "improved confidence", "3 months", "8 weeks", "results", or "success stories" unless the user provided those exact facts.
+- For transformation prompts without details, make the content about the lesson, pattern, process, questions, mistakes, or first step behind transformations — not the transformation details themselves.
+- Do not create fake people like Sarah, Jake, Emily, Alex, Lisa, or John.
+- Do not create fake results like "lost 15 pounds", "made $8k", "in 30 days", or "doubled sales" unless the user provided that fact.
 
-Best Output Rules:
-- Select the single strongest content piece from the generated content.
-- Choose the one most likely to perform based on the user's goal.
-- If goal is "viral", choose the most shareable and hook-driven piece.
-- If goal is "growth", choose the piece most likely to build trust and audience loyalty.
-- If goal is "sales", choose the piece most likely to convert readers into buyers or leads.
-- best_output.platform must match one of the selected content output keys exactly.
-- best_output.content must never be empty.
-- best_output.content should include the full strongest selected content asset, not a summary or preview.
-- The reason should explain why this one is the strongest in one clear sentence.
+Campaign angle rules:
+- Choose one fresh campaign angle based on the user's prompt before writing the content.
+- Do not output the campaign angle label by itself as the core_angle.
+- Rewrite the campaign angle into a polished, specific core_angle sentence.
+- Do not default to the same angle, CTA, or lead magnet every time.
+- The campaign angle should make the result feel specific and useful, not generic.
+- Choose from angles like:
+  1. Before/after lesson
+  2. Mistakes to avoid
+  3. Behind-the-scenes process
+  4. Myth vs truth
+  5. Pattern breakdown
+  6. Readiness checklist
+  7. One small first step
+  8. Objection handling
+  9. Common questions
+  10. What to do next
+- The CTA must match the chosen campaign angle.
+- The lead magnet must match the CTA.
+- The Money Plan must match the same campaign angle.
 
-Showpiece Priority Rules:
-- The result should feel like a focused client-ready mini plan, not a pile of generic posts.
-- Prioritize making the Strategy, Best Performing Content, selected content outputs, and Money Plan excellent.
-- It is better to make the selected outputs highly useful than to make every platform long and generic.
-- Each content output must include a specific buyer, a specific problem, a clear next action, and copy the user could actually post.
-- Avoid unsupported claims like "significantly boost value", "market statistics", "homes are selling faster", "record prices", or "recent sales" unless the user provided those facts.
-- For real estate, use safe phrasing: "understand your home's current value", "prepare before listing", "avoid common seller mistakes", "know what buyers notice", and "get a simple selling plan".
-- For service businesses, focus on leads, consultations, bookings, repeat orders, and simple follow-up steps.
-- Do not create filler outputs just to fill the JSON. If a section is less important, keep it short and useful.
-- No fake success stories. No fake client results. No fake statistics. No fake urgency.
-- The user should feel: "I could copy this, post it, and know what to do next."
+Quality rules:
+- Be specific, but stay truthful.
+- If the user prompt is vague, choose a realistic concrete scenario, but do not invent proof.
+- The result should feel like a focused client-ready mini plan.
+- The content should help the user start a real business conversation.
+- The CTA should be specific and believable.
+- Good CTAs include: comment a keyword, DM a keyword, request a checklist, book a call, request a quote, ask for an assessment, or join a list.
+- Avoid generic phrases like "boost engagement", "drive sales", "valuable insights", "contact me today", "learn more", and "get started" unless the next action is specific.
+- Avoid using "free assessment" as the default CTA unless it is clearly the strongest fit.
+- The Money Plan must connect directly to the content CTA.
 
-Quality Rules:
-- Hummingbird AI should feel like a premium content strategist and monetization partner, not a generic AI brainstorm.
-- Every result must be specific, useful, trustworthy, and ready to use.
-- The user should feel: "This understands my business and gave me something I can actually post, save, or sell with."
+Business rules:
+- For realtors, focus on homeowner questions, seller prep, home value curiosity, avoiding common seller mistakes, listing readiness, downsizing, inherited homes, and seller consultations.
+- For real estate, do not claim hot market, best time, peak season, quick sale, profitable sale, guaranteed value increase, or market trends unless the user provided that fact.
+- For fitness coaches, focus on buyer situations, accountability, habits, consistency, beginner plans, coaching calls, assessments, and safe transformation language.
+- For restaurants and caterers, focus on catering inquiries, event orders, office lunches, party trays, quote requests, menus, and repeat orders.
+- For coaches and consultants, focus on audits, starter sessions, discovery calls, clarity offers, assessments, and repeatable trust-building content.
+- For service businesses, prioritize leads, bookings, calls, quotes, consultations, assessments, custom plans, and repeat customers.
 
-Core Output Standard:
-- First, infer the user's likely business type, audience, buyer pain, and business goal from the prompt.
-- If the prompt is vague, choose one realistic concrete scenario and build the entire result around it.
-- Do not stay broad. Replace vague ideas with real buyer moments, specific content angles, and clear next actions.
-- Never use placeholders such as [Restaurant Name], [phone number], [testimonial], [insert link], [local area], or any text inside square brackets.
-- Never invent statistics, market claims, percentages, prices, client results, testimonials, legal claims, financial claims, or performance claims unless the user provides them.
-- Use safe phrasing instead of fake facts: "many homeowners wonder", "buyers often notice", "event planners care about", "a useful next step is", or "this helps start a sales conversation."
-- Avoid generic phrases unless made specific: build trust, drive engagement, create awareness, valuable insights, contact us today, learn more, DM for details, limited-time offer, exceptional service, unique dishes.
-- Keep the output concise enough to scan but specific enough to use.
-
-Strategy Rules:
-- target_audience must name a specific buyer or audience stage.
-- core_angle must explain the real pain, trigger moment, and content promise.
-- hook_strategies must be actual hook examples or hook formulas with specific wording.
-- why_it_works must explain why the content moves the audience toward the user's goal.
-
-Platform Content Rules:
-- Each platform output must be a complete standalone asset.
-- Do not repeat the same copy across platforms with tiny wording changes.
-- TikTok Script: spoken short-form script with hook, 2-3 fast beats, payoff, and CTA.
-- Instagram Reel: visual scene-by-scene idea with what to show, what to say, and CTA.
-- Instagram Carousel: slide-by-slide copy with clear slide text.
-- YouTube Shorts Script: tight educational or story-driven script with hook, payoff, and CTA.
-- LinkedIn Post: professional insight post with strong opening, useful lesson, proof/example angle, and soft CTA.
-- X / Twitter Thread: numbered posts with progression and a clear final action.
-- Email Newsletter: subject line, opening, useful body, and CTA.
-- Blog Post Outline: useful title, sections, and what each section teaches.
-- Facebook Post: community-friendly post with story, relevance, or question.
-- Threads Post: short conversational post with a strong opinion or relatable observation.
-- Reddit Post: helpful, non-salesy discussion post that feels native to a community.
-- Best Performing Content must be the strongest complete asset, not a preview or summary.
-
-Lead Generation Workspace Rules:
-- Treat Hummingbird AI as a lead-generation workspace, not a generic content generator.
-- Every Growth System result should answer: who is this attracting, what problem are we solving, what action should they take, and what paid opportunity does it create?
-- The best content should make the target buyer feel seen, understood, and motivated to take a next step.
-- Prioritize outputs that create leads: comments, DMs, quote requests, consultations, assessments, calls, bookings, email signups, and saved lead magnets.
-- Content should not just sound good. It should help the user start a real business conversation.
-- Avoid vague audience-building unless it clearly connects to a future sale, booking, consultation, subscription, or repeat customer.
-- Make the CTA specific and believable. Example: “Comment SELL and I’ll send you the seller prep checklist” is better than “contact me today.”
-- The money plan should feel like the natural next step after the content, not a separate brainstorm.
-
-Business-Specific Rules:
-- For realtors, focus on homeowners thinking about selling, home value curiosity, seller prep, inherited properties, downsizing, pricing concerns, and listing consultations.
-- For restaurants/caterers, focus on office lunches, party trays, birthday parties, small receptions, local event planners, catering menus, quote requests, and repeat orders.
-- For coaches/consultants, focus on buyer clarity, first offer, client objections, discovery calls, audits, starter sessions, and repeatable content that earns trust.
-- For fitness coaches, focus on specific buyer situations like busy parents, beginners, wedding prep, post-vacation reset, accountability, and simple plans.
-- For service businesses, prioritize leads, bookings, calls, quotes, consultations, audits, assessments, custom plans, and repeat customers.
-
-Offer Quality Rules:
-- Avoid weak generic offer names like "Home Valuation Consultation", "Seller Preparation Package", or "Strategy Session" unless they are made specific and packaged.
+Offer rules:
 - Offer names should feel like real named products or services.
-- Better examples: "Summer Seller Readiness Review", "Pre-Listing Prep Walkthrough", "Home Value Clarity Call", "Seller Mistake Audit", "Catering Quote Builder", "7-Day Fitness Reset Plan".
-- Each offer should explain the buyer moment: why this person would want it now.
-- Never suggest webinars, courses, or PDFs when the more realistic business path is a consultation, quote, booking, assessment, call, or paid service.
-- Keep urgency safe and practical. Do not create fake scarcity.
-- Do not claim something is the best, peak, prime, hottest, or most profitable time to act unless the user provided that fact.
-- Do not tell users to share testimonials, success stories, or client results unless the user said they have them. Instead suggest proof they can safely gather, such as FAQs, before/after prep examples, checklists, common buyer questions, or process photos.
+- Avoid weak generic names unless made specific.
+- Each offer idea must include: offer name, what it is, who buys it, buyer stage, and why they would want it.
+- At least one offer should be a simple starter offer the user could realistically sell soon.
+- Do not suggest random PDFs, courses, or webinars when the stronger path is leads, bookings, calls, quotes, consultations, or services.
+- The lead magnet should be free, useful, named, and connected to the paid next step.
+- conversion_tips should be practical follow-up actions, not vague advice.
+- conversion_tips should focus on follow-up messages, qualifying questions, booking links, simple next steps, and collecting permission/proof details when needed.
 
-Money Plan Rules:
-- The monetization section must feel like a practical revenue path, not a list of random ideas.
-- Each offer idea should include: offer name, what it is, who buys it, buyer stage, and why they would act now.
-- At least one offer must be a simple starter offer the user could realistically sell soon.
-- Match the user's business model. Do not suggest random low-ticket eBooks or PDFs when the stronger path is leads, bookings, clients, listings, retainers, subscriptions, or higher-value sales.
-- The lead magnet must be a named free asset with a clear promise, format, buyer problem, and direct connection to the paid offer.
-- The funnel must explain the path from content to lead magnet to paid offer.
-- cta_strategy must include exact copy the user can use and what happens after someone replies when useful.
-- conversion_tips must include specific trust builders, objections to overcome, proof points, urgency angles, and ease-of-action improvements.
+Final silent check before returning:
+- Is every selected platform included?
+- Are all outputs usable?
+- Are there any fake names, numbers, testimonials, results, or claims? If yes, remove them.
+- Does the Money Plan connect to the CTA?
+- Would a real small business owner understand what to post and what to do next?
 
-Final Quality Check:
-- Before returning JSON, silently check: Is this specific to the user's business? Is it safe and credible? Can the user copy or save it? Does it move toward leads, sales, growth, or retention?
-- Return ONLY polished user-facing JSON. No markdown. No explanations outside JSON.
-
+Return ONLY polished JSON.
 `;
 
     const prompt = mode === 'viral_hooks' ? viralHooksPrompt : growthSystemPrompt;
@@ -294,14 +341,14 @@ Final Quality Check:
           {
             role: 'system',
             content:
-              'You are a world-class creator strategist, copywriter, and monetization expert. Always return valid JSON only.',
+              'You are Hummingbird AI, a focused business-growth strategist, content creator, and monetization planner. Always return valid JSON only.',
           },
           {
             role: 'user',
             content: prompt,
           },
         ],
-        temperature: mode === 'viral_hooks' ? 0.75 : 0.65,
+        temperature: mode === 'viral_hooks' ? 0.75 : 0.62,
         max_tokens: mode === 'viral_hooks' ? 1800 : 4200,
         response_format: { type: 'json_object' },
       }),
@@ -327,13 +374,13 @@ Final Quality Check:
       );
     }
 
-    const parsed = JSON.parse(messageContent);
+    const parsed = JSON.parse(messageContent) as GeneratedResponse;
 
     if (mode === 'growth_system') {
       const normalizedContent: Record<string, string> = {};
 
       finalContentOutputs.forEach((output) => {
-        const generatedValue = parsed?.content?.[output];
+        const generatedValue = findGeneratedOutput(parsed.content, output);
 
         normalizedContent[output] =
           typeof generatedValue === 'string' && generatedValue.trim()
@@ -364,6 +411,8 @@ Final Quality Check:
             : 'This selected output is the strongest fit for the current goal.',
         content: currentBestContent,
       };
+
+      parsed.mode = 'growth_system';
     }
 
     return NextResponse.json(parsed);
