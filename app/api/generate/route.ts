@@ -50,6 +50,13 @@ export async function POST(req: Request) {
 
     const selectedOutputList = finalContentOutputs.join(', ');
 
+    const selectedOutputContract = finalContentOutputs
+      .map(
+        (output) =>
+          `- ${output}: must be a complete, ready-to-use platform asset with a clear CTA.`
+      )
+      .join('\n');
+
     const viralHooksPrompt = `
 You are Hummingbird AI, an elite viral hook strategist for creators.
 
@@ -148,8 +155,16 @@ ${contentJsonShape}
 Selected Content Outputs:
 - Only generate these content outputs: ${selectedOutputList}
 - Do not generate any other platform content keys.
-- Put extra effort into making the selected outputs specific, complete, and ready to use.
 - The content object must include exactly the selected content output keys and no others.
+- Every selected output is mandatory. Never skip a selected output.
+- Do not return empty strings for selected outputs.
+- Do not summarize selected outputs. Write the actual content asset.
+- Treat selected outputs as the user's chosen business channels.
+- Each selected output must connect to the same audience, CTA, and lead/sales path.
+- Do not create disconnected posts. The selected content should feel like one coordinated mini-campaign.
+
+Mandatory selected output checklist:
+${selectedOutputContract}
 
 Output length rules:
 - Keep each selected platform output useful but concise.
@@ -168,7 +183,9 @@ Best Output Rules:
 - If goal is "viral", choose the most shareable and hook-driven piece.
 - If goal is "growth", choose the piece most likely to build trust and audience loyalty.
 - If goal is "sales", choose the piece most likely to convert readers into buyers or leads.
-- The best_output.content should match one of the generated content pieces, but it can be slightly improved if needed.
+- best_output.platform must match one of the selected content output keys exactly.
+- best_output.content must never be empty.
+- best_output.content should include the full strongest selected content asset, not a summary or preview.
 - The reason should explain why this one is the strongest in one clear sentence.
 
 Showpiece Priority Rules:
@@ -237,6 +254,16 @@ Business-Specific Rules:
 - For fitness coaches, focus on specific buyer situations like busy parents, beginners, wedding prep, post-vacation reset, accountability, and simple plans.
 - For service businesses, prioritize leads, bookings, calls, quotes, consultations, audits, assessments, custom plans, and repeat customers.
 
+Offer Quality Rules:
+- Avoid weak generic offer names like "Home Valuation Consultation", "Seller Preparation Package", or "Strategy Session" unless they are made specific and packaged.
+- Offer names should feel like real named products or services.
+- Better examples: "Summer Seller Readiness Review", "Pre-Listing Prep Walkthrough", "Home Value Clarity Call", "Seller Mistake Audit", "Catering Quote Builder", "7-Day Fitness Reset Plan".
+- Each offer should explain the buyer moment: why this person would want it now.
+- Never suggest webinars, courses, or PDFs when the more realistic business path is a consultation, quote, booking, assessment, call, or paid service.
+- Keep urgency safe and practical. Do not create fake scarcity.
+- Do not claim something is the best, peak, prime, hottest, or most profitable time to act unless the user provided that fact.
+- Do not tell users to share testimonials, success stories, or client results unless the user said they have them. Instead suggest proof they can safely gather, such as FAQs, before/after prep examples, checklists, common buyer questions, or process photos.
+
 Money Plan Rules:
 - The monetization section must feel like a practical revenue path, not a list of random ideas.
 - Each offer idea should include: offer name, what it is, who buys it, buyer stage, and why they would act now.
@@ -275,7 +302,7 @@ Final Quality Check:
           },
         ],
         temperature: mode === 'viral_hooks' ? 0.75 : 0.65,
-        max_tokens: mode === 'viral_hooks' ? 1800 : 3200,
+        max_tokens: mode === 'viral_hooks' ? 1800 : 4200,
         response_format: { type: 'json_object' },
       }),
     });
@@ -316,15 +343,27 @@ Final Quality Check:
 
       parsed.content = normalizedContent;
 
-      if (
-        parsed.best_output?.platform &&
-        !finalContentOutputs.includes(parsed.best_output.platform)
-      ) {
-        parsed.best_output.platform = finalContentOutputs[0];
-        parsed.best_output.content = normalizedContent[finalContentOutputs[0]];
-        parsed.best_output.reason =
-          'This selected output is the strongest fit for the current goal.';
-      }
+      const currentBestPlatform =
+        typeof parsed.best_output?.platform === 'string' &&
+        finalContentOutputs.includes(parsed.best_output.platform)
+          ? parsed.best_output.platform
+          : finalContentOutputs[0];
+
+      const currentBestContent =
+        typeof parsed.best_output?.content === 'string' &&
+        parsed.best_output.content.trim()
+          ? parsed.best_output.content
+          : normalizedContent[currentBestPlatform];
+
+      parsed.best_output = {
+        platform: currentBestPlatform,
+        reason:
+          typeof parsed.best_output?.reason === 'string' &&
+          parsed.best_output.reason.trim()
+            ? parsed.best_output.reason
+            : 'This selected output is the strongest fit for the current goal.',
+        content: currentBestContent,
+      };
     }
 
     return NextResponse.json(parsed);
