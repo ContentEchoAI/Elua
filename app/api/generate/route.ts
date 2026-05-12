@@ -347,6 +347,9 @@ Offer rules:
 - Offer names should feel like real named products or services.
 - Each offer idea must include: offer name, what it is, who buys it, buyer stage, and why they would want it.
 - At least one offer should be a simple starter offer the user could realistically sell soon.
+- The paid offers must sell the user's actual business, not the topic of the content.
+- If the user is a fitness coach, the paid offers should be fitness coaching, assessments, starter plans, accountability programs, personal training, nutrition coaching, or check-in packages — not content consulting, ethical content creation, marketing services, or creator education.
+- If the content angle is about how to share proof, client wins, testimonials, or transformations ethically, the lead magnet can teach that process, but the paid next step must still lead back to the user's real service.
 - Do not suggest random PDFs, courses, webinars, landing pages, email sequences, discounts, or limited-time offers unless the user clearly asked for them.
 - For service businesses, prefer leads, bookings, calls, quotes, consultations, audits, assessments, starter sessions, and simple packages.
 - The lead magnet should be free, useful, named, and connected to the paid next step.
