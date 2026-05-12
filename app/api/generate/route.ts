@@ -360,6 +360,9 @@ Offer rules:
 - In funnel.step_3, do not ask whether the lead wants content help unless the user's actual business sells content help.
 - For a fitness coach, funnel.step_3 should ask a fitness-related qualifying question and invite the lead to a fitness coaching next step.
 - Example for a fitness coach: After they request the checklist, ask what fitness goal they are working toward, what is keeping them stuck, and invite serious replies to a Fitness Transformation Assessment or starter coaching call.
+- The conversion_strategy must sell the user's actual business offer, not the lead magnet topic.
+- For a fitness coach, conversion_strategy should invite people into a fitness assessment, starter coaching call, transformation plan, accountability check-in, personal training package, or nutrition coaching next step.
+- For a fitness coach, do not write conversion_strategy copy like “the checklist I use before turning client wins into sales content” because that makes the paid offer sound like content/marketing help instead of fitness coaching.
 - conversion_tips should be practical follow-up actions, not vague advice.
 
 Money Plan output standard:
