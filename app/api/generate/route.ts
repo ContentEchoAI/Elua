@@ -386,8 +386,8 @@ Money Plan output standard:
 Good Money Plan style:
 - Step 1: Post the Instagram Carousel about the 3 questions to ask before sharing a client transformation.
 - Step 2: End with: "Comment START and I’ll send you the ethical client-win checklist."
-- Step 3: When someone replies, send the checklist and ask: "Are you trying to turn your own progress into content, or are you looking for coaching help?"
-- CTA Strategy: "Comment START and I’ll send you the checklist I use before turning client wins into sales content."
+- Step 3: When someone replies, send the checklist and ask: "What fitness goal are you working toward right now, and what feels hardest to stay consistent with?"
+- CTA Strategy: "Comment START and I’ll send you the checklist. After that, I’ll ask one question about your fitness goal and point you to the right first coaching step."
 - Conversion Tip: "After sending the checklist, ask one qualifying question and invite serious replies to a short first-step call."
 
 Final silent check:
