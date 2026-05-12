@@ -330,7 +330,13 @@ Trust rules:
 Quality rules:
 - The output should feel like something a real business owner could use today.
 - Avoid generic phrases like "boost engagement", "drive sales", "valuable insights", "learn more", and "contact me today."
-- Make the CTA specific, such as DM a keyword, comment a keyword, request a checklist, book a call, ask for a quote, request an assessment, join a list, or reply with a question.
+- Also avoid filler phrases like "thought-provoking question", "surprising fact", "relatable scenario", "authenticity is key", "resonate with your audience", "builds trust", "share tips", "provide value", "take your business to the next level", and "unlock your potential."
+- Replace generic language with specific wording tied to the user's business, buyer problem, objection, offer, platform, and next action.
+- Do not say a hook is strong; write the strong hook.
+- Do not say a post should be relatable; write the actual relatable angle.
+- Do not say the content should build trust; show the trust-building proof process, checklist, question, or next step.
+- Use concrete nouns and verbs. Prefer "comment START for the ethical client-win checklist" over "engage with this post."
+- Make every CTA copy-paste-ready and specific, such as DM a keyword, comment a keyword, request a checklist, book a call, ask for a quote, request an assessment, join a list, or reply with a question.
 - Make the lead magnet match the CTA.
 - Make the Money Plan match the same campaign angle.
 - If the user's idea is vague, choose a realistic business scenario, but do not invent proof.
