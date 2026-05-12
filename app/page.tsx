@@ -43,9 +43,17 @@ type StructuredReelScene = {
   on_screen_text?: string;
 };
 
+type StructuredCarouselSlide = {
+  slide_number?: number;
+  text?: string;
+};
+
 type StructuredContent = {
   'Instagram Reel'?: {
     scenes?: StructuredReelScene[];
+  };
+  'Instagram Carousel'?: {
+    slides?: StructuredCarouselSlide[];
   };
 };
 
@@ -1187,6 +1195,14 @@ export default function Home() {
                                 formatGeneratedText(scene.on_screen_text).trim()
                             )
                           : undefined;
+                      const carouselSlides =
+                        platform === 'Instagram Carousel'
+                          ? results.structured_content?.[
+                              'Instagram Carousel'
+                            ]?.slides?.filter((slide) =>
+                              formatGeneratedText(slide.text).trim()
+                            )
+                          : undefined;
 
                       return (
                         <div
@@ -1272,6 +1288,22 @@ export default function Home() {
                                       </p>
                                     </div>
                                   )}
+                                </div>
+                              ))}
+                            </div>
+                          ) : carouselSlides && carouselSlides.length > 0 ? (
+                            <div className="space-y-3 text-zinc-200">
+                              {carouselSlides.map((slide, index) => (
+                                <div
+                                  key={index}
+                                  className="rounded-xl border border-zinc-700/70 bg-zinc-900/40 p-3 text-sm leading-relaxed"
+                                >
+                                  <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-purple-300">
+                                    Slide {slide.slide_number || index + 1}
+                                  </p>
+                                  <p className="whitespace-pre-wrap text-zinc-200">
+                                    {formatGeneratedText(slide.text)}
+                                  </p>
                                 </div>
                               ))}
                             </div>

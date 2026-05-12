@@ -6,9 +6,17 @@ type StructuredReelScene = {
   on_screen_text?: string;
 };
 
+type StructuredCarouselSlide = {
+  slide_number?: number;
+  text?: string;
+};
+
 type StructuredContent = {
   'Instagram Reel'?: {
     scenes?: StructuredReelScene[];
+  };
+  'Instagram Carousel'?: {
+    slides?: StructuredCarouselSlide[];
   };
 };
 
@@ -93,6 +101,45 @@ function normalizeStructuredReel(value: unknown) {
   return scenes.length > 0 ? { scenes } : undefined;
 }
 
+function normalizeStructuredCarousel(value: unknown) {
+  if (!value || typeof value !== 'object') {
+    return undefined;
+  }
+
+  const maybeCarousel = value as { slides?: unknown };
+
+  if (!Array.isArray(maybeCarousel.slides)) {
+    return undefined;
+  }
+
+  const slides = maybeCarousel.slides
+    .map((slide, index) => {
+      if (!slide || typeof slide !== 'object') {
+        return null;
+      }
+
+      const slideRecord = slide as Record<string, unknown>;
+      const slideNumber =
+        typeof slideRecord.slide_number === 'number'
+          ? slideRecord.slide_number
+          : index + 1;
+      const slideText =
+        typeof slideRecord.text === 'string' ? slideRecord.text.trim() : '';
+
+      if (!slideText) {
+        return null;
+      }
+
+      return {
+        slide_number: slideNumber,
+        text: slideText,
+      };
+    })
+    .filter((slide): slide is StructuredCarouselSlide => Boolean(slide));
+
+  return slides.length > 0 ? { slides } : undefined;
+}
+
 function findGeneratedOutput(
   content: Record<string, string> | undefined,
   requestedOutput: string
@@ -170,11 +217,10 @@ export async function POST(req: Request) {
       .map((output) => `    "${output}": ""`)
       .join(',\n');
 
-    const structuredContentJsonShape = finalContentOutputs.includes(
-      'Instagram Reel'
-    )
-      ? `{
-    "Instagram Reel": {
+    const structuredContentEntries: string[] = [];
+
+    if (finalContentOutputs.includes('Instagram Reel')) {
+      structuredContentEntries.push(`    "Instagram Reel": {
       "scenes": [
         {
           "visual": "",
@@ -182,9 +228,26 @@ export async function POST(req: Request) {
           "on_screen_text": ""
         }
       ]
+    }`);
     }
+
+    if (finalContentOutputs.includes('Instagram Carousel')) {
+      structuredContentEntries.push(`    "Instagram Carousel": {
+      "slides": [
+        {
+          "slide_number": 1,
+          "text": ""
+        }
+      ]
+    }`);
+    }
+
+    const structuredContentJsonShape =
+      structuredContentEntries.length > 0
+        ? `{
+${structuredContentEntries.join(',\n')}
   }`
-      : '{}';
+        : '{}';
 
     const selectedOutputList = finalContentOutputs.join(', ');
 
@@ -315,7 +378,9 @@ Structured content rules:
 - structured_content is optional display data for the frontend. It does not replace content.
 - If Instagram Reel is selected, structured_content["Instagram Reel"].scenes must include 5-7 scene objects.
 - Each Instagram Reel scene object must include visual, spoken_line, and on_screen_text.
-- If Instagram Reel is not selected, structured_content must be an empty object.
+- If Instagram Carousel is selected, structured_content["Instagram Carousel"].slides must include 6-8 slide objects.
+- Each Instagram Carousel slide object must include slide_number and text.
+- If neither Instagram Reel nor Instagram Carousel is selected, structured_content must be an empty object.
 
 Campaign route rules:
 Before writing, silently choose ONE campaign route that best fits the user's idea.
@@ -563,6 +628,16 @@ Final silent check:
 
         if (structuredReel) {
           normalizedStructuredContent['Instagram Reel'] = structuredReel;
+        }
+      }
+
+      if (finalContentOutputs.includes('Instagram Carousel')) {
+        const structuredCarousel = normalizeStructuredCarousel(
+          parsed.structured_content?.['Instagram Carousel']
+        );
+
+        if (structuredCarousel) {
+          normalizedStructuredContent['Instagram Carousel'] = structuredCarousel;
         }
       }
 
