@@ -353,6 +353,10 @@ Offer rules:
 - Do not suggest random PDFs, courses, webinars, landing pages, email sequences, discounts, or limited-time offers unless the user clearly asked for them.
 - For service businesses, prefer leads, bookings, calls, quotes, consultations, audits, assessments, starter sessions, and simple packages.
 - The lead magnet should be free, useful, named, and connected to the paid next step.
+- The funnel must connect the lead magnet to the user's real paid offer.
+- If the lead magnet teaches content, proof, testimonials, client wins, or ethical sharing, the convert step must still invite the audience into the user's real business offer.
+- For a fitness coach, the final step should be a fitness assessment, starter plan, coaching session, accountability program, personal training package, nutrition coaching offer, or transformation package.
+- Do not leave the funnel ending at content education, creator education, or marketing advice.
 - conversion_tips should be practical follow-up actions, not vague advice.
 
 Money Plan output standard:
