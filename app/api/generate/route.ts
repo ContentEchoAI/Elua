@@ -267,6 +267,12 @@ Platform writing rules:
 - Every selected platform output must feel native to that platform, not like the same idea rewritten with a different label.
 - Do not make all selected outputs repeat the same opening line, CTA sentence, or structure.
 - Use the chosen campaign route, but adapt it differently for each platform.
+- Write the actual post/script/carousel copy, not advice about what the post should say.
+- Every output must include at least one specific buyer problem, objection, mistake, decision point, or next step.
+- Avoid lesson-summary endings like "building trust is key" or "interested in learning more." End with a concrete action.
+- Make the content feel like it came from a sharp operator inside the user's business, not a generic social media template.
+- Prefer specific lines like "Before I post a client win, I check these 3 things" over broad lines like "Here are 3 tips for sharing transformations."
+- If the user asks for sales content, the content must naturally lead to a lead, reply, booking, quote, assessment, or paid next step.
 
 Instagram Reel rules:
 - Write a scene-by-scene filming plan.
