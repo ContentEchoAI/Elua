@@ -357,6 +357,9 @@ Offer rules:
 - If the lead magnet teaches content, proof, testimonials, client wins, or ethical sharing, the convert step must still invite the audience into the user's real business offer.
 - For a fitness coach, the final step should be a fitness assessment, starter plan, coaching session, accountability program, personal training package, nutrition coaching offer, or transformation package.
 - Do not leave the funnel ending at content education, creator education, or marketing advice.
+- In funnel.step_3, do not ask whether the lead wants content help unless the user's actual business sells content help.
+- For a fitness coach, funnel.step_3 should ask a fitness-related qualifying question and invite the lead to a fitness coaching next step.
+- Example for a fitness coach: After they request the checklist, ask what fitness goal they are working toward, what is keeping them stuck, and invite serious replies to a Fitness Transformation Assessment or starter coaching call.
 - conversion_tips should be practical follow-up actions, not vague advice.
 
 Money Plan output standard:
