@@ -473,6 +473,8 @@ Trust rules:
 - Never invent names, numbers, testimonials, quotes, income, timelines, health results, client outcomes, guarantees, urgency, scarcity, discounts, or market claims.
 - Never invent weight loss, muscle gain, confidence, plateaus, before/after results, dream body outcomes, improved energy, revenue, bookings, or client success details unless the user provided those exact facts.
 - If the user says not to make up details, follow that instruction above everything else.
+- If the user says not to make up client details, or if exact proof details are missing, conversion_tips must not suggest using testimonials, success stories, client proof, before/after stories, transformations, or results unless the user already has permission and exact details.
+- When proof details are missing, conversion_tips should suggest safe follow-up actions: ask one qualifying question, send the checklist, invite a first-step call, ask what goal they are working toward, ask what feels hardest to stay consistent with, or request permission/details before using any proof.
 - If the user mentions transformations, testimonials, case studies, proof, or client wins but does not provide exact details, DO NOT describe what happened to the clients.
 - Do not write “Client 1,” “Client 2,” “Client 3,” fake stories, fake outcomes, fake lessons from those outcomes, or fake testimonials unless the user provided those details.
 - Instead, create content around the safe framework: questions to ask, ethical content process, what to collect before posting, how to turn proof into content, checklist, first-step plan, or next action.
