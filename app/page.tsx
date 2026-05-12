@@ -1205,9 +1205,21 @@ export default function Home() {
                             </button>
                           </div>
 
-                          <p className="whitespace-pre-wrap leading-relaxed text-zinc-200">
-                            {formatGeneratedText(text)}
-                          </p>
+                          <div className="space-y-3 text-zinc-200">
+                            {formatGeneratedText(text)
+                              .replace(/\s+(?=Scene \d+:|Slide \d+:|\d+\. Slide|Hook:|Point \d+:|Payoff:|CTA:)/g, '\n\n')
+                              .split(/\n{2,}/g)
+                              .map((section) => section.trim())
+                              .filter(Boolean)
+                              .map((section, index) => (
+                                <p
+                                  key={index}
+                                  className="whitespace-pre-wrap rounded-xl border border-zinc-700/70 bg-zinc-900/40 p-3 text-sm leading-relaxed"
+                                >
+                                  {section}
+                                </p>
+                              ))}
+                          </div>
                         </div>
                       );
                     })}
