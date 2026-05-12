@@ -96,7 +96,7 @@ function normalizeStructuredReel(value: unknown) {
         on_screen_text,
       };
     })
-    .filter((scene): scene is StructuredReelScene => Boolean(scene));
+    .filter(Boolean) as StructuredReelScene[];
 
   return scenes.length > 0 ? { scenes } : undefined;
 }
@@ -135,7 +135,7 @@ function normalizeStructuredCarousel(value: unknown) {
         text: slideText,
       };
     })
-    .filter((slide): slide is StructuredCarouselSlide => Boolean(slide));
+    .filter(Boolean) as StructuredCarouselSlide[];
 
   return slides.length > 0 ? { slides } : undefined;
 }
