@@ -366,6 +366,10 @@ Offer rules:
 - For a fitness coach, conversion_strategy must speak to the audience as potential fitness clients, not as creators. It should ask about their fitness goal, biggest obstacle, consistency/accountability needs, or readiness for coaching.
 - For a fitness coach, if the lead magnet is about ethical client wins, the CTA should still transition to fitness coaching. Example: “Comment START and I’ll send you the checklist, then I’ll ask one question about your fitness goal so I can point you to the right first step.”
 - Do not use phrases like “turn your own progress into content,” “content help,” “creator education,” or “sales content” in the funnel or conversion strategy unless the user's business sells content or marketing services.
+- The Money Plan must never let the content topic become the paid offer.
+- The lead magnet may be related to the content topic, but funnel.step_3 and conversion_strategy must move the lead toward the user's real paid service.
+- For a fitness coach using an ethical client-win checklist, funnel.step_3 should NOT ask if the lead wants to turn progress into content. It should ask what fitness goal they want help with and invite them to a fitness assessment, starter plan, coaching call, or accountability program.
+- For a fitness coach, conversion_strategy should sound like: “Comment START and I’ll send the checklist. After that, I’ll ask one question about your fitness goal and point you to the right first coaching step.”
 - conversion_tips should be practical follow-up actions, not vague advice.
 
 Money Plan output standard:
