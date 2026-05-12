@@ -1,5 +1,17 @@
 import { NextResponse } from 'next/server';
 
+type StructuredReelScene = {
+  visual?: string;
+  spoken_line?: string;
+  on_screen_text?: string;
+};
+
+type StructuredContent = {
+  'Instagram Reel'?: {
+    scenes?: StructuredReelScene[];
+  };
+};
+
 type GeneratedResponse = {
   mode?: string;
   strategy?: {
@@ -18,6 +30,7 @@ type GeneratedResponse = {
     content?: string;
   };
   content?: Record<string, string>;
+  structured_content?: StructuredContent;
   monetization?: {
     offer_ideas?: string[];
     lead_magnet?: string;
@@ -33,6 +46,51 @@ type GeneratedResponse = {
 
 function normalizeKey(value: string) {
   return value.toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
+function normalizeStructuredReel(value: unknown) {
+  if (!value || typeof value !== 'object') {
+    return undefined;
+  }
+
+  const maybeReel = value as { scenes?: unknown };
+
+  if (!Array.isArray(maybeReel.scenes)) {
+    return undefined;
+  }
+
+  const scenes = maybeReel.scenes
+    .map((scene) => {
+      if (!scene || typeof scene !== 'object') {
+        return null;
+      }
+
+      const sceneRecord = scene as Record<string, unknown>;
+
+      const visual =
+        typeof sceneRecord.visual === 'string' ? sceneRecord.visual.trim() : '';
+      const spoken_line =
+        typeof sceneRecord.spoken_line === 'string'
+          ? sceneRecord.spoken_line.trim()
+          : '';
+      const on_screen_text =
+        typeof sceneRecord.on_screen_text === 'string'
+          ? sceneRecord.on_screen_text.trim()
+          : '';
+
+      if (!visual && !spoken_line && !on_screen_text) {
+        return null;
+      }
+
+      return {
+        visual,
+        spoken_line,
+        on_screen_text,
+      };
+    })
+    .filter((scene): scene is StructuredReelScene => Boolean(scene));
+
+  return scenes.length > 0 ? { scenes } : undefined;
 }
 
 function findGeneratedOutput(
@@ -111,6 +169,22 @@ export async function POST(req: Request) {
     const contentJsonShape = finalContentOutputs
       .map((output) => `    "${output}": ""`)
       .join(',\n');
+
+    const structuredContentJsonShape = finalContentOutputs.includes(
+      'Instagram Reel'
+    )
+      ? `{
+    "Instagram Reel": {
+      "scenes": [
+        {
+          "visual": "",
+          "spoken_line": "",
+          "on_screen_text": ""
+        }
+      ]
+    }
+  }`
+      : '{}';
 
     const selectedOutputList = finalContentOutputs.join(', ');
 
@@ -213,6 +287,7 @@ The JSON must follow this exact structure:
   "content": {
 ${contentJsonShape}
   },
+  "structured_content": ${structuredContentJsonShape},
   "monetization": {
     "offer_ideas": ["", "", ""],
     "lead_magnet": "",
@@ -234,6 +309,13 @@ Selected platform rules:
 - Do not summarize selected outputs. Write the actual content asset.
 - best_output.platform must exactly match one selected platform key.
 - best_output.content must contain the full strongest selected content asset.
+
+Structured content rules:
+- The content object must still contain the full copy-ready string for every selected platform.
+- structured_content is optional display data for the frontend. It does not replace content.
+- If Instagram Reel is selected, structured_content["Instagram Reel"].scenes must include 5-7 scene objects.
+- Each Instagram Reel scene object must include visual, spoken_line, and on_screen_text.
+- If Instagram Reel is not selected, structured_content must be an empty object.
 
 Campaign route rules:
 Before writing, silently choose ONE campaign route that best fits the user's idea.
@@ -471,6 +553,20 @@ Final silent check:
       });
 
       parsed.content = normalizedContent;
+
+      const normalizedStructuredContent: StructuredContent = {};
+
+      if (finalContentOutputs.includes('Instagram Reel')) {
+        const structuredReel = normalizeStructuredReel(
+          parsed.structured_content?.['Instagram Reel']
+        );
+
+        if (structuredReel) {
+          normalizedStructuredContent['Instagram Reel'] = structuredReel;
+        }
+      }
+
+      parsed.structured_content = normalizedStructuredContent;
 
       const currentBestPlatform =
         typeof parsed.best_output?.platform === 'string' &&

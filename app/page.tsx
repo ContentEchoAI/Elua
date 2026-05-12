@@ -37,6 +37,18 @@ type BestOutput = {
   content?: string;
 };
 
+type StructuredReelScene = {
+  visual?: string;
+  spoken_line?: string;
+  on_screen_text?: string;
+};
+
+type StructuredContent = {
+  'Instagram Reel'?: {
+    scenes?: StructuredReelScene[];
+  };
+};
+
 type ViralHook = {
   hook?: string;
   angle?: string;
@@ -48,6 +60,7 @@ type Results = {
   strategy?: Strategy;
   best_output?: BestOutput;
   content?: Record<string, string>;
+  structured_content?: StructuredContent;
   monetization?: Monetization;
   hooks?: ViralHook[];
   best_hook?: {
@@ -1163,6 +1176,17 @@ export default function Home() {
                   <div className="space-y-4">
                     {selectedOutputs.map((platform) => {
                       const text = results.content?.[platform];
+                      const reelScenes =
+                        platform === 'Instagram Reel'
+                          ? results.structured_content?.[
+                              'Instagram Reel'
+                            ]?.scenes?.filter(
+                              (scene) =>
+                                formatGeneratedText(scene.visual).trim() ||
+                                formatGeneratedText(scene.spoken_line).trim() ||
+                                formatGeneratedText(scene.on_screen_text).trim()
+                            )
+                          : undefined;
 
                       return (
                         <div
@@ -1205,21 +1229,69 @@ export default function Home() {
                             </button>
                           </div>
 
-                          <div className="space-y-3 text-zinc-200">
-                            {formatGeneratedText(text)
-                              .replace(/\s+(?=Scene \d+:|Slide \d+:|\d+\. Slide|Hook:|Point \d+:|Payoff:|CTA:)/g, '\n\n')
-                              .split(/\n{2,}/g)
-                              .map((section) => section.trim())
-                              .filter(Boolean)
-                              .map((section, index) => (
-                                <p
+                          {reelScenes && reelScenes.length > 0 ? (
+                            <div className="space-y-3 text-zinc-200">
+                              {reelScenes.map((scene, index) => (
+                                <div
                                   key={index}
-                                  className="whitespace-pre-wrap rounded-xl border border-zinc-700/70 bg-zinc-900/40 p-3 text-sm leading-relaxed"
+                                  className="rounded-xl border border-zinc-700/70 bg-zinc-900/40 p-3 text-sm leading-relaxed"
                                 >
-                                  {section}
-                                </p>
+                                  <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-purple-300">
+                                    Scene {index + 1}
+                                  </p>
+
+                                  {scene.visual && (
+                                    <div className="mb-2">
+                                      <p className="text-[11px] font-semibold uppercase tracking-wide text-zinc-500">
+                                        Visual
+                                      </p>
+                                      <p className="whitespace-pre-wrap text-zinc-200">
+                                        {formatGeneratedText(scene.visual)}
+                                      </p>
+                                    </div>
+                                  )}
+
+                                  {scene.spoken_line && (
+                                    <div className="mb-2">
+                                      <p className="text-[11px] font-semibold uppercase tracking-wide text-zinc-500">
+                                        Spoken Line
+                                      </p>
+                                      <p className="whitespace-pre-wrap text-zinc-200">
+                                        {formatGeneratedText(scene.spoken_line)}
+                                      </p>
+                                    </div>
+                                  )}
+
+                                  {scene.on_screen_text && (
+                                    <div>
+                                      <p className="text-[11px] font-semibold uppercase tracking-wide text-zinc-500">
+                                        On-Screen Text
+                                      </p>
+                                      <p className="whitespace-pre-wrap text-zinc-200">
+                                        {formatGeneratedText(scene.on_screen_text)}
+                                      </p>
+                                    </div>
+                                  )}
+                                </div>
                               ))}
-                          </div>
+                            </div>
+                          ) : (
+                            <div className="space-y-3 text-zinc-200">
+                              {formatGeneratedText(text)
+                                .replace(/\s+(?=Scene \d+:|Slide \d+:|\d+\. Slide|Hook:|Point \d+:|Payoff:|CTA:)/g, '\n\n')
+                                .split(/\n{2,}/g)
+                                .map((section) => section.trim())
+                                .filter(Boolean)
+                                .map((section, index) => (
+                                  <p
+                                    key={index}
+                                    className="whitespace-pre-wrap rounded-xl border border-zinc-700/70 bg-zinc-900/40 p-3 text-sm leading-relaxed"
+                                  >
+                                    {section}
+                                  </p>
+                                ))}
+                            </div>
+                          )}
                         </div>
                       );
                     })}
