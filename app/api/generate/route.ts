@@ -197,6 +197,28 @@ function cleanGeneratedText(value: string) {
     .replace(/I have 3 client wins, but I['’]m not just posting bragging rights\.?/gi, 'I have 3 client wins. Here’s how I’d turn them into sales content that helps the next person take action.')
     .replace(/not just posting bragging rights/gi, 'turning proof into useful sales content')
     .replace(/not just bragging/gi, 'turning proof into useful sales content')
+    .replace(/the best time is now/gi, 'the best next step is to understand your options')
+    .replace(/The best time is now/gi, 'The best next step is to understand your options')
+    .replace(/the sooner, the better/gi, 'start by understanding your timeline')
+    .replace(/The sooner, the better/gi, 'Start by understanding your timeline')
+    .replace(/maximize sale price/gi, 'make a stronger listing plan')
+    .replace(/Maximize sale price/gi, 'Make a stronger listing plan')
+    .replace(/boost sale price/gi, 'improve listing readiness')
+    .replace(/Boost sale price/gi, 'Improve listing readiness')
+    .replace(/get top buyer exposure/gi, 'improve your listing strategy')
+    .replace(/Get top buyer exposure/gi, 'Improve your listing strategy')
+    .replace(/sell quickly/gi, 'plan your sale with more clarity')
+    .replace(/Sell quickly/gi, 'Plan your sale with more clarity')
+    .replace(/sell fast/gi, 'plan your sale with more clarity')
+    .replace(/Sell fast/gi, 'Plan your sale with more clarity')
+    .replace(/smooth sale/gi, 'clearer selling process')
+    .replace(/Smooth sale/gi, 'Clearer selling process')
+    .replace(/free consultation/gi, 'Seller Readiness Review')
+    .replace(/Free consultation/gi, 'Seller Readiness Review')
+    .replace(/no-obligation market evaluation/gi, 'Home Value Conversation')
+    .replace(/No-obligation market evaluation/gi, 'Home Value Conversation')
+    .replace(/market evaluation/gi, 'Home Value Conversation')
+    .replace(/Market evaluation/gi, 'Home Value Conversation')
     .replace(/\s+([,.!?])/g, '$1')
     .replace(/\s{2,}/g, ' ')
     .trim();
@@ -652,6 +674,14 @@ Quality rules:
 Business rules:
 - For realtors: focus on homeowner questions, seller prep, home value curiosity, listing readiness, avoiding seller mistakes, downsizing, inherited homes, and seller consultations.
 - For real estate: do not claim hot market, best time, quick sale, guaranteed value increase, or market trends unless the user provided that fact.
+- For realtor content, avoid claim-heavy or risky real estate language. Do not imply guaranteed sale speed, guaranteed buyer exposure, guaranteed higher price, perfect timing, or that a seller should list immediately.
+- Avoid phrases like "the best time is now", "the sooner the better", "sell fast", "sell quickly", "maximize sale price", "boost sale price", "get top buyer exposure", "smooth sale", "market is hot", "avoid delays", "speed up the sale", or "perfect listing window" unless the user provided specific support.
+- Prefer safer realtor language: seller readiness, listing prep, home value conversation, repair prioritization, timeline clarity, pricing questions, consultation readiness, understand your options, avoid wasting money on unnecessary repairs, and prepare before listing.
+- Realtor CTAs should usually invite a Seller Readiness Checklist, Seller Prep Review, Listing Prep Consultation, Home Value Conversation, Home Value Review, or Seller Timeline Check.
+- For realtor lead magnets, prefer practical resources such as Seller Readiness Checklist, Listing Prep Checklist, Home Value Question Guide, Seller Timeline Planner, Repair Priority Checklist, or Before You List Checklist.
+- For realtor follow-up messages, ask specific qualifying questions: "What is your selling timeline?", "What is your biggest concern before listing?", "Are you trying to sell soon or just understand your options?", "Do you want help prioritizing repairs before listing?", or "Would a home value conversation help you plan your next step?"
+- Do not use "free consultation" as the default realtor CTA. Prefer "Seller Readiness Review", "Listing Prep Consultation", "Home Value Conversation", or "Seller Prep Call."
+- Do not use broad phrases like "professional guidance" or "expert advice" without tying them to a specific seller question, timeline, home value concern, repair decision, or listing prep step.
 - For fitness coaches: focus on safe transformation language, buyer situations, habits, consistency, accountability, beginner plans, assessments, coaching calls, and realistic next steps.
 - For restaurants and caterers: focus on catering inquiries, event orders, party trays, office lunches, menus, quote requests, and repeat orders.
 - For coaches and consultants: focus on audits, starter sessions, discovery calls, assessments, clarity offers, and trust-building content.
