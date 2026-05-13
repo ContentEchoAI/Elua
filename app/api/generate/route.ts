@@ -219,6 +219,28 @@ function cleanGeneratedText(value: string) {
     .replace(/No-obligation market evaluation/gi, 'Home Value Conversation')
     .replace(/market evaluation/gi, 'Home Value Conversation')
     .replace(/Market evaluation/gi, 'Home Value Conversation')
+    .replace(/before it['’]s gone/gi, 'before the drop opens')
+    .replace(/Before it['’]s gone/gi, 'Before the drop opens')
+    .replace(/do not miss out/gi, 'join the waitlist for early access')
+    .replace(/Don['’]t miss out/gi, 'Join the waitlist for early access')
+    .replace(/secure your spot/gi, 'join the waitlist')
+    .replace(/Secure your spot/gi, 'Join the waitlist')
+    .replace(/VIP Waitlist Membership/gi, 'Early Access Waitlist')
+    .replace(/VIP membership/gi, 'early access list')
+    .replace(/limited edition clothing/gi, 'upcoming clothing drop')
+    .replace(/limited-edition clothing/gi, 'upcoming clothing drop')
+    .replace(/every stitch/gi, 'the product details')
+    .replace(/Every stitch/gi, 'The product details')
+    .replace(/expert sewing/gi, 'sample check')
+    .replace(/Expert sewing/gi, 'Sample check')
+    .replace(/skilled team/gi, 'team')
+    .replace(/Skilled team/gi, 'Team')
+    .replace(/perfect fit/gi, 'fit')
+    .replace(/Perfect fit/gi, 'Fit')
+    .replace(/build excitement/gi, 'show the product reason to join the waitlist')
+    .replace(/Build excitement/gi, 'Show the product reason to join the waitlist')
+    .replace(/create hype/gi, 'show the product reason to join the waitlist')
+    .replace(/Create hype/gi, 'Show the product reason to join the waitlist')
     .replace(/\s+([,.!?])/g, '$1')
     .replace(/\s{2,}/g, ' ')
     .trim();
@@ -685,6 +707,15 @@ Business rules:
 - For fitness coaches: focus on safe transformation language, buyer situations, habits, consistency, accountability, beginner plans, assessments, coaching calls, and realistic next steps.
 - For restaurants and caterers: focus on catering inquiries, event orders, party trays, office lunches, menus, quote requests, and repeat orders.
 - For coaches and consultants: focus on audits, starter sessions, discovery calls, assessments, clarity offers, and trust-building content.
+- For clothing brands and ecommerce product brands: focus on product details, fit, fabric, sizing, colorways, styling ideas, drop date, waitlist signups, preorder interest, early access, product bundles, customer use case, and purchase questions.
+- Do not default to vague scarcity language like "exclusive", "limited edition", "before it is gone", "do not miss out", "secure your spot", "VIP membership", or "hype" unless the user clearly gave a real limited drop, inventory limit, or membership program.
+- Do not invent production details such as expert sewing, skilled team, every stitch, handcrafted details, premium fabric, perfect fit, sustainable materials, or limited quantities unless the user provided those facts.
+- If production details are missing, use safe behind-the-scenes ideas: fabric close-up, fit check, styling clip, packing orders, choosing colorways, checking samples, product flat lay, founder explaining the design choice, try-on clip, size guide, or waitlist page.
+- Product-brand CTAs should usually invite a waitlist signup, early access link, sizing help, drop reminder, preorder interest, fit guide, or product question.
+- Strong product-brand CTA examples: "Comment DROP and I’ll send you the waitlist link.", "DM FIT if you want help choosing your size.", "Comment STYLE and I’ll send you 3 ways to wear it.", "Join the waitlist for early access.", "Reply SIZE and I’ll send the size guide."
+- Product-brand Money Plans should lead to product sales, waitlist signups, preorders, early access, sizing help, bundles, repeat purchases, or drop reminders — not consulting, creator education, or vague community engagement.
+- For clothing brands, each content asset should include at least one concrete product-sale angle: fit, material feel, styling situation, size question, colorway, drop timing, waitlist reason, outfit use case, or why someone would wear it.
+- Do not say "build excitement" or "create hype" as the main strategy. Show the specific product reason someone would want to join the waitlist or buy.
 - For service businesses: prioritize leads, bookings, calls, quotes, consultations, assessments, custom plans, and repeat customers.
 
 Offer rules:
