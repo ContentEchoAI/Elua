@@ -19,6 +19,13 @@ type Strategy = {
   best_platform?: string;
 };
 
+type ActionPlanStep = {
+  day?: string;
+  action?: string;
+  cta?: string;
+  follow_up?: string;
+};
+
 type Monetization = {
   offer_ideas?: string[];
   lead_magnet?: string;
@@ -28,6 +35,7 @@ type Monetization = {
     step_3?: string;
   };
   cta_strategy?: string;
+  action_plan?: ActionPlanStep[];
   conversion_tips?: string[];
 };
 
@@ -1342,6 +1350,48 @@ export default function Home() {
                         Start with a simple audience-building offer, capture interested leads,
                         then guide them toward a clear paid next step.
                       </p>
+                    </div>
+
+                    <div className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5">
+                      <h3 className="mb-3 font-semibold text-purple-400">
+                        🗓️ Your Action Plan
+                      </h3>
+
+                      <div className="space-y-3">
+                        {(results.monetization?.action_plan || []).map((step, i) => (
+                          <div
+                            key={i}
+                            className="rounded-xl border border-zinc-700 bg-zinc-900/70 p-4"
+                          >
+                            <p className="mb-2 text-xs font-medium uppercase tracking-wide text-zinc-500">
+                              {formatGeneratedText(step.day || `Day ${i + 1}`)}
+                            </p>
+
+                            <div className="space-y-2 text-sm leading-relaxed text-zinc-200">
+                              {step.action && (
+                                <p>
+                                  <span className="font-semibold text-zinc-100">Action: </span>
+                                  {formatGeneratedText(step.action)}
+                                </p>
+                              )}
+
+                              {step.cta && (
+                                <p>
+                                  <span className="font-semibold text-zinc-100">Call to action: </span>
+                                  {formatGeneratedText(step.cta)}
+                                </p>
+                              )}
+
+                              {step.follow_up && (
+                                <p>
+                                  <span className="font-semibold text-zinc-100">Follow-up: </span>
+                                  {formatGeneratedText(step.follow_up)}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
 
                     <div className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5">

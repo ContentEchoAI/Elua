@@ -20,6 +20,13 @@ type StructuredContent = {
   };
 };
 
+type ActionPlanStep = {
+  day?: string;
+  action?: string;
+  cta?: string;
+  follow_up?: string;
+};
+
 type GeneratedResponse = {
   mode?: string;
   strategy?: {
@@ -48,6 +55,7 @@ type GeneratedResponse = {
       step_3?: string;
     };
     cta_strategy?: string;
+    action_plan?: ActionPlanStep[];
     conversion_tips?: string[];
   };
 };
@@ -168,6 +176,54 @@ function findGeneratedOutput(
 
   return '';
 }
+
+function cleanGeneratedText(value: string) {
+  return value
+    .replace(/I['’]m not posting private client details,? but\s*/gi, '')
+    .replace(/I['’]m not sharing private client details,? but\s*/gi, '')
+    .replace(/Instead of sharing private details,?\s*/gi, '')
+    .replace(/instead of sharing private details,?\s*/g, '')
+    .replace(/without using private details or invented results/gi, 'built around real client-win patterns, buyer problems, and coaching steps')
+    .replace(/without private details or invented results/gi, 'built around real client-win patterns, buyer problems, and coaching steps')
+    .replace(/without sharing private details/gi, 'without inventing results')
+    .replace(/private client details/gi, 'specific client details')
+    .replace(/private details/gi, 'specific details')
+    .replace(/Comment PLAN and I['’]ll send you the 4-week client-win content map/gi, 'Comment CHECK and I’ll send you the Fitness Goal Check')
+    .replace(/Comment PLAN and I['’]ll send you the 4-Week Client-Win Content Map/gi, 'Comment CHECK and I’ll send you the Fitness Goal Check')
+    .replace(/Comment PLAN for the 4-Week Client-Win Content Map/gi, 'Comment CHECK for the Fitness Goal Check')
+    .replace(/Include the CTA:\s*/gi, 'Use this line: ')
+    .replace(/Include the call to action:\s*/gi, 'Use this line: ')
+    .replace(/I have 3 client wins, but I['’]m not just bragging\.?/gi, 'I have 3 client wins. Here’s how I’d turn them into sales content that helps the next person take action.')
+    .replace(/I have 3 client wins, but I['’]m not just posting bragging rights\.?/gi, 'I have 3 client wins. Here’s how I’d turn them into sales content that helps the next person take action.')
+    .replace(/not just posting bragging rights/gi, 'turning proof into useful sales content')
+    .replace(/not just bragging/gi, 'turning proof into useful sales content')
+    .replace(/\s+([,.!?])/g, '$1')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+}
+
+function cleanGeneratedValue<T>(value: T): T {
+  if (typeof value === 'string') {
+    return cleanGeneratedText(value) as T;
+  }
+
+  if (Array.isArray(value)) {
+    return value.map((item) => cleanGeneratedValue(item)) as T;
+  }
+
+  if (value && typeof value === 'object') {
+    const cleanedObject: Record<string, unknown> = {};
+
+    Object.entries(value as Record<string, unknown>).forEach(([key, item]) => {
+      cleanedObject[key] = cleanGeneratedValue(item);
+    });
+
+    return cleanedObject as T;
+  }
+
+  return value;
+}
+
 
 export async function POST(req: Request) {
   try {
@@ -360,6 +416,50 @@ ${contentJsonShape}
       "step_3": ""
     },
     "cta_strategy": "",
+    "action_plan": [
+      {
+        "day": "Day 1",
+        "action": "",
+        "cta": "",
+        "follow_up": ""
+      },
+      {
+        "day": "Day 2",
+        "action": "",
+        "cta": "",
+        "follow_up": ""
+      },
+      {
+        "day": "Day 3",
+        "action": "",
+        "cta": "",
+        "follow_up": ""
+      },
+      {
+        "day": "Day 4",
+        "action": "",
+        "cta": "",
+        "follow_up": ""
+      },
+      {
+        "day": "Day 5",
+        "action": "",
+        "cta": "",
+        "follow_up": ""
+      },
+      {
+        "day": "Day 6",
+        "action": "",
+        "cta": "",
+        "follow_up": ""
+      },
+      {
+        "day": "Day 7",
+        "action": "",
+        "cta": "",
+        "follow_up": ""
+      }
+    ],
     "conversion_tips": ["", "", ""]
   }
 }
@@ -432,11 +532,14 @@ Platform writing rules:
   YouTube Shorts: "Client transformations are not just proof. They are content systems when you break them into the problem, the process, and the next step."
   LinkedIn: "A client transformation should not become a brag post. It should become a useful lesson that helps the next person take the first step."
   Facebook: "I’m not sharing private client details, but I can still teach the process behind progress."
-- For fitness coach transformation prompts where exact client details are missing, the main campaign should NOT be an ethics lesson. The main campaign should turn proof into useful sales content using this structure: buyer problem, coaching process, next coaching step.
-- For fitness coach transformation prompts, use permission/privacy as a short safety checkpoint only. Do not make every selected output primarily about ethics, privacy, permission, or trust unless the user explicitly asks for that angle.
+- For fitness coach transformation prompts where exact client details are missing, the main campaign should NOT be an ethics lesson. The main campaign should turn proof into useful sales content using this structure: buyer problem, coaching process, consistency obstacle, first coaching step.
+- For fitness coach transformation prompts, permission/privacy must be handled quietly as a guardrail only. Do not make it the hook, headline, repeated phrase, CTA, or main theme unless the user explicitly asks for that angle.
+- If the user says not to make up client details, mention truthful/no-invented-details language at most once across the entire result. Do not repeat phrases like "private details," "privacy," "permission," "ethical," or "without sharing details" across multiple outputs.
 - For transformation/client-win content with missing details, create useful content around: the client's starting problem, the coaching process, consistency obstacles, accountability, the viewer's own fitness goal, the first coaching step, a story prep worksheet, a proof-to-post calendar, or a DM conversation starter.
-- Strong angle example: "I have 3 client wins I could post, but instead of sharing private details, I’m turning each one into a 4-week content plan: the starting problem, the coaching process, the consistency obstacle, and the first coaching step."
+- Strong angle example: "I have 3 client wins. Here’s how I’d turn them into a month of sales content: Week 1 is the starting problem, Week 2 is the coaching process, Week 3 is the consistency obstacle, and Week 4 is the first coaching step."
 - Weak angle to avoid: "Here are 3 ethical questions to ask before sharing client transformations."
+- Weak angle to avoid: "I’m not posting private client details, but..."
+- Weak angle to avoid: "Instead of sharing private details..."
 - If the user asks for a month of sales content, the main output must include a repeatable monthly content angle, weekly plan, content calendar, or proof-to-post system. Do not reduce the answer to one generic checklist.
 - For a fitness coach with multiple client transformations, the strongest campaign is usually: turn each transformation into a content theme without naming the client or inventing results. Example themes: starting problem, coaching process, consistency obstacle, mindset shift, accountability lesson, nutrition habit, first coaching step, and fitness-goal DM question.
 - In this situation, permission/privacy should appear as one checkpoint, not the main idea of every hook, slide, scene, CTA, and lead magnet.
@@ -445,6 +548,13 @@ Platform writing rules:
 - Do not write phrases like "client success", "secret sauce", "accountability is key", "builds trust", or "ready to start your transformation" unless they are made specific to the buyer problem and coaching next step.
 - For a month of sales content, the output should feel like a repeatable campaign system. Include a 4-week angle or content calendar idea whenever possible: Week 1 starting problem, Week 2 coaching process, Week 3 consistency obstacle, Week 4 first coaching step.
 - For fitness transformation prompts, do not imply what clients learned, felt, achieved, overcame, or celebrated unless the user gave those exact facts. Instead say what the coach can teach from the process without revealing private details.
+- For fitness coach monthly sales content, every platform output must include specific reusable content examples, not just broad week labels.
+- Use concrete fitness-business examples such as busy schedule, weekend eating, no plan, inconsistent workouts, nutrition confusion, accountability, check-ins, beginner plan, habit tracking, first assessment, starter coaching call, and realistic next step.
+- Do not write vague phrases like "fitness journey", "achieve your goals", "find your path", "take your first step", "let's get started", or "unlock your potential."
+- Do not make the CTA "free coaching consultation" unless the user asked for a consultation. Prefer a lower-friction business step like "First-Step Fitness Assessment", "Fitness Goal Check", "Starter Coaching Call", or "Consistency Audit."
+- For a carousel, each slide must teach one specific part of the campaign system. Avoid slides that only say "Week 1: starting problem" without explaining what the user should post.
+- For reels, each scene must include a specific example or filming action. Avoid generic visuals like "talking to camera" unless paired with a concrete line.
+- For Facebook posts, write like a real coach explaining a useful system to potential clients. Do not write broad marketing language.
 
 Instagram Reel rules:
 - Write a scene-by-scene filming plan.
@@ -472,8 +582,9 @@ TikTok Script rules:
 - Keep the tone direct, useful, and conversational.
 - Make it feel like something someone could record immediately.
 - Start with a sharp spoken hook, not a greeting.
-- Strong TikTok style: "I have 3 client wins I could post, but I’m not using private details. Here’s how I’d turn them into 4 weeks of sales content."
+- Strong TikTok style: "I have 3 client wins. Here’s how I’d turn them into 4 weeks of sales content without making anything up."
 - Weak TikTok style to avoid: "Hey everyone, here’s a quick tip."
+- Weak TikTok style to avoid: "I’m not using private details, but..."
 
 YouTube Shorts Script rules:
 - Write a tight short-form script with timestamps or beats.
@@ -516,7 +627,8 @@ Trust rules:
 - Do not write “Client 1,” “Client 2,” “Client 3,” fake stories, fake outcomes, fake lessons from those outcomes, or fake testimonials unless the user provided those details.
 - Instead, create content around a safe sales-content framework: buyer problem, coaching process, what changed in the approach, what the viewer may relate to, what question to ask, and the next coaching step.
 - Safety is a guardrail, not the main campaign theme. Do not make every output about ethics, privacy, permission, or trust just because proof details are missing.
-- Do not make "ethical" the main headline, CTA, lead magnet name, or repeated phrase unless the user specifically asks for ethics, compliance, permission, or legal-safe posting.
+- Do not make "ethical," "private details," "permission," or "privacy" the main headline, CTA, lead magnet name, or repeated phrase unless the user specifically asks for ethics, compliance, permission, or legal-safe posting.
+- Do not open posts with "I’m not sharing private client details" or "Instead of sharing private details." Start with the useful business/content system instead.
 - For transformation/client-win prompts with missing details, the campaign should usually focus on the buyer's goal, the coaching process, consistency obstacles, a proof-to-post plan, or the first coaching step — with safety handled quietly in the background.
 - When proof details are missing, vary the campaign angle around one of these: buyer goal, consistency obstacle, coaching process, accountability, proof-to-post calendar, first-step assessment, story prep, or proof without exaggeration.
 - Safe wording when proof details are missing: “three real client transformations,” “client wins,” “the coaching process behind the wins,” “what I check before posting client progress,” “how to turn client progress into useful content without exaggerating,” “how to turn proof into a coaching conversation.”
@@ -577,23 +689,138 @@ Offer rules:
 - For a fitness coach, conversion_strategy should sound like: “Comment START and I’ll send the checklist. After that, I’ll ask one question about your fitness goal and point you to the right first coaching step.”
 - conversion_tips should be practical follow-up actions, not vague advice.
 
+Action Plan rules:
+- monetization.action_plan must include exactly 7 steps.
+- Each step must include day, action, cta, and follow_up.
+- The action plan must feel like a practical weekly roadmap, not generic advice.
+- Day 1 should tell the user exactly what content asset to post first.
+- Day 2 should tell the user exactly how to reply to comments, DMs, or early engagement.
+- Day 3 should tell the user what lead magnet, checklist, assessment, quote request, starter step, or resource to send.
+- Day 4 should tell the user what follow-up content to post, usually answering the strongest objection or buyer question.
+- Day 5 should tell the user how to invite warm leads toward the paid next step.
+- Day 6 should tell the user what second content asset, reminder, behind-the-scenes post, or proof-safe post to publish.
+- Day 7 should tell the user how to review responses and reuse the strongest angle next week.
+- Every cta must be copy-paste-ready.
+- Every follow_up must include an exact message, question, or next step.
+- The action plan must connect the selected platform content, lead magnet, CTA, funnel, and real paid offer.
+- For fitness coaches, follow_up messages must ask fitness-related questions, not content/marketing questions.
+- For realtors, follow_up messages must ask seller-readiness, home-value, timeline, property, or consultation questions.
+- For restaurants and caterers, follow_up messages must ask event date, guest count, menu needs, budget range, pickup/delivery, or quote-request questions.
+- For service businesses, follow_up messages must ask a qualifying question that leads to a call, quote, audit, consultation, assessment, or starter package.
+- Do not use vague action plan steps like "engage with your audience", "build trust", "share value", "promote your offer", or "follow up with leads."
+- Do not invent fake results, testimonials, urgency, discounts, or scarcity in the action plan.
+- Do not use vague action plan follow-ups like "engage with comments," "keep the conversation going," "encourage participation," "adjust future content," or "refine your strategy."
+- Replace vague follow-ups with exact messages, for example: "Thanks for commenting PLAN — what fitness goal are you working toward right now?"
+- Days 4-7 must be as specific as Days 1-3. They must name the content topic, CTA keyword or message, and exact follow-up question.
+- Action Plan steps should be realistic for a solo business owner. Do not create fake urgency, a fake launch, or vague engagement tasks.
+- If the content angle is a 4-week content system, the action plan should show exactly how to use that system: post the main asset, reply to comments, send the resource, ask a qualifying question, post an objection follow-up, invite warm leads to the paid next step, and review which buyer problem got the most replies.
+
 Money Plan output standard:
 - The Money Plan must feel like a revenue operator wrote it, not a generic marketer.
 - The funnel must be immediately usable this week.
 - step_1 must say exactly what to post or publish.
-- step_2 must include the exact CTA keyword or reply.
+- step_2 must include the exact call-to-action keyword or reply, written as user-facing copy. Do not write phrases like "Include the CTA." Prefer "End the post with..." or "Use this line...".
 - step_3 must include the exact follow-up message, question, booking step, or consultation invite.
-- cta_strategy must include copy-paste-ready wording the user can put in the post or DM.
+- cta_strategy must include copy-paste-ready wording the user can put in the post or DM. Do not use internal labels like "CTA" in the generated user-facing text.
 - conversion_tips must be concrete actions, not broad advice.
 - Do not say vague phrases like "promote on social media", "encourage engagement", "collect responses", "provide value", "capture leads", "follow up with potential clients", or "create urgency".
 - Do not recommend fake urgency, fake scarcity, fake discounts, fake testimonials, invented proof, or invented outcomes.
 
 Good Money Plan style:
-- Step 1: Post the Instagram Carousel about turning 3 client transformations into a 4-week sales content calendar without using private details or invented results.
+- Step 1: Post the Instagram Carousel about turning 3 client transformations into a 4-week sales content calendar built around real client-win patterns, buyer problems, and coaching steps.
 - Step 2: End with: "Comment PLAN and I’ll send you the Transformation Content Calendar."
 - Step 3: When someone replies, send the calendar and ask: "What fitness goal are you working toward right now, and what feels hardest to stay consistent with?"
 - CTA Strategy: "Comment PLAN and I’ll send you the Transformation Content Calendar. After that, I’ll ask one question about your fitness goal and point you to the right first coaching step."
-- Conversion Tip: "After sending the calendar, ask one qualifying question. If they mention consistency, accountability, nutrition, or not knowing where to start, invite them to a short first-step coaching call."
+- Action Plan Day 1: Post the Instagram Carousel about turning 3 client transformations into a 4-week sales content calendar built around real client-win patterns, buyer problems, and coaching steps. CTA: "Comment PLAN and I’ll send you the Transformation Content Calendar." Follow-up: "When someone comments PLAN, send the calendar and say: What fitness goal are you working toward right now?"
+- Action Plan Day 2: Reply to every comment or DM with the Fitness Goal Check and ask the first qualifying question. CTA: "Reply with your goal and biggest obstacle." Follow-up: "If they mention busy schedule, missed workouts, nutrition confusion, or accountability, invite them to a Starter Fitness Assessment or Consistency Audit."
+- Conversion Tip: "After sending the content map, ask one qualifying question: What fitness goal are you working toward right now, and what keeps getting in the way? If they mention consistency, nutrition confusion, accountability, a busy schedule, or not knowing where to start, invite them to a First-Step Fitness Assessment."
+
+Hard rewrite gate:
+Before returning JSON, scan the entire response and rewrite any output that contains these weak phrases:
+- fitness journey
+- achieve your goals
+- achieve their health goals
+- health goals
+- take the first step
+- get started
+- ready to transform
+- unlock your potential
+- stay motivated
+- accountability is key
+- consistency is key
+- engage with your audience
+- promote your offer
+- contact me today
+- learn more
+- free consultation
+- free coaching consultation
+- what’s holding you back
+- what are you hoping to achieve
+- tailored plan
+- personalized guidance
+- accessible and necessary
+
+Replace weak phrases with specific fitness-business language:
+- busy schedule
+- weekend eating
+- inconsistent workouts
+- no clear plan
+- nutrition confusion
+- missed check-ins
+- needs accountability
+- beginner-friendly plan
+- first fitness assessment
+- starter coaching call
+- consistency audit
+- workout habit check
+- nutrition habit check
+- weekly check-in package
+
+Carousel quality gate:
+- Every carousel slide must be copy-ready and useful by itself.
+- Do not write slides that only label a week, such as "Week 1: Starting Problem."
+- Every slide must include a specific example, question, checklist item, or action.
+- Slide text should sound like a real post, not an outline.
+- Bad slide: "Week 1: Identify the starting problem."
+- Good slide: "Week 1: Turn the starting problem into a post. Talk about the moment someone realizes random workouts are not enough: busy schedule, no plan, skipped check-ins, or nutrition confusion."
+
+Reel quality gate:
+- Every reel scene must include a concrete filming action and a useful spoken line.
+- Do not use vague visuals like "talking to camera" unless the spoken line is specific.
+- Bad spoken line: "Week 3 addresses consistency obstacles."
+- Good spoken line: "Week 3 is the post about why people fall off: busy weeks, weekend eating, missed workouts, or no accountability."
+
+Public CTA alignment gate:
+- If the user's business sells fitness coaching, platform content must sell the coaching next step, not a content-planning resource.
+- Bad public CTA for fitness coaches: "Comment PLAN and I’ll send you the 4-week client-win content map."
+- Good public call-to-action for fitness coaches: "Comment CHECK and I’ll send you the Fitness Goal Check."
+- Good public call-to-action for fitness coaches: "Comment AUDIT and I’ll send you the Consistency Audit."
+- Good public call-to-action for fitness coaches: "DM STARTER and I’ll send you the beginner plan checklist."
+- Bad user-facing wording: "Include the CTA: Comment CHECK..."
+- Better user-facing wording: "End the post with: Comment CHECK and I’ll send you the Fitness Goal Check."
+- The content map can be mentioned only inside the user's internal Action Plan, not as the main public lead magnet for potential fitness clients.
+
+Money Plan quality gate:
+- Do not default to "Comment START."
+- Use a keyword that matches the lead magnet, such as PLAN, CHECK, AUDIT, GOAL, or STARTER.
+- Do not use "free consultation" as the CTA.
+- Prefer for creators/business owners: "Comment PLAN and I’ll send you the 4-week client-win content map."
+- Prefer for fitness clients: "Comment CHECK and I’ll send you the Fitness Goal Check."
+- Prefer for fitness clients: "Comment AUDIT and I’ll send you the Consistency Audit."
+- The lead magnet and paid offer must work together.
+- If the user is a fitness coach trying to get coaching clients, the public CTA and lead magnet must be for potential fitness clients, not for other creators or content planners.
+- Public-facing platform content must NOT say "Comment PLAN and I’ll send you the 4-week client-win content map" for fitness coach lead generation.
+- For fitness coaches, public CTAs should point to a fitness-client resource such as Fitness Goal Check, Consistency Audit, Beginner Plan Checklist, First-Step Fitness Assessment, Workout Habit Check, or Starter Coaching Call.
+- Strong fitness-client CTA examples: "Comment CHECK and I’ll send you the Fitness Goal Check." "Comment AUDIT and I’ll send you the Consistency Audit." "DM STARTER and I’ll send you the beginner plan checklist."
+- The internal Action Plan can mention a 4-week content map for the business owner, but the public CTA shown in platform content should point potential clients to a fitness-related next step.
+- The CTA must not confuse creators with fitness clients.
+
+Action Plan quality gate:
+- Every action plan step must include a specific post, CTA, and follow-up message.
+- Do not write "review responses and analyze engagement."
+- Better: "Review which reply came up most: busy schedule, nutrition confusion, or accountability. Use that as next week’s first post."
+- Do not write "invite them to discuss their goals further."
+- Better: "Ask: Are you looking for a beginner plan, accountability, or help with nutrition consistency?"
 
 Final silent check:
 - Does this answer what to post?
@@ -611,7 +838,7 @@ Final silent check:
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: mode === 'viral_hooks' ? 'gpt-4o-mini' : 'gpt-4.1-mini',
         messages: [
           {
             role: 'system',
@@ -649,7 +876,7 @@ Final silent check:
       );
     }
 
-    const parsed = JSON.parse(messageContent) as GeneratedResponse;
+    let parsed = JSON.parse(messageContent) as GeneratedResponse;
 
     if (mode === 'growth_system') {
       const normalizedContent: Record<string, string> = {};
@@ -713,6 +940,8 @@ Final silent check:
 
       parsed.mode = 'growth_system';
     }
+
+    parsed = cleanGeneratedValue(parsed);
 
     return NextResponse.json(parsed);
   } catch (error) {
