@@ -609,7 +609,7 @@ export default function Home() {
       ) : !signedIn ? (
         <div className="rounded-2xl border border-dashed border-zinc-700 p-3 text-center">
           <p className="text-xs text-zinc-400">
-            Create a free workspace to save your best content systems and reopen them anytime.
+            Create a free account to save your content plans and reopen them later. No spam — just your saved workspace.
           </p>
         </div>
       ) : savedGenerations.length === 0 ? (
@@ -669,11 +669,11 @@ export default function Home() {
       ) : !signedIn ? (
         <>
           <p className="mb-1 text-lg font-semibold sm:text-xl">
-            Create your Hummingbird workspace
+            Save your content plans
           </p>
           <p className="mb-3 text-sm leading-relaxed text-zinc-600">
-              Save your best generations, reopen them later, and build a
-              repeatable content system.
+              Create a free account to save your content plans and reopen them later.
+              No spam — just your saved workspace.
           </p>
 
           <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-1">
@@ -707,8 +707,8 @@ export default function Home() {
                   Founder Plan Active
                 </p>
                 <p className="mb-3 text-sm leading-relaxed text-zinc-600">
-                  You have unlimited growth systems, viral hooks, saved generations,
-                  and creator strategy.
+                  You have unlimited Content + Money Plans, hook ideas, saved generations,
+                  and workspace access.
                 </p>
 
                 <div className="rounded-2xl bg-black px-4 py-3 text-center text-sm font-semibold text-white">
@@ -721,8 +721,8 @@ export default function Home() {
                   Founder Plan — $19/mo
                 </p>
                 <p className="mb-3 text-sm leading-relaxed text-zinc-600">
-                    Turn unlimited ideas into growth systems, viral hooks, saved
-                    generations, and creator strategy without hitting free limits.
+                    Turn unlimited business goals into Content + Money Plans, hook ideas,
+                    and saved workspace assets without hitting free limits.
                 </p>
 
                 <button
@@ -746,7 +746,7 @@ export default function Home() {
           <div className="max-w-4xl">
             <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900 px-3 py-1.5 text-xs text-zinc-300 sm:px-4 sm:py-2 sm:text-sm">
               <span className="text-purple-400">✦</span>
-              AI Growth Engine for Creators
+              AI Content + Money Plan Workspace for Small Businesses
             </div>
 
             <h1 className="mb-2 text-[2.35rem] font-bold leading-none text-purple-400 sm:text-5xl lg:mb-4">
@@ -754,12 +754,12 @@ export default function Home() {
             </h1>
 
             <h2 className="max-w-4xl text-[1.95rem] font-semibold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl">
-              Turn one idea into viral hooks, content, and monetization.
+              Know what to post. Know how it makes money.
             </h2>
 
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-zinc-400 sm:mt-5 sm:text-lg">
-              Enter your idea below. Hummingbird builds platform-ready content,
-              growth strategy, and revenue angles in seconds.
+              Hummingbird turns one business goal into ready-to-post content,
+              hooks, CTAs, and a simple Money Plan for getting leads, bookings, or sales.
             </p>
           </div>
 
@@ -772,7 +772,7 @@ export default function Home() {
               <div className="mb-4">
                 <div className="mb-2 flex items-center justify-between gap-3">
                   <p className="text-sm font-medium text-zinc-400">
-                    What do you want to create?
+                    What business goal or content idea do you want help with?
                   </p>
 
                   <button
@@ -788,8 +788,8 @@ export default function Home() {
                   onChange={(e) => setContent(e.target.value)}
                   placeholder={
                     generationMode === 'viral_hooks'
-                      ? 'Example: My 7-day content calendar that grew my Instagram to 50k followers...'
-                      : 'Example: How I turned one viral TikTok into $8k in affiliate sales...'
+                      ? 'Example: 10 hooks for a local realtor who wants more seller leads...'
+                      : 'Example: A fitness coach wants a month of posts that lead to coaching calls...'
                   }
                   className="h-28 w-full max-w-full resize-none rounded-2xl border border-zinc-700 bg-zinc-800 p-4 text-sm text-zinc-100 outline-none placeholder:text-zinc-500 focus:border-purple-500 sm:h-48 sm:p-5 sm:text-base"
                 />
@@ -812,7 +812,7 @@ export default function Home() {
                         : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
                     }`}
                   >
-                    🚀 System
+                    🚀 Content + Money Plan
                   </button>
 
                   <button
@@ -827,7 +827,7 @@ export default function Home() {
                         : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
                     }`}
                   >
-                    🔥 Hooks
+                    🔥 Hooks Only
                   </button>
                 </div>
               </div>
@@ -923,10 +923,10 @@ export default function Home() {
                   {loading
                     ? generationMode === 'viral_hooks'
                       ? 'Generating hooks...'
-                      : 'Building system...'
+                      : 'Building content plan...'
                     : generationMode === 'viral_hooks'
                       ? 'Generate 10 Viral Hooks'
-                      : 'Generate My Growth System'}
+                      : 'Generate My Content + Money Plan'}
                 </button>
               ) : (
                 <SignInButton mode="modal">
@@ -938,7 +938,7 @@ export default function Home() {
                         : 'bg-gradient-to-r from-purple-600 to-pink-600'
                     }`}
                   >
-                    Create Workspace to Generate
+                    Create Free Account to Generate
                   </button>
                 </SignInButton>
               )}
@@ -950,7 +950,7 @@ export default function Home() {
                     ? 'Pro active'
                     : signedIn
                       ? 'Free plan'
-                      : 'Sign in required'}
+                      : 'Free account required'}
                 </p>
               </div>
             </div>
@@ -962,13 +962,13 @@ export default function Home() {
               <div>
                 <h2 className="text-2xl font-semibold sm:text-3xl">
                   {generationMode === 'viral_hooks'
-                    ? 'Your Viral Hook Engine'
-                    : 'Your AI Content + Money Plan Workspace'}
+                    ? 'Your Hook Ideas'
+                    : 'Your Content + Money Plan Workspace'}
                 </h2>
                 <p className="mt-1 text-sm leading-relaxed text-zinc-400 sm:text-lg">
                   {generationMode === 'viral_hooks'
-                    ? 'Scroll-stopping hooks designed to earn attention fast.'
-                    : 'Turn one business goal into platform-ready content, viral hooks, and a simple path to revenue.'}
+                    ? 'Quick hook ideas for your business, offer, or content topic.'
+                    : 'Turn one business goal into ready-to-post content, hooks, CTAs, and a simple path to leads, bookings, or sales.'}
                 </p>
               </div>
 
@@ -1008,13 +1008,13 @@ export default function Home() {
                     <p className="mb-2 text-xl font-semibold sm:text-2xl">
                       {generationMode === 'viral_hooks'
                         ? 'Turn your idea into scroll-stopping hooks'
-                        : 'Turn your idea into a complete growth system'}
+                        : 'Turn your business goal into a Content + Money Plan'}
                     </p>
 
                     <p className="max-w-md text-sm leading-relaxed text-zinc-400 sm:text-base">
                       {generationMode === 'viral_hooks'
                         ? 'Generate 10 attention-grabbing hooks with angles, explanations, and a strongest-hook pick.'
-                        : 'Get strategy, platform-ready content, high-performing hooks, and monetization angles in one run.'}
+                        : 'Get strategy, ready-to-post content, hooks, CTAs, and a simple path to leads, bookings, or sales.'}
                     </p>
 
                     <div className="mt-5 grid w-full max-w-md grid-cols-1 gap-2 text-xs text-zinc-300 sm:grid-cols-3">
