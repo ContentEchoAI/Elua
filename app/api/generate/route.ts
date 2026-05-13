@@ -241,6 +241,24 @@ function cleanGeneratedText(value: string) {
     .replace(/Build excitement/gi, 'Show the product reason to join the waitlist')
     .replace(/create hype/gi, 'show the product reason to join the waitlist')
     .replace(/Create hype/gi, 'Show the product reason to join the waitlist')
+    .replace(/your event is doomed before it starts/gi, 'your catering plan can get stressful quickly')
+    .replace(/Your event is doomed before it starts/gi, 'Your catering plan can get stressful quickly')
+    .replace(/that kill your event/gi, 'that make event planning harder')
+    .replace(/That kill your event/gi, 'That make event planning harder')
+    .replace(/kill your event/gi, 'make event planning harder')
+    .replace(/Kill your event/gi, 'Make event planning harder')
+    .replace(/soggy sandwiches/gi, 'food that does not travel well')
+    .replace(/Soggy sandwiches/gi, 'Food that does not travel well')
+    .replace(/spots fill up fast/gi, 'availability can vary')
+    .replace(/Spots fill up fast/gi, 'Availability can vary')
+    .replace(/higher prices/gi, 'fewer menu options')
+    .replace(/Higher prices/gi, 'Fewer menu options')
+    .replace(/guaranteed delivery times/gi, 'clear delivery windows')
+    .replace(/Guaranteed delivery times/gi, 'Clear delivery windows')
+    .replace(/fits your event perfectly/gi, 'fits your event details')
+    .replace(/Fits your event perfectly/gi, 'Fits your event details')
+    .replace(/will arrive fresh and ready without last-minute panic/gi, 'is planned around your event timing, guest count, and menu needs')
+    .replace(/event will be stress-free and delicious/gi, 'event food plan feels organized and guest-ready')
     .replace(/\s+([,.!?])/g, '$1')
     .replace(/\s{2,}/g, ' ')
     .trim();
@@ -425,6 +443,33 @@ Content idea: ${content}
 Goal: ${goal}
 Brand voice: ${selectedVoice}
 Selected platforms: ${selectedOutputList}
+
+Selected goal rules:
+The user's selected goal must noticeably change the output.
+
+If Goal is "growth":
+- Prioritize audience growth, education, trust, saves, shares, repeat visibility, and helpful content.
+- Use softer calls to action such as save this, comment for a checklist, reply with a question, join the list, or request a useful resource.
+- The content should help the audience understand the problem before asking them to buy or book.
+- Money Plan should still show a revenue path, but it should focus on nurturing interested leads rather than pushing an immediate sale.
+- Action Plan should include posting helpful content, replying to comments, sending the resource, and identifying warm leads.
+- Avoid overly direct booking pressure unless the user specifically asked for sales.
+
+If Goal is "viral":
+- Prioritize strong hooks, curiosity, pattern interrupts, common mistakes, myth-vs-truth, contrarian angles, surprising buyer problems, and shareable content.
+- Open every selected platform output with a sharper hook than normal.
+- Make the content more punchy, memorable, and likely to be saved, shared, or commented on.
+- The call to action should be lighter than Sales mode, such as comment a keyword, share with someone, save this, or reply with the biggest mistake/question.
+- Money Plan should connect attention to a simple lead capture step without making the post feel overly salesy.
+- Action Plan should include reposting or reusing the strongest hook/angle based on comments and saves.
+
+If Goal is "sales":
+- Prioritize lead capture, qualified replies, bookings, quote requests, consultations, discovery calls, orders, waitlist signups, preorders, or paid next steps.
+- Every selected platform output must include a clear business next step.
+- Calls to action must be direct, copy-ready, and connected to the user's actual paid offer or sales path.
+- Money Plan must be more direct and practical: what to post, what keyword to use, what resource to send, what question to ask, and what paid next step to offer.
+- Action Plan should focus on turning replies into leads, leads into conversations, and conversations into bookings, orders, quotes, consultations, or sales.
+- Avoid vague education-only endings.
 
 Return ONLY valid JSON. Do not include markdown. Do not include explanations outside the JSON.
 
@@ -888,6 +933,10 @@ Final silent check:
 - Does this explain how it can lead to money?
 - Are all selected platform outputs present?
 - Did you avoid invented proof?
+- Does the result clearly match the selected goal: growth, viral, or sales?
+- If the goal is growth, is it more educational/trust-building than sales-heavy?
+- If the goal is viral, are the hooks sharper and more shareable?
+- If the goal is sales, is the lead/sales path direct and copy-ready?
 - Does the result feel specific, useful, and ready to use?
 `;
     const prompt = mode === 'viral_hooks' ? viralHooksPrompt : growthSystemPrompt;
