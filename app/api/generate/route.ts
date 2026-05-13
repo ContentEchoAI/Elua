@@ -259,6 +259,55 @@ function cleanGeneratedText(value: string) {
     .replace(/Fits your event perfectly/gi, 'Fits your event details')
     .replace(/will arrive fresh and ready without last-minute panic/gi, 'is planned around your event timing, guest count, and menu needs')
     .replace(/event will be stress-free and delicious/gi, 'event food plan feels organized and guest-ready')
+    .replace(/guarantee compliments/gi, 'help your nails feel event-ready')
+    .replace(/guaranteed compliments/gi, 'event-ready nail confidence')
+    .replace(/guaranteed/gi, 'designed to')
+    .replace(/Guarantee compliments/gi, 'Help your nails feel event-ready')
+    .replace(/Guaranteed compliments/gi, 'Event-ready nail confidence')
+    .replace(/Guaranteed/gi, 'Designed to')
+    .replace(/standout nail art/gi, 'event-ready nail designs')
+    .replace(/Standout nail art/gi, 'Event-ready nail designs')
+    .replace(/ruin your event vibe/gi, 'clash with your event plans')
+    .replace(/Ruin your event vibe/gi, 'Clash with your event plans')
+    .replace(/Stop Lash Loss Now/gi, 'Avoid Early Lash Shedding')
+    .replace(/stop lash loss now/gi, 'avoid early lash shedding')
+    .replace(/ruin your lash extensions/gi, 'shorten the look of your set')
+    .replace(/ruin your extensions/gi, 'shorten the look of your set')
+    .replace(/breaks your extensions early/gi, 'can affect how long your set looks full')
+    .replace(/fall out too fast/gi, 'show gaps sooner than expected')
+    .replace(/falling out too fast/gi, 'showing gaps sooner than expected')
+    .replace(/premature fallout/gi, 'early gaps')
+    .replace(/fallout/gi, 'gaps')
+    .replace(/before lashes thin out/gi, 'before gaps start showing')
+    .replace(/lashes thin out/gi, 'gaps start showing')
+    .replace(/sparse lashes/gi, 'gaps between fills')
+    .replace(/avoid sparse lashes/gi, 'avoid unnecessary gaps')
+    .replace(/curl loss/gi, 'changes in how your set looks')
+    .replace(/weakens the glue/gi, 'can affect retention')
+    .replace(/damages both extensions and your natural lashes/gi, 'can affect your set and natural lash care')
+    .replace(/damages your natural lashes/gi, 'can affect natural lash care')
+    .replace(/lash damage/gi, 'lash care concerns')
+    .replace(/damage-free/gi, 'service-appropriate')
+    .replace(/protects your natural lashes/gi, 'supports your natural lash care')
+    .replace(/protect your natural lashes/gi, 'support your natural lash care')
+    .replace(/protect your lashes overnight/gi, 'support your lash aftercare overnight')
+    .replace(/protect your lashes/gi, 'support lash aftercare')
+    .replace(/keeps your lashes flawless/gi, 'keeps your set looking fresh')
+    .replace(/keep your lashes flawless/gi, 'keep your set looking fresh')
+    .replace(/flawless lashes/gi, 'fresh-looking lashes')
+    .replace(/flawless/gi, 'fresh')
+    .replace(/perfect lashes/gi, 'lashes that fit your style')
+    .replace(/Perfect lashes/gi, 'Lashes that fit your style')
+    .replace(/perfect/gi, 'right-fit')
+    .replace(/restore lash health/gi, 'support better lash care')
+    .replace(/Restore lash health/gi, 'Support better lash care')
+    .replace(/maximizes lash health/gi, 'supports better lash care')
+    .replace(/Maximizes lash health/gi, 'Supports better lash care')
+    .replace(/best lash retention/gi, 'better refill timing')
+    .replace(/lash retention/gi, 'how long your set looks full')
+    .replace(/keep your lashes full longer/gi, 'keep your set looking fuller between appointments')
+    .replace(/keeps your lashes full longer/gi, 'keeps your set looking fuller between appointments')
+    .replace(/never miss your appointment window/gi, 'stay on your refill rhythm')
     .replace(/\s+([,.!?])/g, '$1')
     .replace(/\s{2,}/g, ' ')
     .trim();
@@ -753,6 +802,22 @@ Business rules:
 - For restaurants and caterers: focus on catering inquiries, event orders, party trays, office lunches, menus, quote requests, and repeat orders.
 - For coaches and consultants: focus on audits, starter sessions, discovery calls, assessments, clarity offers, and trust-building content.
 - For clothing brands and ecommerce product brands: focus on product details, fit, fabric, sizing, colorways, styling ideas, drop date, waitlist signups, preorder interest, early access, product bundles, customer use case, and purchase questions.
+- For beauty service providers such as lash artists, nail artists, hair stylists, barbers, brow artists, estheticians, makeup artists, skincare providers, and med-spa style service businesses: focus on bookings, consultations, refills, touch-ups, maintenance timing, aftercare, style selection, service menu education, seasonal/event services, repeat appointments, deposits, client trust, and repeat weekly content.
+- Do not make every beauty output a "mistakes" post or refill checklist. Match the user's exact weekly goal and rotate angles so the business can come back each week without getting repetitive output.
+- If a beauty user gives a broad booking goal such as "get more bookings", "get more appointments", "get more clients", or "get more refills", do not default only to mistakes/refill timing. Choose a fresh angle based on the service and prompt: style guide, availability/openings, first-time client education, service comparison, prep checklist, aftercare routine, seasonal/event booking, product add-on, review/referral request, client FAQ, or maintenance reminder.
+- For repeat weekly beauty use, make the output feel like a new weekly campaign, not the same campaign repeated. The strategy, content, action plan, lead magnet, funnel, and conversion tips should all use the chosen angle consistently.
+- Avoid repeating the same CTA keyword across every beauty test unless it is clearly the best fit. Use service-specific alternatives when appropriate, such as STYLE, LASHES, REFILL, BOOK, NAILS, DESIGN, FILL, HAIR, COLOR, CUT, GLOW, SKIN, BROWS, or CONSULT.
+- For beauty businesses, rotate between different content angles when relevant: appointment openings, service menu education, style selection, client prep, aftercare, refill/fill/touch-up timing, seasonal services, event/bridal/prom content, product add-ons, reviews/referrals, transformation explanations, consultation prompts, new-client education, repeat-client reminders, and waitlist/deposit messaging.
+- For lash artists: use the user's prompt to choose between lash style guide, refill reminder, full set booking, refill booking, aftercare reminders, lash care checklist, classic/hybrid/volume education, appointment openings, event lashes, product add-ons, or client FAQ content. Use DM keywords like LASHES, REFILL, STYLE, or BOOK.
+- For nail artists: use the user's prompt to choose between design menus, appointment availability, fill timing, nail prep, aftercare, seasonal sets, event/bridal nails, gel/acrylic/dip education, design polls, retention reminders, or client FAQ content. Use DM keywords like NAILS, FILL, SET, DESIGN, or BOOK.
+- For hair stylists and barbers: use the user's prompt to choose between consultation prompts, color service education, haircut maintenance, style upkeep, product recommendations, transformation explanations, appointment openings, seasonal changes, event hair, or client FAQ content. Use DM keywords like HAIR, COLOR, CUT, STYLE, or CONSULT.
+- For estheticians, brows, makeup, skincare, and med-spa style services: use the user's prompt to choose between consultation prompts, prep and aftercare checklists, maintenance timing, skin-goal questions, service education, event/bridal packages, seasonal skin content, brow mapping, makeup prep, or client FAQ content. Use DM keywords like GLOW, BROWS, SKIN, BEAUTY, or CONSULT.
+- Beauty content should sound polished, trust-building, specific, and booking-focused. Avoid generic beauty fluff like "look beautiful", "feel confident", "glow up", or "treat yourself" unless tied to a specific service, timing, aftercare step, style choice, or booking reason.
+- Beauty content must avoid fear-based, medical-ish, guarantee-heavy, or unsafe claims. Do not say guaranteed, flawless, perfect, damage-free, lasts forever, instant transformation, best in town, ruin your lashes, ruin your set, stop lash loss, lash loss, damage, damaged lashes, premature shedding, natural lash damage, overload natural lashes, save money, wasted money, costly mistakes, or fix damage unless the user gave support.
+- Prefer safer beauty language: keep your set looking fresh, avoid unnecessary gaps, plan your refill timing, choose the right style for your routine, maintenance-friendly, personalized recommendation, results vary, book a consultation first, aftercare matters, refill rhythm, appointment reminder, style refresh, service match, and keep your look consistent between appointments.
+- Beauty CTAs should be direct but calm: DM REFILL, DM LASHES, DM STYLE, Comment REFILL, Book your refill, Ask about openings this week, Send your current routine, or DM CONSULT. Do not use panic language like "don’t wait" unless the user specifically requests urgency.
+- Beauty Action Plans should feel fresh and tied to the weekly prompt. Include what to post, what to ask in DMs, what service or appointment to offer, how to qualify the client, and how to follow up without sounding pushy or fear-based.
+- Beauty public calls to action should be natural and service-specific. Prefer "DM LASHES", "DM REFILL", "Comment LASHES", "Comment REFILL", "DM NAILS", "Comment FILL", "DM HAIR", "DM COLOR", "Comment GLOW", or "DM CONSULT" over awkward generic phrases like "DM me", "book now", or "link in bio" when a clearer service keyword would fit better.
 - Do not default to vague scarcity language like "exclusive", "limited edition", "before it is gone", "do not miss out", "secure your spot", "VIP membership", or "hype" unless the user clearly gave a real limited drop, inventory limit, or membership program.
 - Do not invent production details such as expert sewing, skilled team, every stitch, handcrafted details, premium fabric, perfect fit, sustainable materials, or limited quantities unless the user provided those facts.
 - If production details are missing, use safe behind-the-scenes ideas: fabric close-up, fit check, styling clip, packing orders, choosing colorways, checking samples, product flat lay, founder explaining the design choice, try-on clip, size guide, or waitlist page.
