@@ -307,6 +307,15 @@ function cleanGeneratedText(value: string) {
     .replace(/lash retention/gi, 'how long your set looks full')
     .replace(/keep your lashes full longer/gi, 'keep your set looking fuller between appointments')
     .replace(/keeps your lashes full longer/gi, 'keeps your set looking fuller between appointments')
+    .replace(/women aged \d{2}\s*[-–]\s*\d{2}\s+who\s+/gi, 'clients who ')
+    .replace(/women age \d{2}\s*[-–]\s*\d{2}\s+who\s+/gi, 'clients who ')
+    .replace(/women and men aged \d{2}\s*[-–]\s*\d{2}\s+who\s+/gi, 'clients who ')
+    .replace(/men and women aged \d{2}\s*[-–]\s*\d{2}\s+who\s+/gi, 'clients who ')
+    .replace(/people aged \d{2}\s*[-–]\s*\d{2}\s+who\s+/gi, 'clients who ')
+    .replace(/adults aged \d{2}\s*[-–]\s*\d{2}\s+who\s+/gi, 'clients who ')
+    .replace(/aged \d{2}\s*[-–]\s*\d{2}\s+who\s+/gi, 'who ')
+    .replace(/young adults who\s+/gi, 'clients who ')
+    .replace(/busy professionals who\s+/gi, 'clients who ')
     .replace(/never miss your appointment window/gi, 'stay on your refill rhythm')
     .replace(/\s+([,.!?])/g, '$1')
     .replace(/\s{2,}/g, ' ')
@@ -775,6 +784,10 @@ Trust rules:
 
 Quality rules:
 - The output should feel like something a real business owner could use today.
+- Do not invent age ranges, gender limits, income levels, locations, lifestyle labels, or demographic restrictions unless the user explicitly provides them.
+- Target Audience should describe the buyer situation, service need, occasion, problem, booking intent, or customer behavior — not broad demographics.
+- Prefer audience wording like "clients booking event nails for birthdays and vacations", "lash clients deciding between refill timing and a full set", or "hair clients unsure which color service fits their maintenance routine."
+- Avoid invented audience wording like "women aged 18-35", "women aged 20-40", "men and women aged 25-45", "young adults", or "busy professionals" unless the user provided those specifics.
 - Avoid generic phrases like "boost engagement", "drive sales", "valuable insights", "learn more", and "contact me today."
 - Also avoid filler phrases like "thought-provoking question", "surprising fact", "relatable scenario", "authenticity is key", "resonate with your audience", "builds trust", "share tips", "provide value", "take your business to the next level", and "unlock your potential."
 - Replace generic language with specific wording tied to the user's business, buyer problem, objection, offer, platform, and next action.
@@ -808,6 +821,18 @@ Business rules:
 - For repeat weekly beauty use, make the output feel like a new weekly campaign, not the same campaign repeated. The strategy, content, action plan, lead magnet, funnel, and conversion tips should all use the chosen angle consistently.
 - Avoid repeating the same CTA keyword across every beauty test unless it is clearly the best fit. Use service-specific alternatives when appropriate, such as STYLE, LASHES, REFILL, BOOK, NAILS, DESIGN, FILL, HAIR, COLOR, CUT, GLOW, SKIN, BROWS, or CONSULT.
 - For beauty businesses, rotate between different content angles when relevant: appointment openings, service menu education, style selection, client prep, aftercare, refill/fill/touch-up timing, seasonal services, event/bridal/prom content, product add-ons, reviews/referrals, transformation explanations, consultation prompts, new-client education, repeat-client reminders, and waitlist/deposit messaging.
+- Before writing beauty content, silently choose ONE primary campaign angle for this generation and commit to it across Strategy, Content, Money Plan, Action Plan, lead magnet, funnel, and conversion tips.
+- Do not combine too many beauty angles in one output. One weekly campaign should feel focused, such as “event nail design booking,” “color consultation decision guide,” “lash refill timing,” “new client style guide,” “appointment openings this week,” “aftercare education,” or “seasonal service prep.”
+- If the user asks for repeat appointments, choose a retention or maintenance campaign. If the user asks for new clients, choose an education, style-selection, service-comparison, or consultation campaign. If the user mentions an event, birthday, wedding, vacation, prom, holiday, or season, choose an event/seasonal campaign. If the user mentions color, haircut, lashes, nails, brows, skin, or makeup, make the campaign specific to that service.
+- For beauty outputs, make each platform serve a different role in the same campaign instead of rewriting the same post:
+  - Instagram Reel: quick visual hook, 3-5 scenes, simple spoken lines, one booking CTA.
+  - Instagram Carousel: saveable decision guide, checklist, menu explainer, timing guide, or style-selection framework.
+  - TikTok Script: conversational, punchy explanation with a strong first line and clear payoff.
+  - Facebook Post: local/community-friendly post that explains the service, booking reason, and next step.
+  - LinkedIn Post: only use if the beauty business serves professionals, bridal/event clients, salon owners, or premium service buyers; otherwise keep it practical and local.
+  - YouTube Shorts Script: timed or beat-by-beat version with a clear hook, payoff, and CTA.
+- Beauty lead magnets should change based on the campaign angle. Do not always use a checklist. Use guide, lookbook, style menu, prep sheet, timing guide, aftercare card, event planner, service matcher, consultation questions, or availability note when it fits better.
+- Beauty Action Plans should not repeat the same CTA every day. Day 1 should publish the main asset, Day 2 should reply and qualify, Day 3 should send the resource, Day 4 should answer an objection, Day 5 should invite booking, Day 6 should post a lighter reminder or behind-the-scenes proof, and Day 7 should review replies and plan next week’s campaign angle.
 - For lash artists: use the user's prompt to choose between lash style guide, refill reminder, full set booking, refill booking, aftercare reminders, lash care checklist, classic/hybrid/volume education, appointment openings, event lashes, product add-ons, or client FAQ content. Use DM keywords like LASHES, REFILL, STYLE, or BOOK.
 - For nail artists: use the user's prompt to choose between design menus, appointment availability, fill timing, nail prep, aftercare, seasonal sets, event/bridal nails, gel/acrylic/dip education, design polls, retention reminders, or client FAQ content. Use DM keywords like NAILS, FILL, SET, DESIGN, or BOOK.
 - For hair stylists and barbers: use the user's prompt to choose between consultation prompts, color service education, haircut maintenance, style upkeep, product recommendations, transformation explanations, appointment openings, seasonal changes, event hair, or client FAQ content. Use DM keywords like HAIR, COLOR, CUT, STYLE, or CONSULT.
