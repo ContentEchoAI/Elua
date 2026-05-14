@@ -511,6 +511,295 @@ ${structuredContentEntries.join(',\n')}
 
     const selectedOutputList = finalContentOutputs.join(', ');
 
+    const lowercaseContent = content.toLowerCase();
+
+    const isVagueClothingWaitlistPrompt =
+      mode === 'growth_system' &&
+      /clothing|fashion|apparel|streetwear|brand|ecommerce/.test(
+        lowercaseContent
+      ) &&
+      /waitlist|drop|launch|release/.test(lowercaseContent) &&
+      !/\b(jacket|hoodie|shirt|tee|pants|trousers|dress|skirt|denim|jeans|sneaker|sneakers|shoe|shoes|hat|hats|bag|bags|accessory|accessories|fabric|cotton|leather|wool|silk|linen|price|discount|preorder|bundle|limited|sizing|colorway)\b|t[- ]?shirt|size guide|fit guide|early access|collection includes/.test(
+        lowercaseContent
+      );
+
+    if (isVagueClothingWaitlistPrompt) {
+      const safeContent: Record<string, string> = {};
+
+      finalContentOutputs.forEach((output) => {
+        if (output === 'Instagram Reel') {
+          safeContent[output] = `Scene 1
+Visual: Product close-up or teaser from the upcoming drop
+Spoken Line: We are getting the next drop ready, and I want your input before we share the full details.
+On-Screen Text: Next Drop Preview
+
+Scene 2
+Visual: Flat lay, detail close-up, or behind-the-scenes table
+Spoken Line: Which product type do you want us to preview first?
+On-Screen Text: What should we show first?
+
+Scene 3
+Visual: Founder holding a product, sample, or drop reminder graphic
+Spoken Line: Comment DROP and I’ll send you the waitlist link.
+On-Screen Text: Comment DROP
+
+Scene 4
+Visual: Waitlist page or comment screenshot
+Spoken Line: When the drop details are ready, we’ll send them to the waitlist first.
+On-Screen Text: Join the waitlist
+
+Scene 5
+Visual: Simple text overlay with the CTA
+Spoken Line: Comment DROP below and tell us what you want to see in the next drop.
+On-Screen Text: Comment DROP for the waitlist link`;
+        } else if (output === 'Instagram Carousel') {
+          safeContent[output] = `Slide 1: Next Drop Preview: Help Us Decide What To Show First
+
+Slide 2: Which product type should we preview first?
+
+Slide 3: What color or style would you want to see in the next drop?
+
+Slide 4: We are collecting interest before sharing the full drop details.
+
+Slide 5: Join the waitlist if you want the drop update when it is ready.
+
+Slide 6: Comment DROP and I’ll send you the waitlist link.
+
+Slide 7: After you join, reply with what you want to see first.`;
+        } else if (output === 'TikTok Script') {
+          safeContent[output] = `Hook: We are working on the next clothing drop, and I want your input before we share the full details.
+
+Point 1: Tell us what product type you want to see first.
+
+Point 2: Tell us what color or style you are hoping for.
+
+Point 3: We will use those replies to understand what people want before the drop details are ready.
+
+Payoff: The waitlist is where we will send the update when it is ready.
+
+CTA: Comment DROP and I’ll send you the waitlist link.`;
+        } else if (output === 'LinkedIn Post') {
+          safeContent[output] = `A waitlist should do more than collect emails.
+
+For a clothing drop, it can also help the brand understand what people actually want before the full details are ready.
+
+The simple campaign:
+Ask what product type people want to see.
+Ask what color or style they are hoping for.
+Invite interested people to join the waitlist.
+Send the drop details when they are ready.
+
+The goal is not to claim scarcity or invent product benefits. The goal is to turn product curiosity into a clear list of interested shoppers.
+
+Comment DROP and I’ll send you the waitlist link.`;
+        } else if (output === 'Facebook Post') {
+          safeContent[output] = `We are getting the next clothing drop ready and want your input before we share the full details.
+
+What product type, color, or style would you want to see first?
+
+Comment DROP and I’ll send you the waitlist link so you can get the update when the drop details are ready.`;
+        } else if (output === 'YouTube Shorts Script') {
+          safeContent[output] = `0-3 seconds: We are getting the next clothing drop ready, and we want your input first.
+
+3-10 seconds: Tell us what product type you want to see, what color you are hoping for, or what style you would be most excited about.
+
+10-20 seconds: We will send the drop details to the waitlist when they are ready.
+
+20-30 seconds: Comment DROP and I’ll send you the waitlist link.`;
+        }
+      });
+
+      const structuredContent: StructuredContent = {};
+
+      if (finalContentOutputs.includes('Instagram Reel')) {
+        structuredContent['Instagram Reel'] = {
+          scenes: [
+            {
+              visual: 'Product close-up or teaser from the upcoming drop',
+              spoken_line:
+                'We are getting the next drop ready, and I want your input before we share the full details.',
+              on_screen_text: 'Next Drop Preview',
+            },
+            {
+              visual: 'Flat lay, detail close-up, or behind-the-scenes table',
+              spoken_line: 'Which product type do you want us to preview first?',
+              on_screen_text: 'What should we show first?',
+            },
+            {
+              visual: 'Founder holding a product, sample, or drop reminder graphic',
+              spoken_line: 'Comment DROP and I’ll send you the waitlist link.',
+              on_screen_text: 'Comment DROP',
+            },
+            {
+              visual: 'Waitlist page or comment screenshot',
+              spoken_line:
+                'When the drop details are ready, we’ll send them to the waitlist first.',
+              on_screen_text: 'Join the waitlist',
+            },
+            {
+              visual: 'Simple text overlay with the CTA',
+              spoken_line:
+                'Comment DROP below and tell us what you want to see in the next drop.',
+              on_screen_text: 'Comment DROP for the waitlist link',
+            },
+          ],
+        };
+      }
+
+      if (finalContentOutputs.includes('Instagram Carousel')) {
+        structuredContent['Instagram Carousel'] = {
+          slides: [
+            {
+              slide_number: 1,
+              text: 'Next Drop Preview: Help Us Decide What To Show First',
+            },
+            {
+              slide_number: 2,
+              text: 'Which product type should we preview first?',
+            },
+            {
+              slide_number: 3,
+              text: 'What color or style would you want to see in the next drop?',
+            },
+            {
+              slide_number: 4,
+              text: 'We are collecting interest before sharing the full drop details.',
+            },
+            {
+              slide_number: 5,
+              text: 'Join the waitlist if you want the drop update when it is ready.',
+            },
+            {
+              slide_number: 6,
+              text: 'Comment DROP and I’ll send you the waitlist link.',
+            },
+            {
+              slide_number: 7,
+              text: 'After you join, reply with what you want to see first.',
+            },
+          ],
+        };
+      }
+
+      const bestPlatform = finalContentOutputs.includes('Instagram Carousel')
+        ? 'Instagram Carousel'
+        : finalContentOutputs[0];
+
+      const safeResponse: GeneratedResponse = {
+        mode: 'growth_system',
+        strategy: {
+          target_audience:
+            'People who are interested in the next clothing drop but need more product details before deciding whether to follow along or join the waitlist.',
+          core_angle:
+            'Use a waitlist-interest campaign that asks what product type, color, or style people want to see, then collects waitlist signups before the full drop details are ready.',
+          content_goal:
+            'Turn product curiosity into waitlist signups by asking preference questions, sending the waitlist link, and saving interested replies for follow-up when drop details are ready.',
+          hook_strategies: [
+            'Ask which product type people want to see first.',
+            'Ask what color or style people are hoping for.',
+            'Invite interested followers to comment DROP for the waitlist link.',
+          ],
+          emotional_triggers: [
+            'Curiosity about the next drop',
+            'Wanting input before details are released',
+            'Being notified when drop details are ready',
+          ],
+          content_style:
+            'Keep the campaign simple, visual, and preference-driven. Use product previews, behind-the-scenes visuals, and direct waitlist CTAs without inventing product claims.',
+          why_it_works:
+            'It gives interested followers a low-pressure way to raise their hand, helps the brand learn what people want, and creates a list to notify when the drop details are ready.',
+          best_platform: bestPlatform,
+        },
+        best_output: {
+          platform: bestPlatform,
+          reason:
+            'This platform is the strongest fit because it can show a simple preview, ask a preference question, and drive a clear waitlist action.',
+          content: safeContent[bestPlatform],
+        },
+        content: safeContent,
+        structured_content: structuredContent,
+        monetization: {
+          offer_ideas: [
+            'Next Drop Waitlist: collect interested shoppers before the full drop details are ready.',
+            'Drop Update List: notify people who asked to see the product details first.',
+            'Product Interest Follow-Up: ask interested leads what product type, color, or style they want to see.',
+          ],
+          lead_magnet: 'Next Drop Waitlist',
+          funnel: {
+            step_1:
+              'Post the selected content asking what product type, color, or style people want to see.',
+            step_2:
+              'Use the CTA: Comment DROP and I’ll send you the waitlist link.',
+            step_3:
+              'When someone comments DROP, send the waitlist link and ask what they want to see first.',
+          },
+          cta_strategy:
+            'Comment DROP and I’ll send you the waitlist link. Then ask what product type, color, or style they want to see first.',
+          action_plan: [
+            {
+              day: 'Day 1',
+              action:
+                'Post the main waitlist-interest content asking what people want to see in the next drop.',
+              cta: 'Comment DROP and I’ll send you the waitlist link.',
+              follow_up:
+                'Send the waitlist link and ask what product type, color, or style they want to see first.',
+            },
+            {
+              day: 'Day 2',
+              action: 'Reply to every comment and DM with the waitlist link.',
+              cta: 'Ask: What do you want us to preview first?',
+              follow_up:
+                'Save common product, color, or style requests for future drop content.',
+            },
+            {
+              day: 'Day 3',
+              action:
+                'Post a short reminder using a product close-up, flat lay, or behind-the-scenes visual.',
+              cta: 'DM DROP for the waitlist link.',
+              follow_up:
+                'Ask each interested person what they are hoping to see in the drop.',
+            },
+            {
+              day: 'Day 4',
+              action:
+                'Share a simple poll or question about what followers want to see first.',
+              cta: 'Reply with the product type or color you want to see.',
+              follow_up: 'Invite warm replies to join the waitlist.',
+            },
+            {
+              day: 'Day 5',
+              action: 'Send a waitlist reminder to people who showed interest.',
+              cta: 'Join the waitlist for drop updates.',
+              follow_up:
+                'Let them know the drop details will be shared when they are ready.',
+            },
+            {
+              day: 'Day 6',
+              action:
+                'Post one more behind-the-scenes or drop reminder graphic.',
+              cta: 'Comment DROP if you want the waitlist link.',
+              follow_up: 'Send the link and ask one preference question.',
+            },
+            {
+              day: 'Day 7',
+              action:
+                'Review replies and identify the most requested product types, colors, or styles.',
+              cta: 'Use the most common request as next week’s content angle.',
+              follow_up:
+                'Prepare the next post around what followers said they wanted most.',
+            },
+          ],
+          conversion_tips: [
+            'Ask one simple preference question after sending the waitlist link.',
+            'Track which product types, colors, or styles get the most replies.',
+            'Notify waitlist signups when the drop details are ready.',
+          ],
+        },
+      };
+
+      return NextResponse.json(cleanGeneratedValue(safeResponse));
+    }
+
     const viralHooksPrompt = `
 You are Hummingbird AI's Master Hook Writer.
 
