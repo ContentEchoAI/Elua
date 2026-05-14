@@ -1137,14 +1137,38 @@ Instagram Carousel rules:
 
 TikTok Script rules:
 - Write a fast spoken script for one person talking to camera.
-- Include: Hook, Point 1, Point 2, Point 3, Payoff, CTA.
+- TikTok Script must be formatted as separate labeled sections exactly like this:
+  Hook:
+  Point 1:
+  Point 2:
+  Point 3:
+  Payoff:
+  CTA:
+- Do not return TikTok Script as one paragraph.
+- Each TikTok section must be short, recordable, and camera-ready.
+- Hook must be 1 punchy sentence only.
+- Point 1, Point 2, and Point 3 should each be 1 short spoken beat.
+- Payoff should clearly explain why the viewer should care.
+- CTA should be one clear action using the campaign CTA keyword.
 - Keep the tone direct, useful, and conversational.
-- Make it feel like something someone could record immediately.
+- Make it feel like something someone could record immediately without rewriting.
 - The Hook must be a 0-3 second spoken line that creates immediate curiosity, tension, recognition, or a clear reason to keep watching.
 - Start with the sharpest buyer problem, mistake, objection, myth, or surprising insight. Do not start with a greeting, setup, or generic explanation.
-- Strong TikTok style: "I have 3 client wins. Here’s how I’d turn them into 4 weeks of sales content without making anything up."
+- Strong TikTok hook examples:
+  "Your workouts are not failing because you are lazy. They are failing because your plan is too random."
+  "If every busy week kills your workouts, motivation is not the real problem."
+  "Most people do not need a harder workout plan. They need a plan they can actually repeat."
+  "You do great Monday through Wednesday, then the whole week falls apart. That is the real problem."
+- Strong TikTok format example:
+  Hook: Your workouts are not failing because you are lazy. They are failing because your plan is too random.
+  Point 1: If your schedule changes every week, your workout plan has to fit real life.
+  Point 2: Most people do not need harder workouts. They need a repeatable system.
+  Point 3: Weekly check-ins help catch the problem before you quit.
+  Payoff: A simple plan plus accountability keeps you from starting over every Monday.
+  CTA: Comment CHECK and I’ll send you the Fitness Goal Check.
 - Weak TikTok style to avoid: "Hey everyone, here’s a quick tip."
 - Weak TikTok style to avoid: "I’m not using private details, but..."
+- Weak TikTok style to avoid: one long paragraph with all points merged together.
 
 YouTube Shorts Script rules:
 - Write a tight short-form script with timestamps or beats.
