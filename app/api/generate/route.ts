@@ -219,6 +219,84 @@ function cleanGeneratedText(value: string) {
     .replace(/No-obligation market evaluation/gi, 'Home Value Conversation')
     .replace(/market evaluation/gi, 'Home Value Conversation')
     .replace(/Market evaluation/gi, 'Home Value Conversation')
+    .replace(/today['’]s market/gi, 'your current selling situation')
+    .replace(/Today['’]s market/gi, 'Your current selling situation')
+    .replace(/best time to list/gi, 'right timing for your situation')
+    .replace(/Best time to list/gi, 'Right timing for your situation')
+    .replace(/best time to sell/gi, 'right timing for your situation')
+    .replace(/Best time to sell/gi, 'Right timing for your situation')
+    .replace(/serious buyers/gi, 'better-prepared buyers')
+    .replace(/Serious buyers/gi, 'Better-prepared buyers')
+    .replace(/prevents delays/gi, 'helps you plan with fewer surprises')
+    .replace(/Prevents delays/gi, 'Helps you plan with fewer surprises')
+    .replace(/avoid unnecessary delays/gi, 'plan with fewer surprises')
+    .replace(/Avoid unnecessary delays/gi, 'Plan with fewer surprises')
+    .replace(/saves time and money/gi, 'helps you make clearer prep decisions')
+    .replace(/Saves time and money/gi, 'Helps you make clearer prep decisions')
+    .replace(/save time and money/gi, 'make clearer prep decisions')
+    .replace(/Save time and money/gi, 'Make clearer prep decisions')
+    .replace(/increases your chances of a clearer selling process/gi, 'helps you prepare for a clearer selling conversation')
+    .replace(/Increases your chances of a clearer selling process/gi, 'Helps you prepare for a clearer selling conversation')
+    .replace(/clearer selling process/gi, 'clearer selling conversation')
+    .replace(/Clearer selling process/gi, 'Clearer selling conversation')
+    .replace(/maximize value/gi, 'make smarter prep decisions')
+    .replace(/Maximize value/gi, 'Make smarter prep decisions')
+    .replace(/maximizing value/gi, 'making smarter prep decisions')
+    .replace(/Maximizing value/gi, 'Making smarter prep decisions')
+    .replace(/avoid wasting money/gi, 'avoid spending on the wrong prep items')
+    .replace(/Avoid wasting money/gi, 'Avoid spending on the wrong prep items')
+    .replace(/wasting money/gi, 'spending on the wrong prep items')
+    .replace(/Wasting money/gi, 'Spending on the wrong prep items')
+    .replace(/serious buyers/gi, 'better-prepared buyers')
+    .replace(/Serious buyers/gi, 'Better-prepared buyers')
+    .replace(/serious offers/gi, 'stronger conversations')
+    .replace(/Serious offers/gi, 'Stronger conversations')
+    .replace(/free Seller Readiness Review/gi, 'Seller Readiness Review')
+    .replace(/Free Seller Readiness Review/gi, 'Seller Readiness Review')
+    .replace(/free seller review/gi, 'Seller Readiness Review')
+    .replace(/Free seller review/gi, 'Seller Readiness Review')
+    .replace(/professional home value estimate/gi, 'home value conversation')
+    .replace(/Professional home value estimate/gi, 'Home value conversation')
+    .replace(/market analysis/gi, 'home value conversation')
+    .replace(/Market analysis/gi, 'Home value conversation')
+    .replace(/local market insights/gi, 'local selling questions')
+    .replace(/Local market insights/gi, 'Local selling questions')
+    .replace(/right time to sell/gi, 'right timing for your situation')
+    .replace(/Right time to sell/gi, 'Right timing for your situation')
+    .replace(/right time to list/gi, 'right timing for your situation')
+    .replace(/Right time to list/gi, 'Right timing for your situation')
+    .replace(/best timing/gi, 'right timing for your situation')
+    .replace(/Best timing/gi, 'Right timing for your situation')
+    .replace(/prevents delays/gi, 'helps you plan with fewer surprises')
+    .replace(/Prevents delays/gi, 'Helps you plan with fewer surprises')
+    .replace(/attracts serious buyers/gi, 'helps buyers understand the home more clearly')
+    .replace(/Attracts serious buyers/gi, 'Helps buyers understand the home more clearly')
+    .replace(/attract buyers/gi, 'help buyers understand the home')
+    .replace(/Attract buyers/gi, 'Help buyers understand the home')
+    .replace(/costs time and money/gi, 'can make preparation feel more confusing')
+    .replace(/Costs time and money/gi, 'Can make preparation feel more confusing')
+    .replace(/cost time and money/gi, 'make preparation feel more confusing')
+    .replace(/Cost time and money/gi, 'Make preparation feel more confusing')
+    .replace(/serious inquiries/gi, 'qualified conversations')
+    .replace(/Serious inquiries/gi, 'Qualified conversations')
+    .replace(/booked Seller Prep Consultations/gi, 'Seller Prep Consultation conversations')
+    .replace(/Booked Seller Prep Consultations/gi, 'Seller Prep Consultation conversations')
+    .replace(/booked consultations/gi, 'consultation conversations')
+    .replace(/Booked consultations/gi, 'Consultation conversations')
+    .replace(/competitive price/gi, 'pricing conversation')
+    .replace(/Competitive price/gi, 'Pricing conversation')
+    .replace(/reduce your sale options/gi, 'make your next steps less clear')
+    .replace(/Reduce your sale options/gi, 'Make your next steps less clear')
+    .replace(/market-ready/gi, 'listing-prep ready')
+    .replace(/Market-ready/gi, 'Listing-prep ready')
+    .replace(/professional insights/gi, 'practical seller prep guidance')
+    .replace(/Professional insights/gi, 'Practical seller prep guidance')
+    .replace(/drives direct engagement/gi, 'encourages direct replies')
+    .replace(/Drives direct engagement/gi, 'Encourages direct replies')
+    .replace(/converting serious inquiries into/gi, 'guiding qualified replies toward')
+    .replace(/Converting serious inquiries into/gi, 'Guiding qualified replies toward')
+    .replace(/converting attention into revenue/gi, 'connecting attention to a clear paid next step')
+    .replace(/Converting attention into revenue/gi, 'Connecting attention to a clear paid next step')
     .replace(/before it['’]s gone/gi, 'before the drop opens')
     .replace(/Before it['’]s gone/gi, 'Before the drop opens')
     .replace(/do not miss out/gi, 'join the waitlist for early access')
@@ -507,6 +585,30 @@ Content idea: ${content}
 Goal: ${goal}
 Brand voice: ${selectedVoice}
 Selected platforms: ${selectedOutputList}
+
+Strategy field rules:
+The Strategy tab should feel like the brain of the campaign, not a short summary.
+
+Fill strategy fields this way:
+- target_audience: Describe the buyer situation, urgency, awareness level, decision moment, or service need. Do not use broad demographics.
+- core_angle: Write the actual campaign strategy in one clear sentence. Include the campaign route, audience problem, lead capture step, and paid next step when possible.
+- content_goal: Explain the path from attention to lead or sale. Mention what the selected content should do first, what action the audience should take next, and how that connects to the offer.
+- hook_strategies: Give 3 distinct hook angles. Each should be a usable angle tied to a buyer problem, objection, mistake, decision point, or desired outcome.
+- emotional_triggers: Give 3 practical buyer motivations or concerns, such as uncertainty, convenience, confidence, readiness, avoiding wasted effort, saving time, comparing options, or knowing the right next step.
+- content_style: Explain how the campaign should be executed across the selected platforms. Include tone, format, and what to emphasize.
+- why_it_works: Explain why this plan can turn attention into a lead, booking, consultation, quote, order, waitlist signup, or sale.
+- best_platform: Choose exactly one selected platform and explain why it is the strongest platform for this campaign.
+
+Weak Strategy style to avoid:
+- "Educate the audience and build trust."
+- "Create engaging content to drive leads."
+- "Use helpful posts to generate interest."
+- "Professional, clear, and actionable."
+
+Strong Strategy style examples:
+- "Use a seller-readiness checklist campaign to attract homeowners who are thinking about selling but feel unsure about timing, repairs, pricing, or preparation. Start with a practical carousel, capture leads with the checklist, ask about timeline and biggest concern, then guide serious replies into a Seller Readiness Review."
+- "Use a fitness-obstacle campaign to attract people who miss workouts because of busy schedules, nutrition confusion, or lack of accountability. Start with a carousel that names the problem, offer a Fitness Goal Check, ask one qualifying question, then invite serious replies to a Starter Coaching Call."
+- "Use a product-fit campaign to turn product curiosity into waitlist signups. Show the item, explain fit and styling use cases, invite sizing questions, then send warm replies to the early-access page."
 
 Selected goal rules:
 The user's selected goal must noticeably change the output.
