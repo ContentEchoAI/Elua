@@ -1056,6 +1056,10 @@ Do not default to the same CTA, lead magnet, or offer style every time.
 
 Platform writing rules:
 - Every selected platform output must feel native to that platform, not like the same idea rewritten with a different label.
+- Short-form video outputs must treat the first 3 seconds as the most important part of the asset.
+- For Instagram Reels, TikTok Scripts, and YouTube Shorts Scripts, the first spoken line must create immediate curiosity, tension, recognition, or a clear reason to keep watching.
+- Do not open short-form video outputs with generic setup, context, explanation, greetings, or phrases like "Today I want to talk about", "Here are three tips", "Let me show you", or "If you are interested in".
+- The first line should make the viewer think: "That sounds like me", "I did not think about it that way", "I need to know the answer", or "I might be making that mistake."
 - Do not make all selected outputs repeat the same opening line, CTA sentence, or structure.
 - Use the chosen campaign route, but adapt it differently for each platform.
 - Write the actual post/script/carousel copy, not advice about what the post should say.
@@ -1107,7 +1111,9 @@ Instagram Reel rules:
 - Write a scene-by-scene filming plan.
 - Include 5-7 short scenes.
 - Each scene must include: Visual, Spoken Line, On-Screen Text.
-- The first scene must have a strong scroll-stopping hook.
+- Scene 1 must be the strongest 0-3 second hook in the entire Reel.
+- Scene 1 spoken_line must create immediate curiosity, tension, recognition, or a clear reason to keep watching.
+- Scene 1 must not be a generic setup or explanation. Start with the sharpest buyer problem, mistake, objection, myth, or surprising insight.
 - The middle scenes must give useful steps, questions, examples, or a simple process.
 - The final scene must include a specific CTA.
 - Keep spoken lines natural, short, and camera-ready.
@@ -1134,7 +1140,8 @@ TikTok Script rules:
 - Include: Hook, Point 1, Point 2, Point 3, Payoff, CTA.
 - Keep the tone direct, useful, and conversational.
 - Make it feel like something someone could record immediately.
-- Start with a sharp spoken hook, not a greeting.
+- The Hook must be a 0-3 second spoken line that creates immediate curiosity, tension, recognition, or a clear reason to keep watching.
+- Start with the sharpest buyer problem, mistake, objection, myth, or surprising insight. Do not start with a greeting, setup, or generic explanation.
 - Strong TikTok style: "I have 3 client wins. Here’s how I’d turn them into 4 weeks of sales content without making anything up."
 - Weak TikTok style to avoid: "Hey everyone, here’s a quick tip."
 - Weak TikTok style to avoid: "I’m not using private details, but..."
