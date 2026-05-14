@@ -668,6 +668,9 @@ Platform writing rules:
 - Do not make all selected outputs repeat the same opening line, CTA sentence, or structure.
 - Use the chosen campaign route, but adapt it differently for each platform.
 - Write the actual post/script/carousel copy, not advice about what the post should say.
+- Every selected platform output must be final audience-facing content the user can publish, not an outline, planning note, or instruction.
+- Do not write meta-instructions like "Share how...", "Discuss...", "Explain...", "Talk about...", "Highlight...", "Introduce...", "Post about...", "Use this slide to...", "Invite followers to...", or "Ask followers if..." inside platform content.
+- Replace instructional copy with the exact words the audience should see or hear.
 - Every output must include at least one specific buyer problem, objection, mistake, decision point, or next step.
 - Avoid lesson-summary endings like "building trust is key" or "interested in learning more." End with a concrete action.
 - Make the content feel like it came from a sharp operator inside the user's business, not a generic social media template.
@@ -721,12 +724,18 @@ Instagram Reel rules:
 
 Instagram Carousel rules:
 - Write 6-8 slides.
-- Each slide must have exact slide text.
+- Each slide must have exact slide text the audience would actually read on the carousel.
 - Slide 1 must be a strong title.
 - Slides 2-6 must build a useful swipe-through lesson, checklist, framework, or decision guide.
 - The second-to-last slide should summarize the key takeaway.
 - The final slide must include a specific CTA.
 - Do not use image placeholders.
+- Do not write slide planning notes or creator instructions.
+- Do not write carousel slides that start with planning labels like "Week 1 - Starting Problem:", "Week 2 - Coaching Process:", "Week 3 - Consistency Obstacle:", "Week 4 - First Coaching Step:", "Key Takeaway:", or "CTA:" unless the rest of the slide is written as finished audience-facing copy.
+- Bad carousel slide: "Week 1 - Starting Problem: Share how a busy schedule or no clear plan leads to inconsistent workouts."
+- Good carousel slide: "Busy week? No clear plan? That is usually when workouts disappear first."
+- Bad carousel slide: "Week 2 - Coaching Process: Show how a beginner-friendly plan and weekly check-ins help clients stay on track."
+- Good carousel slide: "A beginner-friendly plan works better when you know exactly what to do this week, not someday."
 - Do not write vague slides like "valuable insights" or "learn more."
 
 TikTok Script rules:
@@ -749,11 +758,12 @@ YouTube Shorts Script rules:
 - Weak YouTube Shorts style to avoid: "Want the full plan?"
 
 LinkedIn Post rules:
-- Write a professional post that sounds like a real founder, coach, consultant, or business owner.
+- Write a finished professional post that sounds like a real founder, coach, consultant, or business owner.
 - Start with a strong plain-English insight.
 - Include a useful framework, lesson, example, or decision filter.
 - Use short paragraphs with natural spacing.
 - End with a soft but specific CTA.
+- Do not write a strategy summary, outline, or numbered plan about what the user should post later.
 - Do not sound like a corporate ad.
 - Do not start with a question unless it is unusually specific and strong.
 - Strong LinkedIn style: "Client transformations are not just proof. They are content systems when you break them into the starting problem, the coaching process, the obstacle, and the next step."
@@ -790,6 +800,8 @@ Trust rules:
 
 Quality rules:
 - The output should feel like something a real business owner could use today.
+- Final check before returning JSON: if any selected platform output reads like an instruction to the creator instead of finished content for the audience, rewrite it into copy-ready content.
+- Final check before returning JSON: carousel slides must not tell the user what to share, explain, discuss, introduce, highlight, or ask. They must contain the exact slide copy.
 - Do not invent age ranges, gender limits, income levels, locations, lifestyle labels, or demographic restrictions unless the user explicitly provides them.
 - Target Audience should describe the buyer situation, service need, occasion, problem, booking intent, or customer behavior — not broad demographics.
 - Prefer audience wording like "clients booking event nails for birthdays and vacations", "lash clients deciding between refill timing and a full set", or "hair clients unsure which color service fits their maintenance routine."
