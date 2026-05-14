@@ -178,7 +178,7 @@ function findGeneratedOutput(
 }
 
 function cleanGeneratedText(value: string) {
-  return value
+  const cleaned = value
     .replace(/I['’]m not posting private client details,? but\s*/gi, '')
     .replace(/I['’]m not sharing private client details,? but\s*/gi, '')
     .replace(/Instead of sharing private details,?\s*/gi, '')
@@ -320,6 +320,12 @@ function cleanGeneratedText(value: string) {
     .replace(/\s+([,.!?])/g, '$1')
     .replace(/\s{2,}/g, ' ')
     .trim();
+
+  if (!cleaned) {
+    return '';
+  }
+
+  return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
 }
 
 function cleanGeneratedValue<T>(value: T): T {
@@ -819,6 +825,9 @@ Business rules:
 - Do not make every beauty output a "mistakes" post or refill checklist. Match the user's exact weekly goal and rotate angles so the business can come back each week without getting repetitive output.
 - If a beauty user gives a broad booking goal such as "get more bookings", "get more appointments", "get more clients", or "get more refills", do not default only to mistakes/refill timing. Choose a fresh angle based on the service and prompt: style guide, availability/openings, first-time client education, service comparison, prep checklist, aftercare routine, seasonal/event booking, product add-on, review/referral request, client FAQ, or maintenance reminder.
 - For repeat weekly beauty use, make the output feel like a new weekly campaign, not the same campaign repeated. The strategy, content, action plan, lead magnet, funnel, and conversion tips should all use the chosen angle consistently.
+- Avoid overusing the phrases "decision guide" and "quick checklist" in beauty outputs. Do not use "decision guide" more than once in a single beauty generation. Prefer more specific campaign names tied to the user's prompt, such as "Color Service Matcher", "Refill Timing Guide", "Event Nail Prep Sheet", "Style Menu", "Opening Reminder", "Aftercare Card", "Service Fit Guide", "Consultation Prep Sheet", "Maintenance Plan", "Color & Cut Planner", "Appointment Prep Sheet", or "Style Match Guide".
+- For beauty outputs, choose ONE primary CTA keyword per campaign when possible. Avoid mixing three or more CTA keywords like COLOR, CUT, and BOOK in the same campaign unless the user clearly asked for multiple services. If multiple services are mentioned, pick the best primary keyword and explain the secondary option only in the follow-up.
+- Beauty content should sound calm and professional, not alarm-based. Avoid phrases like "big mistake", "don't wait too long", "avoid damage", "ruins your look", "wrecks your look", "costly mistakes", "wastes money", or "book now before it is too late." Use calmer alternatives like "common timing issue", "easy mix-up", "helps you plan the right appointment", "keeps the process clear", "prevents confusion", or "makes booking easier".
 - Avoid repeating the same CTA keyword across every beauty test unless it is clearly the best fit. Use service-specific alternatives when appropriate, such as STYLE, LASHES, REFILL, BOOK, NAILS, DESIGN, FILL, HAIR, COLOR, CUT, GLOW, SKIN, BROWS, or CONSULT.
 - For beauty businesses, rotate between different content angles when relevant: appointment openings, service menu education, style selection, client prep, aftercare, refill/fill/touch-up timing, seasonal services, event/bridal/prom content, product add-ons, reviews/referrals, transformation explanations, consultation prompts, new-client education, repeat-client reminders, and waitlist/deposit messaging.
 - Before writing beauty content, silently choose ONE primary campaign angle for this generation and commit to it across Strategy, Content, Money Plan, Action Plan, lead magnet, funnel, and conversion tips.
@@ -841,6 +850,7 @@ Business rules:
 - Beauty content must avoid fear-based, medical-ish, guarantee-heavy, or unsafe claims. Do not say guaranteed, flawless, perfect, damage-free, lasts forever, instant transformation, best in town, ruin your lashes, ruin your set, stop lash loss, lash loss, damage, damaged lashes, premature shedding, natural lash damage, overload natural lashes, save money, wasted money, costly mistakes, or fix damage unless the user gave support.
 - Prefer safer beauty language: keep your set looking fresh, avoid unnecessary gaps, plan your refill timing, choose the right style for your routine, maintenance-friendly, personalized recommendation, results vary, book a consultation first, aftercare matters, refill rhythm, appointment reminder, style refresh, service match, and keep your look consistent between appointments.
 - Beauty CTAs should be direct but calm: DM REFILL, DM LASHES, DM STYLE, Comment REFILL, Book your refill, Ask about openings this week, Send your current routine, or DM CONSULT. Do not use panic language like "don’t wait" unless the user specifically requests urgency.
+- Beauty CTAs should be easy for a real client to follow. Prefer one clear action per post: DM one keyword, comment one keyword, ask about openings, request a prep sheet, or reply with a service goal. Avoid stacking multiple actions in one CTA.
 - Beauty Action Plans should feel fresh and tied to the weekly prompt. Include what to post, what to ask in DMs, what service or appointment to offer, how to qualify the client, and how to follow up without sounding pushy or fear-based.
 - Beauty public calls to action should be natural and service-specific. Prefer "DM LASHES", "DM REFILL", "Comment LASHES", "Comment REFILL", "DM NAILS", "Comment FILL", "DM HAIR", "DM COLOR", "Comment GLOW", or "DM CONSULT" over awkward generic phrases like "DM me", "book now", or "link in bio" when a clearer service keyword would fit better.
 - Do not default to vague scarcity language like "exclusive", "limited edition", "before it is gone", "do not miss out", "secure your spot", "VIP membership", or "hype" unless the user clearly gave a real limited drop, inventory limit, or membership program.
@@ -855,7 +865,9 @@ Business rules:
 
 Offer rules:
 - Offer names should feel like real named products or services.
-- Each offer idea must include: offer name, what it is, who buys it, buyer stage, and why they would want it.
+- Each offer idea must include: offer name, what it is, who buys it, when it fits, and why they would want it.
+- Do not write visible phrases like "buyer stage", "awareness stage", "consideration stage", "decision stage", "repeat purchase stage", or "retention stage" in Money Plan offers. Use plain customer-fit language instead, such as "best for first-time clients", "best for clients comparing options", "best for repeat clients", "best for clients ready to book", or "best for clients maintaining their look."
+- The AI may think about buyer stage silently, but the user-facing Money Plan should sound like a practical offer plan, not marketing strategy jargon.
 - At least one offer should be a simple starter offer the user could realistically sell soon.
 - The paid offers must sell the user's actual business, not the topic of the content.
 - If the user is a fitness coach, the paid offers should be fitness coaching, assessments, starter plans, accountability programs, personal training, nutrition coaching, or check-in packages — not content consulting, ethical content creation, marketing services, or creator education.
