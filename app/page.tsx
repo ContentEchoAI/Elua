@@ -774,6 +774,66 @@ export default function Home() {
           <div className="hidden lg:block">{accountPanel}</div>
         </div>
 
+        <div className="mb-4 rounded-3xl border border-zinc-800 bg-zinc-900/80 p-4 sm:p-5 lg:mb-8">
+          <div className="mb-4 grid gap-3 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-purple-400">
+                Sample output preview
+              </p>
+              <h3 className="mt-1 text-xl font-semibold leading-tight text-white sm:text-2xl">
+                What you get in one generation
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-zinc-400">
+                See the kind of strategy, content, CTA, and follow-up path Hummingbird
+                builds from one business goal.
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-zinc-800 bg-zinc-950/50 p-4">
+              <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                Example input
+              </p>
+              <p className="text-sm leading-relaxed text-zinc-200">
+                “I’m a fitness coach and I want Instagram content that helps me get more
+                online coaching calls.”
+              </p>
+            </div>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              {
+                title: 'Post to publish',
+                body: 'A Reel, carousel, TikTok, LinkedIn post, or short-form script built for your goal.',
+              },
+              {
+                title: 'CTA to use',
+                body: 'A clear comment, DM, booking, lead magnet, quote, or sales next step.',
+              },
+              {
+                title: 'Money path',
+                body: 'How the content can turn into leads, bookings, calls, orders, or sales.',
+              },
+              {
+                title: '7-day action plan',
+                body: 'What to post next, how to follow up, and what to ask warm leads.',
+              },
+            ].map((item) => (
+              <div
+                key={item.title}
+                className="rounded-2xl border border-zinc-800 bg-zinc-950/40 p-4"
+              >
+                <p className="mb-1 text-sm font-semibold text-purple-300">
+                  {item.title}
+                </p>
+                <p className="text-xs leading-relaxed text-zinc-400 sm:text-sm">
+                  {item.body}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
         <div className="grid w-full min-w-0 items-stretch gap-4 lg:grid-cols-[0.95fr_1.2fr] lg:gap-8">
           <div className="order-1 min-w-0">
             <div className="rounded-3xl border border-zinc-800 bg-zinc-900/90 p-4 sm:p-6">
