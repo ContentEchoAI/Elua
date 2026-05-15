@@ -489,12 +489,12 @@ function cleanGeneratedText(value: string) {
     .replace(/Converting attention into revenue/gi, 'Connecting attention to a clear paid next step')
     .replace(/before it['’]s gone/gi, 'before the drop opens')
     .replace(/Before it['’]s gone/gi, 'Before the drop opens')
-    .replace(/do not miss out/gi, 'join the waitlist for early access')
-    .replace(/Don['’]t miss out/gi, 'Join the waitlist for early access')
+    .replace(/do not miss out/gi, 'join the waitlist for drop update')
+    .replace(/Don['’]t miss out/gi, 'Join the waitlist for drop update')
     .replace(/secure your spot/gi, 'join the waitlist')
     .replace(/Secure your spot/gi, 'Join the waitlist')
     .replace(/VIP Waitlist Membership/gi, 'Early Access Waitlist')
-    .replace(/VIP membership/gi, 'early access list')
+    .replace(/VIP membership/gi, 'drop update list')
     .replace(/limited edition clothing/gi, 'upcoming clothing drop')
     .replace(/limited-edition clothing/gi, 'upcoming clothing drop')
     .replace(/every stitch/gi, 'the product details')
@@ -703,15 +703,37 @@ ${structuredContentEntries.join(',\n')}
 
     const lowercaseContent = content.toLowerCase();
 
-    const isVagueClothingWaitlistPrompt =
-      mode === 'growth_system' &&
-      /clothing|fashion|apparel|streetwear|brand|ecommerce/.test(
-        lowercaseContent
-      ) &&
-      /waitlist|drop|launch|release/.test(lowercaseContent) &&
-      !/\b(jacket|hoodie|shirt|tee|pants|trousers|dress|skirt|denim|jeans|sneaker|sneakers|shoe|shoes|hat|hats|bag|bags|accessory|accessories|fabric|cotton|leather|wool|silk|linen|price|discount|preorder|bundle|limited|sizing|colorway)\b|t[- ]?shirt|size guide|fit guide|early access|collection includes/.test(
+    const isClothingOrEcommercePrompt =
+      /clothing|fashion|apparel|streetwear|brand|ecommerce|e-commerce|product brand|drop|waitlist|launch|release/.test(
         lowercaseContent
       );
+
+    const hasSpecificClothingProductDetails =
+      /\b(jacket|hoodie|shirt|tee|t-shirt|pants|trousers|dress|skirt|denim|jeans|sneaker|sneakers|shoe|shoes|hat|hats|bag|bags|accessory|accessories|cotton|leather|wool|silk|linen|polyester|fleece|canvas|size guide|fit guide|colorway|black|white|blue|red|green|brown|pink|price|discount|preorder|bundle|limited|inventory|launch date|drop date|collection includes)\b/.test(
+        lowercaseContent
+      );
+
+    const clothingEcommerceContextRules =
+      isClothingOrEcommercePrompt && !hasSpecificClothingProductDetails
+        ? `
+IMPORTANT VAGUE CLOTHING/ECOMMERCE CONTEXT:
+The user did not provide the exact product, material, fit, colorways, production process, launch date, inventory, discount, bundle, preorder terms, drop-update perk, sizing guide, or fulfillment details.
+
+For this generation:
+- Do NOT invent a product type like jacket, hoodie, tee, pants, dress, or accessory.
+- Do NOT invent fabric, material, stitching, durability, softness, breathability, quality, fit testing, model try-ons, branded packaging, customer requests, previous drops, number of colorways, bundles, discounts, preorder terms, VIP access, drop-update perks, guaranteed sizing, scarcity, shipping, fulfillment, careful packing, launch urgency, or purchase access before launch.
+- Do NOT use the words "exclusive", "preorder", "VIP", "guaranteed", "secure", "spots", "limited", "early access", "previous drops", "quality", "be first", "first chance", or "purchase before launch" unless the user clearly provided those exact details.
+- Use product-agnostic wording: "the item", "the piece", "the product detail", "the drop", "a detail close-up", "a fit or sizing question", "a styling/use-case idea", "a color/design option", "a prep shot if available", "a waitlist reminder", "drop update", and "a product question follow-up."
+- Write finished, copy-ready audience-facing content, but keep it truthful. When details are missing, turn claims into questions or filming prompts.
+- Good vague examples: "Film one close-up detail from the piece and ask: What detail would help you decide before joining the waitlist?" / "Show one styling idea and ask: Would you wear it this way or style it differently?" / "Post a waitlist reminder and ask: What question do you want answered before the drop?"
+- Bad vague examples: "This soft cotton jacket is designed for all-day comfort and tested on real bodies." / "Join early access before spots fill." / "Preorder now to secure your size." / "Every order is packed with care before shipping."
+- Money Plan must default to waitlist signup, drop update, product question follow-up, fit/sizing question, styling question, or reminder signup. Do not create VIP upgrades, paid priority access, discounts, bundles, guaranteed size holds, preorder offers, styling consultations, or early purchase opportunities unless the user provided them.
+`
+        : '';
+
+    // Let the model generate clothing/ecommerce outputs instead of returning a canned fallback.
+    // Safety is handled by the product-brand prompt rules and the context-specific instructions above.
+    const isVagueClothingWaitlistPrompt = false;
 
     if (isVagueClothingWaitlistPrompt) {
       const safeContent: Record<string, string> = {};
@@ -1064,6 +1086,7 @@ Content idea: ${content}
 Goal: ${goal}
 Brand voice: ${selectedVoice}
 Selected platforms: ${selectedOutputList}
+${clothingEcommerceContextRules}
 
 Strategy field rules:
 The Strategy tab should feel like the brain of the campaign, not a short summary.
@@ -1468,7 +1491,8 @@ Business rules:
 - For fitness coaches: focus on safe transformation language, buyer situations, habits, consistency, accountability, beginner plans, assessments, coaching calls, and realistic next steps.
 - For restaurants and caterers: focus on catering inquiries, event orders, party trays, office lunches, menus, quote requests, and repeat orders.
 - For coaches and consultants: focus on audits, starter sessions, discovery calls, assessments, clarity offers, and trust-building content.
-- For clothing brands and ecommerce product brands: focus on product details, fit, fabric, sizing, colorways, styling ideas, drop date, waitlist signups, preorder interest, early access, product bundles, customer use case, and purchase questions.
+- For clothing brands and ecommerce product brands: focus on product details, fit, fabric, sizing, colorways, styling ideas, drop date, waitlist signups, drop updates, product questions, customer use case, and purchase questions.
+- For vague clothing/ecommerce prompts, avoid early access, preorder, bundles, discounts, VIP access, styling consultations, purchase access before launch, previous-drop claims, quality claims, packing/shipping claims, and scarcity language unless the user provided those details.
 - For beauty service providers such as lash artists, nail artists, hair stylists, barbers, brow artists, estheticians, makeup artists, skincare providers, and med-spa style service businesses: focus on bookings, consultations, refills, touch-ups, maintenance timing, aftercare, style selection, service menu education, seasonal/event services, repeat appointments, deposits, client trust, and repeat weekly content.
 - Do not make every beauty output a "mistakes" post or refill checklist. Match the user's exact weekly goal and rotate angles so the business can come back each week without getting repetitive output.
 - If a beauty user gives a broad booking goal such as "get more bookings", "get more appointments", "get more clients", or "get more refills", do not default only to mistakes/refill timing. Choose a fresh angle based on the service and prompt: style guide, availability/openings, first-time client education, service comparison, prep checklist, aftercare routine, seasonal/event booking, product add-on, review/referral request, client FAQ, or maintenance reminder.
@@ -1504,9 +1528,9 @@ Business rules:
 - Do not default to vague scarcity language like "exclusive", "limited edition", "before it is gone", "do not miss out", "secure your spot", "VIP membership", or "hype" unless the user clearly gave a real limited drop, inventory limit, or membership program.
 - Do not invent production details such as expert sewing, skilled team, every stitch, handcrafted details, premium fabric, perfect fit, sustainable materials, or limited quantities unless the user provided those facts.
 - If production details are missing, use safe behind-the-scenes ideas: fabric close-up, fit check, styling clip, packing orders, choosing colorways, checking samples, product flat lay, founder explaining the design choice, try-on clip, size guide, or waitlist page.
-- Product-brand CTAs should usually invite a waitlist signup, early access link, sizing help, drop reminder, preorder interest, fit guide, or product question.
-- Strong product-brand CTA examples: "Comment DROP and I’ll send you the waitlist link.", "DM FIT if you want help choosing your size.", "Comment STYLE and I’ll send you 3 ways to wear it.", "Join the waitlist for early access.", "Reply SIZE and I’ll send the size guide."
-- Product-brand Money Plans should lead to product sales, waitlist signups, preorders, early access, sizing help, bundles, repeat purchases, or drop reminders — not consulting, creator education, or vague community engagement.
+- Product-brand CTAs should usually invite a waitlist signup, drop update, sizing question, fit question, styling question, drop reminder, or product question. Only mention early access, preorder, bundles, discounts, or fit guides if the user provided those details.
+- Strong product-brand CTA examples: "Comment DROP and I’ll send you the waitlist link.", "Comment FIT and I’ll send one sizing question to help you decide.", "Comment STYLE and I’ll send one styling idea for the piece.", "Join the waitlist for the drop update.", "Reply SIZE with your sizing question."
+- Product-brand Money Plans should lead to product sales, waitlist signups, drop updates, sizing/fit questions, product questions, repeat purchases, or drop reminders — not consulting, creator education, vague community engagement, invented preorders, invented early access, invented bundles, or invented discounts.
 - For clothing brands, each content asset should include at least one concrete product-sale angle: fit, material feel, styling situation, size question, colorway, drop timing, waitlist reason, outfit use case, or why someone would wear it.
 - Do not say "build excitement" or "create hype" as the main strategy. Show the specific product reason someone would want to join the waitlist or buy.
 - For service businesses: prioritize leads, bookings, calls, quotes, consultations, assessments, custom plans, and repeat customers.
