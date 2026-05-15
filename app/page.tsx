@@ -1414,10 +1414,26 @@ export default function Home() {
                           ) : (
                             <div className="space-y-3 text-zinc-200">
                               {formatGeneratedText(text)
-                                .replace(/\s+(?=Scene \d+:|Slide \d+:|\d+\. Slide|Hook:|Point \d+:|Payoff:|CTA:)/g, '\n\n')
+                                .replace(/\s+(?=Scene \d+:|Slide \d+:|\d+\. Slide|Hook:|Point \d+:|Payoff:|CTA:|\d+[-–]\d+s\s+(?:Hook|Problem|Insight|Solution|CTA):|\d+[-–]\d+\s+seconds?:)/g, '\n\n')
                                 .split(/\n{2,}/g)
                                 .map((section) => section.trim())
                                 .filter(Boolean)
+                                .reduce<string[]>((sections, section) => {
+                                  const isTimestampOnly = /^\d+[-–]\d+s$/.test(section);
+                                  const previous = sections[sections.length - 1];
+                                  const previousIsTimestampOnly =
+                                    previous && /^\d+[-–]\d+s$/.test(previous);
+
+                                  if (isTimestampOnly) {
+                                    sections.push(section);
+                                  } else if (previousIsTimestampOnly) {
+                                    sections[sections.length - 1] = `${previous} ${section}`;
+                                  } else {
+                                    sections.push(section);
+                                  }
+
+                                  return sections;
+                                }, [])
                                 .map((section, index) => (
                                   <p
                                     key={index}
