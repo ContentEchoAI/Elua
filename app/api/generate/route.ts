@@ -177,461 +177,466 @@ function findGeneratedOutput(
   return '';
 }
 
+const CLEAN_GENERATED_TEXT_REPLACEMENTS: Array<[RegExp, string]> = [
+  [/I['’]m not posting private client details,? but\s*/gi, ''],
+  [/I['’]m not sharing private client details,? but\s*/gi, ''],
+  [/Instead of sharing private details,?\s*/gi, ''],
+  [/instead of sharing private details,?\s*/g, ''],
+  [/without using private details or invented results/gi, 'built around real client-win patterns, buyer problems, and coaching steps'],
+  [/without private details or invented results/gi, 'built around real client-win patterns, buyer problems, and coaching steps'],
+  [/without sharing private details/gi, 'without inventing results'],
+  [/private client details/gi, 'specific client details'],
+  [/private details/gi, 'specific details'],
+  [/Comment PLAN and I['’]ll send you the 4-week client-win content map/gi, 'Comment CHECK and I’ll send you the Fitness Goal Check'],
+  [/Comment PLAN and I['’]ll send you the 4-Week Client-Win Content Map/gi, 'Comment CHECK and I’ll send you the Fitness Goal Check'],
+  [/Comment PLAN for the 4-Week Client-Win Content Map/gi, 'Comment CHECK for the Fitness Goal Check'],
+  [/Include the CTA:\s*/gi, 'Use this line: '],
+  [/Include the call to action:\s*/gi, 'Use this line: '],
+  [/I have 3 client wins, but I['’]m not just bragging\.?/gi, 'I have 3 client wins. Here’s how I’d turn them into sales content that helps the next person take action.'],
+  [/I have 3 client wins, but I['’]m not just posting bragging rights\.?/gi, 'I have 3 client wins. Here’s how I’d turn them into sales content that helps the next person take action.'],
+  [/not just posting bragging rights/gi, 'turning proof into useful sales content'],
+  [/not just bragging/gi, 'turning proof into useful sales content'],
+  [/the best time is now/gi, 'the best next step is to understand your options'],
+  [/The best time is now/gi, 'The best next step is to understand your options'],
+  [/the sooner, the better/gi, 'start by understanding your timeline'],
+  [/The sooner, the better/gi, 'Start by understanding your timeline'],
+  [/maximize sale price/gi, 'make a stronger listing plan'],
+  [/Maximize sale price/gi, 'Make a stronger listing plan'],
+  [/boost sale price/gi, 'improve listing readiness'],
+  [/Boost sale price/gi, 'Improve listing readiness'],
+  [/get top buyer exposure/gi, 'improve your listing strategy'],
+  [/Get top buyer exposure/gi, 'Improve your listing strategy'],
+  [/sell quickly/gi, 'plan your sale with more clarity'],
+  [/Sell quickly/gi, 'Plan your sale with more clarity'],
+  [/sell fast/gi, 'plan your sale with more clarity'],
+  [/Sell fast/gi, 'Plan your sale with more clarity'],
+  [/smooth sale/gi, 'clearer selling process'],
+  [/Smooth sale/gi, 'Clearer selling process'],
+  [/free consultation/gi, 'Seller Readiness Review'],
+  [/Free consultation/gi, 'Seller Readiness Review'],
+  [/no-obligation market evaluation/gi, 'Home Value Conversation'],
+  [/No-obligation market evaluation/gi, 'Home Value Conversation'],
+  [/market evaluation/gi, 'Home Value Conversation'],
+  [/Market evaluation/gi, 'Home Value Conversation'],
+  [/today['’]s market/gi, 'your current selling situation'],
+  [/Today['’]s market/gi, 'Your current selling situation'],
+  [/best time to list/gi, 'right timing for your situation'],
+  [/Best time to list/gi, 'Right timing for your situation'],
+  [/best time to sell/gi, 'right timing for your situation'],
+  [/Best time to sell/gi, 'Right timing for your situation'],
+  [/serious buyers/gi, 'better-prepared buyers'],
+  [/Serious buyers/gi, 'Better-prepared buyers'],
+  [/prevents delays/gi, 'helps you plan with fewer surprises'],
+  [/Prevents delays/gi, 'Helps you plan with fewer surprises'],
+  [/avoid unnecessary delays/gi, 'plan with fewer surprises'],
+  [/Avoid unnecessary delays/gi, 'Plan with fewer surprises'],
+  [/saves time and money/gi, 'helps you make clearer prep decisions'],
+  [/Saves time and money/gi, 'Helps you make clearer prep decisions'],
+  [/save time and money/gi, 'make clearer prep decisions'],
+  [/Save time and money/gi, 'Make clearer prep decisions'],
+  [/increases your chances of a clearer selling process/gi, 'helps you prepare for a clearer selling conversation'],
+  [/Increases your chances of a clearer selling process/gi, 'Helps you prepare for a clearer selling conversation'],
+  [/clearer selling process/gi, 'clearer selling conversation'],
+  [/Clearer selling process/gi, 'Clearer selling conversation'],
+  [/maximize value/gi, 'make smarter prep decisions'],
+  [/Maximize value/gi, 'Make smarter prep decisions'],
+  [/maximizing value/gi, 'making smarter prep decisions'],
+  [/Maximizing value/gi, 'Making smarter prep decisions'],
+  [/avoid wasting money/gi, 'avoid spending on the wrong prep items'],
+  [/Avoid wasting money/gi, 'Avoid spending on the wrong prep items'],
+  [/wasting money/gi, 'spending on the wrong prep items'],
+  [/Wasting money/gi, 'Spending on the wrong prep items'],
+  [/serious buyers/gi, 'better-prepared buyers'],
+  [/Serious buyers/gi, 'Better-prepared buyers'],
+  [/serious offers/gi, 'stronger conversations'],
+  [/Serious offers/gi, 'Stronger conversations'],
+  [/free Seller Readiness Review/gi, 'Seller Readiness Review'],
+  [/Free Seller Readiness Review/gi, 'Seller Readiness Review'],
+  [/free seller review/gi, 'Seller Readiness Review'],
+  [/Free seller review/gi, 'Seller Readiness Review'],
+  [/professional home value estimate/gi, 'home value conversation'],
+  [/Professional home value estimate/gi, 'Home value conversation'],
+  [/market analysis/gi, 'home value conversation'],
+  [/Market analysis/gi, 'Home value conversation'],
+  [/local market insights/gi, 'local selling questions'],
+  [/Local market insights/gi, 'Local selling questions'],
+  [/right time to sell/gi, 'right timing for your situation'],
+  [/Right time to sell/gi, 'Right timing for your situation'],
+  [/right time to list/gi, 'right timing for your situation'],
+  [/Right time to list/gi, 'Right timing for your situation'],
+  [/best timing/gi, 'right timing for your situation'],
+  [/Best timing/gi, 'Right timing for your situation'],
+  [/prevents delays/gi, 'helps you plan with fewer surprises'],
+  [/Prevents delays/gi, 'Helps you plan with fewer surprises'],
+  [/attracts serious buyers/gi, 'helps buyers understand the home more clearly'],
+  [/Attracts serious buyers/gi, 'Helps buyers understand the home more clearly'],
+  [/attract buyers/gi, 'help buyers understand the home'],
+  [/Attract buyers/gi, 'Help buyers understand the home'],
+  [/could cost you more than you think/gi, 'may create questions worth reviewing before you list'],
+  [/Could cost you more than you think/gi, 'May create questions worth reviewing before you list'],
+  [/costly prep errors/gi, 'common prep questions'],
+  [/Costly prep errors/gi, 'Common prep questions'],
+  [/waste money fixing things buyers don['’]t care about/gi, 'spend on repairs before knowing what matters for your situation'],
+  [/Waste money fixing things buyers don['’]t care about/gi, 'Spend on repairs before knowing what matters for your situation'],
+  [/stop spending on the wrong prep items or unnecessary repairs/gi, 'review your prep questions before spending on repairs'],
+  [/Stop spending on the wrong prep items or unnecessary repairs/gi, 'Review your prep questions before spending on repairs'],
+  [/repairs that actually add value/gi, 'repairs worth discussing before listing'],
+  [/Repairs that actually add value/gi, 'Repairs worth discussing before listing'],
+  [/repairs buyers will notice first/gi, 'prep items buyers may notice'],
+  [/Repairs buyers will notice first/gi, 'Prep items buyers may notice'],
+  [/repairs that impact buyer decisions/gi, 'repair questions worth reviewing before listing'],
+  [/Repairs that impact buyer decisions/gi, 'Repair questions worth reviewing before listing'],
+  [/buyers don['’]t care about/gi, 'may not matter for your situation'],
+  [/Buyers don['’]t care about/gi, 'May not matter for your situation'],
+  [/speed up selling/gi, 'prepare your next step'],
+  [/Speed up selling/gi, 'Prepare your next step'],
+  [/speed up the sale/gi, 'prepare your next step'],
+  [/Speed up the sale/gi, 'Prepare your next step'],
+  [/maximize conversion/gi, 'improve follow-up clarity'],
+  [/Maximize conversion/gi, 'Improve follow-up clarity'],
+  [/buyer concerns/gi, 'seller concerns'],
+  [/Buyer concerns/gi, 'Seller concerns'],
+  [/buyers see the potential/gi, 'buyers understand the home more clearly'],
+  [/Buyers see the potential/gi, 'Buyers understand the home more clearly'],
+  [/waste time and money/gi, 'spend time on prep before knowing what matters for your situation'],
+  [/Waste time and money/gi, 'Spend time on prep before knowing what matters for your situation'],
+  [/fixing the wrong things before listing/gi, 'reviewing the wrong prep items before listing'],
+  [/Fixing the wrong things before listing/gi, 'Reviewing the wrong prep items before listing'],
+  [/avoid costly mistakes before selling/gi, 'review common prep questions before selling'],
+  [/Avoid costly mistakes before selling/gi, 'Review common prep questions before selling'],
+  [/costly mistakes/gi, 'common prep questions'],
+  [/Costly mistakes/gi, 'Common prep questions'],
+  [/costly repairs/gi, 'repair questions'],
+  [/Costly repairs/gi, 'Repair questions'],
+  [/which fixes really matter/gi, 'which prep items are worth reviewing'],
+  [/Which fixes really matter/gi, 'Which prep items are worth reviewing'],
+  [/fixes really matter/gi, 'prep items are worth reviewing'],
+  [/Fixes really matter/gi, 'Prep items are worth reviewing'],
+  [/not all fixes add value/gi, 'not every repair needs to be handled the same way'],
+  [/Not all fixes add value/gi, 'Not every repair needs to be handled the same way'],
+  [/all fixes add value/gi, 'every repair needs to be handled the same way'],
+  [/All fixes add value/gi, 'Every repair needs to be handled the same way'],
+  [/buyers will notice/gi, 'buyers may notice'],
+  [/Buyers will notice/gi, 'Buyers may notice'],
+  [/costs little but makes a big impression/gi, 'can be worth discussing as part of your prep plan'],
+  [/Costs little but makes a big impression/gi, 'Can be worth discussing as part of your prep plan'],
+  [/save both time and money/gi, 'make clearer prep decisions'],
+  [/Save both time and money/gi, 'Make clearer prep decisions'],
+  [/save time and money/gi, 'make clearer prep decisions'],
+  [/Save time and money/gi, 'Make clearer prep decisions'],
+  [/move forward confidently/gi, 'plan your next step with more clarity'],
+  [/Move forward confidently/gi, 'Plan your next step with more clarity'],
+  [/efficiently/gi, 'with more clarity'],
+  [/Efficiently/gi, 'With more clarity'],
+  [/delay their sale/gi, 'create confusion before listing'],
+  [/Delay their sale/gi, 'Create confusion before listing'],
+  [/delay your sale/gi, 'create confusion before listing'],
+  [/Delay your sale/gi, 'Create confusion before listing'],
+  [/spending money on home repairs/gi, 'reviewing repair questions before listing'],
+  [/Spending money on home repairs/gi, 'Reviewing repair questions before listing'],
+  [/before spending money on home repairs/gi, 'before making repair decisions'],
+  [/Before spending money on home repairs/gi, 'Before making repair decisions'],
+  [/without wasting time/gi, 'with more clarity'],
+  [/Without wasting time/gi, 'With more clarity'],
+  [/wasting time/gi, 'guessing on prep'],
+  [/Wasting time/gi, 'Guessing on prep'],
+  [/buyers notice/gi, 'buyers may notice'],
+  [/Buyers notice/gi, 'Buyers may notice'],
+  [/not every fix adds value/gi, 'not every repair needs the same priority'],
+  [/Not every fix adds value/gi, 'Not every repair needs the same priority'],
+  [/every fix adds value/gi, 'every repair needs the same priority'],
+  [/Every fix adds value/gi, 'Every repair needs the same priority'],
+  [/fixes that matter/gi, 'prep items worth reviewing'],
+  [/Fixes that matter/gi, 'Prep items worth reviewing'],
+  [/fixes really matter/gi, 'prep items are worth reviewing'],
+  [/Fixes really matter/gi, 'Prep items are worth reviewing'],
+  [/price it right from the start/gi, 'understand pricing expectations before listing'],
+  [/Price it right from the start/gi, 'Understand pricing expectations before listing'],
+  [/set realistic pricing expectations/gi, 'understand pricing expectations'],
+  [/Set realistic pricing expectations/gi, 'Understand pricing expectations'],
+  [/save you time and money/gi, 'help you make clearer prep decisions'],
+  [/Save you time and money/gi, 'Help you make clearer prep decisions'],
+  [/save both time and money/gi, 'help you make clearer prep decisions'],
+  [/Save both time and money/gi, 'Help you make clearer prep decisions'],
+  [/streamline your sale process/gi, 'plan your selling process with more clarity'],
+  [/Streamline your sale process/gi, 'Plan your selling process with more clarity'],
+  [/expert guidance/gi, 'professional guidance'],
+  [/Expert guidance/gi, 'Professional guidance'],
+  [/expert/gi, 'professional'],
+  [/Expert/gi, 'Professional'],
+  [/increasing lead capture/gi, 'making checklist requests easier to track'],
+  [/Increasing lead capture/gi, 'Making checklist requests easier to track'],
+  [/lead capture potential/gi, 'checklist request potential'],
+  [/Lead capture potential/gi, 'Checklist request potential'],
+  [/solving real problems/gi, 'answering common seller questions'],
+  [/Solving real problems/gi, 'Answering common seller questions'],
+  [/which repairs actually matter/gi, 'which repair questions are worth reviewing'],
+  [/Which repairs actually matter/gi, 'Which repair questions are worth reviewing'],
+  [/repairs actually matter/gi, 'repair questions are worth reviewing'],
+  [/Repairs actually matter/gi, 'Repair questions are worth reviewing'],
+  [/repairs really matter/gi, 'repair questions are worth reviewing'],
+  [/Repairs really matter/gi, 'Repair questions are worth reviewing'],
+  [/which repairs really matter/gi, 'which repair questions are worth reviewing'],
+  [/Which repairs really matter/gi, 'Which repair questions are worth reviewing'],
+  [/avoid costly delays/gi, 'review common prep questions'],
+  [/Avoid costly delays/gi, 'Review common prep questions'],
+  [/costly delays/gi, 'prep questions'],
+  [/Costly delays/gi, 'Prep questions'],
+  [/delay their sale/gi, 'create confusion before listing'],
+  [/Delay their sale/gi, 'Create confusion before listing'],
+  [/delay your sale/gi, 'create confusion before listing'],
+  [/Delay your sale/gi, 'Create confusion before listing'],
+  [/before listing that delay their sale/gi, 'before listing that create confusion'],
+  [/Before listing that delay their sale/gi, 'Before listing that create confusion'],
+  [/without wasting time/gi, 'with more clarity'],
+  [/Without wasting time/gi, 'With more clarity'],
+  [/wasting time/gi, 'guessing on prep'],
+  [/Wasting time/gi, 'Guessing on prep'],
+  [/spending money/gi, 'making prep decisions'],
+  [/Spending money/gi, 'Making prep decisions'],
+  [/spend money/gi, 'make prep decisions'],
+  [/Spend money/gi, 'Make prep decisions'],
+  [/save money/gi, 'make clearer prep decisions'],
+  [/Save money/gi, 'Make clearer prep decisions'],
+  [/saves money/gi, 'helps with clearer prep decisions'],
+  [/Saves money/gi, 'Helps with clearer prep decisions'],
+  [/save both time and money/gi, 'make clearer prep decisions'],
+  [/Save both time and money/gi, 'Make clearer prep decisions'],
+  [/save time and money/gi, 'make clearer prep decisions'],
+  [/Save time and money/gi, 'Make clearer prep decisions'],
+  [/smoothly your sale will go/gi, 'clear your selling process feels'],
+  [/Smoothly your sale will go/gi, 'Clear your selling process feels'],
+  [/how smoothly your sale will go/gi, 'how clear your selling process feels'],
+  [/How smoothly your sale will go/gi, 'How clear your selling process feels'],
+  [/influence your sale/gi, 'shape your prep plan'],
+  [/Influence your sale/gi, 'Shape your prep plan'],
+  [/top 3 repairs/gi, '3 repair questions'],
+  [/Top 3 repairs/gi, '3 repair questions'],
+  [/prioritize repairs/gi, 'review repair questions'],
+  [/Prioritize repairs/gi, 'Review repair questions'],
+  [/repairs to prioritize/gi, 'repair questions to review'],
+  [/Repairs to prioritize/gi, 'Repair questions to review'],
+  [/repairs worth doing/gi, 'repair questions worth reviewing'],
+  [/Repairs worth doing/gi, 'Repair questions worth reviewing'],
+  [/not every fix adds value/gi, 'not every repair needs the same priority'],
+  [/Not every fix adds value/gi, 'Not every repair needs the same priority'],
+  [/fixes add value/gi, 'repair questions are worth reviewing'],
+  [/Fixes add value/gi, 'Repair questions are worth reviewing'],
+  [/don['’]t spend on repairs/gi, 'review repair questions'],
+  [/Don['’]t spend on repairs/gi, 'Review repair questions'],
+  [/spend on repairs/gi, 'review repair questions'],
+  [/Spend on repairs/gi, 'Review repair questions'],
+  [/spending thousands/gi, 'reviewing repair questions'],
+  [/Spending thousands/gi, 'Reviewing repair questions'],
+  [/costly seller mistakes/gi, 'common seller prep questions'],
+  [/Costly seller mistakes/gi, 'Common seller prep questions'],
+  [/costly seller/gi, 'common seller'],
+  [/Costly seller/gi, 'Common seller'],
+  [/costly upgrades/gi, 'larger upgrades'],
+  [/Costly upgrades/gi, 'Larger upgrades'],
+  [/critical steps/gi, 'key questions'],
+  [/Critical steps/gi, 'Key questions'],
+  [/qualified leads/gi, 'interested homeowners'],
+  [/Qualified leads/gi, 'Interested homeowners'],
+  [/qualifies leads/gi, 'helps identify interested homeowners'],
+  [/Qualifies leads/gi, 'Helps identify interested homeowners'],
+  [/qualify leads/gi, 'identify interested homeowners'],
+  [/Qualify leads/gi, 'Identify interested homeowners'],
+  [/converting those leads/gi, 'guiding those conversations'],
+  [/Converting those leads/gi, 'Guiding those conversations'],
+  [/convert qualified leads/gi, 'guide interested homeowners'],
+  [/Convert qualified leads/gi, 'Guide interested homeowners'],
+  [/increase conversions/gi, 'improve follow-up clarity'],
+  [/Increase conversions/gi, 'Improve follow-up clarity'],
+  [/booked sessions/gi, 'consultation conversations'],
+  [/Booked sessions/gi, 'Consultation conversations'],
+  [/booked seller consultations/gi, 'seller consultation conversations'],
+  [/Booked seller consultations/gi, 'Seller consultation conversations'],
+  [/leads into booked/gi, 'conversations toward'],
+  [/Leads into booked/gi, 'Conversations toward'],
+  [/lead magnet will start/gi, 'checklist request can start'],
+  [/Lead magnet will start/gi, 'Checklist request can start'],
+  [/directly to checklist requests and consultations/gi, 'toward checklist requests and consultation conversations'],
+  [/Directly to checklist requests and consultations/gi, 'Toward checklist requests and consultation conversations'],
+  [/repair priorities/gi, 'repair questions'],
+  [/Repair priorities/gi, 'Repair questions'],
+  [/prioritizing repairs/gi, 'reviewing repair questions'],
+  [/Prioritizing repairs/gi, 'Reviewing repair questions'],
+  [/costs time and money/gi, 'can make preparation feel more confusing'],
+  [/Costs time and money/gi, 'Can make preparation feel more confusing'],
+  [/cost time and money/gi, 'make preparation feel more confusing'],
+  [/Cost time and money/gi, 'Make preparation feel more confusing'],
+  [/serious inquiries/gi, 'qualified conversations'],
+  [/Serious inquiries/gi, 'Qualified conversations'],
+  [/booked Seller Prep Consultations/gi, 'Seller Prep Consultation conversations'],
+  [/Booked Seller Prep Consultations/gi, 'Seller Prep Consultation conversations'],
+  [/booked consultations/gi, 'consultation conversations'],
+  [/Booked consultations/gi, 'Consultation conversations'],
+  [/competitive price/gi, 'pricing conversation'],
+  [/Competitive price/gi, 'Pricing conversation'],
+  [/reduce your sale options/gi, 'make your next steps less clear'],
+  [/Reduce your sale options/gi, 'Make your next steps less clear'],
+  [/market-ready/gi, 'listing-prep ready'],
+  [/Market-ready/gi, 'Listing-prep ready'],
+  [/professional insights/gi, 'practical seller prep guidance'],
+  [/Professional insights/gi, 'Practical seller prep guidance'],
+  [/drives direct engagement/gi, 'encourages direct replies'],
+  [/Drives direct engagement/gi, 'Encourages direct replies'],
+  [/converting serious inquiries into/gi, 'guiding qualified replies toward'],
+  [/Converting serious inquiries into/gi, 'Guiding qualified replies toward'],
+  [/converting attention into revenue/gi, 'connecting attention to a clear paid next step'],
+  [/Converting attention into revenue/gi, 'Connecting attention to a clear paid next step'],
+  [/before it['’]s gone/gi, 'before the drop opens'],
+  [/Before it['’]s gone/gi, 'Before the drop opens'],
+  [/do not miss out/gi, 'join the waitlist for drop update'],
+  [/Don['’]t miss out/gi, 'Join the waitlist for drop update'],
+  [/secure your spot/gi, 'join the waitlist'],
+  [/Secure your spot/gi, 'Join the waitlist'],
+  [/VIP Waitlist Membership/gi, 'Early Access Waitlist'],
+  [/VIP membership/gi, 'drop update list'],
+  [/limited edition clothing/gi, 'upcoming clothing drop'],
+  [/limited-edition clothing/gi, 'upcoming clothing drop'],
+  [/every stitch/gi, 'the product details'],
+  [/Every stitch/gi, 'The product details'],
+  [/expert sewing/gi, 'sample check'],
+  [/Expert sewing/gi, 'Sample check'],
+  [/skilled team/gi, 'team'],
+  [/Skilled team/gi, 'Team'],
+  [/perfect fit/gi, 'fit'],
+  [/Perfect fit/gi, 'Fit'],
+  [/build excitement/gi, 'show the product reason to join the waitlist'],
+  [/Build excitement/gi, 'Show the product reason to join the waitlist'],
+  [/create hype/gi, 'show the product reason to join the waitlist'],
+  [/Create hype/gi, 'Show the product reason to join the waitlist'],
+  [/your event is doomed before it starts/gi, 'your catering plan can get stressful quickly'],
+  [/Your event is doomed before it starts/gi, 'Your catering plan can get stressful quickly'],
+  [/that kill your event/gi, 'that make event planning harder'],
+  [/That kill your event/gi, 'That make event planning harder'],
+  [/kill your event/gi, 'make event planning harder'],
+  [/Kill your event/gi, 'Make event planning harder'],
+  [/soggy sandwiches/gi, 'food that does not travel well'],
+  [/Soggy sandwiches/gi, 'Food that does not travel well'],
+  [/spots fill up fast/gi, 'availability can vary'],
+  [/Spots fill up fast/gi, 'Availability can vary'],
+  [/higher prices/gi, 'fewer menu options'],
+  [/Higher prices/gi, 'Fewer menu options'],
+  [/guaranteed delivery times/gi, 'clear delivery windows'],
+  [/Guaranteed delivery times/gi, 'Clear delivery windows'],
+  [/fits your event perfectly/gi, 'fits your event details'],
+  [/Fits your event perfectly/gi, 'Fits your event details'],
+  [/will arrive fresh and ready without last-minute panic/gi, 'is planned around your event timing, guest count, and menu needs'],
+  [/event will be stress-free and delicious/gi, 'event food plan feels organized and guest-ready'],
+  [/stress-free catering/gi, 'organized catering inquiry'],
+  [/Stress-free catering/gi, 'Organized catering inquiry'],
+  [/avoid last-minute catering panic/gi, 'plan your catering details before the event'],
+  [/Avoid last-minute catering panic/gi, 'Plan your catering details before the event'],
+  [/last-minute office lunch orders always cause panic/gi, 'office lunch orders are easier when the menu and timing are clear'],
+  [/Last-minute office lunch orders always cause panic/gi, 'Office lunch orders are easier when the menu and timing are clear'],
+  [/delivered fresh/gi, 'prepared for your catering order'],
+  [/Delivered fresh/gi, 'Prepared for your catering order'],
+  [/fresh, customizable/gi, 'customizable'],
+  [/Fresh, customizable/gi, 'Customizable'],
+  [/happy clients/gi, 'catering customers'],
+  [/happy guests/gi, 'guests'],
+  [/right-fit/gi, 'clear-fit'],
+  [/kid-friendly and adult favorites/gi, 'menu options for different guests'],
+  [/booked at least 3 days in advance/gi, 'with enough notice to plan the order'],
+  [/hold your date while you decide/gi, 'review your event date and menu options'],
+  [/take the stress out of your next event/gi, 'help you plan your catering details'],
+  [/on-time delivery/gi, 'pickup or delivery details'],
+  [/On-time delivery/gi, 'Pickup or delivery details'],
+  [/fresh and on time/gi, 'planned around your order details'],
+  [/Fresh and on time/gi, 'Planned around your order details'],
+  [/dependable service/gi, 'clear catering details'],
+  [/reliable local catering/gi, 'local catering'],
+  [/vegetarian, gluten-free, and kid-friendly options/gi, 'menu options for different guest needs'],
+  [/vegetarian, gluten-free, or kid-friendly options/gi, 'menu options for different guest needs'],
+  [/menus cover vegetarian, gluten-free, and kid-friendly options/gi, 'ask about menu options for different guest needs'],
+  [/menu options for kids and adults/gi, 'menu options for different guests'],
+  [/dietary accommodations/gi, 'dietary notes'],
+  [/dessert trays/gi, 'menu add-ons if available'],
+  [/party setup advice/gi, 'event detail questions'],
+  [/weekly or monthly catering orders/gi, 'repeat catering inquiries'],
+  [/Office Lunch Subscription/gi, 'Office Lunch Catering Inquiry'],
+  [/ready-made family event trays/gi, 'family event menu options'],
+  [/Ready-made family event trays/gi, 'Family event menu options'],
+  [/with rotating menus/gi, 'with menu options'],
+  [/family event trays for small gatherings/gi, 'family event menu options'],
+  [/tailored menus/gi, 'menu options'],
+  [/personalized catering menu and quote/gi, 'catering menu and quote'],
+  [/personalized menu and quote/gi, 'menu and quote'],
+  [/customizable sandwich and salad platters/gi, 'catering menu options'],
+  [/Customizable sandwich and salad platters/gi, 'Catering menu options'],
+  [/teams of 10-30/gi, 'office groups'],
+  [/15-50 guests/gi, 'event guests'],
+  [/10-40 guests/gi, 'family event guests'],
+  [/guarantee compliments/gi, 'help your nails feel event-ready'],
+  [/guaranteed compliments/gi, 'event-ready nail confidence'],
+  [/guaranteed/gi, 'designed to'],
+  [/Guarantee compliments/gi, 'Help your nails feel event-ready'],
+  [/Guaranteed compliments/gi, 'Event-ready nail confidence'],
+  [/Guaranteed/gi, 'Designed to'],
+  [/standout nail art/gi, 'event-ready nail designs'],
+  [/Standout nail art/gi, 'Event-ready nail designs'],
+  [/ruin your event vibe/gi, 'clash with your event plans'],
+  [/Ruin your event vibe/gi, 'Clash with your event plans'],
+  [/Stop Lash Loss Now/gi, 'Avoid Early Lash Shedding'],
+  [/stop lash loss now/gi, 'avoid early lash shedding'],
+  [/ruin your lash extensions/gi, 'shorten the look of your set'],
+  [/ruin your extensions/gi, 'shorten the look of your set'],
+  [/breaks your extensions early/gi, 'can affect how long your set looks full'],
+  [/fall out too fast/gi, 'show gaps sooner than expected'],
+  [/falling out too fast/gi, 'showing gaps sooner than expected'],
+  [/premature fallout/gi, 'early gaps'],
+  [/fallout/gi, 'gaps'],
+  [/before lashes thin out/gi, 'before gaps start showing'],
+  [/lashes thin out/gi, 'gaps start showing'],
+  [/sparse lashes/gi, 'gaps between fills'],
+  [/avoid sparse lashes/gi, 'avoid unnecessary gaps'],
+  [/curl loss/gi, 'changes in how your set looks'],
+  [/weakens the glue/gi, 'can affect retention'],
+  [/damages both extensions and your natural lashes/gi, 'can affect your set and natural lash care'],
+  [/damages your natural lashes/gi, 'can affect natural lash care'],
+  [/lash damage/gi, 'lash care concerns'],
+  [/damage-free/gi, 'service-appropriate'],
+  [/protects your natural lashes/gi, 'supports your natural lash care'],
+  [/protect your natural lashes/gi, 'support your natural lash care'],
+  [/protect your lashes overnight/gi, 'support your lash aftercare overnight'],
+  [/protect your lashes/gi, 'support lash aftercare'],
+  [/keeps your lashes flawless/gi, 'keeps your set looking fresh'],
+  [/keep your lashes flawless/gi, 'keep your set looking fresh'],
+  [/flawless lashes/gi, 'fresh-looking lashes'],
+  [/flawless/gi, 'fresh'],
+  [/perfect lashes/gi, 'lashes that fit your style'],
+  [/Perfect lashes/gi, 'Lashes that fit your style'],
+  [/perfect/gi, 'right-fit'],
+  [/restore lash health/gi, 'support better lash care'],
+  [/Restore lash health/gi, 'Support better lash care'],
+  [/maximizes lash health/gi, 'supports better lash care'],
+  [/Maximizes lash health/gi, 'Supports better lash care'],
+  [/best lash retention/gi, 'better refill timing'],
+  [/lash retention/gi, 'how long your set looks full'],
+  [/keep your lashes full longer/gi, 'keep your set looking fuller between appointments'],
+  [/keeps your lashes full longer/gi, 'keeps your set looking fuller between appointments'],
+  [/women aged \d{2}\s*[-–]\s*\d{2}\s+who\s+/gi, 'clients who '],
+  [/women age \d{2}\s*[-–]\s*\d{2}\s+who\s+/gi, 'clients who '],
+  [/women and men aged \d{2}\s*[-–]\s*\d{2}\s+who\s+/gi, 'clients who '],
+  [/men and women aged \d{2}\s*[-–]\s*\d{2}\s+who\s+/gi, 'clients who '],
+  [/people aged \d{2}\s*[-–]\s*\d{2}\s+who\s+/gi, 'clients who '],
+  [/adults aged \d{2}\s*[-–]\s*\d{2}\s+who\s+/gi, 'clients who '],
+  [/aged \d{2}\s*[-–]\s*\d{2}\s+who\s+/gi, 'who '],
+  [/young adults who\s+/gi, 'clients who '],
+  [/busy professionals who\s+/gi, 'clients who '],
+  [/never miss your appointment window/gi, 'stay on your refill rhythm'],
+  [/\s+([,.!?])/g, '$1'],
+  [/\s{2,}/g, ' '],
+];
+
 function cleanGeneratedText(value: string) {
-  const cleaned = value
-    .replace(/I['’]m not posting private client details,? but\s*/gi, '')
-    .replace(/I['’]m not sharing private client details,? but\s*/gi, '')
-    .replace(/Instead of sharing private details,?\s*/gi, '')
-    .replace(/instead of sharing private details,?\s*/g, '')
-    .replace(/without using private details or invented results/gi, 'built around real client-win patterns, buyer problems, and coaching steps')
-    .replace(/without private details or invented results/gi, 'built around real client-win patterns, buyer problems, and coaching steps')
-    .replace(/without sharing private details/gi, 'without inventing results')
-    .replace(/private client details/gi, 'specific client details')
-    .replace(/private details/gi, 'specific details')
-    .replace(/Comment PLAN and I['’]ll send you the 4-week client-win content map/gi, 'Comment CHECK and I’ll send you the Fitness Goal Check')
-    .replace(/Comment PLAN and I['’]ll send you the 4-Week Client-Win Content Map/gi, 'Comment CHECK and I’ll send you the Fitness Goal Check')
-    .replace(/Comment PLAN for the 4-Week Client-Win Content Map/gi, 'Comment CHECK for the Fitness Goal Check')
-    .replace(/Include the CTA:\s*/gi, 'Use this line: ')
-    .replace(/Include the call to action:\s*/gi, 'Use this line: ')
-    .replace(/I have 3 client wins, but I['’]m not just bragging\.?/gi, 'I have 3 client wins. Here’s how I’d turn them into sales content that helps the next person take action.')
-    .replace(/I have 3 client wins, but I['’]m not just posting bragging rights\.?/gi, 'I have 3 client wins. Here’s how I’d turn them into sales content that helps the next person take action.')
-    .replace(/not just posting bragging rights/gi, 'turning proof into useful sales content')
-    .replace(/not just bragging/gi, 'turning proof into useful sales content')
-    .replace(/the best time is now/gi, 'the best next step is to understand your options')
-    .replace(/The best time is now/gi, 'The best next step is to understand your options')
-    .replace(/the sooner, the better/gi, 'start by understanding your timeline')
-    .replace(/The sooner, the better/gi, 'Start by understanding your timeline')
-    .replace(/maximize sale price/gi, 'make a stronger listing plan')
-    .replace(/Maximize sale price/gi, 'Make a stronger listing plan')
-    .replace(/boost sale price/gi, 'improve listing readiness')
-    .replace(/Boost sale price/gi, 'Improve listing readiness')
-    .replace(/get top buyer exposure/gi, 'improve your listing strategy')
-    .replace(/Get top buyer exposure/gi, 'Improve your listing strategy')
-    .replace(/sell quickly/gi, 'plan your sale with more clarity')
-    .replace(/Sell quickly/gi, 'Plan your sale with more clarity')
-    .replace(/sell fast/gi, 'plan your sale with more clarity')
-    .replace(/Sell fast/gi, 'Plan your sale with more clarity')
-    .replace(/smooth sale/gi, 'clearer selling process')
-    .replace(/Smooth sale/gi, 'Clearer selling process')
-    .replace(/free consultation/gi, 'Seller Readiness Review')
-    .replace(/Free consultation/gi, 'Seller Readiness Review')
-    .replace(/no-obligation market evaluation/gi, 'Home Value Conversation')
-    .replace(/No-obligation market evaluation/gi, 'Home Value Conversation')
-    .replace(/market evaluation/gi, 'Home Value Conversation')
-    .replace(/Market evaluation/gi, 'Home Value Conversation')
-    .replace(/today['’]s market/gi, 'your current selling situation')
-    .replace(/Today['’]s market/gi, 'Your current selling situation')
-    .replace(/best time to list/gi, 'right timing for your situation')
-    .replace(/Best time to list/gi, 'Right timing for your situation')
-    .replace(/best time to sell/gi, 'right timing for your situation')
-    .replace(/Best time to sell/gi, 'Right timing for your situation')
-    .replace(/serious buyers/gi, 'better-prepared buyers')
-    .replace(/Serious buyers/gi, 'Better-prepared buyers')
-    .replace(/prevents delays/gi, 'helps you plan with fewer surprises')
-    .replace(/Prevents delays/gi, 'Helps you plan with fewer surprises')
-    .replace(/avoid unnecessary delays/gi, 'plan with fewer surprises')
-    .replace(/Avoid unnecessary delays/gi, 'Plan with fewer surprises')
-    .replace(/saves time and money/gi, 'helps you make clearer prep decisions')
-    .replace(/Saves time and money/gi, 'Helps you make clearer prep decisions')
-    .replace(/save time and money/gi, 'make clearer prep decisions')
-    .replace(/Save time and money/gi, 'Make clearer prep decisions')
-    .replace(/increases your chances of a clearer selling process/gi, 'helps you prepare for a clearer selling conversation')
-    .replace(/Increases your chances of a clearer selling process/gi, 'Helps you prepare for a clearer selling conversation')
-    .replace(/clearer selling process/gi, 'clearer selling conversation')
-    .replace(/Clearer selling process/gi, 'Clearer selling conversation')
-    .replace(/maximize value/gi, 'make smarter prep decisions')
-    .replace(/Maximize value/gi, 'Make smarter prep decisions')
-    .replace(/maximizing value/gi, 'making smarter prep decisions')
-    .replace(/Maximizing value/gi, 'Making smarter prep decisions')
-    .replace(/avoid wasting money/gi, 'avoid spending on the wrong prep items')
-    .replace(/Avoid wasting money/gi, 'Avoid spending on the wrong prep items')
-    .replace(/wasting money/gi, 'spending on the wrong prep items')
-    .replace(/Wasting money/gi, 'Spending on the wrong prep items')
-    .replace(/serious buyers/gi, 'better-prepared buyers')
-    .replace(/Serious buyers/gi, 'Better-prepared buyers')
-    .replace(/serious offers/gi, 'stronger conversations')
-    .replace(/Serious offers/gi, 'Stronger conversations')
-    .replace(/free Seller Readiness Review/gi, 'Seller Readiness Review')
-    .replace(/Free Seller Readiness Review/gi, 'Seller Readiness Review')
-    .replace(/free seller review/gi, 'Seller Readiness Review')
-    .replace(/Free seller review/gi, 'Seller Readiness Review')
-    .replace(/professional home value estimate/gi, 'home value conversation')
-    .replace(/Professional home value estimate/gi, 'Home value conversation')
-    .replace(/market analysis/gi, 'home value conversation')
-    .replace(/Market analysis/gi, 'Home value conversation')
-    .replace(/local market insights/gi, 'local selling questions')
-    .replace(/Local market insights/gi, 'Local selling questions')
-    .replace(/right time to sell/gi, 'right timing for your situation')
-    .replace(/Right time to sell/gi, 'Right timing for your situation')
-    .replace(/right time to list/gi, 'right timing for your situation')
-    .replace(/Right time to list/gi, 'Right timing for your situation')
-    .replace(/best timing/gi, 'right timing for your situation')
-    .replace(/Best timing/gi, 'Right timing for your situation')
-    .replace(/prevents delays/gi, 'helps you plan with fewer surprises')
-    .replace(/Prevents delays/gi, 'Helps you plan with fewer surprises')
-    .replace(/attracts serious buyers/gi, 'helps buyers understand the home more clearly')
-    .replace(/Attracts serious buyers/gi, 'Helps buyers understand the home more clearly')
-    .replace(/attract buyers/gi, 'help buyers understand the home')
-    .replace(/Attract buyers/gi, 'Help buyers understand the home')
-    .replace(/could cost you more than you think/gi, 'may create questions worth reviewing before you list')
-    .replace(/Could cost you more than you think/gi, 'May create questions worth reviewing before you list')
-    .replace(/costly prep errors/gi, 'common prep questions')
-    .replace(/Costly prep errors/gi, 'Common prep questions')
-    .replace(/waste money fixing things buyers don['’]t care about/gi, 'spend on repairs before knowing what matters for your situation')
-    .replace(/Waste money fixing things buyers don['’]t care about/gi, 'Spend on repairs before knowing what matters for your situation')
-    .replace(/stop spending on the wrong prep items or unnecessary repairs/gi, 'review your prep questions before spending on repairs')
-    .replace(/Stop spending on the wrong prep items or unnecessary repairs/gi, 'Review your prep questions before spending on repairs')
-    .replace(/repairs that actually add value/gi, 'repairs worth discussing before listing')
-    .replace(/Repairs that actually add value/gi, 'Repairs worth discussing before listing')
-    .replace(/repairs buyers will notice first/gi, 'prep items buyers may notice')
-    .replace(/Repairs buyers will notice first/gi, 'Prep items buyers may notice')
-    .replace(/repairs that impact buyer decisions/gi, 'repair questions worth reviewing before listing')
-    .replace(/Repairs that impact buyer decisions/gi, 'Repair questions worth reviewing before listing')
-    .replace(/buyers don['’]t care about/gi, 'may not matter for your situation')
-    .replace(/Buyers don['’]t care about/gi, 'May not matter for your situation')
-    .replace(/speed up selling/gi, 'prepare your next step')
-    .replace(/Speed up selling/gi, 'Prepare your next step')
-    .replace(/speed up the sale/gi, 'prepare your next step')
-    .replace(/Speed up the sale/gi, 'Prepare your next step')
-    .replace(/maximize conversion/gi, 'improve follow-up clarity')
-    .replace(/Maximize conversion/gi, 'Improve follow-up clarity')
-    .replace(/buyer concerns/gi, 'seller concerns')
-    .replace(/Buyer concerns/gi, 'Seller concerns')
-    .replace(/buyers see the potential/gi, 'buyers understand the home more clearly')
-    .replace(/Buyers see the potential/gi, 'Buyers understand the home more clearly')
-    .replace(/waste time and money/gi, 'spend time on prep before knowing what matters for your situation')
-    .replace(/Waste time and money/gi, 'Spend time on prep before knowing what matters for your situation')
-    .replace(/fixing the wrong things before listing/gi, 'reviewing the wrong prep items before listing')
-    .replace(/Fixing the wrong things before listing/gi, 'Reviewing the wrong prep items before listing')
-    .replace(/avoid costly mistakes before selling/gi, 'review common prep questions before selling')
-    .replace(/Avoid costly mistakes before selling/gi, 'Review common prep questions before selling')
-    .replace(/costly mistakes/gi, 'common prep questions')
-    .replace(/Costly mistakes/gi, 'Common prep questions')
-    .replace(/costly repairs/gi, 'repair questions')
-    .replace(/Costly repairs/gi, 'Repair questions')
-    .replace(/which fixes really matter/gi, 'which prep items are worth reviewing')
-    .replace(/Which fixes really matter/gi, 'Which prep items are worth reviewing')
-    .replace(/fixes really matter/gi, 'prep items are worth reviewing')
-    .replace(/Fixes really matter/gi, 'Prep items are worth reviewing')
-    .replace(/not all fixes add value/gi, 'not every repair needs to be handled the same way')
-    .replace(/Not all fixes add value/gi, 'Not every repair needs to be handled the same way')
-    .replace(/all fixes add value/gi, 'every repair needs to be handled the same way')
-    .replace(/All fixes add value/gi, 'Every repair needs to be handled the same way')
-    .replace(/buyers will notice/gi, 'buyers may notice')
-    .replace(/Buyers will notice/gi, 'Buyers may notice')
-    .replace(/costs little but makes a big impression/gi, 'can be worth discussing as part of your prep plan')
-    .replace(/Costs little but makes a big impression/gi, 'Can be worth discussing as part of your prep plan')
-    .replace(/save both time and money/gi, 'make clearer prep decisions')
-    .replace(/Save both time and money/gi, 'Make clearer prep decisions')
-    .replace(/save time and money/gi, 'make clearer prep decisions')
-    .replace(/Save time and money/gi, 'Make clearer prep decisions')
-    .replace(/move forward confidently/gi, 'plan your next step with more clarity')
-    .replace(/Move forward confidently/gi, 'Plan your next step with more clarity')
-    .replace(/efficiently/gi, 'with more clarity')
-    .replace(/Efficiently/gi, 'With more clarity')
-    .replace(/delay their sale/gi, 'create confusion before listing')
-    .replace(/Delay their sale/gi, 'Create confusion before listing')
-    .replace(/delay your sale/gi, 'create confusion before listing')
-    .replace(/Delay your sale/gi, 'Create confusion before listing')
-    .replace(/spending money on home repairs/gi, 'reviewing repair questions before listing')
-    .replace(/Spending money on home repairs/gi, 'Reviewing repair questions before listing')
-    .replace(/before spending money on home repairs/gi, 'before making repair decisions')
-    .replace(/Before spending money on home repairs/gi, 'Before making repair decisions')
-    .replace(/without wasting time/gi, 'with more clarity')
-    .replace(/Without wasting time/gi, 'With more clarity')
-    .replace(/wasting time/gi, 'guessing on prep')
-    .replace(/Wasting time/gi, 'Guessing on prep')
-    .replace(/buyers notice/gi, 'buyers may notice')
-    .replace(/Buyers notice/gi, 'Buyers may notice')
-    .replace(/not every fix adds value/gi, 'not every repair needs the same priority')
-    .replace(/Not every fix adds value/gi, 'Not every repair needs the same priority')
-    .replace(/every fix adds value/gi, 'every repair needs the same priority')
-    .replace(/Every fix adds value/gi, 'Every repair needs the same priority')
-    .replace(/fixes that matter/gi, 'prep items worth reviewing')
-    .replace(/Fixes that matter/gi, 'Prep items worth reviewing')
-    .replace(/fixes really matter/gi, 'prep items are worth reviewing')
-    .replace(/Fixes really matter/gi, 'Prep items are worth reviewing')
-    .replace(/price it right from the start/gi, 'understand pricing expectations before listing')
-    .replace(/Price it right from the start/gi, 'Understand pricing expectations before listing')
-    .replace(/set realistic pricing expectations/gi, 'understand pricing expectations')
-    .replace(/Set realistic pricing expectations/gi, 'Understand pricing expectations')
-    .replace(/save you time and money/gi, 'help you make clearer prep decisions')
-    .replace(/Save you time and money/gi, 'Help you make clearer prep decisions')
-    .replace(/save both time and money/gi, 'help you make clearer prep decisions')
-    .replace(/Save both time and money/gi, 'Help you make clearer prep decisions')
-    .replace(/streamline your sale process/gi, 'plan your selling process with more clarity')
-    .replace(/Streamline your sale process/gi, 'Plan your selling process with more clarity')
-    .replace(/expert guidance/gi, 'professional guidance')
-    .replace(/Expert guidance/gi, 'Professional guidance')
-    .replace(/expert/gi, 'professional')
-    .replace(/Expert/gi, 'Professional')
-    .replace(/increasing lead capture/gi, 'making checklist requests easier to track')
-    .replace(/Increasing lead capture/gi, 'Making checklist requests easier to track')
-    .replace(/lead capture potential/gi, 'checklist request potential')
-    .replace(/Lead capture potential/gi, 'Checklist request potential')
-    .replace(/solving real problems/gi, 'answering common seller questions')
-    .replace(/Solving real problems/gi, 'Answering common seller questions')
-    .replace(/which repairs actually matter/gi, 'which repair questions are worth reviewing')
-    .replace(/Which repairs actually matter/gi, 'Which repair questions are worth reviewing')
-    .replace(/repairs actually matter/gi, 'repair questions are worth reviewing')
-    .replace(/Repairs actually matter/gi, 'Repair questions are worth reviewing')
-    .replace(/repairs really matter/gi, 'repair questions are worth reviewing')
-    .replace(/Repairs really matter/gi, 'Repair questions are worth reviewing')
-    .replace(/which repairs really matter/gi, 'which repair questions are worth reviewing')
-    .replace(/Which repairs really matter/gi, 'Which repair questions are worth reviewing')
-    .replace(/avoid costly delays/gi, 'review common prep questions')
-    .replace(/Avoid costly delays/gi, 'Review common prep questions')
-    .replace(/costly delays/gi, 'prep questions')
-    .replace(/Costly delays/gi, 'Prep questions')
-    .replace(/delay their sale/gi, 'create confusion before listing')
-    .replace(/Delay their sale/gi, 'Create confusion before listing')
-    .replace(/delay your sale/gi, 'create confusion before listing')
-    .replace(/Delay your sale/gi, 'Create confusion before listing')
-    .replace(/before listing that delay their sale/gi, 'before listing that create confusion')
-    .replace(/Before listing that delay their sale/gi, 'Before listing that create confusion')
-    .replace(/without wasting time/gi, 'with more clarity')
-    .replace(/Without wasting time/gi, 'With more clarity')
-    .replace(/wasting time/gi, 'guessing on prep')
-    .replace(/Wasting time/gi, 'Guessing on prep')
-    .replace(/spending money/gi, 'making prep decisions')
-    .replace(/Spending money/gi, 'Making prep decisions')
-    .replace(/spend money/gi, 'make prep decisions')
-    .replace(/Spend money/gi, 'Make prep decisions')
-    .replace(/save money/gi, 'make clearer prep decisions')
-    .replace(/Save money/gi, 'Make clearer prep decisions')
-    .replace(/saves money/gi, 'helps with clearer prep decisions')
-    .replace(/Saves money/gi, 'Helps with clearer prep decisions')
-    .replace(/save both time and money/gi, 'make clearer prep decisions')
-    .replace(/Save both time and money/gi, 'Make clearer prep decisions')
-    .replace(/save time and money/gi, 'make clearer prep decisions')
-    .replace(/Save time and money/gi, 'Make clearer prep decisions')
-    .replace(/smoothly your sale will go/gi, 'clear your selling process feels')
-    .replace(/Smoothly your sale will go/gi, 'Clear your selling process feels')
-    .replace(/how smoothly your sale will go/gi, 'how clear your selling process feels')
-    .replace(/How smoothly your sale will go/gi, 'How clear your selling process feels')
-    .replace(/influence your sale/gi, 'shape your prep plan')
-    .replace(/Influence your sale/gi, 'Shape your prep plan')
-    .replace(/top 3 repairs/gi, '3 repair questions')
-    .replace(/Top 3 repairs/gi, '3 repair questions')
-    .replace(/prioritize repairs/gi, 'review repair questions')
-    .replace(/Prioritize repairs/gi, 'Review repair questions')
-    .replace(/repairs to prioritize/gi, 'repair questions to review')
-    .replace(/Repairs to prioritize/gi, 'Repair questions to review')
-    .replace(/repairs worth doing/gi, 'repair questions worth reviewing')
-    .replace(/Repairs worth doing/gi, 'Repair questions worth reviewing')
-    .replace(/not every fix adds value/gi, 'not every repair needs the same priority')
-    .replace(/Not every fix adds value/gi, 'Not every repair needs the same priority')
-    .replace(/fixes add value/gi, 'repair questions are worth reviewing')
-    .replace(/Fixes add value/gi, 'Repair questions are worth reviewing')
-    .replace(/don['’]t spend on repairs/gi, 'review repair questions')
-    .replace(/Don['’]t spend on repairs/gi, 'Review repair questions')
-    .replace(/spend on repairs/gi, 'review repair questions')
-    .replace(/Spend on repairs/gi, 'Review repair questions')
-    .replace(/spending thousands/gi, 'reviewing repair questions')
-    .replace(/Spending thousands/gi, 'Reviewing repair questions')
-    .replace(/costly seller mistakes/gi, 'common seller prep questions')
-    .replace(/Costly seller mistakes/gi, 'Common seller prep questions')
-    .replace(/costly seller/gi, 'common seller')
-    .replace(/Costly seller/gi, 'Common seller')
-    .replace(/costly upgrades/gi, 'larger upgrades')
-    .replace(/Costly upgrades/gi, 'Larger upgrades')
-    .replace(/critical steps/gi, 'key questions')
-    .replace(/Critical steps/gi, 'Key questions')
-    .replace(/qualified leads/gi, 'interested homeowners')
-    .replace(/Qualified leads/gi, 'Interested homeowners')
-    .replace(/qualifies leads/gi, 'helps identify interested homeowners')
-    .replace(/Qualifies leads/gi, 'Helps identify interested homeowners')
-    .replace(/qualify leads/gi, 'identify interested homeowners')
-    .replace(/Qualify leads/gi, 'Identify interested homeowners')
-    .replace(/converting those leads/gi, 'guiding those conversations')
-    .replace(/Converting those leads/gi, 'Guiding those conversations')
-    .replace(/convert qualified leads/gi, 'guide interested homeowners')
-    .replace(/Convert qualified leads/gi, 'Guide interested homeowners')
-    .replace(/increase conversions/gi, 'improve follow-up clarity')
-    .replace(/Increase conversions/gi, 'Improve follow-up clarity')
-    .replace(/booked sessions/gi, 'consultation conversations')
-    .replace(/Booked sessions/gi, 'Consultation conversations')
-    .replace(/booked seller consultations/gi, 'seller consultation conversations')
-    .replace(/Booked seller consultations/gi, 'Seller consultation conversations')
-    .replace(/leads into booked/gi, 'conversations toward')
-    .replace(/Leads into booked/gi, 'Conversations toward')
-    .replace(/lead magnet will start/gi, 'checklist request can start')
-    .replace(/Lead magnet will start/gi, 'Checklist request can start')
-    .replace(/directly to checklist requests and consultations/gi, 'toward checklist requests and consultation conversations')
-    .replace(/Directly to checklist requests and consultations/gi, 'Toward checklist requests and consultation conversations')
-    .replace(/repair priorities/gi, 'repair questions')
-    .replace(/Repair priorities/gi, 'Repair questions')
-    .replace(/prioritizing repairs/gi, 'reviewing repair questions')
-    .replace(/Prioritizing repairs/gi, 'Reviewing repair questions')
-    .replace(/costs time and money/gi, 'can make preparation feel more confusing')
-    .replace(/Costs time and money/gi, 'Can make preparation feel more confusing')
-    .replace(/cost time and money/gi, 'make preparation feel more confusing')
-    .replace(/Cost time and money/gi, 'Make preparation feel more confusing')
-    .replace(/serious inquiries/gi, 'qualified conversations')
-    .replace(/Serious inquiries/gi, 'Qualified conversations')
-    .replace(/booked Seller Prep Consultations/gi, 'Seller Prep Consultation conversations')
-    .replace(/Booked Seller Prep Consultations/gi, 'Seller Prep Consultation conversations')
-    .replace(/booked consultations/gi, 'consultation conversations')
-    .replace(/Booked consultations/gi, 'Consultation conversations')
-    .replace(/competitive price/gi, 'pricing conversation')
-    .replace(/Competitive price/gi, 'Pricing conversation')
-    .replace(/reduce your sale options/gi, 'make your next steps less clear')
-    .replace(/Reduce your sale options/gi, 'Make your next steps less clear')
-    .replace(/market-ready/gi, 'listing-prep ready')
-    .replace(/Market-ready/gi, 'Listing-prep ready')
-    .replace(/professional insights/gi, 'practical seller prep guidance')
-    .replace(/Professional insights/gi, 'Practical seller prep guidance')
-    .replace(/drives direct engagement/gi, 'encourages direct replies')
-    .replace(/Drives direct engagement/gi, 'Encourages direct replies')
-    .replace(/converting serious inquiries into/gi, 'guiding qualified replies toward')
-    .replace(/Converting serious inquiries into/gi, 'Guiding qualified replies toward')
-    .replace(/converting attention into revenue/gi, 'connecting attention to a clear paid next step')
-    .replace(/Converting attention into revenue/gi, 'Connecting attention to a clear paid next step')
-    .replace(/before it['’]s gone/gi, 'before the drop opens')
-    .replace(/Before it['’]s gone/gi, 'Before the drop opens')
-    .replace(/do not miss out/gi, 'join the waitlist for drop update')
-    .replace(/Don['’]t miss out/gi, 'Join the waitlist for drop update')
-    .replace(/secure your spot/gi, 'join the waitlist')
-    .replace(/Secure your spot/gi, 'Join the waitlist')
-    .replace(/VIP Waitlist Membership/gi, 'Early Access Waitlist')
-    .replace(/VIP membership/gi, 'drop update list')
-    .replace(/limited edition clothing/gi, 'upcoming clothing drop')
-    .replace(/limited-edition clothing/gi, 'upcoming clothing drop')
-    .replace(/every stitch/gi, 'the product details')
-    .replace(/Every stitch/gi, 'The product details')
-    .replace(/expert sewing/gi, 'sample check')
-    .replace(/Expert sewing/gi, 'Sample check')
-    .replace(/skilled team/gi, 'team')
-    .replace(/Skilled team/gi, 'Team')
-    .replace(/perfect fit/gi, 'fit')
-    .replace(/Perfect fit/gi, 'Fit')
-    .replace(/build excitement/gi, 'show the product reason to join the waitlist')
-    .replace(/Build excitement/gi, 'Show the product reason to join the waitlist')
-    .replace(/create hype/gi, 'show the product reason to join the waitlist')
-    .replace(/Create hype/gi, 'Show the product reason to join the waitlist')
-    .replace(/your event is doomed before it starts/gi, 'your catering plan can get stressful quickly')
-    .replace(/Your event is doomed before it starts/gi, 'Your catering plan can get stressful quickly')
-    .replace(/that kill your event/gi, 'that make event planning harder')
-    .replace(/That kill your event/gi, 'That make event planning harder')
-    .replace(/kill your event/gi, 'make event planning harder')
-    .replace(/Kill your event/gi, 'Make event planning harder')
-    .replace(/soggy sandwiches/gi, 'food that does not travel well')
-    .replace(/Soggy sandwiches/gi, 'Food that does not travel well')
-    .replace(/spots fill up fast/gi, 'availability can vary')
-    .replace(/Spots fill up fast/gi, 'Availability can vary')
-    .replace(/higher prices/gi, 'fewer menu options')
-    .replace(/Higher prices/gi, 'Fewer menu options')
-    .replace(/guaranteed delivery times/gi, 'clear delivery windows')
-    .replace(/Guaranteed delivery times/gi, 'Clear delivery windows')
-    .replace(/fits your event perfectly/gi, 'fits your event details')
-    .replace(/Fits your event perfectly/gi, 'Fits your event details')
-    .replace(/will arrive fresh and ready without last-minute panic/gi, 'is planned around your event timing, guest count, and menu needs')
-    .replace(/event will be stress-free and delicious/gi, 'event food plan feels organized and guest-ready')
-    .replace(/stress-free catering/gi, 'organized catering inquiry')
-    .replace(/Stress-free catering/gi, 'Organized catering inquiry')
-    .replace(/avoid last-minute catering panic/gi, 'plan your catering details before the event')
-    .replace(/Avoid last-minute catering panic/gi, 'Plan your catering details before the event')
-    .replace(/last-minute office lunch orders always cause panic/gi, 'office lunch orders are easier when the menu and timing are clear')
-    .replace(/Last-minute office lunch orders always cause panic/gi, 'Office lunch orders are easier when the menu and timing are clear')
-    .replace(/delivered fresh/gi, 'prepared for your catering order')
-    .replace(/Delivered fresh/gi, 'Prepared for your catering order')
-    .replace(/fresh, customizable/gi, 'customizable')
-    .replace(/Fresh, customizable/gi, 'Customizable')
-    .replace(/happy clients/gi, 'catering customers')
-    .replace(/happy guests/gi, 'guests')
-    .replace(/right-fit/gi, 'clear-fit')
-    .replace(/kid-friendly and adult favorites/gi, 'menu options for different guests')
-    .replace(/booked at least 3 days in advance/gi, 'with enough notice to plan the order')
-    .replace(/hold your date while you decide/gi, 'review your event date and menu options')
-    .replace(/take the stress out of your next event/gi, 'help you plan your catering details')
-    .replace(/on-time delivery/gi, 'pickup or delivery details')
-    .replace(/On-time delivery/gi, 'Pickup or delivery details')
-    .replace(/fresh and on time/gi, 'planned around your order details')
-    .replace(/Fresh and on time/gi, 'Planned around your order details')
-    .replace(/dependable service/gi, 'clear catering details')
-    .replace(/reliable local catering/gi, 'local catering')
-    .replace(/vegetarian, gluten-free, and kid-friendly options/gi, 'menu options for different guest needs')
-    .replace(/vegetarian, gluten-free, or kid-friendly options/gi, 'menu options for different guest needs')
-    .replace(/menus cover vegetarian, gluten-free, and kid-friendly options/gi, 'ask about menu options for different guest needs')
-    .replace(/menu options for kids and adults/gi, 'menu options for different guests')
-    .replace(/dietary accommodations/gi, 'dietary notes')
-    .replace(/dessert trays/gi, 'menu add-ons if available')
-    .replace(/party setup advice/gi, 'event detail questions')
-    .replace(/weekly or monthly catering orders/gi, 'repeat catering inquiries')
-    .replace(/Office Lunch Subscription/gi, 'Office Lunch Catering Inquiry')
-    .replace(/ready-made family event trays/gi, 'family event menu options')
-    .replace(/Ready-made family event trays/gi, 'Family event menu options')
-    .replace(/with rotating menus/gi, 'with menu options')
-    .replace(/family event trays for small gatherings/gi, 'family event menu options')
-    .replace(/tailored menus/gi, 'menu options')
-    .replace(/personalized catering menu and quote/gi, 'catering menu and quote')
-    .replace(/personalized menu and quote/gi, 'menu and quote')
-    .replace(/customizable sandwich and salad platters/gi, 'catering menu options')
-    .replace(/Customizable sandwich and salad platters/gi, 'Catering menu options')
-    .replace(/teams of 10-30/gi, 'office groups')
-    .replace(/15-50 guests/gi, 'event guests')
-    .replace(/10-40 guests/gi, 'family event guests')
-    .replace(/guarantee compliments/gi, 'help your nails feel event-ready')
-    .replace(/guaranteed compliments/gi, 'event-ready nail confidence')
-    .replace(/guaranteed/gi, 'designed to')
-    .replace(/Guarantee compliments/gi, 'Help your nails feel event-ready')
-    .replace(/Guaranteed compliments/gi, 'Event-ready nail confidence')
-    .replace(/Guaranteed/gi, 'Designed to')
-    .replace(/standout nail art/gi, 'event-ready nail designs')
-    .replace(/Standout nail art/gi, 'Event-ready nail designs')
-    .replace(/ruin your event vibe/gi, 'clash with your event plans')
-    .replace(/Ruin your event vibe/gi, 'Clash with your event plans')
-    .replace(/Stop Lash Loss Now/gi, 'Avoid Early Lash Shedding')
-    .replace(/stop lash loss now/gi, 'avoid early lash shedding')
-    .replace(/ruin your lash extensions/gi, 'shorten the look of your set')
-    .replace(/ruin your extensions/gi, 'shorten the look of your set')
-    .replace(/breaks your extensions early/gi, 'can affect how long your set looks full')
-    .replace(/fall out too fast/gi, 'show gaps sooner than expected')
-    .replace(/falling out too fast/gi, 'showing gaps sooner than expected')
-    .replace(/premature fallout/gi, 'early gaps')
-    .replace(/fallout/gi, 'gaps')
-    .replace(/before lashes thin out/gi, 'before gaps start showing')
-    .replace(/lashes thin out/gi, 'gaps start showing')
-    .replace(/sparse lashes/gi, 'gaps between fills')
-    .replace(/avoid sparse lashes/gi, 'avoid unnecessary gaps')
-    .replace(/curl loss/gi, 'changes in how your set looks')
-    .replace(/weakens the glue/gi, 'can affect retention')
-    .replace(/damages both extensions and your natural lashes/gi, 'can affect your set and natural lash care')
-    .replace(/damages your natural lashes/gi, 'can affect natural lash care')
-    .replace(/lash damage/gi, 'lash care concerns')
-    .replace(/damage-free/gi, 'service-appropriate')
-    .replace(/protects your natural lashes/gi, 'supports your natural lash care')
-    .replace(/protect your natural lashes/gi, 'support your natural lash care')
-    .replace(/protect your lashes overnight/gi, 'support your lash aftercare overnight')
-    .replace(/protect your lashes/gi, 'support lash aftercare')
-    .replace(/keeps your lashes flawless/gi, 'keeps your set looking fresh')
-    .replace(/keep your lashes flawless/gi, 'keep your set looking fresh')
-    .replace(/flawless lashes/gi, 'fresh-looking lashes')
-    .replace(/flawless/gi, 'fresh')
-    .replace(/perfect lashes/gi, 'lashes that fit your style')
-    .replace(/Perfect lashes/gi, 'Lashes that fit your style')
-    .replace(/perfect/gi, 'right-fit')
-    .replace(/restore lash health/gi, 'support better lash care')
-    .replace(/Restore lash health/gi, 'Support better lash care')
-    .replace(/maximizes lash health/gi, 'supports better lash care')
-    .replace(/Maximizes lash health/gi, 'Supports better lash care')
-    .replace(/best lash retention/gi, 'better refill timing')
-    .replace(/lash retention/gi, 'how long your set looks full')
-    .replace(/keep your lashes full longer/gi, 'keep your set looking fuller between appointments')
-    .replace(/keeps your lashes full longer/gi, 'keeps your set looking fuller between appointments')
-    .replace(/women aged \d{2}\s*[-–]\s*\d{2}\s+who\s+/gi, 'clients who ')
-    .replace(/women age \d{2}\s*[-–]\s*\d{2}\s+who\s+/gi, 'clients who ')
-    .replace(/women and men aged \d{2}\s*[-–]\s*\d{2}\s+who\s+/gi, 'clients who ')
-    .replace(/men and women aged \d{2}\s*[-–]\s*\d{2}\s+who\s+/gi, 'clients who ')
-    .replace(/people aged \d{2}\s*[-–]\s*\d{2}\s+who\s+/gi, 'clients who ')
-    .replace(/adults aged \d{2}\s*[-–]\s*\d{2}\s+who\s+/gi, 'clients who ')
-    .replace(/aged \d{2}\s*[-–]\s*\d{2}\s+who\s+/gi, 'who ')
-    .replace(/young adults who\s+/gi, 'clients who ')
-    .replace(/busy professionals who\s+/gi, 'clients who ')
-    .replace(/never miss your appointment window/gi, 'stay on your refill rhythm')
-    .replace(/\s+([,.!?])/g, '$1')
-    .replace(/\s{2,}/g, ' ')
-    .trim();
+  const cleaned = CLEAN_GENERATED_TEXT_REPLACEMENTS.reduce(
+    (text, [pattern, replacement]) => text.replace(pattern, replacement),
+    value
+  ).trim();
 
   if (!cleaned) {
     return '';
