@@ -1171,13 +1171,31 @@ TikTok Script rules:
 - Weak TikTok style to avoid: one long paragraph with all points merged together.
 
 YouTube Shorts Script rules:
-- Write a tight short-form script with timestamps or beats.
-- Include: 0-3 second hook, useful middle, clear final takeaway, CTA.
+- Write a tight short-form script with clear timestamped sections.
+- YouTube Shorts Script must be formatted as separate labeled sections exactly like this:
+  0-3s Hook:
+  4-10s Problem:
+  11-17s Insight:
+  18-24s Solution:
+  25-30s CTA:
+- Do not return YouTube Shorts Script as one paragraph.
+- Each timestamped section must be short, polished, and camera-ready.
+- 0-3s Hook must be the strongest line in the Short and create immediate curiosity, tension, recognition, or a clear reason to keep watching.
+- 4-10s Problem should name the specific buyer problem or mistake.
+- 11-17s Insight should explain the surprising or useful shift.
+- 18-24s Solution should give the practical next step or framework.
+- 25-30s CTA should include one clear action using the campaign CTA keyword.
 - Make it more polished and educational than TikTok.
 - Avoid filler and generic motivational language.
-- Start with a clear educational promise or contrarian insight.
-- Strong YouTube Shorts style: "Client transformations should not become brag posts. They should become lessons about the problem, the process, and the next step."
+- Start with a clear educational promise, contrarian insight, buyer problem, mistake, objection, myth, or surprising insight.
+- Strong YouTube Shorts format example:
+  0-3s Hook: Most people do not need a harder workout plan. They need one they can repeat.
+  4-10s Problem: Random workouts fall apart the second your week gets busy.
+  11-17s Insight: Consistency usually comes from a simpler plan, not more motivation.
+  18-24s Solution: Start with a realistic weekly plan, one habit to track, and one check-in.
+  25-30s CTA: Comment CHECK and I’ll send you the Fitness Goal Check.
 - Weak YouTube Shorts style to avoid: "Want the full plan?"
+- Weak YouTube Shorts style to avoid: one long paragraph with all beats merged together.
 
 LinkedIn Post rules:
 - Write a finished professional post that sounds like a real founder, coach, consultant, or business owner.

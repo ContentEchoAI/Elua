@@ -1334,6 +1334,17 @@ export default function Home() {
                                   </p>
                                 )}
 
+                              {results.best_output?.platform === platform && (
+                                <div className="mt-3 rounded-xl border border-purple-500/30 bg-purple-500/10 p-3 text-sm text-zinc-100">
+                                  <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-purple-300">
+                                    Use this first
+                                  </p>
+                                  <p className="leading-relaxed">
+                                    Start with this asset because it gives your audience the clearest next step. Post it first, use the call to action exactly as written, then reply to every comment or DM with the lead magnet and one qualifying question.
+                                  </p>
+                                </div>
+                              )}
+
                               <p className="mt-1 text-xs text-zinc-500">
                                 Optimized for platform-native performance
                               </p>
