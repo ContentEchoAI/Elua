@@ -527,6 +527,50 @@ function cleanGeneratedText(value: string) {
     .replace(/Fits your event perfectly/gi, 'Fits your event details')
     .replace(/will arrive fresh and ready without last-minute panic/gi, 'is planned around your event timing, guest count, and menu needs')
     .replace(/event will be stress-free and delicious/gi, 'event food plan feels organized and guest-ready')
+    .replace(/stress-free catering/gi, 'organized catering inquiry')
+    .replace(/Stress-free catering/gi, 'Organized catering inquiry')
+    .replace(/avoid last-minute catering panic/gi, 'plan your catering details before the event')
+    .replace(/Avoid last-minute catering panic/gi, 'Plan your catering details before the event')
+    .replace(/last-minute office lunch orders always cause panic/gi, 'office lunch orders are easier when the menu and timing are clear')
+    .replace(/Last-minute office lunch orders always cause panic/gi, 'Office lunch orders are easier when the menu and timing are clear')
+    .replace(/delivered fresh/gi, 'prepared for your catering order')
+    .replace(/Delivered fresh/gi, 'Prepared for your catering order')
+    .replace(/fresh, customizable/gi, 'customizable')
+    .replace(/Fresh, customizable/gi, 'Customizable')
+    .replace(/happy clients/gi, 'catering customers')
+    .replace(/happy guests/gi, 'guests')
+    .replace(/right-fit/gi, 'clear-fit')
+    .replace(/kid-friendly and adult favorites/gi, 'menu options for different guests')
+    .replace(/booked at least 3 days in advance/gi, 'with enough notice to plan the order')
+    .replace(/hold your date while you decide/gi, 'review your event date and menu options')
+    .replace(/take the stress out of your next event/gi, 'help you plan your catering details')
+    .replace(/on-time delivery/gi, 'pickup or delivery details')
+    .replace(/On-time delivery/gi, 'Pickup or delivery details')
+    .replace(/fresh and on time/gi, 'planned around your order details')
+    .replace(/Fresh and on time/gi, 'Planned around your order details')
+    .replace(/dependable service/gi, 'clear catering details')
+    .replace(/reliable local catering/gi, 'local catering')
+    .replace(/vegetarian, gluten-free, and kid-friendly options/gi, 'menu options for different guest needs')
+    .replace(/vegetarian, gluten-free, or kid-friendly options/gi, 'menu options for different guest needs')
+    .replace(/menus cover vegetarian, gluten-free, and kid-friendly options/gi, 'ask about menu options for different guest needs')
+    .replace(/menu options for kids and adults/gi, 'menu options for different guests')
+    .replace(/dietary accommodations/gi, 'dietary notes')
+    .replace(/dessert trays/gi, 'menu add-ons if available')
+    .replace(/party setup advice/gi, 'event detail questions')
+    .replace(/weekly or monthly catering orders/gi, 'repeat catering inquiries')
+    .replace(/Office Lunch Subscription/gi, 'Office Lunch Catering Inquiry')
+    .replace(/ready-made family event trays/gi, 'family event menu options')
+    .replace(/Ready-made family event trays/gi, 'Family event menu options')
+    .replace(/with rotating menus/gi, 'with menu options')
+    .replace(/family event trays for small gatherings/gi, 'family event menu options')
+    .replace(/tailored menus/gi, 'menu options')
+    .replace(/personalized catering menu and quote/gi, 'catering menu and quote')
+    .replace(/personalized menu and quote/gi, 'menu and quote')
+    .replace(/customizable sandwich and salad platters/gi, 'catering menu options')
+    .replace(/Customizable sandwich and salad platters/gi, 'Catering menu options')
+    .replace(/teams of 10-30/gi, 'office groups')
+    .replace(/15-50 guests/gi, 'event guests')
+    .replace(/10-40 guests/gi, 'family event guests')
     .replace(/guarantee compliments/gi, 'help your nails feel event-ready')
     .replace(/guaranteed compliments/gi, 'event-ready nail confidence')
     .replace(/guaranteed/gi, 'designed to')
@@ -728,6 +772,34 @@ For this generation:
 - Good vague examples: "Film one close-up detail from the piece and ask: What detail would help you decide before joining the waitlist?" / "Show one styling idea and ask: Would you wear it this way or style it differently?" / "Post a waitlist reminder and ask: What question do you want answered before the drop?"
 - Bad vague examples: "This soft cotton jacket is designed for all-day comfort and tested on real bodies." / "Join early access before spots fill." / "Preorder now to secure your size." / "Every order is packed with care before shipping."
 - Money Plan must default to waitlist signup, drop update, product question follow-up, fit/sizing question, styling question, or reminder signup. Do not create VIP upgrades, paid priority access, discounts, bundles, guaranteed size holds, preorder offers, styling consultations, or early purchase opportunities unless the user provided them.
+`
+        : '';
+
+    const isCateringPrompt =
+      /catering|caterer|restaurant|office lunch|party tray|party trays|birthday party|family event|family gathering|event food|event menu/.test(
+        lowercaseContent
+      );
+
+    const hasSpecificCateringDetails =
+      /\b(sandwich|sandwiches|salad|salads|hot meals|finger foods|dessert|desserts|vegetarian|gluten-free|kid-friendly|vegan|pickup|delivery|deliver|delivered|buffet|boxed lunch|boxed lunches|party tray|party trays|office lunch|birthday party|family gathering|guest count|guests|10-30|10–30|15-40|15–40|10-50|10–50|weekly|monthly|subscription|on-time|same-day|next-day|setup|servers|staffing)\b/.test(
+        lowercaseContent
+      );
+
+    const cateringContextRules =
+      isCateringPrompt && !hasSpecificCateringDetails
+        ? `
+IMPORTANT VAGUE CATERING/RESTAURANT CONTEXT:
+The user did not provide exact menu items, dietary options, delivery terms, pickup terms, guest-count ranges, booking deadlines, freshness claims, staffing/setup services, subscription offers, or package details.
+
+For this generation:
+- Do NOT invent specific foods like sandwiches, salads, hot meals, finger foods, desserts, party trays, or boxed lunches unless the user provided them.
+- Do NOT invent vegetarian, gluten-free, vegan, kid-friendly, adult-favorite, dietary coverage, dessert trays, delivery reliability, on-time delivery, exact guest-count ranges, weekly/monthly subscriptions, setup help, staff help, date-holding, or booking deadlines unless provided.
+- Do NOT use claims like "stress-free", "hassle-free", "right-fit", "dependable", "reliable", "on time", "fresh delivery", "no surprises", "everyone will enjoy", or "perfect for your event" unless the user provided support.
+- Use safe catering wording: "menu options", "event details", "event date", "guest count", "pickup or delivery preference", "dietary notes", "budget range if relevant", "catering menu request", "quote request", "office lunch inquiry", "family event inquiry", and "repeat catering inquiry."
+- Write finished, copy-ready audience-facing content, but keep it truthful. When details are missing, ask for the detail instead of claiming the restaurant offers it.
+- Good vague example: "Comment MENU or DM your event date, guest count, and pickup or delivery preference, and I’ll send the catering menu."
+- Bad vague example: "We deliver fresh, on-time sandwich platters for 10–50 guests with gluten-free and kid-friendly options."
+- Money Plan must default to catering menu inquiry, quote request, party tray inquiry if relevant, office lunch inquiry, family event inquiry, or repeat catering inquiry. Do not invent subscriptions, bundles, exact guest ranges, delivery guarantees, or included services.
 `
         : '';
 
@@ -1087,6 +1159,7 @@ Goal: ${goal}
 Brand voice: ${selectedVoice}
 Selected platforms: ${selectedOutputList}
 ${clothingEcommerceContextRules}
+${cateringContextRules}
 
 Strategy field rules:
 The Strategy tab should feel like the brain of the campaign, not a short summary.
@@ -1490,6 +1563,12 @@ Business rules:
 - Do not use broad phrases like "professional guidance" or "expert advice" without tying them to a specific seller question, timeline, home value concern, repair decision, or listing prep step.
 - For fitness coaches: focus on safe transformation language, buyer situations, habits, consistency, accountability, beginner plans, assessments, coaching calls, and realistic next steps.
 - For restaurants and caterers: focus on catering inquiries, event orders, party trays, office lunches, menus, quote requests, and repeat orders.
+- For catering outputs, do not invent delivery guarantees, exact delivery windows, guest count ranges, booking deadlines, freshness promises, stress-free outcomes, kid-friendly claims, dietary coverage, dessert trays, setup advice, happy guests, happy clients, date-holding, or confirmed availability unless the user provided those details.
+- Catering content should default to safe lead-generation language: event date, guest count, pickup or delivery preference, menu needs, dietary notes, budget range if relevant, catering menu request, party tray inquiry, quote request, office lunch order, family event order, or repeat catering inquiry.
+- If the user does not provide specific menu categories or service terms, do not name specific foods, dietary options, guest-count ranges, subscriptions, dessert trays, setup support, delivery reliability, or ordering deadlines. Use "menu options", "event details", "guest count", "pickup or delivery preference", "dietary notes", "quote request", and "catering inquiry" instead.
+- Catering Money Plans should not invent subscriptions, bundles, exact guest ranges, delivery guarantees, or included services. Default offers should be catering menu inquiry, event quote request, party tray inquiry, office lunch inquiry, family event inquiry, or repeat catering inquiry.
+- Catering CTAs should usually ask for event type, event date, guest count, menu needs, and pickup/delivery preference. Strong CTA example: "Comment MENU or DM your event date and guest count, and I’ll send the catering menu."
+- Catering Action Plans should avoid fake urgency and guaranteed outcomes. They should tell the owner what to post, what event detail to ask for, what menu/quote information to send, and how to follow up with a clear catering inquiry or quote next step.
 - For coaches and consultants: focus on audits, starter sessions, discovery calls, assessments, clarity offers, and trust-building content.
 - For clothing brands and ecommerce product brands: focus on product details, fit, fabric, sizing, colorways, styling ideas, drop date, waitlist signups, drop updates, product questions, customer use case, and purchase questions.
 - For vague clothing/ecommerce prompts, avoid early access, preorder, bundles, discounts, VIP access, styling consultations, purchase access before launch, previous-drop claims, quality claims, packing/shipping claims, and scarcity language unless the user provided those details.
