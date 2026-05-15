@@ -715,12 +715,12 @@ export default function Home() {
                   Founder Plan Active
                 </p>
                 <p className="mb-3 text-sm leading-relaxed text-zinc-600">
-                  You have unlimited Content + Money Plans, hook ideas, saved generations,
-                  and workspace access.
+                  You have unlimited weekly content-to-revenue plans, platform-ready
+                  posts, Money Plans, Action Plans, hooks, and saved workspace access.
                 </p>
 
                 <div className="rounded-2xl bg-black px-4 py-3 text-center text-sm font-semibold text-white">
-                  Pro active — unlimited generations
+                  Founder Plan active — unlimited generations
                 </div>
               </>
             ) : (
@@ -729,9 +729,17 @@ export default function Home() {
                   Founder Plan — $19/mo
                 </p>
                 <p className="mb-3 text-sm leading-relaxed text-zinc-600">
-                    Turn unlimited business goals into Content + Money Plans, hook ideas,
-                    and saved workspace assets without hitting free limits.
+                  For small businesses that want a weekly content-to-revenue plan,
+                  not just random post ideas.
                 </p>
+
+                <div className="mb-3 space-y-2 rounded-2xl border border-zinc-200 bg-zinc-50 p-3 text-sm leading-relaxed text-zinc-700">
+                  <p>✓ Unlimited Content + Money Plan generations</p>
+                  <p>✓ Platform-ready posts, hooks, and CTAs</p>
+                  <p>✓ Money Plan with funnel, lead magnet, and conversion tips</p>
+                  <p>✓ 7-Day Action Plan showing what to post and how to follow up</p>
+                  <p>✓ Saved Workspace to reopen and reuse your best campaigns</p>
+                </div>
 
                 <button
                   onClick={handleUpgrade}
