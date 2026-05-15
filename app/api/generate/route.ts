@@ -1363,6 +1363,15 @@ Action Plan rules:
 - Every cta must be copy-paste-ready.
 - Every follow_up must include an exact message, question, or next step.
 - The action plan must connect the selected platform content, lead magnet, CTA, funnel, and real paid offer.
+- Do not write generic follow-ups like "reply to comments", "engage with warm leads", "send the resource", "invite them to book", or "follow up promptly" unless paired with the exact message the user should send.
+- At least 4 of the 7 follow_up fields must include copy-ready wording the user can send directly in a DM, comment reply, text, or email.
+- Strong follow_up style: "Send this: 'Here’s the Fitness Goal Check. Quick question before I point you to the right first step: is your biggest obstacle time, workouts, nutrition, or accountability?'"
+- Strong follow_up style: "Reply with: 'I sent it over. What is your selling timeline, and what feels most confusing before listing?'"
+- Strong follow_up style: "Send this message: 'Here’s the catering menu. What date is your event, how many guests are you feeding, and do you need pickup or delivery?'"
+- Weak follow_up style to avoid: "Reply to comments and answer questions."
+- Weak follow_up style to avoid: "Invite warm leads to book a call."
+- Weak follow_up style to avoid: "Send the checklist and follow up."
+- Day 2, Day 3, and Day 5 must be especially specific because those are the conversion moments where comments, DMs, lead magnets, and paid offers connect.
 - For fitness coaches, follow_up messages must ask fitness-related questions, not content/marketing questions.
 - For realtors, follow_up messages must ask seller-readiness, home-value, timeline, property, or consultation questions.
 - For restaurants and caterers, follow_up messages must ask event date, guest count, menu needs, budget range, pickup/delivery, or quote-request questions.
