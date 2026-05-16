@@ -182,8 +182,8 @@ const CLEAN_GENERATED_TEXT_REPLACEMENTS: Array<[RegExp, string]> = [
   [/I['’]m not sharing private client details,? but\s*/gi, ''],
   [/Instead of sharing private details,?\s*/gi, ''],
   [/instead of sharing private details,?\s*/g, ''],
-  [/without using private details or invented results/gi, 'built around real client-win patterns, buyer problems, and coaching steps'],
-  [/without private details or invented results/gi, 'built around real client-win patterns, buyer problems, and coaching steps'],
+  [/without using private details or invented results/gi, 'built around real buyer problems, process lessons, and next steps'],
+  [/without private details or invented results/gi, 'built around real buyer problems, process lessons, and next steps'],
   [/without sharing private details/gi, 'without inventing results'],
   [/private client details/gi, 'specific client details'],
   [/private details/gi, 'specific details'],
@@ -436,16 +436,16 @@ const CLEAN_GENERATED_TEXT_REPLACEMENTS: Array<[RegExp, string]> = [
   [/Costly upgrades/gi, 'Larger upgrades'],
   [/critical steps/gi, 'key questions'],
   [/Critical steps/gi, 'Key questions'],
-  [/qualified leads/gi, 'interested homeowners'],
-  [/Qualified leads/gi, 'Interested homeowners'],
-  [/qualifies leads/gi, 'helps identify interested homeowners'],
-  [/Qualifies leads/gi, 'Helps identify interested homeowners'],
-  [/qualify leads/gi, 'identify interested homeowners'],
-  [/Qualify leads/gi, 'Identify interested homeowners'],
+  [/qualified leads/gi, 'serious replies'],
+  [/Qualified leads/gi, 'Serious replies'],
+  [/qualifies leads/gi, 'helps identify serious replies'],
+  [/Qualifies leads/gi, 'Helps identify serious replies'],
+  [/qualify leads/gi, 'identify serious replies'],
+  [/Qualify leads/gi, 'Identify serious replies'],
   [/converting those leads/gi, 'guiding those conversations'],
   [/Converting those leads/gi, 'Guiding those conversations'],
-  [/convert qualified leads/gi, 'guide interested homeowners'],
-  [/Convert qualified leads/gi, 'Guide interested homeowners'],
+  [/convert qualified leads/gi, 'guide serious replies'],
+  [/Convert qualified leads/gi, 'Guide serious replies'],
   [/increase conversions/gi, 'improve follow-up clarity'],
   [/Increase conversions/gi, 'Improve follow-up clarity'],
   [/booked sessions/gi, 'consultation conversations'],
@@ -1795,13 +1795,13 @@ Money Plan output standard:
 - Do not recommend fake urgency, fake scarcity, fake discounts, fake testimonials, invented proof, or invented outcomes.
 
 Good Money Plan style:
-- Step 1: Post the Instagram Carousel about turning 3 client transformations into a 4-week sales content calendar built around real client-win patterns, buyer problems, and coaching steps.
-- Step 2: End with: "Comment PLAN and I’ll send you the Transformation Content Calendar."
-- Step 3: When someone replies, send the calendar and ask: "What fitness goal are you working toward right now, and what feels hardest to stay consistent with?"
-- CTA Strategy: "Comment PLAN and I’ll send you the Transformation Content Calendar. After that, I’ll ask one question about your fitness goal and point you to the right first coaching step."
-- Action Plan Day 1: Post the Instagram Carousel about turning 3 client transformations into a 4-week sales content calendar built around real client-win patterns, buyer problems, and coaching steps. CTA: "Comment PLAN and I’ll send you the Transformation Content Calendar." Follow-up: "When someone comments PLAN, send the calendar and say: What fitness goal are you working toward right now?"
-- Action Plan Day 2: Reply to every comment or DM with the Fitness Goal Check and ask the first qualifying question. CTA: "Reply with your goal and biggest obstacle." Follow-up: "If they mention busy schedule, missed workouts, nutrition confusion, or accountability, invite them to a Starter Fitness Assessment or Consistency Audit."
-- Conversion Tip: "After sending the content map, ask one qualifying question: What fitness goal are you working toward right now, and what keeps getting in the way? If they mention consistency, nutrition confusion, accountability, a busy schedule, or not knowing where to start, invite them to a First-Step Fitness Assessment."
+- Step 1: Post the Instagram Carousel about the biggest reason busy adults fall off their workouts: the plan does not match their real week.
+- Step 2: End with: "Comment CHECK and I’ll send you the Fitness Goal Check."
+- Step 3: When someone replies, send the Fitness Goal Check and ask: "What feels hardest right now — time, workouts, nutrition, or accountability?"
+- CTA Strategy: "Comment CHECK and I’ll send you the Fitness Goal Check. After that, I’ll ask one question about what is getting in the way and point you to the right first coaching step."
+- Action Plan Day 1: Post the Instagram Carousel about why busy adults need a simple weekly plan instead of random workouts. CTA: "Comment CHECK and I’ll send you the Fitness Goal Check." Follow-up: "Here’s the Fitness Goal Check. Quick question before I point you to the right first step: is your biggest obstacle time, workouts, nutrition, or accountability?"
+- Action Plan Day 2: Reply to every comment or DM with the Fitness Goal Check and ask the first qualifying question. CTA: "Reply with your biggest obstacle." Follow-up: "If they mention busy schedule, missed workouts, nutrition confusion, or accountability, invite them to a Starter Fitness Assessment or Consistency Audit."
+- Conversion Tip: "After sending the Fitness Goal Check, ask one qualifying question: What feels hardest right now — time, workouts, nutrition, or accountability? If they mention consistency, nutrition confusion, accountability, a busy schedule, or not knowing where to start, invite them to a First-Step Fitness Assessment."
 
 Hard rewrite gate:
 Before returning JSON, scan the entire response and rewrite any output that contains these weak phrases:
