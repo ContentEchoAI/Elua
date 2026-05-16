@@ -1744,9 +1744,19 @@ Offer rules:
 - Do not use phrases like “turn your own progress into content,” “content help,” “creator education,” or “sales content” in the funnel or conversion strategy unless the user's business sells content or marketing services.
 - The Money Plan must never let the content topic become the paid offer.
 - The lead magnet may be related to the content topic, but funnel.step_3 and conversion_strategy must move the lead toward the user's real paid service.
+- monetization.lead_magnet must be more than a title. Write it as: "Name — one sentence explaining what it helps the prospect diagnose, decide, calculate, prepare, compare, or do next."
+- Weak lead magnet: "Offer Clarity Checklist"
+- Strong lead magnet: "Offer Clarity Checklist — a short checklist that helps freelancers spot whether their offer is unclear because of audience, outcome, pricing, proof, or next step."
+- Weak lead magnet: "Fitness Goal Check"
+- Strong lead magnet: "Fitness Goal Check — a quick self-check that helps busy adults identify whether time, workouts, nutrition, or accountability is the main reason they are not staying consistent."
+- Weak lead magnet: "Seller Readiness Checklist"
+- Strong lead magnet: "Seller Readiness Checklist — a simple checklist that helps homeowners organize timeline, prep questions, repair priorities, and next steps before a listing conversation."
 - For a fitness coach using a client story, proof, or transformation-related lead magnet, funnel.step_3 should NOT ask if the lead wants to turn progress into content. It should ask what fitness goal they want help with and invite them to a fitness assessment, starter plan, coaching call, or accountability program.
 - For a fitness coach, conversion_strategy should sound like: “Comment START and I’ll send the checklist. After that, I’ll ask one question about your fitness goal and point you to the right first coaching step.”
 - conversion_tips should be practical follow-up actions, not vague advice.
+- Each conversion_tip must include either a copy-ready message, a specific qualifying question, a decision rule, or the exact next step to offer.
+- Weak conversion tip: "Follow up with interested leads."
+- Strong conversion tip: "After sending the checklist, ask: 'Which part of your offer feels hardest to explain right now — who it is for, what they get, the price, or the next step?' If they answer with a real business problem, invite them to the Offer Clarity Coaching Call."
 
 Action Plan rules:
 - monetization.action_plan must include exactly 7 steps.
@@ -1761,6 +1771,8 @@ Action Plan rules:
 - Day 7 should tell the user how to review responses and reuse the strongest angle next week.
 - Every cta must be copy-paste-ready.
 - Every follow_up must include an exact message, question, or next step.
+- Follow-up messages should sound like a real human business owner wrote them, not a template. Avoid stiff phrases like "I would like to invite you" unless they match the user's voice.
+- When possible, write the follow_up as direct copy the user can paste after a comment or DM, starting with phrases like "Send this:", "Reply with:", or "DM them:".
 - The action plan must connect the selected platform content, lead magnet, CTA, funnel, and real paid offer.
 - Do not write generic follow-ups like "reply to comments", "engage with warm leads", "send the resource", "invite them to book", or "follow up promptly" unless paired with the exact message the user should send.
 - At least 4 of the 7 follow_up fields must include copy-ready wording the user can send directly in a DM, comment reply, text, or email.
@@ -1791,6 +1803,8 @@ Money Plan output standard:
 - step_3 must include the exact follow-up message, question, booking step, or consultation invite.
 - cta_strategy must include copy-paste-ready wording the user can put in the post or DM. Do not use internal labels like "CTA" in the generated user-facing text.
 - conversion_tips must be concrete actions, not broad advice.
+- conversion_tips must not repeat the same idea in three different ways. Each tip should cover a different conversion moment: qualifying, inviting to the paid next step, and following up with non-bookers.
+- The lead_magnet field must explain the resource clearly enough that the user understands what they are giving away and why a prospect would want it.
 - Do not say vague phrases like "promote on social media", "encourage engagement", "collect responses", "provide value", "capture leads", "follow up with potential clients", or "create urgency".
 - Do not recommend fake urgency, fake scarcity, fake discounts, fake testimonials, invented proof, or invented outcomes.
 
@@ -1801,7 +1815,9 @@ Good Money Plan style:
 - CTA Strategy: "Comment CHECK and I’ll send you the Fitness Goal Check. After that, I’ll ask one question about what is getting in the way and point you to the right first coaching step."
 - Action Plan Day 1: Post the Instagram Carousel about why busy adults need a simple weekly plan instead of random workouts. CTA: "Comment CHECK and I’ll send you the Fitness Goal Check." Follow-up: "Here’s the Fitness Goal Check. Quick question before I point you to the right first step: is your biggest obstacle time, workouts, nutrition, or accountability?"
 - Action Plan Day 2: Reply to every comment or DM with the Fitness Goal Check and ask the first qualifying question. CTA: "Reply with your biggest obstacle." Follow-up: "If they mention busy schedule, missed workouts, nutrition confusion, or accountability, invite them to a Starter Fitness Assessment or Consistency Audit."
+- Lead Magnet: "Fitness Goal Check — a quick self-check that helps busy adults identify whether time, workouts, nutrition, or accountability is the main reason they are not staying consistent."
 - Conversion Tip: "After sending the Fitness Goal Check, ask one qualifying question: What feels hardest right now — time, workouts, nutrition, or accountability? If they mention consistency, nutrition confusion, accountability, a busy schedule, or not knowing where to start, invite them to a First-Step Fitness Assessment."
+- Conversion Tip: "For people who reply but do not book, send: 'No pressure — based on what you shared, the first thing I’d fix is your weekly plan. Want me to show you what that would look like in a Starter Fitness Assessment?'"
 
 Hard rewrite gate:
 Before returning JSON, scan the entire response and rewrite any output that contains these weak phrases:
