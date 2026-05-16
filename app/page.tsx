@@ -391,13 +391,30 @@ export default function Home() {
         }),
       });
 
-      const data = await res.json();
+      const responseText = await res.text();
+      let data: unknown;
 
-      if (!res.ok) {
-        throw new Error(data?.error || 'Something went wrong');
+      try {
+        data = responseText ? JSON.parse(responseText) : {};
+      } catch {
+        throw new Error(
+          responseText || 'The generate route returned an invalid response.'
+        );
       }
 
-      setResults(data);
+      if (!res.ok) {
+        const errorMessage =
+          typeof data === 'object' &&
+          data !== null &&
+          'error' in data &&
+          typeof data.error === 'string'
+            ? data.error
+            : 'Something went wrong';
+
+        throw new Error(errorMessage);
+      }
+
+      setResults(data as Results);
 
       if (!isPro) {
         const nextUsed = Math.min(generationsUsed + 1, MAX_FREE);

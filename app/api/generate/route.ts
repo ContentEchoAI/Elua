@@ -628,6 +628,66 @@ const CLEAN_GENERATED_TEXT_REPLACEMENTS: Array<[RegExp, string]> = [
   [/young adults who\s+/gi, 'clients who '],
   [/busy professionals who\s+/gi, 'clients who '],
   [/never miss your appointment window/gi, 'stay on your refill rhythm'],
+  [/lash health/gi, 'lash appointment timing'],
+  [/Lash health/gi, 'Lash appointment timing'],
+  [/natural lash health/gi, 'natural lash care questions'],
+  [/Natural lash health/gi, 'Natural lash care questions'],
+  [/stress natural lashes/gi, 'may not be the right timing for every client'],
+  [/Stress natural lashes/gi, 'May not be the right timing for every client'],
+  [/can stress natural lashes/gi, 'may not be the right timing for every client'],
+  [/restore volume and shape/gi, 'refresh the look of your set'],
+  [/Restore volume and shape/gi, 'Refresh the look of your set'],
+  [/cost you more time and money/gi, 'make your next appointment feel less clear'],
+  [/Cost you more time and money/gi, 'Make your next appointment feel less clear'],
+  [/costs them time and money/gi, 'can create timing confusion'],
+  [/Costs them time and money/gi, 'Can create timing confusion'],
+  [/priority booking option/gi, 'appointment request option'],
+  [/Priority booking option/gi, 'Appointment request option'],
+  [/book your spot this week/gi, 'ask about openings this week'],
+  [/Book your spot this week/gi, 'Ask about openings this week'],
+  [/available appointments this week/gi, 'openings this week if available'],
+  [/Available appointments this week/gi, 'Openings this week if available'],
+  [/recommended refill period/gi, 'usual refill timing'],
+  [/send me a pic/gi, 'tell me when your last appointment was'],
+  [/Send me a pic/gi, 'Tell me when your last appointment was'],
+  [/send me a photo/gi, 'tell me when your last appointment was'],
+  [/Send me a photo/gi, 'Tell me when your last appointment was'],
+  [/DM me a pic/gi, 'DM me when your last appointment was'],
+  [/DM me a photo/gi, 'DM me when your last appointment was'],
+  [/recommend what['’]s best/gi, 'talk through the next appointment option'],
+  [/Recommend what['’]s best/gi, 'Talk through the next appointment option'],
+  [/recommend the best service/gi, 'talk through the next appointment option'],
+  [/recommend the right service/gi, 'talk through the next appointment option'],
+  [/best service/gi, 'next appointment option'],
+  [/best fit/gi, 'appointment option'],
+  [/Best fit/gi, 'Appointment option'],
+  [/best appointment fit/gi, 'next appointment option'],
+  [/Best appointment fit/gi, 'Next appointment option'],
+  [/right service fit/gi, 'next appointment option'],
+  [/Right service fit/gi, 'Next appointment option'],
+  [/right appointment fit/gi, 'next appointment option'],
+  [/Right appointment fit/gi, 'Next appointment option'],
+  [/find the best appointment fit/gi, 'talk through the next appointment option'],
+  [/Find the best appointment fit/gi, 'Talk through the next appointment option'],
+  [/help you find the best appointment fit/gi, 'help you talk through the next appointment option'],
+  [/Help you find the best appointment fit/gi, 'Help you talk through the next appointment option'],
+  [/best for repeat clients/gi, 'for returning clients'],
+  [/Best for repeat clients/gi, 'For returning clients'],
+  [/book your appointment today/gi, 'ask about openings'],
+  [/Book your appointment today/gi, 'Ask about openings'],
+  [/reserve a full set appointment this week/gi, 'ask about full set openings this week if available'],
+  [/Reserve a full set appointment this week/gi, 'Ask about full set openings this week if available'],
+  [/immediate appointment scheduling/gi, 'clear appointment next steps'],
+  [/Immediate appointment scheduling/gi, 'Clear appointment next steps'],
+  [/speed up scheduling/gi, 'make appointment next steps easier'],
+  [/Speed up scheduling/gi, 'Make appointment next steps easier'],
+  [/increase booking confidence/gi, 'make the next step clearer'],
+  [/Increase booking confidence/gi, 'Make the next step clearer'],
+  [/hold an appointment spot/gi, 'check appointment options'],
+  [/Hold an appointment spot/gi, 'Check appointment options'],
+  [/some spots open/gi, 'openings if available'],
+  [/Some spots open/gi, 'Openings if available'],
+  [/Recommended refill period/gi, 'Usual refill timing'],
   [/\s+([,.!?])/g, '$1'],
   [/\s{2,}/g, ' '],
 ];
@@ -805,6 +865,34 @@ For this generation:
 - Good vague example: "Comment MENU or DM your event date, guest count, and pickup or delivery preference, and I’ll send the catering menu."
 - Bad vague example: "We deliver fresh, on-time sandwich platters for 10–50 guests with gluten-free and kid-friendly options."
 - Money Plan must default to catering menu inquiry, quote request, party tray inquiry if relevant, office lunch inquiry, family event inquiry, or repeat catering inquiry. Do not invent subscriptions, bundles, exact guest ranges, delivery guarantees, or included services.
+`
+        : '';
+
+    const isLashPrompt =
+      /lash|lashes|refill|full set|lash artist|extensions/.test(lowercaseContent);
+
+    const hasSpecificLashBusinessDetails =
+      /\b(2 weeks|3 weeks|4 weeks|5 weeks|two weeks|three weeks|four weeks|five weeks|classic|hybrid|volume|mega volume|wispy|cat eye|doll eye|open eye|foreign fill|removal|deposit|price|pricing|available|availability|openings|spots|policy|retention|aftercare|natural lash|lash health|lash bath|fill policy|booking policy)\b/.test(
+        lowercaseContent
+      );
+
+    const lashContextRules =
+      isLashPrompt && !hasSpecificLashBusinessDetails
+        ? `
+IMPORTANT VAGUE LASH ARTIST CONTEXT:
+The user did not provide refill policy, exact timing windows, lash style menu, prices, availability, booking policy, retention claims, aftercare policy, natural lash claims, or service recommendation rules.
+
+For this generation:
+- Do NOT invent exact refill timing like 2 weeks, 3 weeks, 4 weeks, 5 weeks, "a few weeks", "regular refill period", or "recommended refill period."
+- Do NOT diagnose lash condition or tell clients the artist can choose the best/right service from a photo.
+- Do NOT invent natural lash health claims, lash stress claims, lash damage claims, retention claims, restoration claims, volume restoration, or medical-ish lash care benefits.
+- Do NOT invent available appointments, open spots, priority booking, held spots, immediate scheduling, discounts, bundles, deposits, or appointment availability unless the user provided them.
+- Do NOT use aggressive or fear-based language like "losing your lash shape", "wrong service", "costs more money", "patchy", "sparse", "damaged", "weak", "restore", "best service", or "recommend what's best."
+- Use safe lash wording: "when was your last appointment?", "what do you want your set to look like?", "are you leaning refill or full set?", "ask about openings", "refill appointment inquiry", "full set appointment inquiry", "style preference", "booking question", and "appointment fit."
+- Write finished, copy-ready audience-facing content, but keep it truthful. When details are missing, ask a booking question instead of making a service recommendation.
+- Good vague example: "DM REFILL and tell me when your last appointment was and what you want your set to look like."
+- Bad vague example: "Send me a photo and I’ll recommend the best service so you can restore volume and book today."
+- Money Plan must default to refill appointment inquiry, full set appointment inquiry, appointment planner, style match question, refill timing question, or openings request. Do not invent bundles, discounts, priority booking, diagnosis-by-photo, availability, or service recommendations.
 `
         : '';
 
@@ -1165,6 +1253,7 @@ Brand voice: ${selectedVoice}
 Selected platforms: ${selectedOutputList}
 ${clothingEcommerceContextRules}
 ${cateringContextRules}
+${lashContextRules}
 
 Strategy field rules:
 The Strategy tab should feel like the brain of the campaign, not a short summary.
@@ -1599,6 +1688,12 @@ Business rules:
 - Beauty lead magnets should change based on the campaign angle. Do not always use a checklist. Use guide, lookbook, style menu, prep sheet, timing guide, aftercare card, event planner, service matcher, consultation questions, or availability note when it fits better.
 - Beauty Action Plans should not repeat the same CTA every day. Day 1 should publish the main asset, Day 2 should reply and qualify, Day 3 should send the resource, Day 4 should answer an objection, Day 5 should invite booking, Day 6 should post a lighter reminder or behind-the-scenes proof, and Day 7 should review replies and plan next week’s campaign angle.
 - For lash artists: use the user's prompt to choose between lash style guide, refill reminder, full set booking, refill booking, aftercare reminders, lash care checklist, classic/hybrid/volume education, appointment openings, event lashes, product add-ons, or client FAQ content. Use DM keywords like LASHES, REFILL, STYLE, or BOOK.
+- For lash/refill outputs, do not invent exact refill windows such as 2-4 weeks, 4+ weeks, 5 weeks, or any appointment timing rule unless the user provides it. Use safer wording like "when was your last appointment?", "what does your set look like right now?", "are you deciding between a refill and a full set?", or "ask about openings this week."
+- Lash content must not claim lash health outcomes, natural lash damage, natural lash stress, restoration, volume restoration, guaranteed retention, or medical-ish lash care benefits unless the user provided support. Keep it to booking, refill timing questions, style preference, appointment fit, aftercare reminders, and consultation-style guidance.
+- Lash content should not tell clients to send a photo/picture for diagnosis or say the artist will recommend the best/right service from a photo. Prefer safer wording: "Tell me when your last appointment was", "Tell me what you want your set to look like", "Are you leaning refill or full set?", or "Ask about openings."
+- Lash Action Plans should not recommend a refill or full set based on exact weeks unless the user gives their policy. They should ask when the last appointment was, ask what the client wants the set to look like, ask whether they want a refill or full set, and invite them to check openings.
+- Lash Action Plans should not invent availability, priority booking, held appointment spots, or immediate scheduling. Use "ask about openings" or "check openings if available" unless the user provided availability.
+- Lash Money Plans should not create priority booking, guaranteed openings, appointment availability, diagnosis-by-photo, "best fit", "right service", or "best service" recommendations unless provided. Default to refill appointment inquiry, full set appointment inquiry, appointment planner, style preference question, refill timing question, or openings request.
 - For nail artists: use the user's prompt to choose between design menus, appointment availability, fill timing, nail prep, aftercare, seasonal sets, event/bridal nails, gel/acrylic/dip education, design polls, retention reminders, or client FAQ content. Use DM keywords like NAILS, FILL, SET, DESIGN, or BOOK.
 - For hair stylists and barbers: use the user's prompt to choose between consultation prompts, color service education, haircut maintenance, style upkeep, product recommendations, transformation explanations, appointment openings, seasonal changes, event hair, or client FAQ content. Use DM keywords like HAIR, COLOR, CUT, STYLE, or CONSULT.
 - For estheticians, brows, makeup, skincare, and med-spa style services: use the user's prompt to choose between consultation prompts, prep and aftercare checklists, maintenance timing, skin-goal questions, service education, event/bridal packages, seasonal skin content, brow mapping, makeup prep, or client FAQ content. Use DM keywords like GLOW, BROWS, SKIN, BEAUTY, or CONSULT.
