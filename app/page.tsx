@@ -164,6 +164,23 @@ export default function Home() {
     return [];
   };
 
+  const formatStrategyBullets = (value: unknown, fallback = ''): string[] => {
+    const text = formatGeneratedText(value, fallback).replace(/\s+/g, ' ').trim();
+
+    if (!text) return [];
+
+    const sentenceMatches = text.match(/[^.!?]+[.!?]+|[^.!?]+$/g);
+    const bullets = (sentenceMatches || [text])
+      .map((item) => item.trim())
+      .filter(Boolean);
+
+    if (bullets.length <= 1) {
+      return bullets;
+    }
+
+    return bullets.slice(0, 4);
+  };
+
   const voices = [
     { id: 'professional', label: 'Professional' },
     { id: 'casual', label: 'Casual' },
@@ -1250,36 +1267,48 @@ export default function Home() {
                       <h3 className="mb-2 font-semibold text-purple-400">
                         🎯 Best Audience
                       </h3>
-                      <p className="text-zinc-200">
-                        {formatGeneratedText(
+                      <div className="space-y-2">
+                        {formatStrategyBullets(
                           results.strategy?.target_audience,
                           'The specific buyer or audience segment most likely to care about this campaign.'
-                        )}
-                      </p>
+                        ).map((item, i) => (
+                          <p key={i} className="text-sm leading-relaxed text-zinc-200 sm:text-base">
+                            • {item}
+                          </p>
+                        ))}
+                      </div>
                     </div>
 
                     <div className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5">
                       <h3 className="mb-2 font-semibold text-purple-400">
                         🧠 Campaign Strategy
                       </h3>
-                      <p className="text-zinc-200">
-                        {formatGeneratedText(
+                      <div className="space-y-2">
+                        {formatStrategyBullets(
                           results.strategy?.core_angle,
                           'The main campaign angle that connects the business goal, audience problem, content idea, and next step.'
-                        )}
-                      </p>
+                        ).map((item, i) => (
+                          <p key={i} className="text-sm leading-relaxed text-zinc-200 sm:text-base">
+                            • {item}
+                          </p>
+                        ))}
+                      </div>
                     </div>
 
                     <div className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5">
                       <h3 className="mb-2 font-semibold text-purple-400">
                         🗺️ Content Path
                       </h3>
-                      <p className="text-zinc-200">
-                        {formatGeneratedText(
+                      <div className="space-y-2">
+                        {formatStrategyBullets(
                           results.strategy?.content_goal,
                           'The role the content should play, from attention to interest to lead capture or sale.'
-                        )}
-                      </p>
+                        ).map((item, i) => (
+                          <p key={i} className="text-sm leading-relaxed text-zinc-200 sm:text-base">
+                            • {item}
+                          </p>
+                        ))}
+                      </div>
                     </div>
 
                     <div className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5">
@@ -1301,36 +1330,48 @@ export default function Home() {
                       <h3 className="mb-2 font-semibold text-purple-400">
                         🎬 Execution Style
                       </h3>
-                      <p className="text-zinc-200">
-                        {formatGeneratedText(
+                      <div className="space-y-2">
+                        {formatStrategyBullets(
                           results.strategy?.content_style,
                           'How the campaign should sound, feel, and be executed across the selected platforms.'
-                        )}
-                      </p>
+                        ).map((item, i) => (
+                          <p key={i} className="text-sm leading-relaxed text-zinc-200 sm:text-base">
+                            • {item}
+                          </p>
+                        ))}
+                      </div>
                     </div>
 
                     <div className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5">
                       <h3 className="mb-2 font-semibold text-purple-400">
                         📍 Recommended Platform
                       </h3>
-                      <p className="text-zinc-200">
-                        {formatGeneratedText(
+                      <div className="space-y-2">
+                        {formatStrategyBullets(
                           results.strategy?.best_platform,
                           'The selected platform most likely to work best for this campaign.'
-                        )}
-                      </p>
+                        ).map((item, i) => (
+                          <p key={i} className="text-sm leading-relaxed text-zinc-200 sm:text-base">
+                            • {item}
+                          </p>
+                        ))}
+                      </div>
                     </div>
 
                     <div className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5">
                       <h3 className="mb-2 font-semibold text-purple-400">
                         📈 Why This Works
                       </h3>
-                      <p className="text-zinc-200">
-                        {formatGeneratedText(
+                      <div className="space-y-2">
+                        {formatStrategyBullets(
                           results.strategy?.why_it_works,
                           'Why this strategy should help the audience understand the problem, take the next step, and move closer to becoming a lead or customer.'
-                        )}
-                      </p>
+                        ).map((item, i) => (
+                          <p key={i} className="text-sm leading-relaxed text-zinc-200 sm:text-base">
+                            • {item}
+                          </p>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 )}
