@@ -105,6 +105,7 @@ export default function Home() {
   const [selectedVoice, setSelectedVoice] = useState('professional');
   const [selectedOutputs, setSelectedOutputs] = useState<string[]>([]);
   const [results, setResults] = useState<Results | null>(null);
+  const [generateError, setGenerateError] = useState('');
   const [loading, setLoading] = useState(false);
   const [loadingStep, setLoadingStep] = useState(0);
   const [upgradeLoading, setUpgradeLoading] = useState(false);
@@ -369,6 +370,7 @@ export default function Home() {
     }
 
     setLoading(true);
+    setGenerateError('');
     setResults(null);
     setLoadingStep(0);
 
@@ -422,10 +424,18 @@ export default function Home() {
         localStorage.setItem('generationsUsed', String(nextUsed));
       }
     } catch (error) {
-      alert(
-        'Error generating content. Please make sure you are signed in and your API route is working.'
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : 'Something went wrong while generating your content.';
+
+      setGenerateError(
+        errorMessage === 'Something went wrong'
+          ? 'Hummingbird had trouble generating that result. Please try again in a moment.'
+          : errorMessage
       );
-      console.error('Generate error:', error);
+
+      console.warn('Generate warning:', error);
     } finally {
       setLoading(false);
     }
@@ -897,6 +907,7 @@ export default function Home() {
                     onClick={() => {
                       setGenerationMode('growth_system');
                       setActiveTab('content');
+                      setGenerateError('');
                       setResults(null);
                     }}
                     className={`rounded-2xl px-3 py-2.5 text-sm font-medium transition ${
@@ -912,6 +923,7 @@ export default function Home() {
                     onClick={() => {
                       setGenerationMode('viral_hooks');
                       setActiveTab('hooks');
+                      setGenerateError('');
                       setResults(null);
                     }}
                     className={`rounded-2xl px-3 py-2.5 text-sm font-medium transition ${
@@ -1125,6 +1137,22 @@ export default function Home() {
                     </div>
                   </div>
                 )}
+
+              {generateError && !loading && (
+                <div className="mb-5 rounded-3xl border border-red-500/30 bg-red-950/30 p-5 text-sm text-red-100">
+                  <p className="mb-1 font-semibold text-red-200">
+                    Generation did not complete
+                  </p>
+                  <p className="text-red-100/80">{generateError}</p>
+                  <button
+                    type="button"
+                    onClick={() => setGenerateError('')}
+                    className="mt-4 rounded-full bg-red-500/20 px-4 py-2 text-xs font-semibold text-red-100 transition hover:bg-red-500/30"
+                  >
+                    Dismiss
+                  </button>
+                </div>
+              )}
 
               {loading && (
                 <div className="flex min-h-[280px] flex-col items-center justify-center overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950/40 p-6 text-center sm:min-h-[480px] lg:h-full">
