@@ -294,8 +294,8 @@ const CLEAN_GENERATED_TEXT_REPLACEMENTS: Array<[RegExp, string]> = [
   [/Speed up the sale/gi, 'Prepare your next step'],
   [/maximize conversion/gi, 'improve follow-up clarity'],
   [/Maximize conversion/gi, 'Improve follow-up clarity'],
-  [/buyer concerns/gi, 'seller concerns'],
-  [/Buyer concerns/gi, 'Seller concerns'],
+  [/buyer concerns/gi, 'customer concerns'],
+  [/Buyer concerns/gi, 'Customer concerns'],
   [/buyers see the potential/gi, 'buyers understand the home more clearly'],
   [/Buyers see the potential/gi, 'Buyers understand the home more clearly'],
   [/waste time and money/gi, 'spend time on prep before knowing what matters for your situation'],
@@ -1663,6 +1663,11 @@ Business rules:
 - Catering Money Plans should not invent subscriptions, bundles, exact guest ranges, delivery guarantees, or included services. Default offers should be catering menu inquiry, event quote request, party tray inquiry, office lunch inquiry, family event inquiry, or repeat catering inquiry.
 - Catering CTAs should usually ask for event type, event date, guest count, menu needs, and pickup/delivery preference. Strong CTA example: "Comment MENU or DM your event date and guest count, and I’ll send the catering menu."
 - Catering Action Plans should avoid fake urgency and guaranteed outcomes. They should tell the owner what to post, what event detail to ask for, what menu/quote information to send, and how to follow up with a clear catering inquiry or quote next step.
+- For local service businesses such as cleaners, landscapers, contractors, home services, repair services, pet services, and mobile services: focus on quote requests, service areas, availability questions, job details, schedule fit, estimate requests, booking steps, service menu clarity, trust questions, and practical next steps.
+- For local service outputs, do not invent operational claims like vetted team, background checks, licensed/insured status, no hidden fees, guaranteed quality, spotless results, sparkling clean, saving time, fast replies, same-day availability, treating the home like their own, or perfect results unless the user provided those facts.
+- Local service content should default to safer wording: clear quote, service details, home size, project details, preferred days, schedule fit, estimate request, booking options, what is included, what to expect, and customer concerns.
+- Local service CTAs should usually ask for the details needed to quote or book: home size, project type, service need, preferred days, location/service area, photos if relevant, budget range if relevant, or quote request.
+- Local service Action Plans should avoid fake guarantees and unsupported trust claims. They should tell the owner what to post, what details to ask for, what quote/estimate information to send, and how to follow up toward a booking.
 - For coaches and consultants: focus on audits, starter sessions, discovery calls, assessments, clarity offers, and trust-building content.
 - For clothing brands and ecommerce product brands: focus on product details, fit, fabric, sizing, colorways, styling ideas, drop date, waitlist signups, drop updates, product questions, customer use case, and purchase questions.
 - For vague clothing/ecommerce prompts, avoid early access, preorder, bundles, discounts, VIP access, styling consultations, purchase access before launch, previous-drop claims, quality claims, packing/shipping claims, and scarcity language unless the user provided those details.
