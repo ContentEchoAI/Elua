@@ -721,11 +721,11 @@ export default function Home() {
       ) : !signedIn ? (
         <>
           <p className="mb-1 text-lg font-semibold sm:text-xl">
-            Save your content plans
+            Build a weekly content workspace
           </p>
           <p className="mb-3 text-sm leading-relaxed text-zinc-600">
-              Create a free account to save your content plans and reopen them later.
-              No spam — just your saved workspace.
+              Create a free account to generate a Content + Money Plan, save your best campaigns,
+              and reopen them when you are ready to post again. No spam — just your saved workspace.
           </p>
 
           <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-1">
@@ -759,8 +759,9 @@ export default function Home() {
                   Founder Plan Active
                 </p>
                 <p className="mb-3 text-sm leading-relaxed text-zinc-600">
-                  You have unlimited weekly content-to-revenue plans, platform-ready
-                  posts, Money Plans, Action Plans, hooks, and saved workspace access.
+                  You have unlimited weekly execution plans that turn one business goal
+                  into platform-ready posts, CTAs, lead magnet ideas, Money Plans,
+                  7-Day Action Plans, hooks, and saved workspace access.
                 </p>
 
                 <div className="rounded-2xl bg-black px-4 py-3 text-center text-sm font-semibold text-white">
@@ -773,16 +774,21 @@ export default function Home() {
                   Founder Plan — $19/mo
                 </p>
                 <p className="mb-3 text-sm leading-relaxed text-zinc-600">
-                  For small businesses that want a weekly content-to-revenue plan,
-                  not just random post ideas.
+                  For small businesses that need to know what to post, what CTA to use,
+                  and how each campaign can lead to replies, quote requests, bookings, or sales.
                 </p>
 
-                <div className="mb-3 space-y-2 rounded-2xl border border-zinc-200 bg-zinc-50 p-3 text-sm leading-relaxed text-zinc-700">
-                  <p>✓ Unlimited Content + Money Plan generations</p>
-                  <p>✓ Platform-ready posts, hooks, and CTAs</p>
-                  <p>✓ Money Plan with funnel, lead magnet, and conversion tips</p>
-                  <p>✓ 7-Day Action Plan showing what to post and how to follow up</p>
-                  <p>✓ Saved Workspace to reopen and reuse your best campaigns</p>
+                <div className="mb-3 rounded-2xl border border-zinc-200 bg-zinc-50 p-3 text-sm leading-relaxed text-zinc-700">
+                  <p className="mb-2 font-semibold text-zinc-900">
+                    Founder Plan gives you a weekly execution system:
+                  </p>
+                  <div className="space-y-2">
+                    <p>✓ Turn one business goal into platform-ready posts, hooks, and CTAs</p>
+                    <p>✓ Get a Money Plan with lead magnet, funnel, and conversion tips</p>
+                    <p>✓ Follow a 7-Day Action Plan for posting, replying, and following up</p>
+                    <p>✓ Save and reuse your best weekly campaigns in your workspace</p>
+                    <p>✓ Unlimited generations when you want to build another campaign</p>
+                  </div>
                 </div>
 
                 <button
