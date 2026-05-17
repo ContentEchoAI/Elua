@@ -803,6 +803,72 @@ function cleanGeneratedValue<T>(value: T): T {
   return value;
 }
 
+function strengthenBeautyShortFormOpening(
+  parsed: GeneratedResponse,
+  originalContent: string
+) {
+  const prompt = originalContent.toLowerCase();
+  const isBeauty =
+    /lash|lashes|nail|esthetician|facial|skin|brow|hair|barber|makeup/.test(
+      prompt
+    );
+
+  if (!isBeauty || !parsed.structured_content) {
+    return parsed;
+  }
+
+  const reel = parsed.structured_content['Instagram Reel'];
+
+  if (!reel?.scenes?.length) {
+    return parsed;
+  }
+
+  const firstScene = reel.scenes[0];
+  const spokenLine = firstScene.spoken_line?.trim() || '';
+  const weakOpening =
+    /^(not sure if|are you wondering|wondering when|here'?s how to decide)/i.test(
+      spokenLine
+    );
+
+  if (!weakOpening) {
+    return parsed;
+  }
+
+  if (/lash|lashes/.test(prompt)) {
+    firstScene.spoken_line =
+      'If your lash set looks uneven but you do not know whether to book a refill or full set, start here.';
+    firstScene.on_screen_text = 'Refill or full set? Start here.';
+  } else if (/nail/.test(prompt)) {
+    firstScene.spoken_line =
+      'If you always panic-pick your nail design, decide this before you book.';
+    firstScene.on_screen_text = 'Decide this before booking.';
+  } else if (/esthetician|facial|skin/.test(prompt)) {
+    firstScene.spoken_line =
+      'If your skin feels off but you do not want medical-sounding advice, start here.';
+    firstScene.on_screen_text = 'Skin feels off? Start here.';
+  }
+
+  const contentValue = parsed.content?.['Instagram Reel'];
+  if (parsed.content && typeof contentValue === 'string' && contentValue.trim()) {
+    parsed.content['Instagram Reel'] = contentValue.replace(
+      spokenLine,
+      firstScene.spoken_line || spokenLine
+    );
+  }
+
+  if (
+    parsed.best_output?.platform === 'Instagram Reel' &&
+    typeof parsed.best_output.content === 'string'
+  ) {
+    parsed.best_output.content = parsed.best_output.content.replace(
+      spokenLine,
+      firstScene.spoken_line || spokenLine
+    );
+  }
+
+  return parsed;
+}
+
 
 const PLATFORM_WRITING_RULES = String.raw`Platform writing rules:
 - Every selected platform output must feel native to that platform, not like the same idea rewritten with a different label.
@@ -2127,6 +2193,7 @@ Final silent check:
       parsed.mode = 'growth_system';
     }
 
+    parsed = strengthenBeautyShortFormOpening(parsed, content);
     parsed = cleanGeneratedValue(parsed);
 
     return NextResponse.json(parsed);
