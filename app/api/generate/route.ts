@@ -876,6 +876,26 @@ const TRUST_RULES = String.raw`Trust rules:
 - Never use square-bracket placeholders like [client name], [image], [testimonial], or [insert link].
 - Use truthful general language when details are missing.`;
 
+const QUALITY_RULES = String.raw`Quality rules:
+- The output should feel like something a real business owner could use today.
+- Final check before returning JSON: if any selected platform output reads like an instruction to the creator instead of finished content for the audience, rewrite it into copy-ready content.
+- Final check before returning JSON: carousel slides must not tell the user what to share, explain, discuss, introduce, highlight, or ask. They must contain the exact slide copy.
+- Do not invent age ranges, gender limits, income levels, locations, lifestyle labels, or demographic restrictions unless the user explicitly provides them.
+- Target Audience should describe the buyer situation, service need, occasion, problem, booking intent, or customer behavior — not broad demographics.
+- Prefer audience wording like "clients booking event nails for birthdays and vacations", "lash clients deciding between refill timing and a full set", or "hair clients unsure which color service fits their maintenance routine."
+- Avoid invented audience wording like "women aged 18-35", "women aged 20-40", "men and women aged 25-45", "young adults", or "busy professionals" unless the user provided those specifics.
+- Avoid generic phrases like "boost engagement", "drive sales", "valuable insights", "learn more", and "contact me today."
+- Also avoid filler phrases like "thought-provoking question", "surprising fact", "relatable scenario", "authenticity is key", "resonate with your audience", "builds trust", "share tips", "provide value", "take your business to the next level", and "unlock your potential."
+- Replace generic language with specific wording tied to the user's business, buyer problem, objection, offer, platform, and next action.
+- Do not say a hook is strong; write the strong hook.
+- Do not say a post should be relatable; write the actual relatable angle.
+- Do not say the content should build trust; show the trust-building proof process, checklist, question, or next step.
+- Use concrete nouns and verbs. Prefer "comment START for the Client Story Prep Sheet" or "comment START for the Fitness Goal Conversation Starter" over "engage with this post."
+- Make every CTA copy-paste-ready and specific, such as DM a keyword, comment a keyword, request a checklist, book a call, ask for a quote, request an assessment, join a list, or reply with a question.
+- Make the lead magnet match the CTA.
+- Make the Money Plan match the same campaign angle.
+- If the user's idea is vague, choose a realistic business scenario, but do not invent proof.`;
+
 export async function POST(req: Request) {
   try {
     const { content, selectedVoice, goal, generationMode, selectedOutputs } =
@@ -1694,27 +1714,7 @@ Facebook Post rules:
 - Strong Facebook style: "I’m not posting private client details, but I can still teach the process behind progress."
 - Weak Facebook style to avoid: "Hey everyone!"
 
-${TRUST_RULES}\n\nQuality rules:
-- The output should feel like something a real business owner could use today.
-- Final check before returning JSON: if any selected platform output reads like an instruction to the creator instead of finished content for the audience, rewrite it into copy-ready content.
-- Final check before returning JSON: carousel slides must not tell the user what to share, explain, discuss, introduce, highlight, or ask. They must contain the exact slide copy.
-- Do not invent age ranges, gender limits, income levels, locations, lifestyle labels, or demographic restrictions unless the user explicitly provides them.
-- Target Audience should describe the buyer situation, service need, occasion, problem, booking intent, or customer behavior — not broad demographics.
-- Prefer audience wording like "clients booking event nails for birthdays and vacations", "lash clients deciding between refill timing and a full set", or "hair clients unsure which color service fits their maintenance routine."
-- Avoid invented audience wording like "women aged 18-35", "women aged 20-40", "men and women aged 25-45", "young adults", or "busy professionals" unless the user provided those specifics.
-- Avoid generic phrases like "boost engagement", "drive sales", "valuable insights", "learn more", and "contact me today."
-- Also avoid filler phrases like "thought-provoking question", "surprising fact", "relatable scenario", "authenticity is key", "resonate with your audience", "builds trust", "share tips", "provide value", "take your business to the next level", and "unlock your potential."
-- Replace generic language with specific wording tied to the user's business, buyer problem, objection, offer, platform, and next action.
-- Do not say a hook is strong; write the strong hook.
-- Do not say a post should be relatable; write the actual relatable angle.
-- Do not say the content should build trust; show the trust-building proof process, checklist, question, or next step.
-- Use concrete nouns and verbs. Prefer "comment START for the Client Story Prep Sheet" or "comment START for the Fitness Goal Conversation Starter" over "engage with this post."
-- Make every CTA copy-paste-ready and specific, such as DM a keyword, comment a keyword, request a checklist, book a call, ask for a quote, request an assessment, join a list, or reply with a question.
-- Make the lead magnet match the CTA.
-- Make the Money Plan match the same campaign angle.
-- If the user's idea is vague, choose a realistic business scenario, but do not invent proof.
-
-Business rules:
+${TRUST_RULES}\n\n${QUALITY_RULES}\n\nBusiness rules:
 - For realtors: focus on homeowner questions, seller prep, home value curiosity, listing readiness, avoiding seller mistakes, downsizing, inherited homes, and seller consultations.
 - For real estate: do not claim hot market, best time, quick sale, guaranteed value increase, or market trends unless the user provided that fact.
 - For realtor content, avoid claim-heavy or risky real estate language. Do not imply guaranteed sale speed, guaranteed buyer exposure, guaranteed higher price, perfect timing, or that a seller should list immediately.
