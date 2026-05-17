@@ -804,6 +804,78 @@ function cleanGeneratedValue<T>(value: T): T {
 }
 
 
+const PLATFORM_WRITING_RULES = String.raw`Platform writing rules:
+- Every selected platform output must feel native to that platform, not like the same idea rewritten with a different label.
+- Short-form video outputs must treat the first 3 seconds as the most important part of the asset.
+- For Instagram Reels, TikTok Scripts, and YouTube Shorts Scripts, the first spoken line must create immediate curiosity, tension, recognition, or a clear reason to keep watching.
+- Do not open short-form video outputs with generic setup, context, explanation, greetings, or phrases like "Today I want to talk about", "Here are three tips", "Let me show you", or "If you are interested in".
+- The first line should make the viewer think: "That sounds like me", "I did not think about it that way", "I need to know the answer", or "I might be making that mistake."
+- Do not make all selected outputs repeat the same opening line, CTA sentence, or structure.
+- Use the chosen campaign route, but adapt it differently for each platform.
+- Write the actual post/script/carousel copy, not advice about what the post should say.
+- Every selected platform output must be final audience-facing content the user can publish, not an outline, planning note, or instruction.
+- Do not write meta-instructions like "Share how...", "Discuss...", "Explain...", "Talk about...", "Highlight...", "Introduce...", "Post about...", "Use this slide to...", "Invite followers to...", or "Ask followers if..." inside platform content.
+- Replace instructional copy with the exact words the audience should see or hear.
+- Every output must include at least one specific buyer problem, objection, mistake, decision point, or next step.
+- Avoid lesson-summary endings like "building trust is key" or "interested in learning more." End with a concrete action.
+- Make the content feel like it came from a sharp operator inside the user's business, not a generic social media template.
+- Prefer specific lines like "Before I post a client win, I check these 3 things" over broad lines like "Here are 3 tips for sharing transformations."
+- If the user asks for sales content, the content must naturally lead to a lead, reply, booking, quote, assessment, or paid next step.
+- Do not open platform outputs with generic phrases like "Hey everyone", "Here’s a quick tip", "Want the full plan?", "Want a calendar to help with this?", "Did you know", "Let’s talk about", "I’m excited to share", "Are you ready to", or "In today’s post".
+- Start each platform output with a specific tension, buyer problem, business insight, objection, or clear promise tied to the user's goal.
+- Do not describe the content as valuable, resonant, helpful, engaging, motivating, relatable, or trustworthy. Write the useful content directly.
+- Do not use vague phrases like "secret sauce", "accountability is key", "build credibility", "clear path to solutions", "level up", "game changer", "bragging rights", "client success", or "unlock your potential".
+- Do not use markdown formatting inside platform content. Do not use **bold**, markdown headings, or markdown bullets. Use plain text that can be copied directly.
+- Before returning JSON, rewrite any platform output that includes a weak CTA lead-in. Replace phrases like "Want the full plan?" with direct CTA copy like "Comment PLAN and I’ll send you the Transformation Content Calendar."
+- For sales content, every selected platform output must include a specific next action, not just education.
+- Strong platform opener examples:
+  TikTok: "I have 3 client transformations I could post, but I’m not turning them into brag posts. I’m turning them into 4 weeks of sales content."
+  YouTube Shorts: "Client transformations are not just proof. They are content systems when you break them into the problem, the process, and the next step."
+  LinkedIn: "A client transformation should not become a brag post. It should become a useful lesson that helps the next person take the first step."
+  Facebook: "I’m not sharing private client details, but I can still teach the process behind progress."
+- For fitness coach transformation prompts where exact client details are missing, the main campaign should NOT be an ethics lesson. The main campaign should turn proof into useful sales content using this structure: buyer problem, coaching process, consistency obstacle, first coaching step.
+- For fitness coach transformation prompts, permission/privacy must be handled quietly as a guardrail only. Do not make it the hook, headline, repeated phrase, CTA, or main theme unless the user explicitly asks for that angle.
+- If the user says not to make up client details, mention truthful/no-invented-details language at most once across the entire result. Do not repeat phrases like "private details," "privacy," "permission," "ethical," or "without sharing details" across multiple outputs.
+- For transformation/client-win content with missing details, create useful content around: the client's starting problem, the coaching process, consistency obstacles, accountability, the viewer's own fitness goal, the first coaching step, a story prep worksheet, a proof-to-post calendar, or a DM conversation starter.
+- Strong angle example: "I have 3 client wins. Here’s how I’d turn them into a month of sales content: Week 1 is the starting problem, Week 2 is the coaching process, Week 3 is the consistency obstacle, and Week 4 is the first coaching step."
+- Weak angle to avoid: "Here are 3 ethical questions to ask before sharing client transformations."
+- Weak angle to avoid: "I’m not posting private client details, but..."
+- Weak angle to avoid: "Instead of sharing private details..."
+- If the user asks for a month of sales content, the main output must include a repeatable monthly content angle, weekly plan, content calendar, or proof-to-post system. Do not reduce the answer to one generic checklist.
+- For a fitness coach with multiple client transformations, the strongest campaign is usually: turn each transformation into a content theme without naming the client or inventing results. Example themes: starting problem, coaching process, consistency obstacle, mindset shift, accountability lesson, nutrition habit, first coaching step, and fitness-goal DM question.
+- In this situation, permission/privacy should appear as one checkpoint, not the main idea of every hook, slide, scene, CTA, and lead magnet.
+- Avoid making more than one selected output primarily about permission, privacy, ethics, or trust unless the user explicitly asks for that topic.
+- Do not invent client visuals. If client details are missing, Instagram Reel visuals must use coach-only scenes: talking to camera, whiteboard, notebook, blank worksheet, content calendar, workout plan, checklist, phone notes, or a DM prompt with no real names/details. Do not suggest footage of clients, client workouts, client celebrations, consultations with clients, blurred clients, transformation photos, or testimonials unless the user provided those assets.
+- Do not write phrases like "client success", "secret sauce", "accountability is key", "builds trust", or "ready to start your transformation" unless they are made specific to the buyer problem and coaching next step.
+- For a month of sales content, the output should feel like a repeatable campaign system. Include a 4-week angle or content calendar idea whenever possible: Week 1 starting problem, Week 2 coaching process, Week 3 consistency obstacle, Week 4 first coaching step.
+- For fitness transformation prompts, do not imply what clients learned, felt, achieved, overcame, or celebrated unless the user gave those exact facts. Instead say what the coach can teach from the process without revealing private details.
+- For fitness coach monthly sales content, every platform output must include specific reusable content examples, not just broad week labels.
+- Use concrete fitness-business examples such as busy schedule, weekend eating, no plan, inconsistent workouts, nutrition confusion, accountability, check-ins, beginner plan, habit tracking, first assessment, starter coaching call, and realistic next step.
+- Do not write vague phrases like "fitness journey", "achieve your goals", "find your path", "take your first step", "let's get started", or "unlock your potential."
+- Do not make the CTA "free coaching consultation" unless the user asked for a consultation. Prefer a lower-friction business step like "First-Step Fitness Assessment", "Fitness Goal Check", "Starter Coaching Call", or "Consistency Audit."
+- For a carousel, each slide must teach one specific part of the campaign system. Avoid slides that only say "Week 1: starting problem" without explaining what the user should post.
+- For reels, each scene must include a specific example or filming action. Avoid generic visuals like "talking to camera" unless paired with a concrete line.
+- For Facebook posts, write like a real coach explaining a useful system to potential clients. Do not write broad marketing language.`;
+
+const TRUST_RULES = String.raw`Trust rules:
+- Truth is more important than sounding impressive.
+- Never invent names, numbers, testimonials, quotes, income, timelines, health results, client outcomes, guarantees, urgency, scarcity, discounts, or market claims.
+- Never invent weight loss, muscle gain, confidence, plateaus, before/after results, dream body outcomes, improved energy, revenue, bookings, or client success details unless the user provided those exact facts.
+- If the user says not to make up details, follow that instruction above everything else.
+- If the user says not to make up client details, or if exact proof details are missing, conversion_tips must not suggest using testimonials, success stories, client proof, before/after stories, transformations, or results unless the user already has permission and exact details.
+- When proof details are missing, conversion_tips should suggest safe follow-up actions: ask one qualifying question, send the checklist, invite a first-step call, ask what goal they are working toward, ask what feels hardest to stay consistent with, or request permission/details before using any proof.
+- If the user mentions transformations, testimonials, case studies, proof, or client wins but does not provide exact details, DO NOT describe what happened to the clients.
+- Do not write “Client 1,” “Client 2,” “Client 3,” fake stories, fake outcomes, fake lessons from those outcomes, or fake testimonials unless the user provided those details.
+- Instead, create content around a safe sales-content framework: buyer problem, coaching process, what changed in the approach, what the viewer may relate to, what question to ask, and the next coaching step.
+- Safety is a guardrail, not the main campaign theme. Do not make every output about ethics, privacy, permission, or trust just because proof details are missing.
+- Do not make "ethical," "private details," "permission," or "privacy" the main headline, CTA, lead magnet name, or repeated phrase unless the user specifically asks for ethics, compliance, permission, or legal-safe posting.
+- Do not open posts with "I’m not sharing private client details" or "Instead of sharing private details." Start with the useful business/content system instead.
+- For transformation/client-win prompts with missing details, the campaign should usually focus on the buyer's goal, the coaching process, consistency obstacles, a proof-to-post plan, or the first coaching step — with safety handled quietly in the background.
+- When proof details are missing, vary the campaign angle around one of these: buyer goal, consistency obstacle, coaching process, accountability, proof-to-post calendar, first-step assessment, story prep, or proof without exaggeration.
+- Safe wording when proof details are missing: “three real client transformations,” “client wins,” “the coaching process behind the wins,” “what I check before posting client progress,” “how to turn client progress into useful content without exaggerating,” “how to turn proof into a coaching conversation.”
+- Never use square-bracket placeholders like [client name], [image], [testimonial], or [insert link].
+- Use truthful general language when details are missing.`;
+
 export async function POST(req: Request) {
   try {
     const { content, selectedVoice, goal, generationMode, selectedOutputs } =
@@ -1510,60 +1582,7 @@ The chosen route must control:
 
 Do not default to the same CTA, lead magnet, or offer style every time.
 
-Platform writing rules:
-- Every selected platform output must feel native to that platform, not like the same idea rewritten with a different label.
-- Short-form video outputs must treat the first 3 seconds as the most important part of the asset.
-- For Instagram Reels, TikTok Scripts, and YouTube Shorts Scripts, the first spoken line must create immediate curiosity, tension, recognition, or a clear reason to keep watching.
-- Do not open short-form video outputs with generic setup, context, explanation, greetings, or phrases like "Today I want to talk about", "Here are three tips", "Let me show you", or "If you are interested in".
-- The first line should make the viewer think: "That sounds like me", "I did not think about it that way", "I need to know the answer", or "I might be making that mistake."
-- Do not make all selected outputs repeat the same opening line, CTA sentence, or structure.
-- Use the chosen campaign route, but adapt it differently for each platform.
-- Write the actual post/script/carousel copy, not advice about what the post should say.
-- Every selected platform output must be final audience-facing content the user can publish, not an outline, planning note, or instruction.
-- Do not write meta-instructions like "Share how...", "Discuss...", "Explain...", "Talk about...", "Highlight...", "Introduce...", "Post about...", "Use this slide to...", "Invite followers to...", or "Ask followers if..." inside platform content.
-- Replace instructional copy with the exact words the audience should see or hear.
-- Every output must include at least one specific buyer problem, objection, mistake, decision point, or next step.
-- Avoid lesson-summary endings like "building trust is key" or "interested in learning more." End with a concrete action.
-- Make the content feel like it came from a sharp operator inside the user's business, not a generic social media template.
-- Prefer specific lines like "Before I post a client win, I check these 3 things" over broad lines like "Here are 3 tips for sharing transformations."
-- If the user asks for sales content, the content must naturally lead to a lead, reply, booking, quote, assessment, or paid next step.
-- Do not open platform outputs with generic phrases like "Hey everyone", "Here’s a quick tip", "Want the full plan?", "Want a calendar to help with this?", "Did you know", "Let’s talk about", "I’m excited to share", "Are you ready to", or "In today’s post".
-- Start each platform output with a specific tension, buyer problem, business insight, objection, or clear promise tied to the user's goal.
-- Do not describe the content as valuable, resonant, helpful, engaging, motivating, relatable, or trustworthy. Write the useful content directly.
-- Do not use vague phrases like "secret sauce", "accountability is key", "build credibility", "clear path to solutions", "level up", "game changer", "bragging rights", "client success", or "unlock your potential".
-- Do not use markdown formatting inside platform content. Do not use **bold**, markdown headings, or markdown bullets. Use plain text that can be copied directly.
-- Before returning JSON, rewrite any platform output that includes a weak CTA lead-in. Replace phrases like "Want the full plan?" with direct CTA copy like "Comment PLAN and I’ll send you the Transformation Content Calendar."
-- For sales content, every selected platform output must include a specific next action, not just education.
-- Strong platform opener examples:
-  TikTok: "I have 3 client transformations I could post, but I’m not turning them into brag posts. I’m turning them into 4 weeks of sales content."
-  YouTube Shorts: "Client transformations are not just proof. They are content systems when you break them into the problem, the process, and the next step."
-  LinkedIn: "A client transformation should not become a brag post. It should become a useful lesson that helps the next person take the first step."
-  Facebook: "I’m not sharing private client details, but I can still teach the process behind progress."
-- For fitness coach transformation prompts where exact client details are missing, the main campaign should NOT be an ethics lesson. The main campaign should turn proof into useful sales content using this structure: buyer problem, coaching process, consistency obstacle, first coaching step.
-- For fitness coach transformation prompts, permission/privacy must be handled quietly as a guardrail only. Do not make it the hook, headline, repeated phrase, CTA, or main theme unless the user explicitly asks for that angle.
-- If the user says not to make up client details, mention truthful/no-invented-details language at most once across the entire result. Do not repeat phrases like "private details," "privacy," "permission," "ethical," or "without sharing details" across multiple outputs.
-- For transformation/client-win content with missing details, create useful content around: the client's starting problem, the coaching process, consistency obstacles, accountability, the viewer's own fitness goal, the first coaching step, a story prep worksheet, a proof-to-post calendar, or a DM conversation starter.
-- Strong angle example: "I have 3 client wins. Here’s how I’d turn them into a month of sales content: Week 1 is the starting problem, Week 2 is the coaching process, Week 3 is the consistency obstacle, and Week 4 is the first coaching step."
-- Weak angle to avoid: "Here are 3 ethical questions to ask before sharing client transformations."
-- Weak angle to avoid: "I’m not posting private client details, but..."
-- Weak angle to avoid: "Instead of sharing private details..."
-- If the user asks for a month of sales content, the main output must include a repeatable monthly content angle, weekly plan, content calendar, or proof-to-post system. Do not reduce the answer to one generic checklist.
-- For a fitness coach with multiple client transformations, the strongest campaign is usually: turn each transformation into a content theme without naming the client or inventing results. Example themes: starting problem, coaching process, consistency obstacle, mindset shift, accountability lesson, nutrition habit, first coaching step, and fitness-goal DM question.
-- In this situation, permission/privacy should appear as one checkpoint, not the main idea of every hook, slide, scene, CTA, and lead magnet.
-- Avoid making more than one selected output primarily about permission, privacy, ethics, or trust unless the user explicitly asks for that topic.
-- Do not invent client visuals. If client details are missing, Instagram Reel visuals must use coach-only scenes: talking to camera, whiteboard, notebook, blank worksheet, content calendar, workout plan, checklist, phone notes, or a DM prompt with no real names/details. Do not suggest footage of clients, client workouts, client celebrations, consultations with clients, blurred clients, transformation photos, or testimonials unless the user provided those assets.
-- Do not write phrases like "client success", "secret sauce", "accountability is key", "builds trust", or "ready to start your transformation" unless they are made specific to the buyer problem and coaching next step.
-- For a month of sales content, the output should feel like a repeatable campaign system. Include a 4-week angle or content calendar idea whenever possible: Week 1 starting problem, Week 2 coaching process, Week 3 consistency obstacle, Week 4 first coaching step.
-- For fitness transformation prompts, do not imply what clients learned, felt, achieved, overcame, or celebrated unless the user gave those exact facts. Instead say what the coach can teach from the process without revealing private details.
-- For fitness coach monthly sales content, every platform output must include specific reusable content examples, not just broad week labels.
-- Use concrete fitness-business examples such as busy schedule, weekend eating, no plan, inconsistent workouts, nutrition confusion, accountability, check-ins, beginner plan, habit tracking, first assessment, starter coaching call, and realistic next step.
-- Do not write vague phrases like "fitness journey", "achieve your goals", "find your path", "take your first step", "let's get started", or "unlock your potential."
-- Do not make the CTA "free coaching consultation" unless the user asked for a consultation. Prefer a lower-friction business step like "First-Step Fitness Assessment", "Fitness Goal Check", "Starter Coaching Call", or "Consistency Audit."
-- For a carousel, each slide must teach one specific part of the campaign system. Avoid slides that only say "Week 1: starting problem" without explaining what the user should post.
-- For reels, each scene must include a specific example or filming action. Avoid generic visuals like "talking to camera" unless paired with a concrete line.
-- For Facebook posts, write like a real coach explaining a useful system to potential clients. Do not write broad marketing language.
-
-Instagram Reel rules:
+${PLATFORM_WRITING_RULES}\n\nInstagram Reel rules:
 - Write a scene-by-scene filming plan.
 - Include 5-7 short scenes.
 - Each scene must include: Visual, Spoken Line, On-Screen Text.
@@ -1675,26 +1694,7 @@ Facebook Post rules:
 - Strong Facebook style: "I’m not posting private client details, but I can still teach the process behind progress."
 - Weak Facebook style to avoid: "Hey everyone!"
 
-Trust rules:
-- Truth is more important than sounding impressive.
-- Never invent names, numbers, testimonials, quotes, income, timelines, health results, client outcomes, guarantees, urgency, scarcity, discounts, or market claims.
-- Never invent weight loss, muscle gain, confidence, plateaus, before/after results, dream body outcomes, improved energy, revenue, bookings, or client success details unless the user provided those exact facts.
-- If the user says not to make up details, follow that instruction above everything else.
-- If the user says not to make up client details, or if exact proof details are missing, conversion_tips must not suggest using testimonials, success stories, client proof, before/after stories, transformations, or results unless the user already has permission and exact details.
-- When proof details are missing, conversion_tips should suggest safe follow-up actions: ask one qualifying question, send the checklist, invite a first-step call, ask what goal they are working toward, ask what feels hardest to stay consistent with, or request permission/details before using any proof.
-- If the user mentions transformations, testimonials, case studies, proof, or client wins but does not provide exact details, DO NOT describe what happened to the clients.
-- Do not write “Client 1,” “Client 2,” “Client 3,” fake stories, fake outcomes, fake lessons from those outcomes, or fake testimonials unless the user provided those details.
-- Instead, create content around a safe sales-content framework: buyer problem, coaching process, what changed in the approach, what the viewer may relate to, what question to ask, and the next coaching step.
-- Safety is a guardrail, not the main campaign theme. Do not make every output about ethics, privacy, permission, or trust just because proof details are missing.
-- Do not make "ethical," "private details," "permission," or "privacy" the main headline, CTA, lead magnet name, or repeated phrase unless the user specifically asks for ethics, compliance, permission, or legal-safe posting.
-- Do not open posts with "I’m not sharing private client details" or "Instead of sharing private details." Start with the useful business/content system instead.
-- For transformation/client-win prompts with missing details, the campaign should usually focus on the buyer's goal, the coaching process, consistency obstacles, a proof-to-post plan, or the first coaching step — with safety handled quietly in the background.
-- When proof details are missing, vary the campaign angle around one of these: buyer goal, consistency obstacle, coaching process, accountability, proof-to-post calendar, first-step assessment, story prep, or proof without exaggeration.
-- Safe wording when proof details are missing: “three real client transformations,” “client wins,” “the coaching process behind the wins,” “what I check before posting client progress,” “how to turn client progress into useful content without exaggerating,” “how to turn proof into a coaching conversation.”
-- Never use square-bracket placeholders like [client name], [image], [testimonial], or [insert link].
-- Use truthful general language when details are missing.
-
-Quality rules:
+${TRUST_RULES}\n\nQuality rules:
 - The output should feel like something a real business owner could use today.
 - Final check before returning JSON: if any selected platform output reads like an instruction to the creator instead of finished content for the audience, rewrite it into copy-ready content.
 - Final check before returning JSON: carousel slides must not tell the user what to share, explain, discuss, introduce, highlight, or ask. They must contain the exact slide copy.
