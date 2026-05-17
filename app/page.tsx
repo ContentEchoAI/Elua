@@ -661,7 +661,7 @@ export default function Home() {
       ) : !signedIn ? (
         <div className="rounded-2xl border border-dashed border-zinc-700 p-3 text-center">
           <p className="text-xs text-zinc-400">
-            Create a free account to save your content plans and reopen them later. No spam — just your saved workspace.
+            Create a free account to save your Content + Money Plans and reopen your best weekly campaigns later.
           </p>
         </div>
       ) : savedGenerations.length === 0 ? (
