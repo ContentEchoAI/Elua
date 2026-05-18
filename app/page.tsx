@@ -26,6 +26,21 @@ type ActionPlanStep = {
   follow_up?: string;
 };
 
+type ProductionPlan = {
+  format?: string;
+  concept?: string;
+  what_to_film?: string[];
+  shot_order?: string[];
+  transition_idea?: string;
+  audio_direction?: string;
+  on_screen_text?: string[];
+  spoken_lines?: string[];
+  caption?: string;
+  cta?: string;
+  dm_reply?: string;
+  follow_up_message?: string;
+};
+
 type Monetization = {
   offer_ideas?: string[];
   lead_magnet?: string;
@@ -77,6 +92,7 @@ type Results = {
   best_output?: BestOutput;
   content?: Record<string, string>;
   structured_content?: StructuredContent;
+  production_plan?: ProductionPlan;
   monetization?: Monetization;
   hooks?: ViralHook[];
   best_hook?: {
@@ -1386,6 +1402,232 @@ export default function Home() {
                 activeTab === 'content' &&
                 generationMode === 'growth_system' && (
                   <div className="space-y-4">
+                    {results.production_plan && (
+                      <div className="rounded-2xl border border-purple-500/30 bg-purple-500/10 p-5">
+                        <div className="mb-4 flex items-start justify-between gap-4">
+                          <div>
+                            <h3 className="font-semibold text-purple-300">
+                              🎬 Make This Post
+                            </h3>
+                            <p className="mt-1 text-xs text-zinc-400">
+                              A practical production plan for creating the strongest content asset.
+                            </p>
+                          </div>
+
+                          <button
+                            onClick={() =>
+                              copyToClipboard(
+                                [
+                                  results.production_plan?.format
+                                    ? `Format: ${formatGeneratedText(results.production_plan.format)}`
+                                    : '',
+                                  results.production_plan?.concept
+                                    ? `Concept: ${formatGeneratedText(results.production_plan.concept)}`
+                                    : '',
+                                  ...(results.production_plan?.what_to_film || []).map(
+                                    (item, i) => `What to film ${i + 1}: ${formatGeneratedText(item)}`
+                                  ),
+                                  ...(results.production_plan?.shot_order || []).map(
+                                    (item, i) => `Shot ${i + 1}: ${formatGeneratedText(item)}`
+                                  ),
+                                  results.production_plan?.transition_idea
+                                    ? `Transition: ${formatGeneratedText(results.production_plan.transition_idea)}`
+                                    : '',
+                                  results.production_plan?.audio_direction
+                                    ? `Audio: ${formatGeneratedText(results.production_plan.audio_direction)}`
+                                    : '',
+                                  ...(results.production_plan?.on_screen_text || []).map(
+                                    (item, i) => `On-screen text ${i + 1}: ${formatGeneratedText(item)}`
+                                  ),
+                                  ...(results.production_plan?.spoken_lines || []).map(
+                                    (item, i) => `Spoken line ${i + 1}: ${formatGeneratedText(item)}`
+                                  ),
+                                  results.production_plan?.caption
+                                    ? `Caption: ${formatGeneratedText(results.production_plan.caption)}`
+                                    : '',
+                                  results.production_plan?.cta
+                                    ? `CTA: ${formatGeneratedText(results.production_plan.cta)}`
+                                    : '',
+                                  results.production_plan?.dm_reply
+                                    ? `DM reply: ${formatGeneratedText(results.production_plan.dm_reply)}`
+                                    : '',
+                                  results.production_plan?.follow_up_message
+                                    ? `Follow-up: ${formatGeneratedText(results.production_plan.follow_up_message)}`
+                                    : '',
+                                ]
+                                  .filter(Boolean)
+                                  .join('\n'),
+                                'Make This Post'
+                              )
+                            }
+                            className="rounded-xl bg-zinc-700 px-3 py-1.5 text-xs transition hover:bg-zinc-600"
+                          >
+                            {copiedItem === 'Make This Post' ? 'Copied!' : 'Copy'}
+                          </button>
+                        </div>
+
+                        <div className="grid gap-3 md:grid-cols-2">
+                          {results.production_plan.format && (
+                            <div className="rounded-xl border border-purple-500/20 bg-zinc-900/50 p-3">
+                              <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-purple-300">
+                                Format
+                              </p>
+                              <p className="text-sm text-zinc-100">
+                                {formatGeneratedText(results.production_plan.format)}
+                              </p>
+                            </div>
+                          )}
+
+                          {results.production_plan.concept && (
+                            <div className="rounded-xl border border-purple-500/20 bg-zinc-900/50 p-3">
+                              <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-purple-300">
+                                Concept
+                              </p>
+                              <p className="text-sm text-zinc-100">
+                                {formatGeneratedText(results.production_plan.concept)}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+
+                        {formatGeneratedList(results.production_plan.what_to_film).length > 0 && (
+                          <div className="mt-3 rounded-xl border border-zinc-700/70 bg-zinc-900/50 p-3">
+                            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-purple-300">
+                              What To Film
+                            </p>
+                            <ul className="space-y-2 text-sm text-zinc-200">
+                              {formatGeneratedList(results.production_plan.what_to_film).map((item, i) => (
+                                <li key={i} className="leading-relaxed">
+                                  • {item}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
+                        {formatGeneratedList(results.production_plan.shot_order).length > 0 && (
+                          <div className="mt-3 rounded-xl border border-zinc-700/70 bg-zinc-900/50 p-3">
+                            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-purple-300">
+                              Shot Order
+                            </p>
+                            <ol className="space-y-2 text-sm text-zinc-200">
+                              {formatGeneratedList(results.production_plan.shot_order).map((item, i) => (
+                                <li key={i} className="leading-relaxed">
+                                  {i + 1}. {item}
+                                </li>
+                              ))}
+                            </ol>
+                          </div>
+                        )}
+
+                        <div className="mt-3 grid gap-3 md:grid-cols-2">
+                          {results.production_plan.transition_idea && (
+                            <div className="rounded-xl border border-zinc-700/70 bg-zinc-900/50 p-3">
+                              <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-purple-300">
+                                Transition
+                              </p>
+                              <p className="text-sm leading-relaxed text-zinc-200">
+                                {formatGeneratedText(results.production_plan.transition_idea)}
+                              </p>
+                            </div>
+                          )}
+
+                          {results.production_plan.audio_direction && (
+                            <div className="rounded-xl border border-zinc-700/70 bg-zinc-900/50 p-3">
+                              <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-purple-300">
+                                Audio Direction
+                              </p>
+                              <p className="text-sm leading-relaxed text-zinc-200">
+                                {formatGeneratedText(results.production_plan.audio_direction)}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+
+                        {formatGeneratedList(results.production_plan.on_screen_text).length > 0 && (
+                          <div className="mt-3 rounded-xl border border-zinc-700/70 bg-zinc-900/50 p-3">
+                            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-purple-300">
+                              On-Screen Text
+                            </p>
+                            <div className="space-y-2">
+                              {formatGeneratedList(results.production_plan.on_screen_text).map((item, i) => (
+                                <p
+                                  key={i}
+                                  className="rounded-lg border border-zinc-700/60 bg-zinc-950/40 p-2 text-sm text-zinc-200"
+                                >
+                                  {item}
+                                </p>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {formatGeneratedList(results.production_plan.spoken_lines).length > 0 && (
+                          <div className="mt-3 rounded-xl border border-zinc-700/70 bg-zinc-900/50 p-3">
+                            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-purple-300">
+                              What To Say
+                            </p>
+                            <div className="space-y-2">
+                              {formatGeneratedList(results.production_plan.spoken_lines).map((item, i) => (
+                                <p
+                                  key={i}
+                                  className="rounded-lg border border-zinc-700/60 bg-zinc-950/40 p-2 text-sm text-zinc-200"
+                                >
+                                  {item}
+                                </p>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {results.production_plan.caption && (
+                          <div className="mt-3 rounded-xl border border-zinc-700/70 bg-zinc-900/50 p-3">
+                            <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-purple-300">
+                              Caption
+                            </p>
+                            <p className="whitespace-pre-wrap text-sm leading-relaxed text-zinc-200">
+                              {formatGeneratedText(results.production_plan.caption)}
+                            </p>
+                          </div>
+                        )}
+
+                        <div className="mt-3 grid gap-3 md:grid-cols-3">
+                          {results.production_plan.cta && (
+                            <div className="rounded-xl border border-zinc-700/70 bg-zinc-900/50 p-3">
+                              <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-purple-300">
+                                Call To Action
+                              </p>
+                              <p className="text-sm leading-relaxed text-zinc-200">
+                                {formatGeneratedText(results.production_plan.cta)}
+                              </p>
+                            </div>
+                          )}
+
+                          {results.production_plan.dm_reply && (
+                            <div className="rounded-xl border border-zinc-700/70 bg-zinc-900/50 p-3">
+                              <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-purple-300">
+                                DM Reply
+                              </p>
+                              <p className="text-sm leading-relaxed text-zinc-200">
+                                {formatGeneratedText(results.production_plan.dm_reply)}
+                              </p>
+                            </div>
+                          )}
+
+                          {results.production_plan.follow_up_message && (
+                            <div className="rounded-xl border border-zinc-700/70 bg-zinc-900/50 p-3">
+                              <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-purple-300">
+                                Follow-Up
+                              </p>
+                              <p className="text-sm leading-relaxed text-zinc-200">
+                                {formatGeneratedText(results.production_plan.follow_up_message)}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
                     {selectedOutputs.map((platform) => {
                       const text = results.content?.[platform];
                       const reelScenes =

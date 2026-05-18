@@ -27,6 +27,21 @@ type ActionPlanStep = {
   follow_up?: string;
 };
 
+type ProductionPlan = {
+  format?: string;
+  concept?: string;
+  what_to_film?: string[];
+  shot_order?: string[];
+  transition_idea?: string;
+  audio_direction?: string;
+  on_screen_text?: string[];
+  spoken_lines?: string[];
+  caption?: string;
+  cta?: string;
+  dm_reply?: string;
+  follow_up_message?: string;
+};
+
 type GeneratedResponse = {
   mode?: string;
   strategy?: {
@@ -46,6 +61,7 @@ type GeneratedResponse = {
   };
   content?: Record<string, string>;
   structured_content?: StructuredContent;
+  production_plan?: ProductionPlan;
   monetization?: {
     offer_ideas?: string[];
     lead_magnet?: string;
@@ -62,6 +78,60 @@ type GeneratedResponse = {
 
 function normalizeKey(value: string) {
   return value.toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
+function normalizeString(value: unknown) {
+  return typeof value === 'string' ? value.trim() : '';
+}
+
+function normalizeStringList(value: unknown) {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value
+    .map((item) => normalizeString(item))
+    .filter(Boolean)
+    .slice(0, 8);
+}
+
+function normalizeProductionPlan(value: unknown) {
+  if (!value || typeof value !== 'object') {
+    return undefined;
+  }
+
+  const plan = value as Record<string, unknown>;
+
+  const normalized = {
+    format: normalizeString(plan.format),
+    concept: normalizeString(plan.concept),
+    what_to_film: normalizeStringList(plan.what_to_film),
+    shot_order: normalizeStringList(plan.shot_order),
+    transition_idea: normalizeString(plan.transition_idea),
+    audio_direction: normalizeString(plan.audio_direction),
+    on_screen_text: normalizeStringList(plan.on_screen_text),
+    spoken_lines: normalizeStringList(plan.spoken_lines),
+    caption: normalizeString(plan.caption),
+    cta: normalizeString(plan.cta),
+    dm_reply: normalizeString(plan.dm_reply),
+    follow_up_message: normalizeString(plan.follow_up_message),
+  };
+
+  const hasValue =
+    normalized.format ||
+    normalized.concept ||
+    normalized.what_to_film.length > 0 ||
+    normalized.shot_order.length > 0 ||
+    normalized.transition_idea ||
+    normalized.audio_direction ||
+    normalized.on_screen_text.length > 0 ||
+    normalized.spoken_lines.length > 0 ||
+    normalized.caption ||
+    normalized.cta ||
+    normalized.dm_reply ||
+    normalized.follow_up_message;
+
+  return hasValue ? normalized : undefined;
 }
 
 function normalizeStructuredReel(value: unknown) {
@@ -258,6 +328,18 @@ const CLEAN_GENERATED_TEXT_REPLACEMENTS: Array<[RegExp, string]> = [
   [/Professional home value estimate/gi, 'Home value conversation'],
   [/market analysis/gi, 'home value conversation'],
   [/Market analysis/gi, 'Home value conversation'],
+  [/book the right appointment/gi, 'send the right booking details'],
+  [/Book the right appointment/gi, 'Send the right booking details'],
+  [/pick the right appointment/gi, 'compare your booking options'],
+  [/Pick the right appointment/gi, 'Compare your booking options'],
+  [/pick the right service/gi, 'compare your options'],
+  [/Pick the right service/gi, 'Compare your options'],
+  [/right-fit appointment/gi, 'booking option'],
+  [/Right-fit appointment/gi, 'Booking option'],
+  [/right service/gi, 'booking option'],
+  [/Right service/gi, 'Booking option'],
+  [/DM me now to book your appointment!?/gi, 'DM REFILL or FULL SET with your last appointment date and the look you want.'],
+  [/Send your question now and let['’]s get your lashes looking fresh!?/gi, 'Send your question or DM REFILL or FULL SET with your last appointment date.'],
   [/local market insights/gi, 'local selling questions'],
   [/Local market insights/gi, 'Local selling questions'],
   [/right time to sell/gi, 'right timing for your situation'],
@@ -1681,6 +1763,20 @@ The JSON must follow this exact structure:
 ${contentJsonShape}
   },
   "structured_content": ${structuredContentJsonShape},
+  "production_plan": {
+    "format": "",
+    "concept": "",
+    "what_to_film": ["", "", ""],
+    "shot_order": ["", "", "", ""],
+    "transition_idea": "",
+    "audio_direction": "",
+    "on_screen_text": ["", "", ""],
+    "spoken_lines": ["", "", ""],
+    "caption": "",
+    "cta": "",
+    "dm_reply": "",
+    "follow_up_message": ""
+  },
   "monetization": {
     "offer_ideas": ["", "", ""],
     "lead_magnet": "",
@@ -1755,6 +1851,28 @@ Structured content rules:
 - If Instagram Carousel is selected, structured_content["Instagram Carousel"].slides must include 6-8 slide objects.
 - Each Instagram Carousel slide object must include slide_number and text.
 - If neither Instagram Reel nor Instagram Carousel is selected, structured_content must be an empty object.
+
+Make This Post / Production Plan rules:
+- production_plan must help the user actually create the strongest selected content asset.
+- production_plan.format must name the selected asset it is based on, such as "Instagram Reel", "TikTok Script", "Instagram Carousel", "YouTube Shorts Script", "Facebook Post", or "LinkedIn Post".
+- production_plan.concept must summarize the post idea in one specific sentence.
+- production_plan.what_to_film must include practical filming directions or asset directions, not vague strategy.
+- production_plan.shot_order must tell the user what to capture or show in order.
+- production_plan.transition_idea must explain the change, reveal, cut, swipe, or shift between parts of the post.
+- production_plan.audio_direction must give safe audio guidance without inventing exact trending songs. Use directions like "use calm salon-style audio", "use a trending audio with a clear beat drop for the reveal", or "use low-volume voiceover with captions".
+- production_plan.on_screen_text must include copy-ready text overlays, slide text, or post text.
+- production_plan.spoken_lines must sound like a real business owner speaking naturally. Avoid stiff AI phrases.
+- production_plan.caption must be copy-ready.
+- production_plan.cta must be copy-ready and match the Money Plan.
+- production_plan.dm_reply must be a copy-ready first reply to someone who comments, DMs, or asks for the resource.
+- production_plan.follow_up_message must be a copy-ready next message after the first reply.
+- For Reels, TikToks, and Shorts, include pacing, timing, transition moment, and audio direction.
+- For carousels or static posts, make shot_order and on_screen_text describe slide/layout direction.
+- Do not invent operational claims, exact availability, guarantees, trending song names, discounts, bundles, consultations, packages, priority booking, or service details the user did not provide.
+- For beauty services, avoid overconfident phrases like "book the right appointment", "pick the right service", "right-fit appointment", "best service", "diagnose", or "I will choose for you." Use safer language like "help you decide what to ask about", "help you compare refill vs full set", "help you send the right booking details", or "answer your booking questions."
+- For beauty services, CTAs should feel natural and low-pressure. Prefer "DM REFILL or FULL SET with your last appointment date and the look you want" over pushy lines like "DM me now to book your appointment."
+- production_plan.spoken_lines should sound casual and human. Avoid exclamation-heavy sales lines, stiff template wording, and generic beauty phrases like "let's get your lashes looking fresh" unless the user wrote that style.
+- This section must feel more practical than ChatGPT by telling the user exactly how to make the post.
 
 Campaign route rules:
 Before writing, silently choose ONE campaign route that best fits the user's idea.
@@ -2185,6 +2303,7 @@ Final silent check:
       }
 
       parsed.structured_content = normalizedStructuredContent;
+      parsed.production_plan = normalizeProductionPlan(parsed.production_plan);
 
       const currentBestPlatform =
         typeof parsed.best_output?.platform === 'string' &&
