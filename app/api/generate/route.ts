@@ -42,6 +42,14 @@ type ProductionPlan = {
   follow_up_message?: string;
 };
 
+type BusinessProfile = {
+  businessType?: string;
+  services?: string;
+  idealClient?: string;
+  mainCta?: string;
+  notes?: string;
+};
+
 type GeneratedResponse = {
   mode?: string;
   strategy?: {
@@ -93,6 +101,32 @@ function normalizeStringList(value: unknown) {
     .map((item) => normalizeString(item))
     .filter(Boolean)
     .slice(0, 8);
+}
+
+function formatBusinessProfileForPrompt(value: unknown) {
+  if (!value || typeof value !== 'object') {
+    return 'No saved business profile provided.';
+  }
+
+  const profile = value as BusinessProfile;
+
+  const lines = [
+    ['Business type', profile.businessType],
+    ['Main services', profile.services],
+    ['Ideal client', profile.idealClient],
+    ['Main CTA', profile.mainCta],
+    ['Business notes', profile.notes],
+  ]
+    .map(([label, fieldValue]) => {
+      const text = normalizeString(fieldValue);
+
+      return text ? `- ${label}: ${text}` : '';
+    })
+    .filter(Boolean);
+
+  return lines.length > 0
+    ? lines.join('\n')
+    : 'No saved business profile provided.';
 }
 
 function normalizeProductionPlan(value: unknown) {
@@ -1221,8 +1255,14 @@ ${BEAUTY_SERVICE_PLAYBOOK}
 
 export async function POST(req: Request) {
   try {
-    const { content, selectedVoice, goal, generationMode, selectedOutputs } =
-      await req.json();
+    const {
+      content,
+      selectedVoice,
+      goal,
+      generationMode,
+      selectedOutputs,
+      businessProfile,
+    } = await req.json();
 
     if (!content || !content.trim()) {
       return NextResponse.json(
@@ -1302,6 +1342,7 @@ ${structuredContentEntries.join(',\n')}
     const selectedOutputList = finalContentOutputs.join(', ');
 
     const lowercaseContent = content.toLowerCase();
+    const businessProfilePrompt = formatBusinessProfileForPrompt(businessProfile);
 
     const isClothingOrEcommercePrompt =
       /clothing|fashion|apparel|streetwear|brand|ecommerce|e-commerce|product brand|drop|waitlist|launch|release/.test(
@@ -1675,6 +1716,8 @@ The user gives one business/content idea. Your job is to create 10 strong hooks 
 
 USER INPUT:
 Content idea: ${content}
+Business profile:
+${businessProfilePrompt}
 Goal: ${goal}
 Brand voice: ${selectedVoice}
 
@@ -1739,6 +1782,8 @@ MASTER MONEY PLAN WIZARD:
 
 USER INPUT:
 Content idea: ${content}
+Business profile:
+${businessProfilePrompt}
 Goal: ${goal}
 Brand voice: ${selectedVoice}
 Selected platforms: ${selectedOutputList}
@@ -1748,6 +1793,10 @@ ${lashContextRules}
 
 Strategy field rules:
 The Strategy tab should feel like the brain of the campaign, not a short summary.
+Use the saved Business Profile when it is provided. Treat it as the user's real business context, but do not invent claims beyond it.
+If the Business Profile provides a main CTA, prefer that CTA unless it conflicts with the user's current prompt.
+If the Business Profile provides services, keep outputs aligned with those services instead of inventing unrelated offers.
+If the Business Profile provides notes or style preferences, follow them unless the current prompt clearly overrides them.
 
 Fill strategy fields this way:
 - target_audience: Describe the buyer situation, urgency, awareness level, decision moment, or service need. Do not use broad demographics.

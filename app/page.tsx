@@ -112,6 +112,22 @@ type SavedGeneration = {
   results: Results;
 };
 
+type BusinessProfile = {
+  businessType: string;
+  services: string;
+  idealClient: string;
+  mainCta: string;
+  notes: string;
+};
+
+const emptyBusinessProfile: BusinessProfile = {
+  businessType: '',
+  services: '',
+  idealClient: '',
+  mainCta: '',
+  notes: '',
+};
+
 export default function Home() {
   const { isLoaded, isSignedIn, user } = useUser();
 
@@ -142,6 +158,10 @@ export default function Home() {
   const [savedMessage, setSavedMessage] = useState('');
   const [savedLoading, setSavedLoading] = useState(false);
   const [currentExampleIndex, setCurrentExampleIndex] = useState(0);
+  const [businessProfile, setBusinessProfile] = useState<BusinessProfile>(
+    emptyBusinessProfile
+  );
+  const [showBusinessProfile, setShowBusinessProfile] = useState(false);
 
   const MAX_FREE = 10;
   const MAX_SAVED = 20;
@@ -195,6 +215,20 @@ export default function Home() {
     }
 
     return bullets.slice(0, 4);
+  };
+
+  const hasBusinessProfile = Object.values(businessProfile).some((value) =>
+    value.trim()
+  );
+
+  const updateBusinessProfile = (
+    field: keyof BusinessProfile,
+    value: string
+  ) => {
+    setBusinessProfile((current) => ({
+      ...current,
+      [field]: value,
+    }));
   };
 
   const voices = [
@@ -272,7 +306,41 @@ export default function Home() {
 
       const savedUsed = localStorage.getItem('generationsUsed');
       const savedPro = localStorage.getItem('isPro');
+      const savedBusinessProfile = localStorage.getItem('businessProfile');
       const params = new URLSearchParams(window.location.search);
+
+      if (savedBusinessProfile) {
+        try {
+          const parsedProfile = JSON.parse(savedBusinessProfile) as Partial<BusinessProfile>;
+
+          setBusinessProfile({
+            businessType:
+              typeof parsedProfile.businessType === 'string'
+                ? parsedProfile.businessType
+                : '',
+            services:
+              typeof parsedProfile.services === 'string'
+                ? parsedProfile.services
+                : '',
+            idealClient:
+              typeof parsedProfile.idealClient === 'string'
+                ? parsedProfile.idealClient
+                : '',
+            mainCta:
+              typeof parsedProfile.mainCta === 'string'
+                ? parsedProfile.mainCta
+                : '',
+            notes:
+              typeof parsedProfile.notes === 'string'
+                ? parsedProfile.notes
+                : '',
+          });
+
+          setShowBusinessProfile(true);
+        } catch {
+          localStorage.removeItem('businessProfile');
+        }
+      }
 
       if (savedUsed) {
         setGenerationsUsed(parseInt(savedUsed));
@@ -300,6 +368,17 @@ export default function Home() {
 
     return () => window.clearInterval(interval);
   }, [loading, activeLoadingMessages.length]);
+
+  useEffect(() => {
+    if (!mounted) return;
+
+    if (!hasBusinessProfile) {
+      localStorage.removeItem('businessProfile');
+      return;
+    }
+
+    localStorage.setItem('businessProfile', JSON.stringify(businessProfile));
+  }, [businessProfile, hasBusinessProfile, mounted]);
 
   useEffect(() => {
     const loadSavedGenerations = async () => {
@@ -423,6 +502,7 @@ export default function Home() {
           goal,
           generationMode,
           selectedOutputs,
+          businessProfile,
         }),
       });
 
@@ -935,6 +1015,113 @@ export default function Home() {
                   }
                   className="h-28 w-full max-w-full resize-none rounded-2xl border border-zinc-700 bg-zinc-800 p-4 text-sm text-zinc-100 outline-none placeholder:text-zinc-500 focus:border-purple-500 sm:h-48 sm:p-5 sm:text-base"
                 />
+              </div>
+
+              <div className="mb-4 rounded-2xl border border-zinc-800 bg-zinc-950/40 p-4">
+                <button
+                  type="button"
+                  onClick={() => setShowBusinessProfile((current) => !current)}
+                  className="flex w-full items-center justify-between gap-3 text-left"
+                >
+                  <div>
+                    <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
+                      Business Profile
+                    </p>
+                    <p className="mt-1 text-sm text-zinc-300">
+                      {hasBusinessProfile
+                        ? 'Using your saved business context for better outputs.'
+                        : 'Optional: set your business once so Hummingbird can write with more context.'}
+                    </p>
+                  </div>
+
+                  <span className="shrink-0 rounded-full bg-zinc-800 px-3 py-1 text-xs text-zinc-300">
+                    {showBusinessProfile ? 'Hide' : hasBusinessProfile ? 'Edit' : 'Add'}
+                  </span>
+                </button>
+
+                {showBusinessProfile && (
+                  <div className="mt-4 space-y-3">
+                    <div>
+                      <label className="mb-1 block text-xs font-medium text-zinc-400">
+                        Business type
+                      </label>
+                      <input
+                        value={businessProfile.businessType}
+                        onChange={(e) =>
+                          updateBusinessProfile('businessType', e.target.value)
+                        }
+                        placeholder="Example: lash artist, hair stylist, cleaner, realtor"
+                        className="w-full rounded-xl border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-100 outline-none placeholder:text-zinc-500 focus:border-purple-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="mb-1 block text-xs font-medium text-zinc-400">
+                        Main services
+                      </label>
+                      <input
+                        value={businessProfile.services}
+                        onChange={(e) =>
+                          updateBusinessProfile('services', e.target.value)
+                        }
+                        placeholder="Example: classic lashes, hybrid sets, refills"
+                        className="w-full rounded-xl border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-100 outline-none placeholder:text-zinc-500 focus:border-purple-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="mb-1 block text-xs font-medium text-zinc-400">
+                        Ideal client
+                      </label>
+                      <input
+                        value={businessProfile.idealClient}
+                        onChange={(e) =>
+                          updateBusinessProfile('idealClient', e.target.value)
+                        }
+                        placeholder="Example: new clients unsure what to book"
+                        className="w-full rounded-xl border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-100 outline-none placeholder:text-zinc-500 focus:border-purple-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="mb-1 block text-xs font-medium text-zinc-400">
+                        Main CTA
+                      </label>
+                      <input
+                        value={businessProfile.mainCta}
+                        onChange={(e) =>
+                          updateBusinessProfile('mainCta', e.target.value)
+                        }
+                        placeholder="Example: DM REFILL with your last appointment date"
+                        className="w-full rounded-xl border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-100 outline-none placeholder:text-zinc-500 focus:border-purple-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="mb-1 block text-xs font-medium text-zinc-400">
+                        Notes / style
+                      </label>
+                      <textarea
+                        value={businessProfile.notes}
+                        onChange={(e) =>
+                          updateBusinessProfile('notes', e.target.value)
+                        }
+                        placeholder="Example: calm, professional, no pushy urgency, local clients only"
+                        className="h-20 w-full resize-none rounded-xl border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-100 outline-none placeholder:text-zinc-500 focus:border-purple-500"
+                      />
+                    </div>
+
+                    {hasBusinessProfile && (
+                      <button
+                        type="button"
+                        onClick={() => setBusinessProfile(emptyBusinessProfile)}
+                        className="text-xs font-medium text-zinc-500 transition hover:text-zinc-300"
+                      >
+                        Clear business profile
+                      </button>
+                    )}
+                  </div>
+                )}
               </div>
 
               <div className="mb-4">
