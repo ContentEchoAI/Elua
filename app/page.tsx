@@ -1326,6 +1326,86 @@ export default function Home() {
               )}
             </div>
 
+            {results && generationMode === 'growth_system' && (
+              <div className="mb-4 rounded-3xl border border-purple-500/30 bg-gradient-to-br from-purple-950/70 via-zinc-900 to-pink-950/40 p-5 shadow-2xl">
+                <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                  <div>
+                    <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-purple-300">
+                      This Week’s Campaign
+                    </p>
+                    <h3 className="text-xl font-semibold text-white sm:text-2xl">
+                      {formatGeneratedText(
+                        results.strategy?.core_angle,
+                        'A focused weekly campaign built from your business goal.'
+                      )}
+                    </h3>
+                  </div>
+
+                  {results.best_output?.platform && (
+                    <span className="w-fit rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-zinc-100">
+                      Start with {formatGeneratedText(results.best_output.platform)}
+                    </span>
+                  )}
+                </div>
+
+                <div className="grid gap-3 md:grid-cols-2">
+                  <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                    <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-400">
+                      Make This First
+                    </p>
+                    <p className="text-sm leading-relaxed text-zinc-100">
+                      {formatGeneratedText(
+                        results.production_plan?.concept ||
+                          results.best_output?.reason ||
+                          results.strategy?.content_goal,
+                        'Create the strongest recommended content asset first, then use the CTA and follow-up path below.'
+                      )}
+                    </p>
+                  </div>
+
+                  <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                    <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-400">
+                      Why It’s Useful
+                    </p>
+                    <p className="text-sm leading-relaxed text-zinc-100">
+                      {formatGeneratedText(
+                        results.strategy?.why_it_works ||
+                          results.strategy?.content_goal,
+                        'This campaign turns attention into a clear next step so interested people know how to reply.'
+                      )}
+                    </p>
+                  </div>
+
+                  <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                    <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-400">
+                      CTA To Use
+                    </p>
+                    <p className="text-sm font-medium leading-relaxed text-zinc-100">
+                      {formatGeneratedText(
+                        results.production_plan?.cta ||
+                          results.monetization?.cta_strategy,
+                        'Use the campaign CTA exactly as written in the Money Plan.'
+                      )}
+                    </p>
+                  </div>
+
+                  <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                    <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-400">
+                      DM Reply / Follow-Up
+                    </p>
+                    <p className="text-sm leading-relaxed text-zinc-100">
+                      {formatGeneratedText(
+                        results.production_plan?.dm_reply ||
+                          results.production_plan?.follow_up_message ||
+                          results.monetization?.conversion_tips?.[0],
+                        'Reply with the qualifying question from the Money Plan, then guide the conversation toward the next booking or sales step.'
+                      )}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="mb-3 flex min-w-0 shrink-0 flex-wrap gap-2">
               {activeTabs.map((tab) => (
                 <button
