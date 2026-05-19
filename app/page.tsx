@@ -492,6 +492,14 @@ export default function Home() {
       setActiveTab('strategy');
     }
 
+    const recentCampaigns = savedGenerations.slice(0, 3).map((saved) => ({
+      title: saved.title,
+      input: saved.input,
+      mode: saved.mode,
+      goal: saved.goal,
+      createdAt: saved.createdAt,
+    }));
+
     try {
       const res = await fetch('/api/generate', {
         method: 'POST',
@@ -503,6 +511,7 @@ export default function Home() {
           generationMode,
           selectedOutputs,
           businessProfile,
+          recentCampaigns,
         }),
       });
 

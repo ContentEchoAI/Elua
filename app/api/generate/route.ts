@@ -50,6 +50,14 @@ type BusinessProfile = {
   notes?: string;
 };
 
+type RecentCampaign = {
+  title?: string;
+  input?: string;
+  mode?: string;
+  goal?: string;
+  createdAt?: string;
+};
+
 type GeneratedResponse = {
   mode?: string;
   strategy?: {
@@ -127,6 +135,90 @@ function formatBusinessProfileForPrompt(value: unknown) {
   return lines.length > 0
     ? lines.join('\n')
     : 'No saved business profile provided.';
+}
+
+function formatRecentCampaignsForPrompt(value: unknown) {
+  if (!Array.isArray(value)) {
+    return 'No recent saved campaigns provided.';
+  }
+
+  const campaigns = value
+    .slice(0, 3)
+    .map((item, index) => {
+      if (!item || typeof item !== 'object') {
+        return '';
+      }
+
+      const campaign = item as RecentCampaign;
+
+      const title = normalizeString(campaign.title);
+      const input = normalizeString(campaign.input);
+      const goal = normalizeString(campaign.goal);
+      const mode = normalizeString(campaign.mode);
+
+      if (!title && !input) {
+        return '';
+      }
+
+      return [
+        `Campaign ${index + 1}:`,
+        title ? `- Title: ${title}` : '',
+        input ? `- Original prompt: ${input}` : '',
+        goal ? `- Goal: ${goal}` : '',
+        mode ? `- Mode: ${mode}` : '',
+      ]
+        .filter(Boolean)
+        .join('\n');
+    })
+    .filter(Boolean);
+
+  return campaigns.length > 0
+    ? campaigns.join('\n\n')
+    : 'No recent saved campaigns provided.';
+}
+
+function formatFreshCampaignInstruction({
+  content,
+  businessProfilePrompt,
+  recentCampaignsPrompt,
+}: {
+  content: string;
+  businessProfilePrompt: string;
+  recentCampaignsPrompt: string;
+}) {
+  const current = content.toLowerCase();
+  const profile = businessProfilePrompt.toLowerCase();
+  const recent = recentCampaignsPrompt.toLowerCase();
+
+  const isLashContext =
+    current.includes('lash') ||
+    profile.includes('lash') ||
+    recent.includes('lash');
+
+  const isBroadNextCampaign =
+    current.includes('new weekly') ||
+    current.includes('what to book next') ||
+    current.includes('next campaign') ||
+    current.includes('what to post next') ||
+    current.includes('more bookings') ||
+    current.includes('more clients') ||
+    current.includes('more appointments');
+
+  const recentCoveredRefillVsFullSet =
+    recent.includes('refill') && recent.includes('full set');
+
+  if (isLashContext && isBroadNextCampaign && recentCoveredRefillVsFullSet) {
+    return [
+      'Fresh campaign instruction:',
+      '- Recent saved campaigns already covered refill vs full set.',
+      '- For this run, do NOT make refill vs full set the main campaign angle.',
+      '- Do NOT use a refill vs full set decision guide, refill timing guide, or what-to-book-next checklist as the lead magnet.',
+      '- Choose a different weekly lash campaign angle: classic vs hybrid vs volume style education, lash style menu, new-client style guide, appointment-readiness, what to send before booking, lash look preference questions, or client FAQ.',
+      '- The CTA can still use the saved Business Profile CTA if appropriate, but the content angle must feel different from the previous refill/full-set campaign.',
+    ].join('\n');
+  }
+
+  return 'No extra fresh campaign instruction.';
 }
 
 function normalizeProductionPlan(value: unknown) {
@@ -1263,6 +1355,7 @@ export async function POST(req: Request) {
       generationMode,
       selectedOutputs,
       businessProfile,
+      recentCampaigns,
     } = await req.json();
 
     if (!content || !content.trim()) {
@@ -1344,6 +1437,12 @@ ${structuredContentEntries.join(',\n')}
 
     const lowercaseContent = content.toLowerCase();
     const businessProfilePrompt = formatBusinessProfileForPrompt(businessProfile);
+    const recentCampaignsPrompt = formatRecentCampaignsForPrompt(recentCampaigns);
+    const freshCampaignInstruction = formatFreshCampaignInstruction({
+      content,
+      businessProfilePrompt,
+      recentCampaignsPrompt,
+    });
 
     const isClothingOrEcommercePrompt =
       /clothing|fashion|apparel|streetwear|brand|ecommerce|e-commerce|product brand|drop|waitlist|launch|release/.test(
@@ -1719,6 +1818,10 @@ USER INPUT:
 Content idea: ${content}
 Business profile:
 ${businessProfilePrompt}
+Recent saved campaigns:
+${recentCampaignsPrompt}
+Freshness instruction:
+${freshCampaignInstruction}
 Goal: ${goal}
 Brand voice: ${selectedVoice}
 
@@ -1785,6 +1888,10 @@ USER INPUT:
 Content idea: ${content}
 Business profile:
 ${businessProfilePrompt}
+Recent saved campaigns:
+${recentCampaignsPrompt}
+Freshness instruction:
+${freshCampaignInstruction}
 Goal: ${goal}
 Brand voice: ${selectedVoice}
 Selected platforms: ${selectedOutputList}
@@ -1798,6 +1905,14 @@ Use the saved Business Profile when it is provided. Treat it as the user's real 
 If the Business Profile provides a main CTA, prefer that CTA unless it conflicts with the user's current prompt.
 If the Business Profile provides services, keep outputs aligned with those services instead of inventing unrelated offers.
 If the Business Profile provides notes or style preferences, follow them unless the current prompt clearly overrides them.
+Use Recent saved campaigns to avoid repetition. If recent campaigns are provided, do not repeat the same campaign angle, hook structure, lead magnet, CTA, Make This Post concept, or 7-day action plan pattern unless the user clearly asks to reuse it.
+When recent campaigns exist, create a fresh weekly campaign angle that still fits the user's current goal and business profile.
+If the user's current prompt is broad, such as "new weekly campaign", "what to post next", "what to book next", "more bookings", "more clients", or "more appointments", you MUST choose a different angle from the recent saved campaigns.
+If a recent saved campaign focused on refill vs full set, do NOT create another refill vs full set decision-guide campaign unless the user explicitly asks for refill vs full set again. Choose a different lash angle such as style choice, classic vs hybrid vs volume education, appointment-readiness, aftercare, client FAQ, first-time client education, event lashes, maintenance reminder, or what to send before booking.
+If a recent saved campaign focused on a color consultation mistake, do NOT create another color consultation mistake campaign unless the user explicitly asks for that. Choose a different hair angle such as goal photo prep, lived-in color expectations, gloss refresh education, maintenance questions, inspiration photo review, first appointment prep, or what to ask before booking.
+If a recent saved campaign focused on a cleaning quote checklist, do NOT create another quote checklist campaign unless the user explicitly asks for that. Choose a different local-service angle such as room priority, before/after prep, service type comparison, project photos, customer FAQ, or estimate details.
+Do not solve repetition by changing only the headline. The target audience, core_angle, hook_strategies, lead_magnet, Make This Post concept, platform content, and action_plan must all reflect the new angle.
+Do not mention "I avoided repeating your last campaign" in the user-facing output. Just make the campaign feel fresh.
 
 Fill strategy fields this way:
 - target_audience: Describe the buyer situation, urgency, awareness level, decision moment, or service need. Do not use broad demographics.
