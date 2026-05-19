@@ -784,7 +784,7 @@ const CLEAN_GENERATED_TEXT_REPLACEMENTS: Array<[RegExp, string]> = [
   [/flawless/gi, 'fresh'],
   [/perfect lashes/gi, 'lashes that fit your style'],
   [/Perfect lashes/gi, 'Lashes that fit your style'],
-  [/perfect/gi, 'right-fit'],
+  [/perfect/gi, 'clear'],
   [/restore lash health/gi, 'support better lash care'],
   [/Restore lash health/gi, 'Support better lash care'],
   [/maximizes lash health/gi, 'supports better lash care'],
@@ -823,17 +823,17 @@ const CLEAN_GENERATED_TEXT_REPLACEMENTS: Array<[RegExp, string]> = [
   [/available appointments this week/gi, 'openings this week if available'],
   [/Available appointments this week/gi, 'Openings this week if available'],
   [/recommended refill period/gi, 'usual refill timing'],
-  [/hold a spot/gi, 'send the booking link'],
-  [/hold your spot/gi, 'send the booking link'],
-  [/hold my spot/gi, 'send the booking link'],
-  [/available slots/gi, 'booking options'],
-  [/available times/gi, 'booking options'],
+  [/hold a spot/gi, 'ask about booking'],
+  [/hold your spot/gi, 'ask about booking'],
+  [/hold my spot/gi, 'ask about booking'],
+  [/available slots/gi, 'booking questions'],
+  [/available times/gi, 'booking questions'],
   [/I have openings this week/gi, 'I can check openings'],
   [/I have some openings coming up/gi, 'I can check openings'],
-  [/openings soon/gi, 'booking options'],
+  [/openings soon/gi, 'booking questions'],
   [/best booking option/gi, 'next booking option'],
-  [/best gel manicure/gi, 'right-fit gel manicure'],
-  [/best service/gi, 'right-fit service'],
+  [/best gel manicure/gi, 'gel manicure option'],
+  [/best service/gi, 'service option'],
   [/avoid disappointment/gi, 'feel prepared before booking'],
   [/qualified replies/gi, 'interested replies'],
   [/qualified bookings/gi, 'booking conversations'],
@@ -848,43 +848,43 @@ const CLEAN_GENERATED_TEXT_REPLACEMENTS: Array<[RegExp, string]> = [
   [/don't wait/gi, 'plan ahead'],
   [/last-minute panic/gi, 'last-minute guessing'],
   [/last-minute nail stress/gi, 'last-minute nail guessing'],
-  [/hold a few spots/gi, 'send the booking link'],
-  [/hold a few spots next week/gi, 'send the booking link'],
-  [/hold spots/gi, 'send the booking link'],
+  [/hold a few spots/gi, 'ask about booking'],
+  [/hold a few spots next week/gi, 'ask about booking'],
+  [/hold spots/gi, 'ask about booking'],
   [/book your spot/gi, 'ask about booking'],
   [/book your spot now/gi, 'ask about booking'],
   [/book your spot today/gi, 'ask about booking'],
   [/get booked/gi, 'ask about booking'],
-  [/available appointments/gi, 'booking options'],
-  [/current booking availability/gi, 'booking options'],
-  [/my current booking availability/gi, 'booking options'],
-  [/available appointment times/gi, 'booking options'],
+  [/available appointments/gi, 'booking questions'],
+  [/current booking availability/gi, 'booking questions'],
+  [/my current booking availability/gi, 'booking questions'],
+  [/available appointment times/gi, 'booking questions'],
   [/available appointment/gi, 'booking option'],
   [/15-minute chat/gi, 'short booking chat'],
   [/discounted refill/gi, 'refill inquiry'],
   [/discounted touch-up/gi, 'touch-up inquiry'],
   [/best for first-time or hesitant clients/gi, 'helpful for first-time or unsure clients'],
-  [/best style/gi, 'right-fit style'],
-  [/best fit/gi, 'right-fit'],
+  [/best style/gi, 'style option'],
+  [/best fit/gi, 'clear option'],
   [/best appointment time/gi, 'appointment timing'],
   [/easy-to-book/gi, 'simple booking'],
   [/personalized nail art sessions/gi, 'nail art appointment options'],
   [/personalized recommendations/gi, 'style suggestions'],
-  [/recommend the best/gi, 'suggest a right-fit'],
+  [/recommend the best/gi, 'talk through the options'],
   [/recommend booking/gi, 'suggest asking about booking'],
   [/this helps qualify their booking needs/gi, 'this helps clarify what they may want to book'],
-  [/hold a few appointment options/gi, 'send a few booking options'],
-  [/hold appointment options/gi, 'send booking options'],
-  [/hold a few appointment times/gi, 'send a few booking options'],
-  [/available appointments/gi, 'booking options'],
+  [/hold a few appointment options/gi, 'ask for preferred day and service goal'],
+  [/hold appointment options/gi, 'ask for preferred day and service goal'],
+  [/hold a few appointment times/gi, 'ask for preferred day and service goal'],
+  [/available appointments/gi, 'booking questions'],
   [/available appointment/gi, 'booking option'],
   [/available openings/gi, 'openings if available'],
-  [/current availability/gi, 'booking options'],
-  [/my availability/gi, 'booking options'],
+  [/current availability/gi, 'booking questions'],
+  [/my availability/gi, 'booking questions'],
   [/book confidently/gi, 'ask about booking'],
   [/direct booking invite/gi, 'clear booking next step'],
   [/booking invite/gi, 'booking next step'],
-  [/book your right-fit/gi, 'ask about your right-fit'],
+  [/book your right-fit/gi, 'ask about the booking option'],
   [/book your gel manicure/gi, 'ask about booking your gel manicure'],
   [/book your next appointment/gi, 'ask about booking your next appointment'],
   [/ready to book/gi, 'ready to ask about booking'],
@@ -897,8 +897,8 @@ const CLEAN_GENERATED_TEXT_REPLACEMENTS: Array<[RegExp, string]> = [
   [/2-3 weeks/gi, 'your usual timing'],
   [/2–3 weeks/gi, 'your usual timing'],
   [/best for/gi, 'helpful for'],
-  [/the best/gi, 'a right-fit'],
-  [/The best/gi, 'A right-fit'],
+  [/the best/gi, 'a clear option'],
+  [/The best/gi, 'A clear option'],
   [/send me a pic/gi, 'tell me when your last appointment was'],
   [/Send me a pic/gi, 'Tell me when your last appointment was'],
   [/send me a photo/gi, 'tell me when your last appointment was'],
@@ -1184,8 +1184,9 @@ const BEAUTY_SERVICE_PLAYBOOK = String.raw`- For beauty service providers such a
 - Lash content must not claim lash health outcomes, natural lash damage, natural lash stress, restoration, volume restoration, guaranteed retention, or medical-ish lash care benefits unless the user provided support. Keep it to booking, refill timing questions, style preference, appointment fit, aftercare reminders, and consultation-style guidance.
 - Lash content should not tell clients to send a photo/picture for diagnosis or say the artist will recommend the best/right service from a photo. Prefer safer wording: "Tell me when your last appointment was", "Tell me what you want your set to look like", "Are you leaning refill or full set?", or "Send what you are deciding between."
 - Lash Action Plans should not recommend a refill or full set based on exact weeks unless the user gives their policy. They should ask when the last appointment was, ask what the client wants the set to look like, ask whether they want a refill or full set, and invite them to share their preferred day or service goal.
-- Lash Action Plans should not invent availability, priority booking, held appointment spots, or immediate scheduling. Use "send your preferred day", "send what you are deciding between", or "I can point you toward the right service option" unless the user provided availability.
-- Lash Money Plans should not create priority booking, guaranteed openings, appointment availability, diagnosis-by-photo, "best fit", "right service", or "best service" recommendations unless provided. Default to refill appointment inquiry, full set appointment inquiry, appointment planner, style preference question, refill timing question, or service-fit conversation.
+- Lash Action Plans should not invent availability, priority booking, held appointment spots, booking links, or immediate scheduling. Use "send your preferred day if you are ready to book", "send what you are deciding between", "are you leaning refill or full set?", or "tell me the look you want next." Avoid "right service option", "appointment fits best", "booking link", "warm leads", "lead capture", and "conversion chances."
+- Lash Money Plans should not create priority booking, guaranteed openings, appointment availability, booking links, diagnosis-by-photo, "best fit", "right service", "right-fit", "appointment fits best", or "best service" recommendations unless provided. Default to refill appointment inquiry, full set appointment inquiry, appointment planner, style preference question, refill timing question, or service question conversation.
+- Lash follow-ups should sound like a real lash artist texting a client. Prefer: "When was your last appointment?", "Are you leaning refill or full set?", "What do you want your lashes to look like next?", "Send your preferred day if you are ready to book", and "I can answer booking questions." Avoid marketer phrases like "personalized message", "qualified lead", "lead capture", "conversion", "warm lead", or "direct booking invite."
 - For nail artists: use the user's prompt to choose between design menus, appointment-readiness, fill timing, nail prep, aftercare, seasonal sets, event/bridal nails, gel/acrylic/dip education, design polls, retention reminders, or client FAQ content. Use DM keywords like NAILS, FILL, SET, DESIGN, or BOOK.
 - For hair stylists and barbers: use the user's prompt to choose between consultation prompts, color service education, haircut maintenance, style upkeep, product recommendations, transformation explanations, appointment-readiness, seasonal changes, event hair, or client FAQ content. Use DM keywords like HAIR, COLOR, CUT, STYLE, or CONSULT.
 - For estheticians, brows, makeup, skincare, and med-spa style services: use the user's prompt to choose between consultation prompts, prep and aftercare checklists, maintenance timing, skin-goal questions, service education, event/bridal packages, seasonal skin content, brow mapping, makeup prep, or client FAQ content. Use DM keywords like GLOW, BROWS, SKIN, BEAUTY, or CONSULT.
@@ -1194,7 +1195,7 @@ const BEAUTY_SERVICE_PLAYBOOK = String.raw`- For beauty service providers such a
 - Prefer safer beauty language: keep your set looking fresh, avoid unnecessary gaps, plan your refill timing, choose the right style for your routine, maintenance-friendly, personalized recommendation, results vary, book a consultation first, aftercare matters, refill rhythm, appointment reminder, style refresh, service match, and keep your look consistent between appointments.
 - Beauty CTAs should be direct but calm: DM REFILL, DM LASHES, DM STYLE, Comment REFILL, Book your refill, Send your preferred day, Send your current routine, or DM CONSULT. Do not use panic language like "don’t wait" unless the user specifically requests urgency.
 - Beauty CTAs should be easy for a real client to follow. Prefer one clear action per post: DM one keyword, comment one keyword, request a prep sheet, send a preferred day, or reply with a service goal. Avoid stacking multiple actions in one CTA.
-- Beauty booking language must not invent availability, open spots, limited spots, same-week openings, exact scheduling options, held spots, or urgency unless the user provides those details. Prefer natural client-first CTA language like "DM REFILL with when your last appointment was", "Send what you are deciding between", "Reply with your preferred day and service goal", or "I can point you toward the right service option." Avoid robotic phrases like "ask about the next step", "next steps if they fit", "right next step fit", "lock in your spot", or "find a spot."
+- Beauty booking language must not invent availability, open spots, limited spots, same-week openings, exact scheduling options, booking links, held spots, or urgency unless the user provides those details. Prefer natural client-first CTA language like "DM REFILL with when your last appointment was", "Send what you are deciding between", "Reply with your preferred day and service goal", or "I can answer booking questions." Avoid robotic phrases like "ask about the next step", "next steps if they fit", "right next step fit", "right-fit", "appointment fits best", "booking link", "lock in your spot", or "find a spot."
 - Beauty Action Plans should feel fresh and tied to the weekly prompt. Include what to post, what to ask in DMs, what service or appointment to offer, how to qualify the client, and how to follow up without sounding pushy or fear-based.
 - Beauty outputs should sound like a real solo service provider talking to local clients, not a marketer. Avoid stiff phrases like "buyer indecision", "direct inquiries", "lead capture", "smooth booking experience", "take care of the rest", "book hassle-free", "personalized service recommendations", "exactly what you need", or "professionalise/professionalize".
 - For nail artists, do not default every gel or nail-art campaign to events. Include everyday reasons when relevant: regular maintenance, fresh set, refill/fill timing, vacation, birthday, photos, work, personal style, or wanting help choosing a design.
@@ -1977,7 +1978,7 @@ Make This Post / Production Plan rules:
 - For Reels, TikToks, and Shorts, include pacing, timing, transition moment, and audio direction.
 - For carousels or static posts, make shot_order and on_screen_text describe slide/layout direction.
 - Do not invent operational claims, exact availability, guarantees, trending song names, discounts, bundles, consultations, packages, priority booking, or service details the user did not provide.
-- For beauty services, avoid overconfident phrases like "book the right appointment", "pick the right service", "right-fit appointment", "best service", "diagnose", or "I will choose for you." Use safer language like "help you decide what to ask about", "help you compare refill vs full set", "help you send the right booking details", or "answer your booking questions."
+- For beauty services, avoid overconfident or marketer-ish phrases like "book the right appointment", "pick the right service", "right-fit appointment", "right-fit", "appointment fits best", "best service", "diagnose", "lead capture", "warm leads", "conversion chances", or "I will choose for you." Use safer language like "help you decide what to ask about", "help you compare refill vs full set", "send your last appointment date", "send the look you want", or "answer your booking questions."
 - For beauty services, CTAs should feel natural and low-pressure. Prefer "DM REFILL or FULL SET with your last appointment date and the look you want" over pushy lines like "DM me now to book your appointment."
 - For hair color services, avoid outcome guarantees or assumption-heavy phrases like "color you love", "color you regret", "saves time and money", "perfect color", "right-fit shade", "right-fit color", "exactly what you want", "what suits you best", "shade that fits you", "skin tone", "tailored to your hair type", "personalized plan", "hair condition", "hair health", "damage", "prevents", "fixes", or "fewer surprises" unless the user provided those claims.
 - For hair stylists, do not invent service length, packages, maintenance plans, treatments, product recommendations, recurring plans, exact consultation format, skin tone analysis, exact service inclusions, or exact outcome claims. Default to safe next steps like color consultation inquiry, current color question, goal photo/reference question, hair history question, booking question, or prep checklist.
