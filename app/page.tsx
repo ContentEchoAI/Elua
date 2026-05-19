@@ -599,7 +599,7 @@ export default function Home() {
         [savedGeneration, ...prev].slice(0, MAX_SAVED)
       );
 
-      setSavedMessage('Saved to Workspace!');
+      setSavedMessage('Campaign Saved!');
       setTimeout(() => setSavedMessage(''), 1500);
     } catch (error) {
       console.error('Save generation error:', error);
@@ -733,10 +733,10 @@ export default function Home() {
       <div className="mb-3 flex items-center justify-between gap-4">
         <div>
           <h2 className="text-lg font-semibold sm:text-2xl">
-            Saved Workspace
+            Campaign Library
           </h2>
           <p className="text-xs text-zinc-500 sm:text-sm">
-            Reopen your best content systems, hooks, and monetization ideas.
+            Reopen past campaigns, reuse strong ideas, and build your next weekly content plan.
           </p>
         </div>
 
@@ -757,12 +757,12 @@ export default function Home() {
       ) : !signedIn ? (
         <div className="rounded-2xl border border-dashed border-zinc-700 p-3 text-center">
           <p className="text-xs text-zinc-400">
-            Create a free account to save your Content + Money Plans and reopen your best weekly campaigns later.
+            Create a free account to save campaigns, reopen past plans, and build your next weekly content campaign later.
           </p>
         </div>
       ) : savedGenerations.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-zinc-700 p-3 text-center">
-          <p className="text-xs text-zinc-400">No saved generations yet. Generate something worth keeping, then save it here.</p>
+          <p className="text-xs text-zinc-400">No saved campaigns yet. Generate a weekly content plan, then save it here to build your campaign library.</p>
         </div>
       ) : (
         <div className="max-h-[260px] space-y-3 overflow-y-auto pr-1">
@@ -778,8 +778,8 @@ export default function Home() {
                   </p>
                   <p className="mt-1 text-xs text-zinc-500">
                     {saved.mode === 'viral_hooks'
-                      ? '🔥 Viral Hooks'
-                      : '🚀 Growth System'}{' '}
+                      ? '🔥 Hook Set'
+                      : '📅 Weekly Campaign'}{' '}
                     • {saved.goal} • {formatSavedDate(saved.createdAt)}
                   </p>
                 </div>
@@ -796,8 +796,12 @@ export default function Home() {
                 onClick={() => loadSavedGeneration(saved)}
                 className="mt-3 w-full rounded-xl bg-zinc-700 py-2 text-sm transition hover:bg-zinc-600"
               >
-                Open in Workspace
+                Reopen Campaign
               </button>
+
+              <p className="mt-2 text-[11px] leading-relaxed text-zinc-500">
+                Use this to revisit the angle, CTA, Money Plan, and follow-up path before planning your next campaign.
+              </p>
             </div>
           ))}
         </div>
@@ -1308,7 +1312,7 @@ export default function Home() {
                   onClick={saveCurrentGeneration}
                   className="rounded-2xl bg-white px-4 py-2.5 text-sm font-semibold text-black transition hover:scale-105"
                 >
-                  {savedMessage || 'Save to Workspace'}
+                  {savedMessage || 'Save Campaign'}
                 </button>
               )}
             </div>
