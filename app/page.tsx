@@ -147,6 +147,7 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<
     'strategy' | 'content' | 'monetization' | 'hooks'
   >('content');
+  const [showDetailedPlan, setShowDetailedPlan] = useState(false);
   const [goal, setGoal] = useState('growth');
   const [generationMode, setGenerationMode] = useState<
     'growth_system' | 'viral_hooks'
@@ -1349,7 +1350,7 @@ export default function Home() {
                 </div>
 
                 <div className="grid gap-3 md:grid-cols-2">
-                  <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <div className="rounded-2xl border border-white/10 bg-black/20 p-4 md:col-span-2">
                     <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-400">
                       Make This First
                     </p>
@@ -1365,13 +1366,38 @@ export default function Home() {
 
                   <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
                     <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-400">
-                      Why It’s Useful
+                      What To Film
                     </p>
                     <p className="text-sm leading-relaxed text-zinc-100">
                       {formatGeneratedText(
-                        results.strategy?.why_it_works ||
-                          results.strategy?.content_goal,
-                        'This campaign turns attention into a clear next step so interested people know how to reply.'
+                        results.production_plan?.what_to_film?.[0] ||
+                          results.production_plan?.shot_order?.[0],
+                        'Film the clearest visual that shows the problem, process, or result behind this campaign.'
+                      )}
+                    </p>
+                  </div>
+
+                  <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                    <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-400">
+                      What To Say
+                    </p>
+                    <p className="text-sm leading-relaxed text-zinc-100">
+                      {formatGeneratedText(
+                        results.production_plan?.spoken_lines?.[0] ||
+                          results.production_plan?.on_screen_text?.[0],
+                        'Say the first hook or on-screen line from the production plan so the post starts with a clear reason to keep watching.'
+                      )}
+                    </p>
+                  </div>
+
+                  <div className="rounded-2xl border border-white/10 bg-black/20 p-4 md:col-span-2">
+                    <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-400">
+                      Caption
+                    </p>
+                    <p className="text-sm leading-relaxed text-zinc-100">
+                      {formatGeneratedText(
+                        results.production_plan?.caption,
+                        'Use the caption from Make This Post, then end with the CTA below.'
                       )}
                     </p>
                   </div>
@@ -1406,23 +1432,52 @@ export default function Home() {
               </div>
             )}
 
-            <div className="mb-3 flex min-w-0 shrink-0 flex-wrap gap-2">
-              {activeTabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`min-w-0 rounded-2xl px-3 py-2 text-sm font-medium transition ${
-                    activeTab === tab.id
-                      ? 'bg-purple-600 text-white'
-                      : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
-                  }`}
-                >
-                  {tab.icon} {tab.label}
-                </button>
-              ))}
-            </div>
+            {results && generationMode === 'growth_system' && (
+              <div className="mb-3 mt-2 rounded-2xl border border-zinc-800 bg-zinc-900/60 p-3">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                      Want the full plan?
+                    </p>
+                    <p className="mt-1 text-sm text-zinc-400">
+                      Start with the simple post plan above. Open the full strategy, content, and Money Plan only if you want more detail.
+                    </p>
+                  </div>
 
-            <div className="min-h-0 lg:flex-1 lg:overflow-y-auto lg:pr-1">
+                  <button
+                    type="button"
+                    onClick={() => setShowDetailedPlan((current) => !current)}
+                    className="w-fit rounded-2xl border border-zinc-700 bg-zinc-800 px-4 py-2 text-sm font-semibold text-zinc-100 transition hover:bg-zinc-700"
+                  >
+                    {showDetailedPlan ? 'Hide full plan' : 'Open full plan'}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {(!results || generationMode === 'viral_hooks' || showDetailedPlan) && (
+              <div className="mb-3 flex min-w-0 shrink-0 flex-wrap gap-2">
+                {activeTabs.map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`min-w-0 rounded-2xl px-3 py-2 text-sm font-medium transition ${
+                      activeTab === tab.id
+                        ? 'bg-purple-600 text-white'
+                        : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+                    }`}
+                  >
+                    {tab.icon} {tab.label}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            <div className={`min-h-0 lg:flex-1 lg:overflow-y-auto lg:pr-1 ${
+              results && generationMode === 'growth_system' && !showDetailedPlan
+                ? 'hidden'
+                : ''
+            }`}>
                 {!results && !loading && (
                   <div className="flex min-h-[300px] flex-col items-center justify-center rounded-3xl border border-dashed border-zinc-700 bg-zinc-950/30 p-5 text-center sm:min-h-[420px] lg:h-full">
                     <div className="mb-3 text-4xl">
