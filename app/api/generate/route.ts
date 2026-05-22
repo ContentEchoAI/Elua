@@ -1233,6 +1233,9 @@ const QUALITY_RULES = String.raw`Quality rules:
 - Do not say the content should build trust; show the trust-building proof process, checklist, question, or next step.
 - Use concrete nouns and verbs. Prefer "comment START for the Client Story Prep Sheet" or "comment START for the Fitness Goal Conversation Starter" over "engage with this post."
 - Make every CTA copy-paste-ready and specific, such as DM a keyword, comment a keyword, request a checklist, book a call, ask for a quote, request an assessment, join a list, or reply with a question.
+- CTA keywords should usually be ONE short, natural word. Prefer simple keywords like QUOTE, CLEAN, STYLE, REFILL, LASHES, MENU, BOOK, READY, FIT, START, CHECK, or GUIDE.
+- Avoid long or awkward CTA keywords like CLEANING CHECKLIST, PERSONALIZED STYLE HELP, FULL SET GUIDE, SERVICE NEEDS CHECKLIST, ROOM PRIORITY CHECKLIST, or anything longer than two short words.
+- If the campaign uses a checklist, guide, or resource, keep the public CTA short. Example: use "Comment QUOTE and I’ll send the checklist" instead of "Comment CLEANING CHECKLIST."
 - Make the lead magnet match the CTA.
 - Make the Money Plan match the same campaign angle.
 - If the user's idea is vague, choose a realistic business scenario, but do not invent proof.`;
@@ -1247,6 +1250,8 @@ const LOCAL_SERVICE_PLAYBOOK = String.raw`- For local service businesses such as
 - For cleaning businesses, you may explain general cleaning types like basic clean, deep clean, refresh clean, or one-time clean when the user's prompt asks about cleaning type, but do not present them as the business's named packages, prices, policies, schedules, or recurring plans unless provided. Avoid weekly, biweekly, monthly, free quote, sparkling, spotless, right-fit, personalized quote, reserved spot, openings, or availability language unless provided. If service details are missing, use neutral wording like cleaning quote request, home cleaning inquiry, room priority question, cleaning type question, or estimate request.
 - Local service content should default to safer wording: clear quote, service details, home size, project details, rooms or areas, current problem, estimate request, what is included, what to expect, customer concerns, and service-area questions. Avoid "free quote", "right-fit", "personalized", "schedule fit", "booking options", "available times", or "openings" unless the user provided those details.
 - Local service CTAs should usually ask for the details needed to prepare a quote: home size, project type, rooms or areas, service need, location/service area, photos if relevant, budget range if relevant, or quote request. Do not ask for preferred days, availability, or scheduling details unless the user provided that booking flow.
+- For local service businesses, prefer short CTA keywords such as QUOTE, CLEAN, ESTIMATE, ROOMS, PROJECT, YARD, REPAIR, DETAILS, or HELP. Avoid long resource-style keywords like CLEANING CHECKLIST, ROOM PRIORITY CHECKLIST, SERVICE NEEDS CHECKLIST, or HOME CLEANING GUIDE.
+- For cleaning businesses, default to "DM QUOTE", "Comment QUOTE", "DM CLEAN", or "Reply CLEAN" unless the user provides a different keyword. If a checklist is useful, phrase it as "Comment QUOTE and I’ll send the checklist" rather than making the keyword itself long.
 - Local service Action Plans should avoid fake guarantees, fake availability, unsupported trust claims, invented packages, and scheduling assumptions. They should tell the owner what to post, what quote details to ask for, what estimate information to send, and how to follow up with one practical question before inviting a booking.
 - Final local service check before returning JSON: if the output says "free quote", "personalized quote", "tailored quote", "right-fit", "sparkling", "spotless", "openings", "available", "reserve a spot", "preferred date", "schedule your cleaning", "weekly", "biweekly", "monthly", "package", "regular cleaning package", or "basic cleaning package" without the user providing those details, rewrite it into neutral quote-request language. Use "cleaning quote request", "home cleaning inquiry", "estimate request", "home size", "rooms or areas", "what needs the most attention", "one-time or recurring service", and "I can prepare a quote from those details."`;
 
@@ -2088,6 +2093,7 @@ Make This Post / Production Plan rules:
 - production_plan.spoken_lines must sound like a real business owner speaking naturally. Avoid stiff AI phrases.
 - production_plan.caption must be copy-ready.
 - production_plan.cta must be copy-ready and match the Money Plan.
+- production_plan.cta should use a short, natural keyword when possible. Prefer "DM QUOTE", "Comment QUOTE", "DM STYLE", "Comment STYLE", "DM REFILL", or similar short CTAs over long resource names.
 - production_plan.dm_reply must be a copy-ready first reply to someone who comments, DMs, or asks for the resource.
 - production_plan.follow_up_message must be a copy-ready next message after the first reply.
 - For Reels, TikToks, and Shorts, include pacing, timing, transition moment, and audio direction.
