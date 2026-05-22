@@ -1151,7 +1151,7 @@ export default function Home() {
                 <div className="grid min-w-0 grid-cols-3 gap-2">
                   {[
                     { id: 'growth', label: 'Build Trust' },
-                    { id: 'viral', label: 'Get Attention' },
+                    { id: 'viral', label: 'Get DMs' },
                     { id: 'sales', label: 'Get Bookings' },
                   ].map((g) => (
                     <button
@@ -1169,26 +1169,32 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="mb-4">
-                <p className="mb-2 text-xs font-medium uppercase tracking-wide text-zinc-500">
-                  Voice
-                </p>
-                <div className="flex max-w-full gap-2 overflow-x-auto pb-1">
-                  {voices.map((v) => (
-                    <button
-                      key={v.id}
-                      onClick={() => setSelectedVoice(v.id)}
-                      className={`shrink-0 rounded-2xl px-3 py-2 text-xs transition sm:text-sm ${
-                        selectedVoice === v.id
-                          ? 'bg-purple-600 text-white'
-                          : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
-                      }`}
-                    >
-                      {v.label}
-                    </button>
-                  ))}
+              <details className="mb-4 rounded-2xl border border-zinc-800 bg-zinc-950/30 p-3">
+                <summary className="cursor-pointer text-xs font-medium uppercase tracking-wide text-zinc-500">
+                  More options
+                </summary>
+
+                <div className="mt-3">
+                  <p className="mb-2 text-xs font-medium uppercase tracking-wide text-zinc-500">
+                    Tone
+                  </p>
+                  <div className="flex max-w-full gap-2 overflow-x-auto pb-1">
+                    {voices.map((v) => (
+                      <button
+                        key={v.id}
+                        onClick={() => setSelectedVoice(v.id)}
+                        className={`shrink-0 rounded-2xl px-3 py-2 text-xs transition sm:text-sm ${
+                          selectedVoice === v.id
+                            ? 'bg-purple-600 text-white'
+                            : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+                        }`}
+                      >
+                        {v.label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              </details>
 
               {generationMode === 'growth_system' && (
                 <div className="mb-4">
