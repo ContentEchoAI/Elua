@@ -1889,6 +1889,14 @@ MASTER MONEY PLAN WIZARD:
 - Create a lead magnet or first step that naturally leads to the paid offer.
 - Give simple follow-up actions that help turn attention into revenue.
 
+COMMAND CENTER STYLE:
+- The top result must feel like a simple weekly action plan, not a marketing strategy report.
+- Write the campaign in plain owner language: what to post, what to film, what to say, what CTA to use, and how to reply.
+- Avoid strategy-heavy phrases in the top result such as "capture leads", "lead capture", "conversion strategy", "buyer journey", "nurture", "campaign funnel", "positioning", or "monetization path."
+- Prefer direct sentences like: "Post a standard vs deep clean guide", "Film one messy room and one deep-clean example", "Use CTA: DM QUOTE", and "Reply by asking home size and which rooms need attention."
+- The command center should be useful even if the user never opens the full plan.
+- Keep production_plan.concept, production_plan.caption, production_plan.cta, production_plan.dm_reply, and production_plan.follow_up_message short, practical, and copy-ready.
+
 USER INPUT:
 Content idea: ${content}
 Business profile:
@@ -2084,14 +2092,14 @@ Structured content rules:
 Make This Post / Production Plan rules:
 - production_plan must help the user actually create the strongest selected content asset.
 - production_plan.format must name the selected asset it is based on, such as "Instagram Reel", "TikTok Script", "Instagram Carousel", "YouTube Shorts Script", "Facebook Post", or "LinkedIn Post".
-- production_plan.concept must summarize the post idea in one specific sentence.
+- production_plan.concept must summarize the post idea in one specific action sentence. Avoid "campaign that helps..." phrasing when a simpler "Post a..." or "Make a..." sentence would work.
 - production_plan.what_to_film must include practical filming directions or asset directions, not vague strategy.
 - production_plan.shot_order must tell the user what to capture or show in order.
 - production_plan.transition_idea must explain the change, reveal, cut, swipe, or shift between parts of the post.
 - production_plan.audio_direction must give safe audio guidance without inventing exact trending songs. Use directions like "use calm salon-style audio", "use a trending audio with a clear beat drop for the reveal", or "use low-volume voiceover with captions".
 - production_plan.on_screen_text must include copy-ready text overlays, slide text, or post text.
 - production_plan.spoken_lines must sound like a real business owner speaking naturally. Avoid stiff AI phrases.
-- production_plan.caption must be copy-ready.
+- production_plan.caption must be copy-ready and should sound like a real owner wrote it, not a marketing strategist.
 - production_plan.cta must be copy-ready and match the Money Plan.
 - production_plan.cta should use a short, natural keyword when possible. Prefer "DM QUOTE", "Comment QUOTE", "DM STYLE", "Comment STYLE", "DM REFILL", or similar short CTAs over long resource names.
 - production_plan.dm_reply must be a copy-ready first reply to someone who comments, DMs, or asks for the resource.
