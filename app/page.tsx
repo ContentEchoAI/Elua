@@ -323,14 +323,8 @@ export default function Home() {
               typeof parsedProfile.services === 'string'
                 ? parsedProfile.services
                 : '',
-            idealClient:
-              typeof parsedProfile.idealClient === 'string'
-                ? parsedProfile.idealClient
-                : '',
-            mainCta:
-              typeof parsedProfile.mainCta === 'string'
-                ? parsedProfile.mainCta
-                : '',
+            idealClient: '',
+            mainCta: '',
             notes:
               typeof parsedProfile.notes === 'string'
                 ? parsedProfile.notes
@@ -1008,7 +1002,7 @@ export default function Home() {
               <div className="mb-4">
                 <div className="mb-2 flex items-center justify-between gap-3">
                   <p className="text-sm font-medium text-zinc-400">
-                    What business goal or content idea do you want help with?
+                    What do you want help posting this week?
                   </p>
 
                   <button
@@ -1043,8 +1037,8 @@ export default function Home() {
                     </p>
                     <p className="mt-1 text-sm text-zinc-300">
                       {hasBusinessProfile
-                        ? 'Using your saved business context for better outputs.'
-                        : 'Optional: set your business once so Hummingbird can write with more context.'}
+                        ? 'Using your saved business details.'
+                        : 'Optional: add your business details once for better weekly plans.'}
                     </p>
                   </div>
 
@@ -1083,44 +1077,17 @@ export default function Home() {
                       />
                     </div>
 
-                    <div>
-                      <label className="mb-1 block text-xs font-medium text-zinc-400">
-                        Ideal client
-                      </label>
-                      <input
-                        value={businessProfile.idealClient}
-                        onChange={(e) =>
-                          updateBusinessProfile('idealClient', e.target.value)
-                        }
-                        placeholder="Example: new clients unsure what to book"
-                        className="w-full rounded-xl border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-100 outline-none placeholder:text-zinc-500 focus:border-purple-500"
-                      />
-                    </div>
 
                     <div>
                       <label className="mb-1 block text-xs font-medium text-zinc-400">
-                        Main CTA
-                      </label>
-                      <input
-                        value={businessProfile.mainCta}
-                        onChange={(e) =>
-                          updateBusinessProfile('mainCta', e.target.value)
-                        }
-                        placeholder="Example: DM REFILL with your last appointment date"
-                        className="w-full rounded-xl border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-100 outline-none placeholder:text-zinc-500 focus:border-purple-500"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="mb-1 block text-xs font-medium text-zinc-400">
-                        Notes / style
+                        How should the content sound?
                       </label>
                       <textarea
                         value={businessProfile.notes}
                         onChange={(e) =>
                           updateBusinessProfile('notes', e.target.value)
                         }
-                        placeholder="Example: calm, professional, no pushy urgency, local clients only"
+                        placeholder="Example: friendly, helpful, practical, not pushy"
                         className="h-20 w-full resize-none rounded-xl border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-100 outline-none placeholder:text-zinc-500 focus:border-purple-500"
                       />
                     </div>
@@ -1179,13 +1146,13 @@ export default function Home() {
 
               <div className="mb-4">
                 <p className="mb-2 text-xs font-medium uppercase tracking-wide text-zinc-500">
-                  Goal
+                  This week’s focus
                 </p>
                 <div className="grid min-w-0 grid-cols-3 gap-2">
                   {[
-                    { id: 'growth', label: 'Grow' },
-                    { id: 'viral', label: 'Viral' },
-                    { id: 'sales', label: 'Sales' },
+                    { id: 'growth', label: 'Build Trust' },
+                    { id: 'viral', label: 'Get Attention' },
+                    { id: 'sales', label: 'Get Bookings' },
                   ].map((g) => (
                     <button
                       key={g.id}
@@ -1227,7 +1194,7 @@ export default function Home() {
                 <div className="mb-4">
                   <div className="mb-2">
                     <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
-                      Select Platforms
+                      Platforms
                     </p>
                   </div>
 
