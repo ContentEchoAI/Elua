@@ -1929,7 +1929,7 @@ Do not mention "I avoided repeating your last campaign" in the user-facing outpu
 
 Fill strategy fields this way:
 - target_audience: Describe the buyer situation, urgency, awareness level, decision moment, or service need. Do not use broad demographics.
-- core_angle: Write the actual campaign strategy in one clear sentence. Include the campaign route, audience problem, lead capture step, and paid next step when possible.
+- core_angle: Write a short, action-first headline for This Week’s Campaign. Keep it under 18 words when possible. Start with a direct action like "Post", "Make", "Film", "Share", or "Create" when it fits. Do NOT cram the audience problem, lead capture step, and paid next step into this field; those belong in content_goal, why_it_works, and the Money Plan. Good: "Post a standard vs deep clean guide." Bad: "Use a service type comparison campaign that helps homeowners identify their cleaning needs and request a quote."
 - content_goal: Explain the path from attention to lead or sale. Mention what the selected content should do first, what action the audience should take next, and how that connects to the offer.
 - hook_strategies: Give 3 distinct hook angles. Each should be a usable angle tied to a buyer problem, objection, mistake, decision point, or desired outcome.
 - emotional_triggers: Give 3 practical buyer motivations or concerns, such as uncertainty, convenience, confidence, readiness, avoiding wasted effort, saving time, comparing options, or knowing the right next step.
