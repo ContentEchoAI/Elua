@@ -374,6 +374,142 @@ function findGeneratedOutput(
 }
 
 const CLEAN_GENERATED_TEXT_REPLACEMENTS: Array<[RegExp, string]> = [
+  // Wellness / massage / chiropractor / physical therapy safety cleanup
+  [/help picking your massage/gi, 'answer your booking questions'],
+  [/help you pick your massage/gi, 'answer your booking questions'],
+  [/help choosing your massage/gi, 'answer your booking questions'],
+  [/help you choose your massage/gi, 'answer your booking questions'],
+  [/pick the right massage/gi, 'compare what to ask about'],
+  [/choose the right massage/gi, 'compare what to ask about'],
+  [/right massage for your needs/gi, 'service questions before booking'],
+  [/right massage/gi, 'service question'],
+  [/right session/gi, 'booking question'],
+  [/right treatment/gi, 'consultation question'],
+  [/best massage/gi, 'service option to ask about'],
+  [/best treatment/gi, 'consultation question'],
+  [/recommend a massage/gi, 'answer booking questions'],
+  [/recommend treatment/gi, 'answer consultation questions'],
+  [/recommend the fitting massage type/gi, 'answer booking questions'],
+  [/book your first massage/gi, 'ask for booking details'],
+  [/book your first session/gi, 'ask for booking details'],
+  [/book your session/gi, 'ask for booking details'],
+  [/book a session this week/gi, 'ask for booking details'],
+  [/ready to relax/gi, 'have questions before booking'],
+  [/get relief/gi, 'ask what to expect'],
+  [/stress relief/gi, 'service awareness'],
+  [/deep knot relief/gi, 'firmer pressure questions'],
+  [/muscle recovery/gi, 'active lifestyle questions'],
+  [/pain relief/gi, 'comfort questions'],
+  [/guaranteed relief/gi, 'general appointment questions'],
+  [/custom massage booking/gi, 'massage booking question'],
+  [/custom massage session/gi, 'massage booking question'],
+  [/massage service comparison call/gi, 'service options question'],
+  [/first-time massage intro session/gi, 'first visit questions'],
+  [/first-time massage session/gi, 'first visit questions'],
+  [/massage package/gi, 'booking details'],
+  [/prepaid bundle/gi, 'booking details'],
+  [/3 or 5 sessions/gi, 'booking details'],
+  [/30, 60, or 90 minutes/gi, 'appointment details'],
+  [/30, 60, 90 minutes/gi, 'appointment details'],
+  [/session lengths/gi, 'appointment details'],
+  [/help booking/gi, 'booking questions'],
+  [/help choosing your massage/gi, 'answer your booking questions'],
+  [/help choose your massage/gi, 'answer your booking questions'],
+  [/choosing your massage/gi, 'asking booking questions'],
+  [/choose your massage/gi, 'ask booking questions'],
+  [/get the right experience/gi, 'know what to ask before booking'],
+  [/right experience/gi, 'clear booking questions'],
+  [/suitable massage service/gi, 'service option to ask about'],
+  [/massage service/gi, 'service option'],
+  [/help you find a session time/gi, 'send booking details'],
+  [/find a session time/gi, 'send booking details'],
+  [/fits your schedule/gi, 'works with your booking needs'],
+  [/First visit questions — a gentle introduction massage/gi, 'First visit questions — a simple booking question path'],
+  [/gentle introduction massage/gi, 'first visit question path'],
+  [/Custom Massage Consultation & Booking/gi, 'Service Questions & Booking Details'],
+  [/Custom Massage Consultation/gi, 'Service Questions'],
+  [/custom massage consultation/gi, 'service questions'],
+  [/discounted bundle of 3 sessions/gi, 'booking details for interested clients'],
+  [/discounted bundle/gi, 'booking details'],
+  [/bundle of 3 sessions/gi, 'booking details'],
+  [/tailored to client preferences/gi, 'based on client questions'],
+  [/specific tension areas/gi, 'client questions'],
+  [/what type fits your needs/gi, 'which service you are curious about'],
+  [/what type are you interested in/gi, 'which service are you curious about'],
+  [/what massage type are you considering/gi, 'which service are you curious about'],
+  [/Don['’]?t book a massage without/gi, 'Before booking, consider'],
+  [/don't book a massage without/gi, 'Before booking, consider'],
+  [/find your fit/gi, 'know what to ask about'],
+  [/get the right option experience/gi, 'know what to ask before booking'],
+  [/get the right experience/gi, 'know what to ask before booking'],
+  [/right option experience/gi, 'booking question'],
+  [/free checklist/gi, 'question checklist'],
+  [/Massage Booking Assistance/gi, 'Booking Questions'],
+  [/personalized help to choose between/gi, 'booking questions about'],
+  [/help to choose between/gi, 'questions about'],
+  [/choose between relaxation, deep tissue, sports, or prenatal massage/gi, 'ask about relaxation, deep tissue, sports, or prenatal massage'],
+  [/Follow-up Massage Session/gi, 'Follow-up Booking Questions'],
+  [/follow-up massage session/gi, 'follow-up booking questions'],
+  [/try a massage type/gi, 'ask follow-up booking questions'],
+  [/help you compare what to ask about and feel comfortable/gi, 'help you know what to ask before booking'],
+  [/to guide you/gi, 'to help you ask better booking questions'],
+  [/leading naturally into service discussions/gi, 'leading into booking questions'],
+  [/help picking the service option/gi, 'answer booking questions'],
+  [/help picking a service option/gi, 'answer booking questions'],
+  [/help choosing the service option/gi, 'answer booking questions'],
+  [/help choosing a service option/gi, 'answer booking questions'],
+  [/help you pick the service option/gi, 'answer booking questions'],
+  [/help you choose the service option/gi, 'answer booking questions'],
+  [/help you pick a time/gi, 'send booking details'],
+  [/pick a time/gi, 'ask for booking details'],
+  [/personalized style suggestions/gi, 'booking questions'],
+  [/style suggestions/gi, 'service questions'],
+  [/what massage fits you/gi, 'what questions to ask before booking'],
+  [/which massage fits you/gi, 'which service you are curious about'],
+  [/massage fits you/gi, 'service questions'],
+  [/massage that fits you/gi, 'service questions'],
+  [/ask about pricing/gi, 'ask for booking details'],
+  [/preferred date/gi, 'booking details'],
+  [/what day works helpful for you/gi, 'would you like booking details?'],
+  [/what day works for you/gi, 'would you like booking details?'],
+  [/available massage types/gi, 'service options'],
+  [/available massage/gi, 'service option'],
+  [/massage type are you leaning toward/gi, 'which service are you curious about'],
+  [/what type are you leaning toward/gi, 'which service are you curious about'],
+  [/to book your first massage/gi, 'to ask booking questions'],
+  [/book your first appointment/gi, 'ask for booking details'],
+  [/to book your appointment/gi, 'to ask for booking details'],
+  [/get booked/gi, 'ask for booking details'],
+  [/leading naturally into booking/gi, 'leading into booking questions'],
+  [/direct path to booking/gi, 'clear booking question'],
+  [/clear path to booking/gi, 'clear booking question'],
+  [/available dates/gi, 'booking details'],
+  [/available times/gi, 'booking details'],
+  [/availability/gi, 'booking details'],
+  [/I can check openings/gi, 'I can send booking details'],
+  [/check openings/gi, 'send booking details'],
+  [/openings/gi, 'booking details'],
+  [/preferred date/gi, 'booking question'],
+  [/share their preferred date/gi, 'ask for booking details'],
+  [/what day works/gi, 'would you like booking details'],
+  [/times for first-time clients/gi, 'booking details for first-time clients'],
+  [/available massage types and times/gi, 'service options and booking details'],
+  [/book their first session/gi, 'ask booking questions'],
+  [/book their first massage/gi, 'ask booking questions'],
+  [/book their first appointment/gi, 'ask booking questions'],
+  [/book when ready/gi, 'ask for booking details when ready'],
+  [/invite them to book/gi, 'invite them to ask for booking details'],
+  [/guide them toward booking/gi, 'answer booking questions'],
+  [/guide the booking conversation/gi, 'answer booking questions'],
+  [/help clients pick/gi, 'answer client questions about'],
+  [/help clients choose/gi, 'answer client questions about'],
+  [/help them pick/gi, 'answer questions about'],
+  [/help them choose/gi, 'answer questions about'],
+  [/personalized chat to help clients pick/gi, 'question-based chat about'],
+  [/personalized chat/gi, 'question-based chat'],
+  [/Service Option Conversation/gi, 'Service Options FAQ'],
+  [/Booking Inquiry/gi, 'Booking Details Request'],
+  [/Booking Details Help/gi, 'Booking Details Request'],
   [/I['’]m not posting private client details,? but\s*/gi, ''],
   [/I['’]m not sharing private client details,? but\s*/gi, ''],
   [/Instead of sharing private details,?\s*/gi, ''],
@@ -1255,6 +1391,27 @@ const LOCAL_SERVICE_PLAYBOOK = String.raw`- For local service businesses such as
 - Local service Action Plans should avoid fake guarantees, fake availability, unsupported trust claims, invented packages, and scheduling assumptions. They should tell the owner what to post, what quote details to ask for, what estimate information to send, and how to follow up with one practical question before inviting a booking.
 - Final local service check before returning JSON: if the output says "free quote", "personalized quote", "customized quote", "tailored quote", "right-fit", "sparkling", "spotless", "openings", "available", "reserve a spot", "preferred date", "schedule your cleaning", "weekly", "biweekly", "monthly", "package", "regular cleaning package", or "basic cleaning package" without the user providing those details, rewrite it into neutral quote-request language. Replace "personalized quote", "customized quote", and "tailored quote" with "cleaning quote", "quote", "quote request", or "estimate request." Use "cleaning quote request", "home cleaning inquiry", "estimate request", "home size", "rooms or areas", "what needs the most attention", "one-time or recurring service", and "I can prepare a quote from those details."`;
 
+
+const WELLNESS_SERVICE_PLAYBOOK = String.raw`- For wellness service providers such as massage therapists, chiropractors, physical therapists, stretch therapists, mobility clinics, recovery studios, and wellness studios: focus on education, appointment readiness, service awareness, what to expect, client questions, comfort preferences, consultation inquiries, booking questions, and general wellness content.
+- Wellness content must avoid medical claims, diagnosis, treatment promises, guaranteed outcomes, and overconfident recommendations. Do not say fix pain, cure, heal, treat injury, diagnose, guaranteed relief, pain-free, recovery, safe for pregnancy, medically proven, solve back pain, correct posture, realign your spine, remove toxins, eliminate pain, or you need this treatment.
+- Do not imply a service will produce a specific health outcome. Replace outcome-heavy wording like "relief", "recovery", "fix", "cure", "heal", "treat", "pain relief", "muscle recovery", "deep knot relief", or "stress relief" with safer wording like "general comfort", "service awareness", "appointment questions", "what to ask about", "comfort preferences", "tension area question", "movement question", "first-visit question", or "booking inquiry."
+- Do not recommend a specific treatment or appointment type as if diagnosing the client. Prefer "help you decide what to ask about", "help you compare options", "answer booking questions", "share what to expect", "ask which appointment type may be appropriate", or "invite a consultation question."
+- Do not invent openings, availability, same-week scheduling, appointment times, treatment plans, session lengths, packages, prenatal safety claims, medical credentials, insurance details, or clinical policies unless the user provided them.
+- Massage therapist content should be careful around tension, stress, deep tissue, sports massage, and prenatal massage. Avoid claiming relief, recovery, safe pregnancy care, or targeted medical outcomes. Prefer "which massage should you ask about?", "what to expect", "comfort level", "pressure preference", "main tension area", "appointment questions", and "booking details."
+- Chiropractor content should avoid claims about fixing pain, curing headaches, realigning the spine, correcting posture, treating injury, or guaranteed results. Prefer "what to expect before a first visit", "questions to ask", "consultation readiness", "general posture awareness", "new patient questions", and "appointment inquiry."
+- Physical therapist content should avoid diagnosis, guaranteed recovery, treatment promises, or telling people what care they need. Prefer "evaluation questions", "movement concerns to ask about", "what to expect at an evaluation", "consultation inquiry", "general mobility education", and "questions to bring to a licensed provider."
+- Wellness CTAs should be low-pressure and question-based. Prefer short keywords such as VISIT, QUESTIONS, START, CONSULT, MASSAGE, STRETCH, MOVE, or INFO. For massage therapists, prefer "DM MASSAGE", "DM QUESTIONS", "DM VISIT", or "DM START" over "DM TENSION" if the wording might imply treatment or diagnosis.
+- Wellness DM replies should ask one safe intake-style question, such as "Is this your first visit?", "What are you hoping to understand before booking?", "Which service are you curious about?", "What questions do you have before scheduling?", or "Would you like booking details?" Avoid diagnosing or promising results.
+- Wellness Revenue Opportunities must not invent named packages, prepaid bundles, special intro sessions, session lengths, discounts, clinical offers, or treatment plans unless the user provided them. Avoid "First-Time Massage Intro Session", "Custom Massage Session", "Massage Package", "prepaid bundle", "3 or 5 sessions", "treatment plan", "special offer", and exact session lengths.
+- Wellness Revenue Opportunities should default to safer next steps such as First Visit Questions, Booking Details Request, Service Options FAQ, Appointment Prep Guide, Consultation Inquiry, First Visit Info Request, or Service Question Conversation.
+- Wellness Revenue Opportunities must describe conversation paths, not paid packages. Use names like "First Visit Questions", "Booking Details Request", "Service Options FAQ", "Appointment Prep Questions", or "Booking Question Thread"; do not create offer names that sound like real services, session products, bundles, or packages.
+- For wellness Revenue Opportunities, never create "massage session", "massage package", "intro session", "follow-up session", "booking assistance", "discount", "bundle", or "custom service" offers unless the user explicitly provided those services or offers. Keep them as question-based lead paths, not services for sale.
+- Wellness copy should avoid overconfident "right choice" language. Do not say "pick the right massage", "right massage for your needs", "right session", "recommend the right treatment", "best treatment", "best massage", "what you need", or "I’ll choose for you." Prefer "help you compare options", "answer booking questions", "share what to expect", "help you decide what to ask about", or "send booking details."
+- Wellness content should avoid generic relaxation-sales phrases like "ready to relax", "get relief", "feel better fast", "book your first massage now", "book your session this week", or "help booking." Prefer calm, practical wording like "first visit questions", "what to ask before booking", "which service are you curious about?", "would you like booking details?", or "what should I know before booking?"
+- Wellness Action Plans should not invent availability, available dates, available times, openings, preferred dates, appointment slots, or push booking urgency. They should tell the owner what to post, what question to ask, what information to send, and how to invite booking details without pressure.
+- Wellness follow-ups should not ask for a preferred date or say the business can check openings unless the user provided availability. Prefer "Would you like booking details?", "What questions do you have before scheduling?", or "Which service are you curious about?"
+- Final wellness check before returning JSON: if the output says "relief", "recovery", "fix", "cure", "heal", "treat", "pain-free", "guaranteed", "safe for pregnancy", "recommend a massage", "recommend treatment", "deep knot relief", "muscle recovery", "stress relief", "right massage", "right session", "pick the right", "best massage", "custom massage", "massage package", "prepaid bundle", "first-time massage intro session", "book your first massage", "ready to relax", "help booking", "I have openings", "openings this week", or "book a session this week" without the user providing those facts, rewrite into safer educational and booking-question language.`;
+
 const BEAUTY_SERVICE_PLAYBOOK = String.raw`- For beauty service providers such as lash artists, nail artists, hair stylists, barbers, brow artists, estheticians, makeup artists, skincare providers, and med-spa style service businesses: focus on bookings, consultations, refills, touch-ups, maintenance timing, aftercare, style selection, service menu education, seasonal/event services, repeat appointments, deposits, client trust, and repeat weekly content.
 - Do not make every beauty output a "mistakes" post or refill checklist. Match the user's exact weekly goal and rotate angles so the business can come back each week without getting repetitive output.
 - If a beauty user gives a broad booking goal such as "get more bookings", "get more appointments", "get more clients", or "get more refills", do not default only to mistakes/refill timing. Choose a fresh angle based on the service and prompt: style guide, appointment-readiness, first-time client education, service comparison, prep checklist, aftercare routine, seasonal/event booking, product add-on, review/referral request, client FAQ, or maintenance reminder. Only use availability/openings as the campaign angle if the user explicitly provides availability, open dates, a booking link, or says they want to promote openings.
@@ -1341,6 +1498,7 @@ ${LOCAL_SERVICE_PLAYBOOK}
 - For coaches and consultants: focus on audits, starter sessions, discovery calls, assessments, clarity offers, and trust-building content.
 - For clothing brands and ecommerce product brands: focus on product details, fit, fabric, sizing, colorways, styling ideas, drop date, waitlist signups, drop updates, product questions, customer use case, and purchase questions.
 - For vague clothing/ecommerce prompts, avoid early access, preorder, bundles, discounts, VIP access, styling consultations, purchase access before launch, previous-drop claims, quality claims, packing/shipping claims, and scarcity language unless the user provided those details.
+${WELLNESS_SERVICE_PLAYBOOK}
 ${BEAUTY_SERVICE_PLAYBOOK}
 - Do not default to vague scarcity language like "exclusive", "limited edition", "before it is gone", "do not miss out", "secure your spot", "VIP membership", or "hype" unless the user clearly gave a real limited drop, inventory limit, or membership program.
 - Do not invent production details such as expert sewing, skilled team, every stitch, handcrafted details, premium fabric, perfect fit, sustainable materials, or limited quantities unless the user provided those facts.
