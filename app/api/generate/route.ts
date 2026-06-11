@@ -2016,6 +2016,34 @@ Rules:
 - best_hook must be one of the 10 hooks.
 `;
 
+    const makeMyPostPromptExtras =
+      mode === 'make_my_post'
+        ? `
+MAKE MY POST MODE:
+The user is not asking for a big strategy report. They want the easiest possible ready-to-use posting pack.
+
+Primary job:
+Turn the user's real business photo description, service photo idea, before/after, client result, product photo, workspace photo, or service example into one clear post they can publish.
+
+Important:
+- If the user describes uploaded photos, visible work, a before/after, a client result, a room, a car, lashes, nails, hair, a studio, food, landscaping, or any real asset, build the post around that asset.
+- Do not say you analyzed an image unless an image is actually provided. For now, use the user's written description.
+- Make the output practical enough that a tired solo business owner can copy it and post today.
+- Do not create a long to-do list. Prefer one best post, one caption, one CTA, one follow-up reply, and one simple next step.
+- production_plan.format should usually be Instagram Carousel, Instagram Reel, Facebook Post, or Photo Post depending on the selected platform.
+- production_plan.concept should start with an action phrase like "Turn this photo into..." or "Post this as..."
+- production_plan.what_to_film should become "what to use" when the user already has photos. Say which photo, angle, before/after, close-up, or detail should be used first.
+- production_plan.shot_order should describe the order of photos/slides/clips.
+- production_plan.on_screen_text should be short copy the user can place directly on the post or carousel.
+- production_plan.caption must be the main copy-ready caption.
+- production_plan.cta must be short and natural.
+- production_plan.dm_reply must be the first message to send if someone comments or DMs.
+- monetization.action_plan should be light and practical. It should not overwhelm the user.
+- The top command center should feel like "Here is the post to make today."
+- Avoid internal marketing language. Use owner language.
+`
+        : '';
+
     const growthSystemPrompt = `
 You are Hummingbird AI, an elite business-growth workspace for creators, small businesses, and service providers.
 
@@ -2067,6 +2095,7 @@ ${freshCampaignInstruction}
 Goal: ${goal}
 Brand voice: ${selectedVoice}
 Selected platforms: ${selectedOutputList}
+${makeMyPostPromptExtras}
 ${clothingEcommerceContextRules}
 ${cateringContextRules}
 ${lashContextRules}
@@ -2666,7 +2695,7 @@ Final silent check:
 
     let parsed = JSON.parse(messageContent) as GeneratedResponse;
 
-    if (mode === 'growth_system') {
+    if (mode !== 'viral_hooks') {
       const normalizedContent: Record<string, string> = {};
 
       finalContentOutputs.forEach((output) => {
@@ -2727,7 +2756,7 @@ Final silent check:
         content: currentBestContent,
       };
 
-      parsed.mode = 'growth_system';
+      parsed.mode = mode === 'make_my_post' ? 'make_my_post' : 'growth_system';
     }
 
     parsed = strengthenBeautyShortFormOpening(parsed, content);

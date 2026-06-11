@@ -87,7 +87,7 @@ type ViralHook = {
 };
 
 type Results = {
-  mode?: 'growth_system' | 'viral_hooks';
+  mode?: 'growth_system' | 'viral_hooks' | 'make_my_post';
   strategy?: Strategy;
   best_output?: BestOutput;
   content?: Record<string, string>;
@@ -105,7 +105,7 @@ type SavedGeneration = {
   id: string;
   title: string;
   input: string;
-  mode: 'growth_system' | 'viral_hooks';
+  mode: 'growth_system' | 'viral_hooks' | 'make_my_post';
   goal: string;
   voice: string;
   createdAt: string;
@@ -150,7 +150,7 @@ export default function Home() {
   const [showDetailedPlan, setShowDetailedPlan] = useState(false);
   const [goal, setGoal] = useState('growth');
   const [generationMode, setGenerationMode] = useState<
-    'growth_system' | 'viral_hooks'
+    'growth_system' | 'viral_hooks' | 'make_my_post'
   >('growth_system');
   const [copiedItem, setCopiedItem] = useState('');
   const [savedGenerations, setSavedGenerations] = useState<SavedGeneration[]>(
@@ -163,6 +163,10 @@ export default function Home() {
     emptyBusinessProfile
   );
   const [showBusinessProfile, setShowBusinessProfile] = useState(false);
+
+  const isMakeMyPostMode = generationMode === 'make_my_post';
+  const isContentPlanMode =
+    generationMode === 'growth_system' || isMakeMyPostMode;
 
   const MAX_FREE = 10;
   const MAX_SAVED = 20;
@@ -296,10 +300,21 @@ export default function Home() {
     'Polishing hooks for attention...',
   ];
 
+  const makeMyPostLoadingMessages = [
+    'Reading your post details...',
+    'Finding the easiest post angle...',
+    'Building your posting pack...',
+    'Writing the caption and CTA...',
+    'Creating the follow-up reply...',
+    'Polishing the post so it is ready to use...',
+  ];
+
   const activeLoadingMessages =
     generationMode === 'viral_hooks'
       ? hookLoadingMessages
-      : growthLoadingMessages;
+      : isMakeMyPostMode
+        ? makeMyPostLoadingMessages
+        : growthLoadingMessages;
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -466,7 +481,7 @@ export default function Home() {
       return;
     }
 
-    if (generationMode === 'growth_system' && selectedOutputs.length === 0) {
+    if (isContentPlanMode && selectedOutputs.length === 0) {
       alert('Please select at least one platform.');
       return;
     }
@@ -483,6 +498,8 @@ export default function Home() {
 
     if (generationMode === 'viral_hooks') {
       setActiveTab('hooks');
+    } else if (generationMode === 'make_my_post') {
+      setActiveTab('content');
     } else {
       setActiveTab('strategy');
     }
@@ -621,6 +638,8 @@ export default function Home() {
 
     if (saved.mode === 'viral_hooks') {
       setActiveTab('hooks');
+    } else if (saved.mode === 'make_my_post') {
+      setActiveTab('content');
     } else {
       setActiveTab('strategy');
     }
@@ -783,7 +802,9 @@ export default function Home() {
                   <p className="mt-1 text-xs text-zinc-500">
                     {saved.mode === 'viral_hooks'
                       ? '🔥 Hook Set'
-                      : '📅 Weekly Campaign'}{' '}
+                      : saved.mode === 'make_my_post'
+                        ? '📸 Posting Pack'
+                        : '📅 Weekly Campaign'}{' '}
                     • {saved.goal} • {formatSavedDate(saved.createdAt)}
                   </p>
                 </div>
@@ -928,8 +949,8 @@ export default function Home() {
             </h2>
 
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-zinc-400 sm:mt-5 sm:text-lg">
-              Hummingbird turns one business goal into ready-to-post content,
-              hooks, CTAs, and a simple Money Plan for getting leads, bookings, or sales.
+              Hummingbird turns one business goal or real business photo idea into
+              ready-to-post content, CTAs, follow-up replies, and a simple Money Plan.
             </p>
           </div>
 
@@ -947,7 +968,7 @@ export default function Home() {
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-zinc-400">
                 See the kind of strategy, content, CTA, and follow-up path Hummingbird
-                builds from one business goal.
+                builds from one business goal or post idea.
               </p>
             </div>
 
@@ -966,7 +987,7 @@ export default function Home() {
             {[
               {
                 title: 'Post to publish',
-                body: 'A Reel, carousel, TikTok, LinkedIn post, or short-form script built for your goal.',
+                body: 'A Reel, carousel, TikTok, Facebook post, or photo-based posting pack built for your goal.',
               },
               {
                 title: 'CTA to use',
@@ -1019,7 +1040,9 @@ export default function Home() {
                   placeholder={
                     generationMode === 'viral_hooks'
                       ? 'Example: 10 hooks for a local realtor who wants more seller leads...'
-                      : 'Example: A fitness coach wants a month of posts that lead to coaching calls...'
+                      : isMakeMyPostMode
+                        ? 'Example: I have 3 photos from a house cleaning before/after. Turn them into an Instagram post that gets quote requests...'
+                        : 'Example: A fitness coach wants a month of posts that lead to coaching calls...'
                   }
                   className="h-28 w-full max-w-full resize-none rounded-2xl border border-zinc-700 bg-zinc-800 p-4 text-sm text-zinc-100 outline-none placeholder:text-zinc-500 focus:border-purple-500 sm:h-48 sm:p-5 sm:text-base"
                 />
@@ -1109,7 +1132,7 @@ export default function Home() {
                 <p className="mb-2 text-xs font-medium uppercase tracking-wide text-zinc-500">
                   Mode
                 </p>
-                <div className="grid min-w-0 grid-cols-2 gap-2">
+                <div className="grid min-w-0 grid-cols-3 gap-2">
                   <button
                     onClick={() => {
                       setGenerationMode('growth_system');
@@ -1124,6 +1147,22 @@ export default function Home() {
                     }`}
                   >
                     🚀 Content + Money Plan
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setGenerationMode('make_my_post');
+                      setActiveTab('content');
+                      setGenerateError('');
+                      setResults(null);
+                    }}
+                    className={`rounded-2xl px-3 py-2.5 text-sm font-medium transition ${
+                      generationMode === 'make_my_post'
+                        ? 'bg-purple-600 text-white shadow-lg shadow-purple-900/30'
+                        : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+                    }`}
+                  >
+                    📸 Make My Post
                   </button>
 
                   <button
@@ -1196,7 +1235,7 @@ export default function Home() {
                 </div>
               </details>
 
-              {generationMode === 'growth_system' && (
+              {isContentPlanMode && (
                 <div className="mb-4">
                   <div className="mb-2">
                     <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
@@ -1281,12 +1320,16 @@ export default function Home() {
                 <h2 className="text-2xl font-semibold sm:text-3xl">
                   {generationMode === 'viral_hooks'
                     ? 'Your Hook Ideas'
-                    : 'Your Content + Money Plan Workspace'}
+                    : isMakeMyPostMode
+                      ? 'Your Posting Pack'
+                      : 'Your Content + Money Plan Workspace'}
                 </h2>
                 <p className="mt-1 text-sm leading-relaxed text-zinc-400 sm:text-lg">
                   {generationMode === 'viral_hooks'
                     ? 'Quick hook ideas for your business, offer, or content topic.'
-                    : 'Turn one business goal into ready-to-post content, hooks, CTAs, and a simple path to leads, bookings, or sales.'}
+                    : isMakeMyPostMode
+                      ? 'Turn a real business photo, service, or post idea into copy you can use today.'
+                      : 'Turn one business goal into ready-to-post content, hooks, CTAs, and a simple path to leads, bookings, or sales.'}
                 </p>
               </div>
 
@@ -1300,7 +1343,7 @@ export default function Home() {
               )}
             </div>
 
-            {results && generationMode === 'growth_system' && (
+            {results && isContentPlanMode && (
               <div className="mb-4 rounded-3xl border border-purple-500/30 bg-gradient-to-br from-purple-950/70 via-zinc-900 to-pink-950/40 p-5 shadow-2xl">
                 <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                   <div>
@@ -1405,7 +1448,7 @@ export default function Home() {
               </div>
             )}
 
-            {results && generationMode === 'growth_system' && (
+            {results && isContentPlanMode && (
               <div className="mb-3 mt-2 rounded-2xl border border-zinc-800 bg-zinc-900/60 p-3">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div>
@@ -1447,26 +1490,30 @@ export default function Home() {
             )}
 
             <div className={`min-h-0 lg:flex-1 lg:overflow-y-auto lg:pr-1 ${
-              results && generationMode === 'growth_system' && !showDetailedPlan
+              results && isContentPlanMode && !showDetailedPlan
                 ? 'hidden'
                 : ''
             }`}>
                 {!results && !loading && (
                   <div className="flex min-h-[300px] flex-col items-center justify-center rounded-3xl border border-dashed border-zinc-700 bg-zinc-950/30 p-5 text-center sm:min-h-[420px] lg:h-full">
                     <div className="mb-3 text-4xl">
-                      {generationMode === 'viral_hooks' ? '🔥' : '✦'}
+                      {generationMode === 'viral_hooks' ? '🔥' : isMakeMyPostMode ? '📸' : '✦'}
                     </div>
 
                     <p className="mb-2 text-xl font-semibold sm:text-2xl">
                       {generationMode === 'viral_hooks'
                         ? 'Turn your idea into scroll-stopping hooks'
-                        : 'Turn your business goal into a Content + Money Plan'}
+                        : isMakeMyPostMode
+                          ? 'Turn your photos or post idea into a ready-to-use posting pack'
+                          : 'Turn your business goal into a Content + Money Plan'}
                     </p>
 
                     <p className="max-w-md text-sm leading-relaxed text-zinc-400 sm:text-base">
                       {generationMode === 'viral_hooks'
                         ? 'Generate 10 attention-grabbing hooks with angles, explanations, and a strongest-hook pick.'
-                        : 'Get strategy, ready-to-post content, hooks, CTAs, and a simple path to leads, bookings, or sales.'}
+                        : isMakeMyPostMode
+                          ? 'Describe the photo or service you want to post. Hummingbird will give you the angle, post text, caption, CTA, and follow-up reply.'
+                          : 'Get strategy, ready-to-post content, hooks, CTAs, and a simple path to leads, bookings, or sales.'}
                     </p>
 
                     <div className="mt-5 grid w-full max-w-md grid-cols-1 gap-2 text-xs text-zinc-300 sm:grid-cols-3">
@@ -1507,7 +1554,7 @@ export default function Home() {
                     <div className="h-16 w-16 rounded-full border-4 border-zinc-800 sm:h-24 sm:w-24"></div>
                     <div className="absolute inset-0 h-16 w-16 animate-spin rounded-full border-4 border-transparent border-r-pink-500 border-t-purple-500 sm:h-24 sm:w-24"></div>
                     <div className="absolute inset-0 flex items-center justify-center text-2xl sm:text-3xl">
-                      {generationMode === 'viral_hooks' ? '🔥' : '✦'}
+                      {generationMode === 'viral_hooks' ? '🔥' : isMakeMyPostMode ? '📸' : '✦'}
                     </div>
                   </div>
 
@@ -1591,7 +1638,7 @@ export default function Home() {
 
               {results &&
                 activeTab === 'strategy' &&
-                generationMode === 'growth_system' && (
+                isContentPlanMode && (
                   <div className="space-y-4">
                     <div className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5">
                       <h3 className="mb-2 font-semibold text-purple-400">
@@ -1708,7 +1755,7 @@ export default function Home() {
 
               {results &&
                 activeTab === 'content' &&
-                generationMode === 'growth_system' && (
+                isContentPlanMode && (
                   <div className="space-y-4">
                     {results.production_plan && (
                       <div className="rounded-2xl border border-purple-500/30 bg-purple-500/10 p-5">
@@ -2113,7 +2160,7 @@ export default function Home() {
 
               {results &&
                 activeTab === 'monetization' &&
-                generationMode === 'growth_system' && (
+                isContentPlanMode && (
                   <div className="space-y-4">
                     <div className="rounded-2xl bg-gradient-to-r from-purple-600 to-pink-600 p-5">
                       <h3 className="mb-2 text-lg font-semibold">
