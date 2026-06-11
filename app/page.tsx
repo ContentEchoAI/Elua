@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ChangeEvent } from 'react';
 import {
   SignInButton,
   SignUpButton,
@@ -120,6 +120,12 @@ type BusinessProfile = {
   notes: string;
 };
 
+type UploadedImage = {
+  id: string;
+  name: string;
+  dataUrl: string;
+};
+
 const emptyBusinessProfile: BusinessProfile = {
   businessType: '',
   services: '',
@@ -163,6 +169,7 @@ export default function Home() {
     emptyBusinessProfile
   );
   const [showBusinessProfile, setShowBusinessProfile] = useState(false);
+  const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
 
   const isMakeMyPostMode = generationMode === 'make_my_post';
   const isContentPlanMode =
@@ -170,6 +177,7 @@ export default function Home() {
 
   const MAX_FREE = 10;
   const MAX_SAVED = 20;
+  const MAX_UPLOAD_IMAGES = 5;
 
   const formatGeneratedText = (value: unknown, fallback = ''): string => {
     if (typeof value === 'string') return value;
@@ -262,6 +270,69 @@ export default function Home() {
 
       return [...current, outputId];
     });
+  };
+
+  const handleImageUpload = async (event: ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files || []);
+
+    if (files.length === 0) return;
+
+    const availableSlots = MAX_UPLOAD_IMAGES - uploadedImages.length;
+
+    if (availableSlots <= 0) {
+      alert(`You can upload up to ${MAX_UPLOAD_IMAGES} photos.`);
+      event.target.value = '';
+      return;
+    }
+
+    const imageFiles = files
+      .filter((file) => file.type.startsWith('image/'))
+      .slice(0, availableSlots);
+
+    if (imageFiles.length === 0) {
+      alert('Please upload image files only.');
+      event.target.value = '';
+      return;
+    }
+
+    const oversizedFile = imageFiles.find((file) => file.size > 4 * 1024 * 1024);
+
+    if (oversizedFile) {
+      alert('Please keep each image under 4MB for now.');
+      event.target.value = '';
+      return;
+    }
+
+    const loadedImages = await Promise.all(
+      imageFiles.map(
+        (file) =>
+          new Promise<UploadedImage>((resolve, reject) => {
+            const reader = new FileReader();
+
+            reader.onload = () => {
+              resolve({
+                id: `${file.name}-${file.size}-${crypto.randomUUID()}`,
+                name: file.name,
+                dataUrl: String(reader.result),
+              });
+            };
+
+            reader.onerror = () => reject(reader.error);
+            reader.readAsDataURL(file);
+          })
+      )
+    );
+
+    setUploadedImages((current) =>
+      [...current, ...loadedImages].slice(0, MAX_UPLOAD_IMAGES)
+    );
+    event.target.value = '';
+  };
+
+  const removeUploadedImage = (imageId: string) => {
+    setUploadedImages((current) =>
+      current.filter((image) => image.id !== imageId)
+    );
   };
 
   const examples = [
@@ -476,8 +547,12 @@ export default function Home() {
       return;
     }
 
-    if (!content.trim()) {
-      alert('Please enter a content idea first.');
+    if (!content.trim() && !(isMakeMyPostMode && uploadedImages.length > 0)) {
+      alert(
+        isMakeMyPostMode
+          ? 'Please upload at least one photo or add a short post idea.'
+          : 'Please enter a content idea first.'
+      );
       return;
     }
 
@@ -517,13 +592,18 @@ export default function Home() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          content,
+          content:
+            content.trim() ||
+            (isMakeMyPostMode
+              ? 'Create the best ready-to-post social media post from the uploaded business photos.'
+              : content),
           selectedVoice,
           goal,
           generationMode,
           selectedOutputs,
           businessProfile,
           recentCampaigns,
+          uploadedImages: isMakeMyPostMode ? uploadedImages : [],
         }),
       });
 
@@ -1041,11 +1121,72 @@ export default function Home() {
                     generationMode === 'viral_hooks'
                       ? 'Example: 10 hooks for a local realtor who wants more seller leads...'
                       : isMakeMyPostMode
-                        ? 'Example: I have 3 photos from a house cleaning before/after. Turn them into an Instagram post that gets quote requests...'
+                        ? 'Optional: add context like service type, location, goal, or what you want more of...'
                         : 'Example: A fitness coach wants a month of posts that lead to coaching calls...'
                   }
-                  className="h-28 w-full max-w-full resize-none rounded-2xl border border-zinc-700 bg-zinc-800 p-4 text-sm text-zinc-100 outline-none placeholder:text-zinc-500 focus:border-purple-500 sm:h-48 sm:p-5 sm:text-base"
+                  className={`w-full max-w-full resize-none rounded-2xl border border-zinc-700 bg-zinc-800 p-4 text-sm text-zinc-100 outline-none placeholder:text-zinc-500 focus:border-purple-500 sm:p-5 sm:text-base ${
+                    isMakeMyPostMode ? 'h-24 sm:h-28' : 'h-28 sm:h-48'
+                  }`}
                 />
+
+                {isMakeMyPostMode && (
+                  <div className="mt-4 rounded-2xl border border-dashed border-purple-500/40 bg-purple-500/10 p-4">
+                    <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                      <div>
+                        <p className="text-sm font-semibold text-purple-200">
+                          Upload photos from your business
+                        </p>
+                        <p className="mt-1 text-xs leading-relaxed text-zinc-400 sm:text-sm">
+                          Add 1–5 photos. Hummingbird will pick the strongest angle, order the photos, write the caption, CTA, and follow-up reply.
+                        </p>
+                      </div>
+
+                      <label className="w-fit cursor-pointer rounded-xl bg-white px-3 py-2 text-xs font-semibold text-black transition hover:scale-[1.03]">
+                        Add Photos
+                        <input
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          onChange={handleImageUpload}
+                          className="hidden"
+                        />
+                      </label>
+                    </div>
+
+                    {uploadedImages.length > 0 ? (
+                      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                        {uploadedImages.map((image, index) => (
+                          <div
+                            key={image.id}
+                            className="overflow-hidden rounded-xl border border-purple-500/20 bg-zinc-950/60"
+                          >
+                            <div className="relative aspect-square">
+                              <img
+                                src={image.dataUrl}
+                                alt={`Uploaded photo ${index + 1}`}
+                                className="h-full w-full object-cover"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => removeUploadedImage(image.id)}
+                                className="absolute right-2 top-2 rounded-full bg-black/70 px-2 py-1 text-[10px] font-semibold text-white"
+                              >
+                                Remove
+                              </button>
+                            </div>
+                            <p className="truncate px-2 py-1.5 text-[11px] text-zinc-400">
+                              Photo {index + 1}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="rounded-xl border border-zinc-800 bg-zinc-950/50 p-3 text-xs leading-relaxed text-zinc-400 sm:text-sm">
+                        No photos uploaded yet. Upload real work photos, before/afters, product shots, client-safe examples, or workspace/service photos.
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               <div className="mb-4 rounded-2xl border border-zinc-800 bg-zinc-950/40 p-4">
@@ -1270,7 +1411,12 @@ export default function Home() {
               {signedIn ? (
                 <button
                   onClick={generateContent}
-                  disabled={loading || !content.trim() || !isLoaded}
+                  disabled={
+                    loading ||
+                    !isLoaded ||
+                    (!content.trim() &&
+                      !(isMakeMyPostMode && uploadedImages.length > 0))
+                  }
                   className={`w-full rounded-2xl py-3.5 text-sm font-semibold transition hover:scale-[1.02] disabled:opacity-50 disabled:hover:scale-100 sm:py-5 sm:text-lg ${
                     generationMode === 'viral_hooks'
                       ? 'bg-gradient-to-r from-orange-500 via-pink-600 to-purple-600'
@@ -1280,15 +1426,25 @@ export default function Home() {
                   {loading
                     ? generationMode === 'viral_hooks'
                       ? 'Generating hooks...'
-                      : 'Building content plan...'
+                      : isMakeMyPostMode
+                        ? 'Making your post...'
+                        : 'Building content plan...'
                     : generationMode === 'viral_hooks'
                       ? 'Generate 10 Viral Hooks'
-                      : 'Generate My Content + Money Plan'}
+                      : isMakeMyPostMode
+                        ? uploadedImages.length > 0
+                          ? 'Make My Post From Photos'
+                          : 'Make My Post'
+                        : 'Generate My Content + Money Plan'}
                 </button>
               ) : (
                 <SignInButton mode="modal">
                   <button
-                    disabled={!content.trim() || !isLoaded}
+                    disabled={
+                      !isLoaded ||
+                      (!content.trim() &&
+                        !(isMakeMyPostMode && uploadedImages.length > 0))
+                    }
                     className={`w-full rounded-2xl py-3.5 text-sm font-semibold transition hover:scale-[1.02] disabled:opacity-50 disabled:hover:scale-100 sm:py-5 sm:text-lg ${
                       generationMode === 'viral_hooks'
                         ? 'bg-gradient-to-r from-orange-500 via-pink-600 to-purple-600'
@@ -1348,7 +1504,7 @@ export default function Home() {
                 <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                   <div>
                     <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-purple-300">
-                      This Week’s Campaign
+                      {isMakeMyPostMode ? 'Your Post' : 'This Week’s Campaign'}
                     </p>
                     <h3 className="text-xl font-semibold text-white sm:text-2xl">
                       {formatGeneratedText(
@@ -1368,49 +1524,61 @@ export default function Home() {
                 <div className="grid gap-3 md:grid-cols-2">
                   <div className="rounded-2xl border border-white/10 bg-black/20 p-4 md:col-span-2">
                     <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-400">
-                      Make This First
+                      {isMakeMyPostMode ? 'Photo Order' : 'Make This First'}
                     </p>
-                    <p className="text-sm leading-relaxed text-zinc-100">
+                    <p className="whitespace-pre-wrap text-sm leading-relaxed text-zinc-100">
                       {formatGeneratedText(
-                        results.production_plan?.concept ||
-                          results.best_output?.reason ||
-                          results.strategy?.content_goal,
-                        'Create the strongest recommended content asset first, then use the CTA and follow-up path below.'
+                        isMakeMyPostMode
+                          ? results.production_plan?.shot_order ||
+                              results.production_plan?.what_to_film ||
+                              results.production_plan?.concept
+                          : results.production_plan?.concept ||
+                              results.best_output?.reason ||
+                              results.strategy?.content_goal,
+                        isMakeMyPostMode
+                          ? 'Use the uploaded photos in the clearest order for the post.'
+                          : 'Create the strongest recommended content asset first, then use the CTA and follow-up path below.'
                       )}
                     </p>
                   </div>
 
                   <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
                     <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-400">
-                      What To Film
+                      {isMakeMyPostMode ? 'Hashtags' : 'What To Film'}
                     </p>
                     <p className="text-sm leading-relaxed text-zinc-100">
                       {formatGeneratedText(
-                        results.production_plan?.what_to_film?.[0] ||
-                          results.production_plan?.shot_order?.[0],
-                        'Film the clearest visual that shows the problem, process, or result behind this campaign.'
+                        isMakeMyPostMode
+                          ? results.production_plan?.on_screen_text?.join(' ')
+                          : results.production_plan?.what_to_film?.[0] ||
+                              results.production_plan?.shot_order?.[0],
+                        isMakeMyPostMode
+                          ? 'Use 3-8 relevant hashtags for this platform.'
+                          : 'Film the clearest visual that shows the problem, process, or result behind this campaign.'
                       )}
                     </p>
                   </div>
 
-                  <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-                    <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-400">
-                      What To Say
-                    </p>
-                    <p className="text-sm leading-relaxed text-zinc-100">
-                      {formatGeneratedText(
-                        results.production_plan?.spoken_lines?.[0] ||
-                          results.production_plan?.on_screen_text?.[0],
-                        'Say the first hook or on-screen line from the production plan so the post starts with a clear reason to keep watching.'
-                      )}
-                    </p>
-                  </div>
+                  {!isMakeMyPostMode && (
+                    <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                      <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-400">
+                        What To Say
+                      </p>
+                      <p className="text-sm leading-relaxed text-zinc-100">
+                        {formatGeneratedText(
+                          results.production_plan?.spoken_lines?.[0] ||
+                            results.production_plan?.on_screen_text?.[0],
+                          'Say the first hook or on-screen line from the production plan so the post starts with a clear reason to keep watching.'
+                        )}
+                      </p>
+                    </div>
+                  )}
 
                   <div className="rounded-2xl border border-white/10 bg-black/20 p-4 md:col-span-2">
                     <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-400">
                       Caption
                     </p>
-                    <p className="text-sm leading-relaxed text-zinc-100">
+                    <p className="whitespace-pre-wrap text-sm leading-relaxed text-zinc-100">
                       {formatGeneratedText(
                         results.production_plan?.caption,
                         'Use the caption from Make This Post, then end with the CTA below.'
@@ -1448,7 +1616,7 @@ export default function Home() {
               </div>
             )}
 
-            {results && isContentPlanMode && (
+            {results && generationMode === 'growth_system' && (
               <div className="mb-3 mt-2 rounded-2xl border border-zinc-800 bg-zinc-900/60 p-3">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div>
@@ -1490,7 +1658,9 @@ export default function Home() {
             )}
 
             <div className={`min-h-0 lg:flex-1 lg:overflow-y-auto lg:pr-1 ${
-              results && isContentPlanMode && !showDetailedPlan
+              results &&
+              ((generationMode === 'growth_system' && !showDetailedPlan) ||
+                generationMode === 'make_my_post')
                 ? 'hidden'
                 : ''
             }`}>
@@ -1848,7 +2018,7 @@ export default function Home() {
                         {formatGeneratedList(results.production_plan.what_to_film).length > 0 && (
                           <div className="mt-3 rounded-xl border border-zinc-700/70 bg-zinc-900/50 p-3">
                             <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-purple-300">
-                              What To Film
+                              {isMakeMyPostMode ? 'Hashtags' : 'What To Film'}
                             </p>
                             <ul className="space-y-2 text-sm text-zinc-200">
                               {formatGeneratedList(results.production_plan.what_to_film).map((item, i) => (

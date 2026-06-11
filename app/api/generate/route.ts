@@ -58,6 +58,12 @@ type RecentCampaign = {
   createdAt?: string;
 };
 
+type UploadedImage = {
+  id?: string;
+  name?: string;
+  dataUrl?: string;
+};
+
 type GeneratedResponse = {
   mode?: string;
   strategy?: {
@@ -109,6 +115,34 @@ function normalizeStringList(value: unknown) {
     .map((item) => normalizeString(item))
     .filter(Boolean)
     .slice(0, 8);
+}
+
+function normalizeUploadedImages(value: unknown) {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value
+    .map((item) => {
+      if (!item || typeof item !== 'object') {
+        return null;
+      }
+
+      const image = item as UploadedImage;
+      const dataUrl = normalizeString(image.dataUrl);
+      const name = normalizeString(image.name);
+
+      if (!dataUrl.startsWith('data:image/')) {
+        return null;
+      }
+
+      return {
+        name: name || 'Uploaded business photo',
+        dataUrl,
+      };
+    })
+    .filter(Boolean)
+    .slice(0, 5) as Array<{ name: string; dataUrl: string }>;
 }
 
 function formatBusinessProfileForPrompt(value: unknown) {
@@ -1520,7 +1554,11 @@ export async function POST(req: Request) {
       selectedOutputs,
       businessProfile,
       recentCampaigns,
+      uploadedImages,
     } = await req.json();
+
+    const normalizedUploadedImages = normalizeUploadedImages(uploadedImages);
+    const hasUploadedImages = normalizedUploadedImages.length > 0;
 
     if (!content || !content.trim()) {
       return NextResponse.json(
@@ -1607,6 +1645,20 @@ ${structuredContentEntries.join(',\n')}
       businessProfilePrompt,
       recentCampaignsPrompt,
     });
+
+    const uploadedImagePromptContext = hasUploadedImages
+      ? `
+UPLOADED PHOTO CONTEXT:
+The user uploaded ${normalizedUploadedImages.length} photo(s). Analyze the actual images and make the post from what is visible.
+- Choose the strongest photo to use first.
+- If there are before/after photos, order them in the clearest before-to-after or problem-to-result sequence.
+- If the photos show service work, product details, workspace, food, car detail, cleaning, beauty work, wellness space, landscaping, or a project, build the post around the visible asset.
+- Do not invent anything not visible or provided by the user: prices, availability, guarantees, client outcomes, medical claims, service packages, discounts, or exact timing.
+- If you are unsure what the photo shows, say it as a cautious visual observation and create a safe post angle around what the business owner can truthfully say.
+- production_plan.what_to_film should say what photo or visual to use first, not ask the user to film extra footage unless extra footage is optional.
+- production_plan.shot_order should describe the photo order.
+`
+      : '';
 
     const isClothingOrEcommercePrompt =
       /clothing|fashion|apparel|streetwear|brand|ecommerce|e-commerce|product brand|drop|waitlist|launch|release/.test(
@@ -2041,6 +2093,42 @@ Important:
 - monetization.action_plan should be light and practical. It should not overwhelm the user.
 - The top command center should feel like "Here is the post to make today."
 - Avoid internal marketing language. Use owner language.
+- Captions must sound like a real small business owner wrote them, not an AI marketer.
+- Do not use hype phrases like "turn heads", "standout", "you won’t find anywhere else", "book now", "perfect", "flawless", "must-have", "elevate your look", "treat yourself", or "ready to slay".
+- Do not invent uniqueness, quality, superiority, popularity, results, availability, discounts, or service claims that are not visible in the photo or provided by the user.
+- For beauty photos, describe what is visibly in the photo in simple natural language: colors, shape, detail level, design style, finish, or appointment question.
+- For cleaning/detailing/local service photos, describe the visible before/after, area, project type, or quote detail needed. Do not claim spotless, guaranteed, fast, same-day, or perfect results.
+- Caption style should usually be 2-5 short lines with natural line breaks, not a big paragraph.
+- Use plain language a real owner would post on Instagram or Facebook.
+- Do not start Make My Post captions with "Here’s a", "Check out", "Introducing", "Looking for", "Ready for", or "Want to".
+- For Instagram beauty captions, use this simple structure:
+  Line 1: describe the visible details in plain language.
+  Line 2: tell the viewer when to save/comment/DM.
+  Line 3: give the CTA.
+- Good nail caption example:
+  "Pastel swirls, polka dots, tiny flowers, and a little 3D detail.
+  
+  Save this if you like colorful nails with mixed designs.
+  
+  DM DESIGN if you want help planning your next set."
+- Bad nail caption example:
+  "Here’s a fresh mix of pastel swirls, polka dots, and 3D flowers for your next nail set. Which design fits your style? DM DESIGN to chat about your next appointment."
+- Keep captions short enough that the user can copy and post without editing.
+- For uploaded photos, production_plan.shot_order must clearly say the photo order AND why each photo goes there. Use short lines like: "Photo 2 first — clearest full-set photo", "Photo 1 second — best close-up detail", "Photo 4 third — good side angle", "Photo 3 fourth — extra detail shot."
+- Do not return photo order as "Photo 1 first Photo 2 second" without reasons.
+- For uploaded photos, production_plan.concept should not sound like a strategy headline. It should sound like: "Post these nail photos as a design-inspo carousel" or "Turn this before/after into a quote-request post."
+- For Make My Post mode, avoid telling the user to film anything unless it is clearly optional. They already uploaded photos.
+- Make My Post captions should usually be 2-4 short lines with natural spacing.
+- For nail photos, write like a real nail tech: describe the visible colors, shapes, design details, texture, or vibe. Avoid generic phrases like "brighten your look", "fresh look", "unique design", "standout design", "attract clients", "questions about your next appointment", or "get a quote."
+- For nail CTAs, prefer "DM DESIGN", "DM NAILS", or "Comment DESIGN." Do not say "get a quote" unless the user says they use quotes for nail work.
+- For nail DM replies, sound like a real message: "Thank you! Are you thinking colorful like this, or something softer for your next set?" or "Thanks! Do you want something detailed like this or a simpler version?"
+- For beauty captions, avoid claiming uniqueness or superiority. Only describe what is visible and invite a simple next step.
+- For Make My Post mode, the result should feel like: photo order, caption, CTA, DM reply, and hashtags.
+- For Make My Post mode, production_plan.on_screen_text must contain only 3-8 relevant hashtags as separate strings.
+- Do not put carousel slide text, hook text, or post text in production_plan.on_screen_text for Make My Post mode.
+- Hashtags should match the selected platform and visible content. Prefer natural niche hashtags like #nailinspo, #naildesign, #springnails, #nailtech, #nailart instead of broad spammy hashtags.
+- Do not overdo hashtags. 3-8 is enough.
+- For Make My Post mode, production_plan.spoken_lines can be empty unless the selected platform is a Reel, TikTok, or YouTube Short.
 `
         : '';
 
@@ -2096,6 +2184,7 @@ Goal: ${goal}
 Brand voice: ${selectedVoice}
 Selected platforms: ${selectedOutputList}
 ${makeMyPostPromptExtras}
+${uploadedImagePromptContext}
 ${clothingEcommerceContextRules}
 ${cateringContextRules}
 ${lashContextRules}
@@ -2664,7 +2753,20 @@ Final silent check:
           },
           {
             role: 'user',
-            content: prompt,
+            content: hasUploadedImages
+              ? [
+                  {
+                    type: 'text',
+                    text: prompt,
+                  },
+                  ...normalizedUploadedImages.map((image) => ({
+                    type: 'image_url',
+                    image_url: {
+                      url: image.dataUrl,
+                    },
+                  })),
+                ]
+              : prompt,
           },
         ],
         temperature: mode === 'viral_hooks' ? 0.75 : 0.62,
@@ -2757,10 +2859,31 @@ Final silent check:
       };
 
       parsed.mode = mode === 'make_my_post' ? 'make_my_post' : 'growth_system';
+
+      if (mode === 'make_my_post' && parsed.production_plan?.caption) {
+        parsed.production_plan.caption = parsed.production_plan.caption
+          .replace(/\.\s+(Save\s)/g, '.\n\n$1')
+          .replace(/\.\s+(DM\s)/g, '.\n\n$1')
+          .replace(/\.\s+(Comment\s)/g, '.\n\n$1')
+          .replace(/\.\s+(Reply\s)/g, '.\n\n$1')
+          .replace(/\s{2,}/g, ' ')
+          .replace(/\n\s+/g, '\n')
+          .trim();
+      }
     }
 
     parsed = strengthenBeautyShortFormOpening(parsed, content);
     parsed = cleanGeneratedValue(parsed);
+
+    if (mode === 'make_my_post' && parsed.production_plan?.caption) {
+      parsed.production_plan.caption = parsed.production_plan.caption
+        .replace(/\.\s+(Save\s)/g, '.\n\n$1')
+        .replace(/\.\s+(DM\s)/g, '.\n\n$1')
+        .replace(/\.\s+(Comment\s)/g, '.\n\n$1')
+        .replace(/\.\s+(Reply\s)/g, '.\n\n$1')
+        .replace(/\n\s+/g, '\n')
+        .trim();
+    }
 
     return NextResponse.json(parsed);
   } catch (error) {
