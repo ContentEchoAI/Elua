@@ -33,6 +33,7 @@ type ProductionPlan = {
   shot_order?: string[];
   transition_idea?: string;
   audio_direction?: string;
+  hashtags?: string[];
   on_screen_text?: string[];
   spoken_lines?: string[];
   caption?: string;
@@ -124,6 +125,9 @@ type UploadedImage = {
   id: string;
   name: string;
   dataUrl: string;
+  sourceType: 'image' | 'video_frame';
+  sourceName?: string;
+  sourceLabel?: string;
 };
 
 const emptyBusinessProfile: BusinessProfile = {
@@ -272,7 +276,128 @@ export default function Home() {
     });
   };
 
-  const handleImageUpload = async (event: ChangeEvent<HTMLInputElement>) => {
+  const readFileAsDataUrl = (file: File) =>
+    new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onload = () => resolve(String(reader.result));
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(file);
+    });
+
+  const seekVideoToTime = (video: HTMLVideoElement, time: number) =>
+    new Promise<void>((resolve, reject) => {
+      const maxTime = Math.max((video.duration || 1) - 0.05, 0);
+      const safeTime = Math.min(Math.max(time, 0), maxTime);
+
+      const timeoutIdRef: { current?: number } = {};
+
+      const cleanup = () => {
+        video.removeEventListener('seeked', handleSeeked);
+        video.removeEventListener('error', handleError);
+
+        if (timeoutIdRef.current) {
+          window.clearTimeout(timeoutIdRef.current);
+        }
+      };
+
+      const handleSeeked = () => {
+        cleanup();
+        resolve();
+      };
+
+      const handleError = () => {
+        cleanup();
+        reject(new Error('Could not read a frame from this video.'));
+      };
+
+      video.addEventListener('seeked', handleSeeked);
+      video.addEventListener('error', handleError);
+
+      timeoutIdRef.current = window.setTimeout(() => {
+        cleanup();
+        resolve();
+      }, 1200);
+
+      video.currentTime = safeTime;
+    });
+
+  const extractVideoFrames = (file: File, availableSlots: number) =>
+    new Promise<UploadedImage[]>((resolve, reject) => {
+      const objectUrl = URL.createObjectURL(file);
+      const video = document.createElement('video');
+
+      video.preload = 'metadata';
+      video.muted = true;
+      video.playsInline = true;
+
+      const cleanup = () => {
+        URL.revokeObjectURL(objectUrl);
+      };
+
+      video.onerror = () => {
+        cleanup();
+        reject(new Error(`Could not load video: ${file.name}`));
+      };
+
+      video.onloadedmetadata = async () => {
+        try {
+          const duration =
+            Number.isFinite(video.duration) && video.duration > 0
+              ? video.duration
+              : 1;
+          const frameCount = Math.min(3, Math.max(1, availableSlots));
+          const sampleTimes =
+            frameCount === 1
+              ? [duration * 0.5]
+              : frameCount === 2
+                ? [duration * 0.25, duration * 0.75]
+                : [duration * 0.15, duration * 0.5, duration * 0.85];
+
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d');
+
+          if (!context) {
+            throw new Error('Could not prepare video frame preview.');
+          }
+
+          const sourceWidth = video.videoWidth || 720;
+          const sourceHeight = video.videoHeight || 1280;
+          const scale = Math.min(1, 900 / Math.max(sourceWidth, sourceHeight));
+
+          canvas.width = Math.max(1, Math.round(sourceWidth * scale));
+          canvas.height = Math.max(1, Math.round(sourceHeight * scale));
+
+          const frames: UploadedImage[] = [];
+
+          for (let index = 0; index < sampleTimes.length; index += 1) {
+            await seekVideoToTime(video, sampleTimes[index]);
+
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            frames.push({
+              id: `${file.name}-frame-${index + 1}-${crypto.randomUUID()}`,
+              name: `${file.name} frame ${index + 1}`,
+              dataUrl: canvas.toDataURL('image/jpeg', 0.82),
+              sourceType: 'video_frame',
+              sourceName: file.name,
+              sourceLabel: `${file.name} · frame ${index + 1}`,
+            });
+          }
+
+          cleanup();
+          resolve(frames);
+        } catch (error) {
+          cleanup();
+          reject(error);
+        }
+      };
+
+      video.src = objectUrl;
+      video.load();
+    });
+
+  const handleMediaUpload = async (event: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
 
     if (files.length === 0) return;
@@ -280,53 +405,79 @@ export default function Home() {
     const availableSlots = MAX_UPLOAD_IMAGES - uploadedImages.length;
 
     if (availableSlots <= 0) {
-      alert(`You can upload up to ${MAX_UPLOAD_IMAGES} photos.`);
+      alert(`You can upload up to ${MAX_UPLOAD_IMAGES} visual references.`);
       event.target.value = '';
       return;
     }
 
-    const imageFiles = files
-      .filter((file) => file.type.startsWith('image/'))
+    const mediaFiles = files
+      .filter(
+        (file) => file.type.startsWith('image/') || file.type.startsWith('video/')
+      )
       .slice(0, availableSlots);
 
-    if (imageFiles.length === 0) {
-      alert('Please upload image files only.');
+    if (mediaFiles.length === 0) {
+      alert('Please upload image or video files only.');
       event.target.value = '';
       return;
     }
 
-    const oversizedFile = imageFiles.find((file) => file.size > 4 * 1024 * 1024);
+    const oversizedFile = mediaFiles.find((file) =>
+      file.type.startsWith('video/')
+        ? file.size > 25 * 1024 * 1024
+        : file.size > 4 * 1024 * 1024
+    );
 
     if (oversizedFile) {
-      alert('Please keep each image under 4MB for now.');
+      alert('Please keep each photo under 4MB and each video under 25MB for now.');
       event.target.value = '';
       return;
     }
 
-    const loadedImages = await Promise.all(
-      imageFiles.map(
-        (file) =>
-          new Promise<UploadedImage>((resolve, reject) => {
-            const reader = new FileReader();
+    try {
+      const loadedMedia: UploadedImage[] = [];
 
-            reader.onload = () => {
-              resolve({
-                id: `${file.name}-${file.size}-${crypto.randomUUID()}`,
-                name: file.name,
-                dataUrl: String(reader.result),
-              });
-            };
+      for (const file of mediaFiles) {
+        const slotsLeft = MAX_UPLOAD_IMAGES - uploadedImages.length - loadedMedia.length;
 
-            reader.onerror = () => reject(reader.error);
-            reader.readAsDataURL(file);
-          })
-      )
-    );
+        if (slotsLeft <= 0) break;
 
-    setUploadedImages((current) =>
-      [...current, ...loadedImages].slice(0, MAX_UPLOAD_IMAGES)
-    );
-    event.target.value = '';
+        if (file.type.startsWith('image/')) {
+          loadedMedia.push({
+            id: `${file.name}-${file.size}-${crypto.randomUUID()}`,
+            name: file.name,
+            dataUrl: await readFileAsDataUrl(file),
+            sourceType: 'image',
+            sourceName: file.name,
+            sourceLabel: file.name,
+          });
+        }
+
+        if (file.type.startsWith('video/')) {
+          const videoFrames = await extractVideoFrames(
+            file,
+            Math.min(3, slotsLeft)
+          );
+
+          loadedMedia.push(...videoFrames);
+        }
+      }
+
+      if (loadedMedia.length === 0) {
+        alert('Could not read those files. Please try different photos or a shorter video.');
+        event.target.value = '';
+        return;
+      }
+
+      setUploadedImages((current) =>
+        [...current, ...loadedMedia].slice(0, MAX_UPLOAD_IMAGES)
+      );
+    } catch (error) {
+      console.error('Upload error:', error);
+      alert('Could not process that video. Please try a shorter clip or upload photos.');
+    } finally {
+      event.target.value = '';
+    }
   };
 
   const removeUploadedImage = (imageId: string) => {
@@ -550,7 +701,7 @@ export default function Home() {
     if (!content.trim() && !(isMakeMyPostMode && uploadedImages.length > 0)) {
       alert(
         isMakeMyPostMode
-          ? 'Please upload at least one photo or add a short post idea.'
+          ? 'Please upload at least one photo, short video, or add a short post idea.'
           : 'Please enter a content idea first.'
       );
       return;
@@ -595,7 +746,7 @@ export default function Home() {
           content:
             content.trim() ||
             (isMakeMyPostMode
-              ? 'Create the best ready-to-post social media post from the uploaded business photos.'
+              ? 'Create the best ready-to-post social media post from the uploaded business photos or video clips.'
               : content),
           selectedVoice,
           goal,
@@ -1061,8 +1212,8 @@ export default function Home() {
             </h1>
 
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-zinc-400 sm:mt-5 sm:text-lg">
-              Upload real business photos. Hummingbird creates the caption, CTA,
-              follow-up reply, hashtags, and photo order.
+              Upload business photos or short clips. Hummingbird creates the caption, CTA,
+              follow-up reply, hashtags, and posting direction.
             </p>
           </div>
 
@@ -1135,7 +1286,7 @@ export default function Home() {
               <div className="mb-4">
                 <div className="mb-2 flex items-center justify-between gap-3">
                   <p className="text-sm font-medium text-zinc-400">
-                    Upload your business photos
+                    Upload photos or short clips
                   </p>
 
                   {!isMakeMyPostMode && (
@@ -1153,20 +1304,20 @@ export default function Home() {
                     <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                       <div>
                         <p className="text-sm font-semibold text-purple-200">
-                          Upload photos from your business
+                          Upload photos or short clips from your business
                         </p>
                         <p className="mt-1 text-xs leading-relaxed text-zinc-400 sm:text-sm">
-                          Add 1–5 real photos. Hummingbird will choose the strongest order, write the caption, CTA, DM reply, and hashtags.
+                          Add photos or short clips. Hummingbird will choose the strongest visuals, write the caption, CTA, DM reply, hashtags, and posting direction.
                         </p>
                       </div>
 
                       <label className="w-fit cursor-pointer rounded-xl bg-white px-3 py-2 text-xs font-semibold text-black transition hover:scale-[1.03]">
-                        Add Photos
+                        Add Media
                         <input
                           type="file"
-                          accept="image/*"
+                          accept="image/*,video/*"
                           multiple
-                          onChange={handleImageUpload}
+                          onChange={handleMediaUpload}
                           className="hidden"
                         />
                       </label>
@@ -1182,7 +1333,7 @@ export default function Home() {
                             <div className="relative aspect-square">
                               <img
                                 src={image.dataUrl}
-                                alt={`Uploaded photo ${index + 1}`}
+                                alt={`Uploaded ${image.sourceType === 'video_frame' ? 'video frame' : 'photo'} ${index + 1}`}
                                 className="h-full w-full object-cover"
                               />
                               <button
@@ -1194,14 +1345,16 @@ export default function Home() {
                               </button>
                             </div>
                             <p className="truncate px-2 py-1.5 text-[11px] text-zinc-400">
-                              Photo {index + 1}
+                              {image.sourceType === 'video_frame'
+                                ? `Video frame ${index + 1}`
+                                : `Photo ${index + 1}`}
                             </p>
                           </div>
                         ))}
                       </div>
                     ) : (
                       <div className="rounded-xl border border-zinc-800 bg-zinc-950/50 p-3 text-xs leading-relaxed text-zinc-400 sm:text-sm">
-                        No photos uploaded yet. Upload real work photos, before/afters, product shots, client-safe examples, or workspace/service photos.
+                        No media uploaded yet. Upload real work photos, short clips, before/afters, product shots, client-safe examples, or workspace/service visuals.
                       </div>
                     )}
                   </div>
@@ -1478,7 +1631,7 @@ export default function Home() {
                       ? 'Generate 10 Viral Hooks'
                       : isMakeMyPostMode
                         ? uploadedImages.length > 0
-                          ? 'Make My Post From Photos'
+                          ? 'Make My Post'
                           : 'Make My Post'
                         : 'Generate My Content + Money Plan'}
                 </button>
@@ -1531,7 +1684,7 @@ export default function Home() {
                   {generationMode === 'viral_hooks'
                     ? 'Quick hook ideas for your business, offer, or content topic.'
                     : isMakeMyPostMode
-                      ? 'Upload photos and Hummingbird will make the post.'
+                      ? 'Upload photos or clips and Hummingbird will make the post.'
                       : 'Turn one business goal into ready-to-post content, hooks, CTAs, and a simple path to leads, bookings, or sales.'}
                 </p>
               </div>
@@ -1571,7 +1724,11 @@ export default function Home() {
                 <div className="grid gap-3 md:grid-cols-2">
                   <div className="rounded-2xl border border-white/10 bg-black/20 p-4 md:col-span-2">
                     <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-400">
-                      {isMakeMyPostMode ? 'Photo Order' : 'Make This First'}
+                      {isMakeMyPostMode
+                        ? uploadedImages.some((image) => image.sourceType === 'video_frame')
+                          ? 'Clip / Visual Order'
+                          : 'Photo Order'
+                        : 'Make This First'}
                     </p>
                     <p className="whitespace-pre-wrap text-sm leading-relaxed text-zinc-100">
                       {formatGeneratedText(
@@ -1583,7 +1740,7 @@ export default function Home() {
                               results.best_output?.reason ||
                               results.strategy?.content_goal,
                         isMakeMyPostMode
-                          ? 'Use the uploaded photos in the clearest order for the post.'
+                          ? 'Use the uploaded photos or video frames in the clearest order for the post.'
                           : 'Create the strongest recommended content asset first, then use the CTA and follow-up path below.'
                       )}
                     </p>
@@ -1591,16 +1748,26 @@ export default function Home() {
 
                   <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
                     <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-400">
-                      {isMakeMyPostMode ? 'Hashtags' : 'What To Film'}
+                      {isMakeMyPostMode
+                        ? uploadedImages.some((image) => image.sourceType === 'video_frame')
+                          ? 'Audio / Text Direction'
+                          : 'Hashtags'
+                        : 'What To Film'}
                     </p>
                     <p className="text-sm leading-relaxed text-zinc-100">
                       {formatGeneratedText(
                         isMakeMyPostMode
-                          ? results.production_plan?.on_screen_text?.join(' ')
+                          ? uploadedImages.some((image) => image.sourceType === 'video_frame')
+                            ? results.production_plan?.audio_direction ||
+                                results.production_plan?.on_screen_text?.join(' ')
+                            : results.production_plan?.hashtags?.join(' ') ||
+                                results.production_plan?.on_screen_text?.join(' ')
                           : results.production_plan?.what_to_film?.[0] ||
                               results.production_plan?.shot_order?.[0],
                         isMakeMyPostMode
-                          ? 'Use 3-8 relevant hashtags for this platform.'
+                          ? uploadedImages.some((image) => image.sourceType === 'video_frame')
+                            ? 'Suggest simple audio mood, pacing, and on-screen text. Do not name copyrighted songs.'
+                            : 'Use 3-8 relevant hashtags for this platform.'
                           : 'Film the clearest visual that shows the problem, process, or result behind this campaign.'
                       )}
                     </p>
@@ -1721,7 +1888,7 @@ export default function Home() {
                       {generationMode === 'viral_hooks'
                         ? 'Turn your idea into scroll-stopping hooks'
                         : isMakeMyPostMode
-                          ? 'Upload photos to make your post'
+                          ? 'Upload photos or clips to make your post'
                           : 'Turn your business goal into a Content + Money Plan'}
                     </p>
 
@@ -1729,7 +1896,7 @@ export default function Home() {
                       {generationMode === 'viral_hooks'
                         ? 'Generate 10 attention-grabbing hooks with angles, explanations, and a strongest-hook pick.'
                         : isMakeMyPostMode
-                          ? 'Add your business photos on the left, then Hummingbird will write the caption, CTA, DM reply, hashtags, and photo order.'
+                          ? 'Add your business photos or short clips on the left, then Hummingbird will write the caption, CTA, DM reply, hashtags, and posting direction.'
                           : 'Get strategy, ready-to-post content, hooks, CTAs, and a simple path to leads, bookings, or sales.'}
                     </p>
 

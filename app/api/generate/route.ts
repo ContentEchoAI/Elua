@@ -34,6 +34,7 @@ type ProductionPlan = {
   shot_order?: string[];
   transition_idea?: string;
   audio_direction?: string;
+  hashtags?: string[];
   on_screen_text?: string[];
   spoken_lines?: string[];
   caption?: string;
@@ -62,6 +63,9 @@ type UploadedImage = {
   id?: string;
   name?: string;
   dataUrl?: string;
+  sourceType?: 'image' | 'video_frame';
+  sourceName?: string;
+  sourceLabel?: string;
 };
 
 type GeneratedResponse = {
@@ -117,32 +121,63 @@ function normalizeStringList(value: unknown) {
     .slice(0, 8);
 }
 
+function cleanMakeMyPostCta(value: unknown) {
+  const cta = normalizeString(value);
+
+  if (!cta) {
+    return '';
+  }
+
+  const cleaned = cta
+    .replace(/^dm\s+/i, '')
+    .replace(/^comment\s+/i, '')
+    .replace(/^message\s+/i, '')
+    .replace(/^reply\s+/i, '')
+    .replace(/^send\s+/i, '')
+    .replace(/^text\s+/i, '')
+    .replace(/[^a-z0-9 ]/gi, ' ')
+    .trim();
+
+  const firstWord = cleaned.split(/\s+/)[0] || '';
+
+  return firstWord.toUpperCase();
+}
+
 function normalizeUploadedImages(value: unknown) {
   if (!Array.isArray(value)) {
     return [];
   }
 
   return value
-    .map((item) => {
+    .map((item): UploadedImage | null => {
       if (!item || typeof item !== 'object') {
         return null;
       }
 
-      const image = item as UploadedImage;
-      const dataUrl = normalizeString(image.dataUrl);
-      const name = normalizeString(image.name);
+      const record = item as UploadedImage;
+      const dataUrl = normalizeString(record.dataUrl);
 
       if (!dataUrl.startsWith('data:image/')) {
         return null;
       }
 
+      const sourceType =
+        record.sourceType === 'video_frame' ? 'video_frame' : 'image';
+      const name = normalizeString(record.name).slice(0, 120);
+      const sourceName = normalizeString(record.sourceName).slice(0, 120);
+      const sourceLabel = normalizeString(record.sourceLabel).slice(0, 140);
+
       return {
-        name: name || 'Uploaded business photo',
+        id: normalizeString(record.id).slice(0, 120),
+        name,
         dataUrl,
+        sourceType,
+        sourceName,
+        sourceLabel,
       };
     })
-    .filter(Boolean)
-    .slice(0, 5) as Array<{ name: string; dataUrl: string }>;
+    .filter((item): item is UploadedImage => Boolean(item))
+    .slice(0, 5);
 }
 
 function formatBusinessProfileForPrompt(value: unknown) {
@@ -1559,6 +1594,21 @@ export async function POST(req: Request) {
 
     const normalizedUploadedImages = normalizeUploadedImages(uploadedImages);
     const hasUploadedImages = normalizedUploadedImages.length > 0;
+    const hasUploadedVideoFrames = normalizedUploadedImages.some(
+      (image) => image.sourceType === 'video_frame'
+    );
+    const uploadedVisualSummary = normalizedUploadedImages
+      .map((image, index) => {
+        const sourceLabel =
+          image.sourceLabel || image.sourceName || image.name || `visual ${index + 1}`;
+
+        return `- Visual ${index + 1}: ${
+          image.sourceType === 'video_frame'
+            ? `video frame from ${sourceLabel}`
+            : `photo ${sourceLabel}`
+        }`;
+      })
+      .join('\n');
 
     if (!content || !content.trim()) {
       return NextResponse.json(
@@ -1648,15 +1698,26 @@ ${structuredContentEntries.join(',\n')}
 
     const uploadedImagePromptContext = hasUploadedImages
       ? `
-UPLOADED PHOTO CONTEXT:
-The user uploaded ${normalizedUploadedImages.length} photo(s). Analyze the actual images and make the post from what is visible.
-- Choose the strongest photo to use first.
-- If there are before/after photos, order them in the clearest before-to-after or problem-to-result sequence.
-- If the photos show service work, product details, workspace, food, car detail, cleaning, beauty work, wellness space, landscaping, or a project, build the post around the visible asset.
+UPLOADED VISUAL CONTEXT:
+The user uploaded ${normalizedUploadedImages.length} visual reference(s). Analyze the actual visuals and make the post from what is visible.
+
+${uploadedVisualSummary}
+
+${hasUploadedVideoFrames ? '- Some uploaded visuals are frames extracted from video clips. Treat those as moments from short clips, not separate still photos.' : '- The uploaded visuals are photos.'}
+
+Rules for uploaded visuals:
+- Choose the strongest visual to use first.
+- If there are video frames, build a simple clip structure: opening visual, middle proof/detail/process moment, ending CTA.
+- If there are photos, order them in the clearest carousel or post sequence.
+- If there are both photos and video frames, use the best mix and explain the visual order clearly.
+- If the selected platform is Instagram Reel, TikTok Script, or YouTube Shorts, make the output video-friendly with an opening hook, on-screen text, visual pacing, and a clear CTA.
+- production_plan.shot_order should describe the photo, clip, or visual order.
+- production_plan.what_to_film should say what uploaded visual to use first, not ask the user to film extra footage unless extra footage is optional.
+- production_plan.audio_direction should suggest mood, pacing, or editing style. Do not name copyrighted songs, artists, or trending sounds.
+- production_plan.hashtags should include 3-8 relevant hashtags when useful.
+- CTA keyword should usually be one simple word such as DESIGN, QUOTE, BOOK, MENU, STYLE, FIT, START, CHECK, GUIDE, or CLEAN. Do not write CTA keywords as "DM DESIGN"; use "DESIGN" or a clear sentence separately.
 - Do not invent anything not visible or provided by the user: prices, availability, guarantees, client outcomes, medical claims, service packages, discounts, or exact timing.
-- If you are unsure what the photo shows, say it as a cautious visual observation and create a safe post angle around what the business owner can truthfully say.
-- production_plan.what_to_film should say what photo or visual to use first, not ask the user to film extra footage unless extra footage is optional.
-- production_plan.shot_order should describe the photo order.
+- If you are unsure what a visual shows, say it as a cautious visual observation and create a safe post angle around what the business owner can truthfully say.
 `
       : '';
 
@@ -2883,6 +2944,24 @@ Final silent check:
         .replace(/\.\s+(Reply\s)/g, '.\n\n$1')
         .replace(/\n\s+/g, '\n')
         .trim();
+    }
+
+    if (mode === 'make_my_post') {
+      const cleanCta = cleanMakeMyPostCta(
+        parsed.production_plan?.cta || parsed.monetization?.cta_strategy
+      );
+
+      if (cleanCta) {
+        parsed.production_plan = {
+          ...(parsed.production_plan || {}),
+          cta: cleanCta,
+        };
+
+        parsed.monetization = {
+          ...(parsed.monetization || {}),
+          cta_strategy: cleanCta,
+        };
+      }
     }
 
     return NextResponse.json(parsed);
