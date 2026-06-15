@@ -157,7 +157,7 @@ export default function Home() {
   const [goal, setGoal] = useState('growth');
   const [generationMode, setGenerationMode] = useState<
     'growth_system' | 'viral_hooks' | 'make_my_post'
-  >('growth_system');
+  >('make_my_post');
   const [copiedItem, setCopiedItem] = useState('');
   const [savedGenerations, setSavedGenerations] = useState<SavedGeneration[]>(
     []
@@ -1013,31 +1013,63 @@ export default function Home() {
   return (
     <div className="min-h-screen overflow-x-hidden bg-zinc-950 text-white">
       <div className="mx-auto w-full max-w-7xl overflow-x-hidden px-4 py-4 sm:px-6 sm:py-8">
+        <header className="mb-6 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <img
+              src="/hummingbird-mark.jpeg"
+              alt="Hummingbird AI"
+              className="h-11 w-11 rounded-2xl object-cover"
+            />
+            <div>
+              <p className="text-sm font-semibold leading-none text-white sm:text-base">
+                Hummingbird AI
+              </p>
+              <p className="mt-1 text-xs text-zinc-500">
+                Photo-to-post workspace
+              </p>
+            </div>
+          </div>
+
+          <div className="flex shrink-0 items-center gap-2">
+            {!isLoaded ? (
+              <div className="h-9 w-24 animate-pulse rounded-full bg-zinc-800" />
+            ) : signedIn ? (
+              <div className="flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/80 px-3 py-2">
+                <span className="text-xs font-semibold text-zinc-300">
+                  Account
+                </span>
+                <UserButton />
+              </div>
+            ) : (
+              <SignInButton mode="modal">
+                <button className="rounded-full bg-white px-4 py-2 text-xs font-semibold text-black transition hover:scale-[1.03]">
+                  Sign in
+                </button>
+              </SignInButton>
+            )}
+          </div>
+        </header>
         <div className="mb-4 grid gap-4 lg:mb-8 lg:grid-cols-[1.25fr_0.75fr] lg:items-start">
           <div className="max-w-4xl">
             <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900 px-3 py-1.5 text-xs text-zinc-300 sm:px-4 sm:py-2 sm:text-sm">
               <span className="text-purple-400">✦</span>
-              AI Content + Money Plan Workspace for Small Businesses
+              AI Posting Assistant for Small Service Businesses
             </div>
 
-            <h1 className="mb-2 text-[2.35rem] font-bold leading-none text-purple-400 sm:text-5xl lg:mb-4">
-              Hummingbird AI
+            <h1 className="max-w-4xl text-[2.1rem] font-semibold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl">
+              Turn your business photos into ready-to-post content.
             </h1>
 
-            <h2 className="max-w-4xl text-[1.95rem] font-semibold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl">
-              Know what to post. Know how it makes money.
-            </h2>
-
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-zinc-400 sm:mt-5 sm:text-lg">
-              Hummingbird turns one business goal or real business photo idea into
-              ready-to-post content, CTAs, follow-up replies, and a simple Money Plan.
+              Upload real business photos. Hummingbird creates the caption, CTA,
+              follow-up reply, hashtags, and photo order.
             </p>
           </div>
 
-          <div className="hidden lg:block">{accountPanel}</div>
+          <div className="hidden">{accountPanel}</div>
         </div>
 
-        <div className="mb-4 rounded-3xl border border-zinc-800 bg-zinc-900/80 p-4 sm:p-5 lg:mb-8">
+        <div className="hidden">
           <div className="mb-4 grid gap-3 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
             <div>
               <p className="text-xs font-semibold uppercase tracking-wide text-purple-400">
@@ -1103,41 +1135,28 @@ export default function Home() {
               <div className="mb-4">
                 <div className="mb-2 flex items-center justify-between gap-3">
                   <p className="text-sm font-medium text-zinc-400">
-                    What do you want help posting this week?
+                    Upload your business photos
                   </p>
 
-                  <button
-                    onClick={loadNextExample}
-                    className="text-xs font-medium text-purple-400 hover:text-purple-300"
-                  >
-                    ✨ Example
-                  </button>
+                  {!isMakeMyPostMode && (
+                    <button
+                      onClick={loadNextExample}
+                      className="text-xs font-medium text-purple-400 hover:text-purple-300"
+                    >
+                      ✨ Example
+                    </button>
+                  )}
                 </div>
 
-                <textarea
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  placeholder={
-                    generationMode === 'viral_hooks'
-                      ? 'Example: 10 hooks for a local realtor who wants more seller leads...'
-                      : isMakeMyPostMode
-                        ? 'Optional: add context like service type, location, goal, or what you want more of...'
-                        : 'Example: A fitness coach wants a month of posts that lead to coaching calls...'
-                  }
-                  className={`w-full max-w-full resize-none rounded-2xl border border-zinc-700 bg-zinc-800 p-4 text-sm text-zinc-100 outline-none placeholder:text-zinc-500 focus:border-purple-500 sm:p-5 sm:text-base ${
-                    isMakeMyPostMode ? 'h-24 sm:h-28' : 'h-28 sm:h-48'
-                  }`}
-                />
-
                 {isMakeMyPostMode && (
-                  <div className="mt-4 rounded-2xl border border-dashed border-purple-500/40 bg-purple-500/10 p-4">
+                  <div className="rounded-2xl border border-dashed border-purple-500/40 bg-purple-500/10 p-4">
                     <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                       <div>
                         <p className="text-sm font-semibold text-purple-200">
                           Upload photos from your business
                         </p>
                         <p className="mt-1 text-xs leading-relaxed text-zinc-400 sm:text-sm">
-                          Add 1–5 photos. Hummingbird will pick the strongest angle, order the photos, write the caption, CTA, and follow-up reply.
+                          Add 1–5 real photos. Hummingbird will choose the strongest order, write the caption, CTA, DM reply, and hashtags.
                         </p>
                       </div>
 
@@ -1187,9 +1206,35 @@ export default function Home() {
                     )}
                   </div>
                 )}
+
+                {isMakeMyPostMode ? (
+                  <details className="mt-4 rounded-2xl border border-zinc-800 bg-zinc-950/30 p-3">
+                    <summary className="cursor-pointer text-xs font-medium uppercase tracking-wide text-zinc-500">
+                      Add details optional
+                    </summary>
+
+                    <textarea
+                      value={content}
+                      onChange={(e) => setContent(e.target.value)}
+                      placeholder="Optional: add service type, location, offer, tone, or what you want more of..."
+                      className="mt-3 h-24 w-full max-w-full resize-none rounded-2xl border border-zinc-700 bg-zinc-800 p-4 text-sm text-zinc-100 outline-none placeholder:text-zinc-500 focus:border-purple-500 sm:h-28 sm:p-5 sm:text-base"
+                    />
+                  </details>
+                ) : (
+                  <textarea
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                    placeholder={
+                      generationMode === 'viral_hooks'
+                        ? 'Example: 10 hooks for a local realtor who wants more seller leads...'
+                        : 'Example: A fitness coach wants a month of posts that lead to coaching calls...'
+                    }
+                    className="h-28 w-full max-w-full resize-none rounded-2xl border border-zinc-700 bg-zinc-800 p-4 text-sm text-zinc-100 outline-none placeholder:text-zinc-500 focus:border-purple-500 sm:h-48 sm:p-5 sm:text-base"
+                  />
+                )}
               </div>
 
-              <div className="mb-4 rounded-2xl border border-zinc-800 bg-zinc-950/40 p-4">
+              <div className={`mb-4 rounded-2xl border border-zinc-800 bg-zinc-950/40 p-4 ${isMakeMyPostMode ? 'hidden' : ''}`}>
                 <button
                   type="button"
                   onClick={() => setShowBusinessProfile((current) => !current)}
@@ -1269,7 +1314,7 @@ export default function Home() {
                 )}
               </div>
 
-              <div className="mb-4">
+              <div className={`mb-4 ${isMakeMyPostMode ? 'hidden' : ''}`}>
                 <p className="mb-2 text-xs font-medium uppercase tracking-wide text-zinc-500">
                   Mode
                 </p>
@@ -1326,7 +1371,7 @@ export default function Home() {
 
               <div className="mb-4">
                 <p className="mb-2 text-xs font-medium uppercase tracking-wide text-zinc-500">
-                  This week’s focus
+                  Post goal
                 </p>
                 <div className="grid min-w-0 grid-cols-3 gap-2">
                   {[
@@ -1467,7 +1512,9 @@ export default function Home() {
                 </p>
               </div>
             </div>
-            <div className="mt-4 hidden lg:block">{savedGenerationsCard}</div>
+            {!isMakeMyPostMode && (
+              <div className="mt-4 hidden lg:block">{savedGenerationsCard}</div>
+            )}
           </div>
 
           <div className="order-2 min-w-0 rounded-3xl border border-zinc-800 bg-zinc-900/90 p-4 sm:p-6 lg:flex lg:h-full lg:min-h-[760px] lg:flex-col">
@@ -1477,14 +1524,14 @@ export default function Home() {
                   {generationMode === 'viral_hooks'
                     ? 'Your Hook Ideas'
                     : isMakeMyPostMode
-                      ? 'Your Posting Pack'
+                      ? 'Your Post'
                       : 'Your Content + Money Plan Workspace'}
                 </h2>
                 <p className="mt-1 text-sm leading-relaxed text-zinc-400 sm:text-lg">
                   {generationMode === 'viral_hooks'
                     ? 'Quick hook ideas for your business, offer, or content topic.'
                     : isMakeMyPostMode
-                      ? 'Turn a real business photo, service, or post idea into copy you can use today.'
+                      ? 'Upload photos and Hummingbird will make the post.'
                       : 'Turn one business goal into ready-to-post content, hooks, CTAs, and a simple path to leads, bookings, or sales.'}
                 </p>
               </div>
@@ -1639,7 +1686,7 @@ export default function Home() {
               </div>
             )}
 
-            {(!results || generationMode === 'viral_hooks' || showDetailedPlan) && (
+            {!isMakeMyPostMode && (!results || generationMode === 'viral_hooks' || showDetailedPlan) && (
               <div className="mb-3 flex min-w-0 shrink-0 flex-wrap gap-2">
                 {activeTabs.map((tab) => (
                   <button
@@ -1674,7 +1721,7 @@ export default function Home() {
                       {generationMode === 'viral_hooks'
                         ? 'Turn your idea into scroll-stopping hooks'
                         : isMakeMyPostMode
-                          ? 'Turn your photos or post idea into a ready-to-use posting pack'
+                          ? 'Upload photos to make your post'
                           : 'Turn your business goal into a Content + Money Plan'}
                     </p>
 
@@ -1682,23 +1729,25 @@ export default function Home() {
                       {generationMode === 'viral_hooks'
                         ? 'Generate 10 attention-grabbing hooks with angles, explanations, and a strongest-hook pick.'
                         : isMakeMyPostMode
-                          ? 'Describe the photo or service you want to post. Hummingbird will give you the angle, post text, caption, CTA, and follow-up reply.'
+                          ? 'Add your business photos on the left, then Hummingbird will write the caption, CTA, DM reply, hashtags, and photo order.'
                           : 'Get strategy, ready-to-post content, hooks, CTAs, and a simple path to leads, bookings, or sales.'}
                     </p>
 
-                    <div className="mt-5 grid w-full max-w-md grid-cols-1 gap-2 text-xs text-zinc-300 sm:grid-cols-3">
-                      {(generationMode === 'viral_hooks'
-                        ? ['10 hooks', 'Best hook', 'Why it works']
-                        : ['Strategy', 'Content', 'Money plan']
-                      ).map((item) => (
-                        <div
-                          key={item}
-                          className="rounded-2xl border border-zinc-800 bg-zinc-900 px-3 py-2 text-center"
-                        >
-                          {item}
-                        </div>
-                      ))}
-                    </div>
+                    {!isMakeMyPostMode && (
+                      <div className="mt-5 grid w-full max-w-md grid-cols-1 gap-2 text-xs text-zinc-300 sm:grid-cols-3">
+                        {(generationMode === 'viral_hooks'
+                          ? ['10 hooks', 'Best hook', 'Why it works']
+                          : ['Strategy', 'Content', 'Money plan']
+                        ).map((item) => (
+                          <div
+                            key={item}
+                            className="rounded-2xl border border-zinc-800 bg-zinc-900 px-3 py-2 text-center"
+                          >
+                            {item}
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -2494,7 +2543,9 @@ export default function Home() {
 
 
 
-          <div className="order-4 min-w-0 lg:hidden">{savedGenerationsCard}</div>
+          {!isMakeMyPostMode && (
+            <div className="order-4 min-w-0 lg:hidden">{savedGenerationsCard}</div>
+          )}
         </div>
       </div>
     </div>
