@@ -260,11 +260,22 @@ export default function Home() {
   const outputOptions = [
     { id: 'Instagram Reel', label: 'Instagram Reel', emoji: '🎬' },
     { id: 'Instagram Carousel', label: 'Instagram Carousel', emoji: '📸' },
-    { id: 'TikTok Script', label: 'TikTok Script', emoji: '🎵' },
+    { id: 'TikTok Script', label: 'TikTok', emoji: '🎵' },
     { id: 'LinkedIn Post', label: 'LinkedIn Post', emoji: '💼' },
     { id: 'Facebook Post', label: 'Facebook Post', emoji: '📘' },
     { id: 'YouTube Shorts Script', label: 'YouTube Shorts', emoji: '▶️' },
   ];
+
+
+function getPlatformDisplayName(value?: string) {
+  if (!value) {
+    return '';
+  }
+
+  return value
+    .replace('TikTok Script', 'TikTok')
+    .replace('YouTube Shorts Script', 'YouTube Shorts');
+}
 
   const toggleOutput = (outputId: string) => {
     setSelectedOutputs((current) => {
@@ -1716,7 +1727,7 @@ export default function Home() {
 
                   {results.best_output?.platform && (
                     <span className="w-fit rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-zinc-100">
-                      Start with {formatGeneratedText(results.best_output.platform)}
+                      Start with {getPlatformDisplayName(results.best_output.platform)}
                     </span>
                   )}
                 </div>
@@ -1725,8 +1736,18 @@ export default function Home() {
                   <div className="rounded-2xl border border-white/10 bg-black/20 p-4 md:col-span-2">
                     <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-400">
                       {isMakeMyPostMode
-                        ? uploadedImages.some((image) => image.sourceType === 'video_frame')
-                          ? 'Clip / Visual Order'
+                        ? (selectedOutputs.some((output) =>
+                              [
+                                'Instagram Reel',
+                                'TikTok Script',
+                                'YouTube Shorts',
+                                'YouTube Shorts Script',
+                              ].includes(output)
+                            ) ||
+                              uploadedImages.some(
+                                (image) => image.sourceType === 'video_frame'
+                              ))
+                          ? 'Video Flow'
                           : 'Photo Order'
                         : 'Make This First'}
                     </p>
@@ -1740,7 +1761,7 @@ export default function Home() {
                               results.best_output?.reason ||
                               results.strategy?.content_goal,
                         isMakeMyPostMode
-                          ? 'Use the uploaded photos or video frames in the clearest order for the post.'
+                          ? 'Use the uploaded visuals as a short-form video flow: opening visual, detail shots, and CTA ending.'
                           : 'Create the strongest recommended content asset first, then use the CTA and follow-up path below.'
                       )}
                     </p>
@@ -1749,7 +1770,17 @@ export default function Home() {
                   <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
                     <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-400">
                       {isMakeMyPostMode
-                        ? uploadedImages.some((image) => image.sourceType === 'video_frame')
+                        ? (selectedOutputs.some((output) =>
+                              [
+                                'Instagram Reel',
+                                'TikTok Script',
+                                'YouTube Shorts',
+                                'YouTube Shorts Script',
+                              ].includes(output)
+                            ) ||
+                              uploadedImages.some(
+                                (image) => image.sourceType === 'video_frame'
+                              ))
                           ? 'Audio / Text Direction'
                           : 'Hashtags'
                         : 'What To Film'}
@@ -1757,7 +1788,17 @@ export default function Home() {
                     <p className="text-sm leading-relaxed text-zinc-100">
                       {formatGeneratedText(
                         isMakeMyPostMode
-                          ? uploadedImages.some((image) => image.sourceType === 'video_frame')
+                          ? (selectedOutputs.some((output) =>
+                              [
+                                'Instagram Reel',
+                                'TikTok Script',
+                                'YouTube Shorts',
+                                'YouTube Shorts Script',
+                              ].includes(output)
+                            ) ||
+                              uploadedImages.some(
+                                (image) => image.sourceType === 'video_frame'
+                              ))
                             ? results.production_plan?.audio_direction ||
                                 results.production_plan?.on_screen_text?.join(' ')
                             : results.production_plan?.hashtags?.join(' ') ||
@@ -1765,7 +1806,17 @@ export default function Home() {
                           : results.production_plan?.what_to_film?.[0] ||
                               results.production_plan?.shot_order?.[0],
                         isMakeMyPostMode
-                          ? uploadedImages.some((image) => image.sourceType === 'video_frame')
+                          ? (selectedOutputs.some((output) =>
+                              [
+                                'Instagram Reel',
+                                'TikTok Script',
+                                'YouTube Shorts',
+                                'YouTube Shorts Script',
+                              ].includes(output)
+                            ) ||
+                              uploadedImages.some(
+                                (image) => image.sourceType === 'video_frame'
+                              ))
                             ? 'Suggest simple audio mood, pacing, and on-screen text. Do not name copyrighted songs.'
                             : 'Use 3-8 relevant hashtags for this platform.'
                           : 'Film the clearest visual that shows the problem, process, or result behind this campaign.'
@@ -1800,22 +1851,24 @@ export default function Home() {
                     </p>
                   </div>
 
-                  <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-                    <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-400">
-                      CTA To Use
-                    </p>
-                    <p className="text-sm font-medium leading-relaxed text-zinc-100">
-                      {formatGeneratedText(
-                        results.production_plan?.cta ||
-                          results.monetization?.cta_strategy,
-                        'Use the campaign CTA exactly as written in the Money Plan.'
-                      )}
-                    </p>
-                  </div>
+                  {!isMakeMyPostMode && (
+                    <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                      <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-400">
+                        CTA To Use
+                      </p>
+                      <p className="text-sm font-medium leading-relaxed text-zinc-100">
+                        {formatGeneratedText(
+                          results.production_plan?.cta ||
+                            results.monetization?.cta_strategy,
+                          'Use the campaign CTA exactly as written in the Money Plan.'
+                        )}
+                      </p>
+                    </div>
+                  )}
 
-                  <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <div className={`rounded-2xl border border-white/10 bg-black/20 p-4 ${isMakeMyPostMode ? 'md:col-span-2' : ''}`}>
                     <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-400">
-                      DM Reply / Follow-Up
+                      {isMakeMyPostMode ? 'Reply To Send' : 'DM Reply / Follow-Up'}
                     </p>
                     <p className="text-sm leading-relaxed text-zinc-100">
                       {formatGeneratedText(

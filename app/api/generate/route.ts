@@ -121,6 +121,40 @@ function normalizeStringList(value: unknown) {
     .slice(0, 8);
 }
 
+function cleanMakeMyPostTitle(value: unknown) {
+  const rawTitle = normalizeString(value).replace(/[.]+$/g, '');
+
+  if (!rawTitle) {
+    return '';
+  }
+
+  let cleaned = rawTitle
+    .replace(/^(post|create|make|use|show|feature|highlight|showcase)\s+(a|an|this|the)\s+/i, '')
+    .replace(/^(post|create|make|use|show|feature|highlight|showcase)\s+/i, '')
+    .replace(/\bsocial media post\b/gi, '')
+    .replace(/\bcarousel\b/gi, '')
+    .replace(/\bbooking prompt\b/gi, '')
+    .replace(/\bappointment bookings?\b/gi, 'appointments')
+    .replace(/\blead generation asset\b/gi, '')
+    .replace(/\bcontent asset\b/gi, '')
+    .replace(/\bconversion path\b/gi, '')
+    .replace(/\s+showing\s+/i, ' with ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  if (!cleaned) {
+    cleaned = rawTitle;
+  }
+
+  const words = cleaned.split(/\s+/);
+
+  if (words.length > 10) {
+    cleaned = words.slice(0, 10).join(' ');
+  }
+
+  return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
+}
+
 function cleanMakeMyPostCta(value: unknown) {
   const cta = normalizeString(value);
 
@@ -1579,6 +1613,69 @@ ${BEAUTY_SERVICE_PLAYBOOK}
 - Do not say "build excitement" or "create hype" as the main strategy. Show the specific product reason someone would want to join the waitlist or buy.
 - For service businesses: prioritize leads, bookings, calls, quotes, consultations, assessments, custom plans, and repeat customers.`;
 
+function cleanMakeMyPostAudioDirection(value: unknown) {
+  const direction = normalizeString(value);
+
+  if (!direction) {
+    return '';
+  }
+
+  let cleaned = direction
+    .replace(
+      /\s*(or|and)?\s*(a\s+)?(soft|short|quick|light|calm|low-volume|low volume|simple)?\s*voiceover[^.,;]*[.,;]?/gi,
+      ''
+    )
+    .replace(/\bvoiceover\b/gi, 'on-screen text')
+    .replace(/\s+([.,;])/g, '$1')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  if (!cleaned) {
+    return 'Use light background music or natural sound with simple on-screen text for the hook and CTA.';
+  }
+
+  if (!/on-screen text|text overlay/i.test(cleaned)) {
+    cleaned += ' Use simple on-screen text for the hook and CTA.';
+  }
+
+  return cleaned;
+}
+
+function cleanMakeMyPostShotOrder(value: unknown, ctaKeyword: string) {
+  const shotOrder = normalizeStringList(value);
+
+  if (shotOrder.length === 0) {
+    return [];
+  }
+
+  const safeCta = ctaKeyword || 'DESIGN';
+
+  const cleaned = shotOrder.map((item) =>
+    item
+      .replace(
+        /text overlay inviting DMs?\.\s*Text overlay:\s*DM\s+[A-Z]+\.?/gi,
+        `text overlay: DM ${safeCta}.`
+      )
+      .replace(/text overlay inviting DMs?/gi, `text overlay: DM ${safeCta}`)
+      .replace(/text overlay\s+(and\s+)?CTA\.?/gi, `text overlay: DM ${safeCta}.`)
+      .replace(/text overlay:?\s*CTA\.?/gi, `text overlay: DM ${safeCta}.`)
+      .replace(/\bCTA\.?$/i, `text overlay: DM ${safeCta}.`)
+      .replace(/\s+([.,;])/g, '$1')
+      .replace(/\s+/g, ' ')
+      .trim()
+  );
+
+  const hasExactOverlay = cleaned.some((item) =>
+    new RegExp(`DM\\s+${safeCta}`, 'i').test(item)
+  );
+
+  if (!hasExactOverlay && cleaned.length > 0) {
+    cleaned[cleaned.length - 1] = `${cleaned[cleaned.length - 1]} Text overlay: DM ${safeCta}.`;
+  }
+
+  return cleaned;
+}
+
 export async function POST(req: Request) {
   try {
     const {
@@ -1711,11 +1808,44 @@ Rules for uploaded visuals:
 - If there are photos, order them in the clearest carousel or post sequence.
 - If there are both photos and video frames, use the best mix and explain the visual order clearly.
 - If the selected platform is Instagram Reel, TikTok Script, or YouTube Shorts, make the output video-friendly with an opening hook, on-screen text, visual pacing, and a clear CTA.
+- For TikTok Script, Instagram Reel, or YouTube Shorts, treat uploaded photos as visual beats for a short-form video or slideshow. Do not treat them like a static photo carousel.
+- For TikTok Script, Instagram Reel, or YouTube Shorts, production_plan.shot_order should use video language such as "Beat 1", "0-2 seconds", "Opening shot", "Detail shot", or "Final CTA shot." Do not write "Photo 1 first" for video-platform outputs.
+- For TikTok Script, Instagram Reel, or YouTube Shorts, every video flow should include exact on-screen text or CTA wording in at least one beat. Do not say vague phrases like "simple text overlay" without giving the exact text.
+- Good final beat example: "Beat 4: Final close-up with text overlay: DM DESIGN for help planning your next set."
+- For TikTok Script, Instagram Reel, or YouTube Shorts, production_plan.audio_direction should be useful and specific: audio mood, pacing, edit rhythm, and on-screen text direction. Do not name copyrighted songs, artists, or trending sounds.
+- Do not make voiceover the default. Most users should be able to make the post without speaking, showing their face, or recording new audio.
+- Default video direction should use uploaded visuals, simple text overlays, natural sound, salon/shop/workspace audio if relevant, or light background music.
+- Only suggest voiceover if the user specifically asks for voiceover, talking, narration, or spoken lines.
+- For beauty, nail, lash, hair, cleaning, detailing, and local service visuals, avoid generic claims like "fits any occasion", "perfect for everyone", "low-maintenance", "best choice", or "book now" unless the user provided that detail.
+- For nail, lash, hair, and beauty visuals, do not invent fill timing, refill timing, maintenance needs, appointment type, service category, product durability, nail health, lash health, or aftercare details unless the user provided them.
+- Avoid phrases like "timing your fill", "book your fill", "low-maintenance", "lasts longer", "healthy nails", "healthy lashes", "refill reminder", or "maintenance appointment" unless the user gave that context.
+- Safer beauty CTA phrasing: "DM DESIGN if you want help planning your next set", "DM STYLE and tell me your favorite color", or "DM BOOK with the look you want."
+- For nail visuals, prefer "next set", "next look", or "this style" over assuming "manicure", "fill", "refill", or a specific appointment type unless the user provided that context.
+- For photo uploads selected for TikTok, Instagram Reel, or YouTube Shorts, create a simple photo-to-video/slideshow plan that a business owner could build in the platform editor.
 - production_plan.shot_order should describe the photo, clip, or visual order.
 - production_plan.what_to_film should say what uploaded visual to use first, not ask the user to film extra footage unless extra footage is optional.
 - production_plan.audio_direction should suggest mood, pacing, or editing style. Do not name copyrighted songs, artists, or trending sounds.
 - production_plan.hashtags should include 3-8 relevant hashtags when useful.
 - CTA keyword should usually be one simple word such as DESIGN, QUOTE, BOOK, MENU, STYLE, FIT, START, CHECK, GUIDE, or CLEAN. Do not write CTA keywords as "DM DESIGN"; use "DESIGN" or a clear sentence separately.
+- MAKE MY POST QUALITY RULES:
+  - strategy.core_angle should be a short, natural post title under 9 words. It should sound like a finished post title, not an instruction. Never start with "Post a", "Post this", "Create a", "Make a", "Use a", "Show a", "Show this", "Feature a", or "Highlight a".
+  - Avoid awkward terms in strategy.core_angle such as "booking prompt", "appointment bookings", "lead generation asset", "content asset", "conversion path", "social media post", or "carousel" unless the word is truly needed.
+  - Good strategy.core_angle examples: "Pastel nails with floral detail", "Colorful mixed-design nail inspo", "Fresh manicure with soft pink detail", "Before-and-after clean home reset", "Fresh detail for a cleaner car interior".
+  - production_plan.concept should explain the finished post in plain language, not marketing jargon.
+  - production_plan.caption must be copy-paste-ready for the business owner to publish. Do not force a strict line count.
+  - The caption should be as long as needed to showcase the uploaded visual and create action, but it should not become a dense paragraph.
+  - Use 2-5 short lines when helpful. Each line should have a job: showcase the visual, create desire/relevance, invite a simple next step, or start a conversation.
+  - The caption must make the uploaded photo or clip feel worth noticing. Do not merely describe it; turn the visible detail into a reason someone might DM, comment, book, request a quote, ask a question, or buy.
+  - Keep caption claims grounded in what is visible. Do not add broad generic phrases like "perfect for any occasion", "fits every style", "fits everyday style", "for everyone", "works for any day", "everyday look", "low-maintenance", "without being too bold", or "simple but polished" unless the user provided that context.
+  - Do not tell people when or where the style/service is for unless the user provided that occasion, lifestyle, event, or use-case context.
+  - For beauty captions, make the visual detail do the selling: color, shape, shine, texture, flower detail, swirl detail, soft finish, bold contrast, clean result, or visible transformation.
+  - Avoid filler like "check this out", "don't miss out", "book now", "perfect for everyone", or generic hype. Keep it specific to what is visible.
+  - For visual service businesses like nails, lashes, hair, cleaning, detailing, wellness, or local services, describe what is visible and invite a simple next step. Do not over-explain strategy in the caption.
+  - For nail photos, do not invent maintenance level, durability, appointment availability, nail health, or "low-maintenance" unless the user gave that detail.
+  - Prefer captions like: "Pastel swirls, tiny flowers, polka dots, and soft color on every nail. This set is for someone who wants detail without every nail looking the same. DM DESIGN and tell me your favorite color if you want help planning your next set."
+  - Avoid captions like: "Save this if you like colorful nails with mixed designs" unless saving is the actual goal.
+  - The caption can include "DM DESIGN" as a full instruction sentence, but production_plan.cta itself must stay one clean keyword like "DESIGN".
+  - DM replies should feel like a real business owner responding, not a bot. Ask one simple question that moves the conversation forward.
 - Do not invent anything not visible or provided by the user: prices, availability, guarantees, client outcomes, medical claims, service packages, discounts, or exact timing.
 - If you are unsure what a visual shows, say it as a cautious visual observation and create a safe post angle around what the business owner can truthfully say.
 `
@@ -2960,6 +3090,44 @@ Final silent check:
         parsed.monetization = {
           ...(parsed.monetization || {}),
           cta_strategy: cleanCta,
+        };
+      }
+    }
+
+    if (mode === 'make_my_post') {
+      const cleanTitle = cleanMakeMyPostTitle(
+        parsed.strategy?.core_angle || parsed.production_plan?.concept
+      );
+
+      if (cleanTitle) {
+        parsed.strategy = {
+          ...(parsed.strategy || {}),
+          core_angle: cleanTitle,
+        };
+      }
+    }
+
+    if (mode === 'make_my_post') {
+      const ctaKeyword = cleanMakeMyPostCta(
+        parsed.production_plan?.cta || parsed.monetization?.cta_strategy
+      );
+
+      const cleanedAudioDirection = cleanMakeMyPostAudioDirection(
+        parsed.production_plan?.audio_direction
+      );
+
+      const cleanedShotOrder = cleanMakeMyPostShotOrder(
+        parsed.production_plan?.shot_order,
+        ctaKeyword
+      );
+
+      if (cleanedAudioDirection || cleanedShotOrder.length > 0) {
+        parsed.production_plan = {
+          ...(parsed.production_plan || {}),
+          ...(cleanedAudioDirection
+            ? { audio_direction: cleanedAudioDirection }
+            : {}),
+          ...(cleanedShotOrder.length > 0 ? { shot_order: cleanedShotOrder } : {}),
         };
       }
     }
