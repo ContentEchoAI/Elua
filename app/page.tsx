@@ -374,17 +374,29 @@ function getPlatformDisplayName(value?: string) {
 
           const sourceWidth = video.videoWidth || 720;
           const sourceHeight = video.videoHeight || 1280;
-          const scale = Math.min(1, 900 / Math.max(sourceWidth, sourceHeight));
+          const shouldRotatePortraitVideo = sourceWidth > sourceHeight;
+          const outputWidth = shouldRotatePortraitVideo ? sourceHeight : sourceWidth;
+          const outputHeight = shouldRotatePortraitVideo ? sourceWidth : sourceHeight;
+          const scale = Math.min(1, 900 / Math.max(outputWidth, outputHeight));
 
-          canvas.width = Math.max(1, Math.round(sourceWidth * scale));
-          canvas.height = Math.max(1, Math.round(sourceHeight * scale));
+          canvas.width = Math.max(1, Math.round(outputWidth * scale));
+          canvas.height = Math.max(1, Math.round(outputHeight * scale));
 
           const frames: UploadedImage[] = [];
 
           for (let index = 0; index < sampleTimes.length; index += 1) {
             await seekVideoToTime(video, sampleTimes[index]);
 
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            context.setTransform(1, 0, 0, 1, 0, 0);
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (shouldRotatePortraitVideo) {
+              context.translate(canvas.width, 0);
+              context.rotate(Math.PI / 2);
+              context.drawImage(video, 0, 0, canvas.height, canvas.width);
+            } else {
+              context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            }
 
             frames.push({
               id: `${file.name}-frame-${index + 1}-${crypto.randomUUID()}`,
