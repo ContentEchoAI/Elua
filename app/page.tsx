@@ -1749,7 +1749,7 @@ function getPlatformDisplayName(value?: string) {
                     <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-400">
                       {isMakeMyPostMode
                         ? uploadedImages.length === 0
-                          ? 'Post Structure'
+                          ? 'Ready To Post'
                           : (selectedOutputs.some((output) =>
                                 [
                                   'Instagram Reel',
@@ -1768,15 +1768,20 @@ function getPlatformDisplayName(value?: string) {
                     <p className="whitespace-pre-wrap text-sm leading-relaxed text-zinc-100">
                       {formatGeneratedText(
                         isMakeMyPostMode
-                          ? results.production_plan?.shot_order ||
-                              results.production_plan?.what_to_film ||
-                              results.production_plan?.concept
+                          ? uploadedImages.length === 0
+                            ? results.production_plan?.caption ||
+                                results.best_output?.content ||
+                                results.production_plan?.concept ||
+                                results.production_plan?.shot_order
+                            : results.production_plan?.shot_order ||
+                                results.production_plan?.what_to_film ||
+                                results.production_plan?.concept
                           : results.production_plan?.concept ||
                               results.best_output?.reason ||
                               results.strategy?.content_goal,
                         isMakeMyPostMode
                           ? uploadedImages.length === 0
-                            ? 'Use this structure to turn the idea into a post, caption, CTA, and reply.'
+                            ? 'Copy and paste this post, then send the reply below when someone responds.'
                             : 'Use the uploaded visuals as a short-form video flow: opening visual, detail shots, and CTA ending.'
                           : 'Create the strongest recommended content asset first, then use the CTA and follow-up path below.'
                       )}
@@ -1855,17 +1860,19 @@ function getPlatformDisplayName(value?: string) {
                     </div>
                   )}
 
-                  <div className="rounded-2xl border border-white/10 bg-black/20 p-4 md:col-span-2">
-                    <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-400">
-                      Caption
-                    </p>
-                    <p className="whitespace-pre-wrap text-sm leading-relaxed text-zinc-100">
-                      {formatGeneratedText(
-                        results.production_plan?.caption,
-                        'Use the caption from Make This Post, then end with the CTA below.'
-                      )}
-                    </p>
-                  </div>
+                  {!(isMakeMyPostMode && uploadedImages.length === 0) && (
+                    <div className="rounded-2xl border border-white/10 bg-black/20 p-4 md:col-span-2">
+                      <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-400">
+                        Caption
+                      </p>
+                      <p className="whitespace-pre-wrap text-sm leading-relaxed text-zinc-100">
+                        {formatGeneratedText(
+                          results.production_plan?.caption,
+                          'Use the caption from Make This Post, then end with the CTA below.'
+                        )}
+                      </p>
+                    </div>
+                  )}
 
                   {!isMakeMyPostMode && (
                     <div className="rounded-2xl border border-white/10 bg-black/20 p-4">

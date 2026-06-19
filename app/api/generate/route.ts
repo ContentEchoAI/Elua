@@ -1741,25 +1741,61 @@ function getPromptOnlyPostStructure(content: string, ctaKeyword: string) {
 
   if (/detail|detailing|car|auto|vehicle/.test(lowerContent)) {
     return [
-      'Hook: Call out the car-detailing problem or result the customer wants.',
-      'Body: Explain the mobile detailing service without inventing prices, timing, guarantees, or before-and-after results.',
-      `CTA: Ask people to DM ${safeCta} with their vehicle type and what part of the vehicle needs attention.`,
+      'Open with a simple question about what part of the vehicle needs the most attention.',
+      'Keep the post focused on mobile detailing in the service area without making price, timing, or guarantee claims.',
+      `End with: DM ${safeCta} with your vehicle type and what area needs attention.`,
     ];
   }
 
   if (/clean|cleaning|home|room|house/.test(lowerContent)) {
     return [
-      'Hook: Call out the room or home-cleaning problem the customer wants solved.',
-      'Body: Explain the cleaning service without inventing prices, timing, guarantees, or specialty service types.',
-      `CTA: Ask people to DM ${safeCta} with their home size, rooms, or areas that need attention.`,
+      'Open with a simple question about which room or area needs attention.',
+      'Keep the post focused on the cleaning request without making price, timing, guarantee, or specialty-service claims.',
+      `End with: DM ${safeCta} with your home size, rooms, or areas that need attention.`,
     ];
   }
 
   return [
-    'Hook: Call out the customer problem or desired result.',
-    'Body: Explain the service in plain language without inventing prices, timing, guarantees, or availability.',
-    `CTA: Ask people to DM ${safeCta} with the key details needed for the next step.`,
+    'Open with the customer problem or result they want.',
+    'Keep the post simple, specific, and focused on the service.',
+    `End with: DM ${safeCta} with the details needed for the next step.`,
   ];
+}
+
+function cleanPromptOnlyInventedDetails(value: unknown, userContent: string) {
+  let cleaned = normalizeString(value);
+
+  if (!cleaned) {
+    return '';
+  }
+
+  const lowerUserContent = userContent.toLowerCase();
+
+  const replacements: Array<[RegExp, string, RegExp]> = [
+    [/\bfloor mats?\b/gi, 'interior areas', /\bfloor mats?\b/i],
+    [/\bdoor frames?\b/gi, 'interior areas', /\bdoor frames?\b/i],
+    [/\bcup holders?\b/gi, 'interior spots', /\bcup holders?\b/i],
+    [/\btrunk\b/gi, 'interior area', /\btrunk\b/i],
+    [/\bpet hair\b/gi, 'specific mess', /\bpet hair\b/i],
+    [/\bstains?\b/gi, 'specific spots', /\bstains?\b/i],
+    [/\bcrumbs?\b/gi, 'everyday mess', /\bcrumbs?\b/i],
+    [/\ball the corners\b/gi, 'the areas that need attention', /\ball the corners\b/i],
+  ];
+
+  replacements.forEach(([pattern, replacement, allowedPattern]) => {
+    if (!allowedPattern.test(lowerUserContent)) {
+      cleaned = cleaned.replace(pattern, replacement);
+    }
+  });
+
+  cleaned = cleaned
+    .replace(/\bthe whole car gets cleaned\b/gi, 'every area is handled')
+    .replace(/\bregular wash\b/gi, 'basic car wash')
+    .replace(/\s+([.,;!?])/g, '$1')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  return cleaned;
 }
 
 export async function POST(req: Request) {
@@ -3302,6 +3338,36 @@ Final silent check:
       parsed.production_plan = {
         ...(parsed.production_plan || {}),
         shot_order: getPromptOnlyPostStructure(content, promptOnlyCta),
+      };
+    }
+
+    if (mode === 'make_my_post' && !hasUploadedImages) {
+      const cleanedPromptCaption = cleanPromptOnlyInventedDetails(
+        parsed.production_plan?.caption,
+        content
+      );
+      const cleanedPromptDmReply = cleanPromptOnlyInventedDetails(
+        parsed.production_plan?.dm_reply,
+        content
+      );
+      const cleanedPromptFollowUp = cleanPromptOnlyInventedDetails(
+        parsed.production_plan?.follow_up_message,
+        content
+      );
+      const cleanedPromptShotOrder = normalizeStringList(
+        parsed.production_plan?.shot_order
+      ).map((item) => cleanPromptOnlyInventedDetails(item, content));
+
+      parsed.production_plan = {
+        ...(parsed.production_plan || {}),
+        ...(cleanedPromptCaption ? { caption: cleanedPromptCaption } : {}),
+        ...(cleanedPromptDmReply ? { dm_reply: cleanedPromptDmReply } : {}),
+        ...(cleanedPromptFollowUp
+          ? { follow_up_message: cleanedPromptFollowUp }
+          : {}),
+        ...(cleanedPromptShotOrder.length > 0
+          ? { shot_order: cleanedPromptShotOrder }
+          : {}),
       };
     }
 
