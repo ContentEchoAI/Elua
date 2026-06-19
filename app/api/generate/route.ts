@@ -1735,6 +1735,33 @@ function cleanUnsupportedCleaningClaims(
   return cleaned;
 }
 
+function getPromptOnlyPostStructure(content: string, ctaKeyword: string) {
+  const lowerContent = content.toLowerCase();
+  const safeCta = ctaKeyword || 'QUOTE';
+
+  if (/detail|detailing|car|auto|vehicle/.test(lowerContent)) {
+    return [
+      'Hook: Call out the car-detailing problem or result the customer wants.',
+      'Body: Explain the mobile detailing service without inventing prices, timing, guarantees, or before-and-after results.',
+      `CTA: Ask people to DM ${safeCta} with their vehicle type and what part of the vehicle needs attention.`,
+    ];
+  }
+
+  if (/clean|cleaning|home|room|house/.test(lowerContent)) {
+    return [
+      'Hook: Call out the room or home-cleaning problem the customer wants solved.',
+      'Body: Explain the cleaning service without inventing prices, timing, guarantees, or specialty service types.',
+      `CTA: Ask people to DM ${safeCta} with their home size, rooms, or areas that need attention.`,
+    ];
+  }
+
+  return [
+    'Hook: Call out the customer problem or desired result.',
+    'Body: Explain the service in plain language without inventing prices, timing, guarantees, or availability.',
+    `CTA: Ask people to DM ${safeCta} with the key details needed for the next step.`,
+  ];
+}
+
 export async function POST(req: Request) {
   try {
     const {
@@ -1913,7 +1940,25 @@ Rules for uploaded visuals:
 - Do not invent anything not visible or provided by the user: prices, availability, guarantees, client outcomes, medical claims, service packages, discounts, or exact timing.
 - If you are unsure what a visual shows, say it as a cautious visual observation and create a safe post angle around what the business owner can truthfully say.
 `
-      : '';
+      : mode === 'make_my_post'
+        ? `
+PROMPT-ONLY MAKE MY POST CONTEXT:
+The user did not upload photos or video clips. Build the post from the user's short idea only.
+
+Rules for prompt-only Make My Post:
+- Do NOT invent uploaded photos, video clips, before/after visuals, close-ups, final reveals, messy/clean images, photo order, clip order, camera angles, or visual proof unless the user explicitly described those visuals.
+- Do NOT write as if the user already has a before/after, close-up, or finished visual.
+- production_plan.shot_order should be a simple post structure, not a fake media sequence. Use structure like: Hook, body point, CTA line, reply/follow-up.
+- If no media is uploaded, do not mention photos, images, shots, clips, footage, visual proof, tools shot, van shot, before/after, close-up, final reveal, or local visual unless the user explicitly described having those visuals.
+- If the selected platform is Instagram Reel, TikTok, or YouTube Shorts, you may suggest an optional simple video/text-overlay idea the user could create, but do not claim footage already exists.
+- If the selected platform is Facebook Post or LinkedIn Post, write a text-first post structure only. Do not suggest camera shots or visual assets.
+- For mobile detailing, cleaning, local services, home services, beauty, wellness, catering, or fitness, do not invent prices, availability, guarantees, same-day service, licensed/insured claims, packages, before/after results, or exact service details unless provided.
+- For mobile detailing, do not invent specific dirty areas like cup holders, floor mats, pet hair, stains, door frames, or all corners unless the user mentions them. It is safe to ask what part of the vehicle needs attention.
+- CTA keyword should usually be one simple word such as CAR, QUOTE, CLEAN, BOOK, DESIGN, STYLE, START, CHECK, or GUIDE. The caption can say "DM CAR" or "DM QUOTE", but production_plan.cta itself should stay one clean keyword.
+- The caption should turn the short idea into a post that can start a real conversation, quote request, booking question, or DM.
+- Reply To Send should ask for the next practical detail needed to help the customer.
+`
+        : '';
 
     const isClothingOrEcommercePrompt =
       /clothing|fashion|apparel|streetwear|brand|ecommerce|e-commerce|product brand|drop|waitlist|launch|release/.test(
@@ -3247,6 +3292,17 @@ Final silent check:
           ...(cleanedShotOrder.length > 0 ? { shot_order: cleanedShotOrder } : {}),
         };
       }
+    }
+
+    if (mode === 'make_my_post' && !hasUploadedImages) {
+      const promptOnlyCta = cleanMakeMyPostCta(
+        parsed.production_plan?.cta || parsed.monetization?.cta_strategy
+      );
+
+      parsed.production_plan = {
+        ...(parsed.production_plan || {}),
+        shot_order: getPromptOnlyPostStructure(content, promptOnlyCta),
+      };
     }
 
     return NextResponse.json(parsed);

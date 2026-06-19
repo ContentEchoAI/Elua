@@ -1748,19 +1748,21 @@ function getPlatformDisplayName(value?: string) {
                   <div className="rounded-2xl border border-white/10 bg-black/20 p-4 md:col-span-2">
                     <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-400">
                       {isMakeMyPostMode
-                        ? (selectedOutputs.some((output) =>
-                              [
-                                'Instagram Reel',
-                                'TikTok Script',
-                                'YouTube Shorts',
-                                'YouTube Shorts Script',
-                              ].includes(output)
-                            ) ||
-                              uploadedImages.some(
-                                (image) => image.sourceType === 'video_frame'
-                              ))
-                          ? 'Video Flow'
-                          : 'Photo Order'
+                        ? uploadedImages.length === 0
+                          ? 'Post Structure'
+                          : (selectedOutputs.some((output) =>
+                                [
+                                  'Instagram Reel',
+                                  'TikTok Script',
+                                  'YouTube Shorts',
+                                  'YouTube Shorts Script',
+                                ].includes(output)
+                              ) ||
+                                uploadedImages.some(
+                                  (image) => image.sourceType === 'video_frame'
+                                ))
+                            ? 'Video Flow'
+                            : 'Photo Order'
                         : 'Make This First'}
                     </p>
                     <p className="whitespace-pre-wrap text-sm leading-relaxed text-zinc-100">
@@ -1773,7 +1775,9 @@ function getPlatformDisplayName(value?: string) {
                               results.best_output?.reason ||
                               results.strategy?.content_goal,
                         isMakeMyPostMode
-                          ? 'Use the uploaded visuals as a short-form video flow: opening visual, detail shots, and CTA ending.'
+                          ? uploadedImages.length === 0
+                            ? 'Use this structure to turn the idea into a post, caption, CTA, and reply.'
+                            : 'Use the uploaded visuals as a short-form video flow: opening visual, detail shots, and CTA ending.'
                           : 'Create the strongest recommended content asset first, then use the CTA and follow-up path below.'
                       )}
                     </p>
