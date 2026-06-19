@@ -1676,6 +1676,65 @@ function cleanMakeMyPostShotOrder(value: unknown, ctaKeyword: string) {
   return cleaned;
 }
 
+function cleanDuplicateCtaWords(value: unknown) {
+  const text = normalizeString(value);
+
+  if (!text) {
+    return '';
+  }
+
+  return text
+    .replace(
+      /\b(DM|comment|reply|text|send|message)\s+([A-Z]{2,20})\s+\2\b/gi,
+      '$1 $2'
+    )
+    .replace(/\bDM\s+([A-Z]{2,20})\s+and\s+DM\s+\1\b/gi, 'DM $1')
+    .replace(/\s+([.,;!?])/g, '$1')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function cleanUnsupportedCleaningClaims(
+  value: unknown,
+  allowDeepClean: boolean,
+  allowCarpetCleaning: boolean
+) {
+  let cleaned = cleanDuplicateCtaWords(value);
+
+  if (!cleaned) {
+    return '';
+  }
+
+  if (!allowCarpetCleaning) {
+    cleaned = cleaned
+      .replace(/\bcarpet cleaning\b/gi, 'home cleaning')
+      .replace(/\bclean carpets\b/gi, 'clean the room')
+      .replace(/\bcleaning carpets\b/gi, 'cleaning the room')
+      .replace(/\bcarpet condition\b/gi, 'room details')
+      .replace(/\bcarpet fibers\b/gi, 'the floor area')
+      .replace(/\bcarpet section\b/gi, 'finished room area')
+      .replace(/\bcarpet with vacuum\b/gi, 'room with vacuum')
+      .replace(/\bvisual proof\b/gi, 'finished room')
+      .replace(/\s+([.,;!?])/g, '$1')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  if (!allowDeepClean) {
+    cleaned = cleaned
+      .replace(/\bdeep clean\b/gi, 'cleaning reset')
+      .replace(/\bdeep cleaning\b/gi, 'cleaning')
+      .replace(/\bstandard clean\b/gi, 'cleaning')
+      .replace(/\bmove[- ]?out clean\b/gi, 'cleaning')
+      .replace(/\brecurring clean\b/gi, 'cleaning')
+      .replace(/\s+([.,;!?])/g, '$1')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  return cleaned;
+}
+
 export async function POST(req: Request) {
   try {
     const {
@@ -1808,6 +1867,11 @@ Rules for uploaded visuals:
 - If there are photos, order them in the clearest carousel or post sequence.
 - If there are both photos and video frames, use the best mix and explain the visual order clearly.
 - If the selected platform is Instagram Reel, TikTok Script, or YouTube Shorts, make the output video-friendly with an opening hook, on-screen text, visual pacing, and a clear CTA.
+- For cleaning, home service, local service, detailing, landscaping, and similar service visuals, do not invent service categories like carpet cleaning, upholstery cleaning, deep clean, standard clean, move-out clean, recurring clean, same-day service, licensed/insured status, guarantees, exact pricing, exact availability, or package names unless the user provided them.
+- If a cleaning video shows vacuuming, tidying, wiping, organizing, or a room reset, call it home cleaning, living room cleaning, room reset, or cleaning in progress unless the user specifically says carpet cleaning, upholstery cleaning, deep cleaning, move-out cleaning, or another specialty service.
+- For cleaning/local service captions, prefer quote-request language: room details, home size, service area, project details, photos of the area, quote request, or which rooms need attention.
+- For cleaning/local service CTA keywords, prefer QUOTE, CLEAN, ESTIMATE, or BOOK only when the caption clearly explains what the person should send.
+- Never duplicate CTA keywords. Write "DM QUOTE", not "DM QUOTE QUOTE".
 - For TikTok Script, Instagram Reel, or YouTube Shorts, treat uploaded photos as visual beats for a short-form video or slideshow. Do not treat them like a static photo carousel.
 - For TikTok Script, Instagram Reel, or YouTube Shorts, production_plan.shot_order should use video language such as "Beat 1", "0-2 seconds", "Opening shot", "Detail shot", or "Final CTA shot." Do not write "Photo 1 first" for video-platform outputs.
 - For TikTok Script, Instagram Reel, or YouTube Shorts, every video flow should include exact on-screen text or CTA wording in at least one beat. Do not say vague phrases like "simple text overlay" without giving the exact text.
@@ -3124,6 +3188,59 @@ Final silent check:
       if (cleanedAudioDirection || cleanedShotOrder.length > 0) {
         parsed.production_plan = {
           ...(parsed.production_plan || {}),
+          ...(cleanedAudioDirection
+            ? { audio_direction: cleanedAudioDirection }
+            : {}),
+          ...(cleanedShotOrder.length > 0 ? { shot_order: cleanedShotOrder } : {}),
+        };
+      }
+    }
+
+    if (mode === 'make_my_post') {
+      const providedContext = `${content || ''}`.toLowerCase();
+      const allowDeepClean = /\bdeep\s+clean|deep\s+cleaning\b/i.test(
+        providedContext
+      );
+      const allowCarpetCleaning = /\bcarpet\s+clean|carpet\s+cleaning|rug\s+clean|rug\s+cleaning\b/i.test(
+        providedContext
+      );
+
+      const cleanedCaption = cleanUnsupportedCleaningClaims(
+        parsed.production_plan?.caption,
+        allowDeepClean,
+        allowCarpetCleaning
+      );
+      const cleanedDmReply = cleanUnsupportedCleaningClaims(
+        parsed.production_plan?.dm_reply,
+        allowDeepClean,
+        allowCarpetCleaning
+      );
+      const cleanedFollowUp = cleanUnsupportedCleaningClaims(
+        parsed.production_plan?.follow_up_message,
+        allowDeepClean,
+        allowCarpetCleaning
+      );
+      const cleanedAudioDirection = cleanDuplicateCtaWords(
+        parsed.production_plan?.audio_direction
+      );
+      const cleanedShotOrder = normalizeStringList(
+        parsed.production_plan?.shot_order
+      ).map((item) =>
+        cleanUnsupportedCleaningClaims(item, allowDeepClean, allowCarpetCleaning)
+      );
+
+      if (
+        cleanedCaption ||
+        cleanedDmReply ||
+        cleanedFollowUp ||
+        cleanedAudioDirection ||
+        cleanedShotOrder.length > 0
+      ) {
+        parsed.production_plan = {
+          ...(parsed.production_plan || {}),
+          ...(cleanedCaption ? { caption: cleanedCaption } : {}),
+          ...(cleanedDmReply ? { dm_reply: cleanedDmReply } : {}),
+          ...(cleanedFollowUp ? { follow_up_message: cleanedFollowUp } : {}),
           ...(cleanedAudioDirection
             ? { audio_direction: cleanedAudioDirection }
             : {}),
