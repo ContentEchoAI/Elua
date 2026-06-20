@@ -1689,6 +1689,10 @@ function cleanDuplicateCtaWords(value: unknown) {
       '$1 $2'
     )
     .replace(/\bDM\s+([A-Z]{2,20})\s+and\s+DM\s+\1\b/gi, 'DM $1')
+    .replace(/\bclear spoken lines or captions\b/gi, 'simple on-screen captions')
+    .replace(/\bspoken lines\b/gi, 'on-screen text')
+    .replace(/\bvoice lines\b/gi, 'on-screen text')
+    .replace(/\bnarration\b/gi, 'on-screen text')
     .replace(/\s+([.,;!?])/g, '$1')
     .replace(/\s+/g, ' ')
     .trim();
@@ -1704,6 +1708,20 @@ function cleanUnsupportedCleaningClaims(
   if (!cleaned) {
     return '';
   }
+
+  cleaned = cleaned
+    .replace(/\bbusiness contact screen\b/gi, 'final text overlay')
+    .replace(/\bcontact screen\b/gi, 'text overlay')
+    .replace(/\bbooking screen\b/gi, 'text overlay')
+    .replace(/\bwebsite screen\b/gi, 'text overlay')
+    .replace(/\blogo screen\b/gi, 'text overlay')
+    .replace(/\bend card\b/gi, 'final text overlay')
+    .replace(/\bvisual proof\b/gi, 'finished result')
+    .replace(/\bas proof\b/gi, 'as the finished result')
+    .replace(/\bin one cleaning session\b/gi, 'after the clean')
+    .replace(/\s+([.,;!?])/g, '$1')
+    .replace(/\s+/g, ' ')
+    .trim();
 
   if (!allowCarpetCleaning) {
     cleaned = cleaned
@@ -1993,6 +2011,8 @@ Rules for uploaded visuals:
 - For TikTok Script, Instagram Reel, or YouTube Shorts, production_plan.audio_direction should be useful and specific: audio mood, pacing, edit rhythm, and on-screen text direction. Do not name copyrighted songs, artists, or trending sounds.
 - Do not make voiceover the default. Most users should be able to make the post without speaking, showing their face, or recording new audio.
 - Default video direction should use uploaded visuals, simple text overlays, natural sound, salon/shop/workspace audio if relevant, or light background music.
+- Do not suggest spoken lines, voice lines, narration, or voiceover by default. Use on-screen text instead.
+- Do not invent a business contact screen, booking screen, website screen, logo screen, or end card unless the user uploaded it or provided that asset. Use a simple final text overlay instead.
 - Only suggest voiceover if the user specifically asks for voiceover, talking, narration, or spoken lines.
 - For beauty, nail, lash, hair, cleaning, detailing, and local service visuals, avoid generic claims like "fits any occasion", "perfect for everyone", "low-maintenance", "best choice", or "book now" unless the user provided that detail.
 - For nail, lash, hair, and beauty visuals, do not invent fill timing, refill timing, maintenance needs, appointment type, service category, product durability, nail health, lash health, or aftercare details unless the user provided them.

@@ -181,7 +181,7 @@ export default function Home() {
 
   const MAX_FREE = 10;
   const MAX_SAVED = 20;
-  const MAX_UPLOAD_IMAGES = 5;
+  const MAX_UPLOAD_IMAGES = 6;
 
   const formatGeneratedText = (value: unknown, fallback = ''): string => {
     if (typeof value === 'string') return value;
@@ -1330,7 +1330,7 @@ function getPlatformDisplayName(value?: string) {
                           Upload photos or short clips from your business
                         </p>
                         <p className="mt-1 text-xs leading-relaxed text-zinc-400 sm:text-sm">
-                          Add photos or short clips. Hummingbird will choose the strongest visuals, write the caption, CTA, DM reply, hashtags, and posting direction.
+                          Add up to 6 photos or short clip frames. Hummingbird will choose the strongest visuals, write the caption, CTA, DM reply, hashtags, and posting direction.
                         </p>
                       </div>
 
