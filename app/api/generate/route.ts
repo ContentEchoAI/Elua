@@ -1798,6 +1798,57 @@ function cleanPromptOnlyInventedDetails(value: unknown, userContent: string) {
   return cleaned;
 }
 
+function getServiceAreaFromPrompt(content: string) {
+  const match = content.match(/\bin\s+([a-z][a-z\s.-]{1,60})$/i);
+
+  if (!match) {
+    return '';
+  }
+
+  return match[1].replace(/[.]+$/g, '').replace(/\s+/g, ' ').trim();
+}
+
+function getPromptOnlyReadyPostOverride(content: string) {
+  const trimmedContent = normalizeString(content);
+  const lowerContent = trimmedContent.toLowerCase();
+  const serviceArea = getServiceAreaFromPrompt(trimmedContent);
+  const areaText = serviceArea ? ` in ${serviceArea}` : '';
+
+  if (/mobile\s+detail|detailing|car\s+detail|auto\s+detail/.test(lowerContent)) {
+    return {
+      title: `Mobile detailing${areaText}`,
+      cta: 'CAR',
+      caption: `Mobile detailing${areaText}.
+
+Your car does not have to be a disaster to need a reset.
+
+If the inside, outside, or both have been sitting on your “later” list, send me what you drive and what needs the most attention.
+
+DM CAR and I’ll send the next step.`,
+      dmReply:
+        'Thanks! What kind of vehicle do you have, and what needs the most attention right now — interior, exterior, or both?',
+    };
+  }
+
+  if (/cleaning|home\s+clean|house\s+clean|room\s+clean/.test(lowerContent)) {
+    return {
+      title: `Home cleaning${areaText}`,
+      cta: 'QUOTE',
+      caption: `Home cleaning${areaText}.
+
+Some rooms just start feeling like too much.
+
+Tell me which room or area needs the most attention, and I’ll send the next step.
+
+DM QUOTE with the room or area you want help with.`,
+      dmReply:
+        'Thanks! What room or area needs the most attention, and about how large is the space?',
+    };
+  }
+
+  return null;
+}
+
 export async function POST(req: Request) {
   try {
     const {
@@ -3369,6 +3420,35 @@ Final silent check:
           ? { shot_order: cleanedPromptShotOrder }
           : {}),
       };
+    }
+
+    if (mode === 'make_my_post' && !hasUploadedImages) {
+      const promptOnlyOverride = getPromptOnlyReadyPostOverride(content);
+
+      if (promptOnlyOverride) {
+        parsed.strategy = {
+          ...(parsed.strategy || {}),
+          core_angle: promptOnlyOverride.title,
+        };
+
+        parsed.production_plan = {
+          ...(parsed.production_plan || {}),
+          caption: promptOnlyOverride.caption,
+          cta: promptOnlyOverride.cta,
+          dm_reply: promptOnlyOverride.dmReply,
+          shot_order: [],
+        };
+
+        parsed.monetization = {
+          ...(parsed.monetization || {}),
+          cta_strategy: promptOnlyOverride.cta,
+        };
+
+        parsed.best_output = {
+          ...(parsed.best_output || {}),
+          content: promptOnlyOverride.caption,
+        };
+      }
     }
 
     return NextResponse.json(parsed);
