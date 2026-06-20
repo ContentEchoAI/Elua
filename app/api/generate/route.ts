@@ -1641,7 +1641,11 @@ function cleanMakeMyPostAudioDirection(value: unknown) {
   return cleaned;
 }
 
-function cleanMakeMyPostShotOrder(value: unknown, ctaKeyword: string) {
+function cleanMakeMyPostShotOrder(
+  value: unknown,
+  ctaKeyword: string,
+  shouldUseVideoOverlay: boolean
+) {
   const shotOrder = normalizeStringList(value);
 
   if (shotOrder.length === 0) {
@@ -1650,20 +1654,48 @@ function cleanMakeMyPostShotOrder(value: unknown, ctaKeyword: string) {
 
   const safeCta = ctaKeyword || 'DESIGN';
 
-  const cleaned = shotOrder.map((item) =>
-    item
+  const cleaned = shotOrder.map((item) => {
+    let cleanedItem = item
       .replace(
         /text overlay inviting DMs?\.\s*Text overlay:\s*DM\s+[A-Z]+\.?/gi,
-        `text overlay: DM ${safeCta}.`
+        shouldUseVideoOverlay ? `text overlay: DM ${safeCta}.` : ''
       )
-      .replace(/text overlay inviting DMs?/gi, `text overlay: DM ${safeCta}`)
-      .replace(/text overlay\s+(and\s+)?CTA\.?/gi, `text overlay: DM ${safeCta}.`)
-      .replace(/text overlay:?\s*CTA\.?/gi, `text overlay: DM ${safeCta}.`)
-      .replace(/\bCTA\.?$/i, `text overlay: DM ${safeCta}.`)
+      .replace(
+        /text overlay inviting DMs?/gi,
+        shouldUseVideoOverlay ? `text overlay: DM ${safeCta}` : ''
+      )
+      .replace(
+        /\s*text overlay\s+(and\s+)?CTA\.?/gi,
+        shouldUseVideoOverlay ? ` text overlay: DM ${safeCta}.` : ''
+      )
+      .replace(
+        /\s*text overlay:?\s*CTA\.?/gi,
+        shouldUseVideoOverlay ? ` text overlay: DM ${safeCta}.` : ''
+      )
+      .replace(
+        /\s*Text overlay:\s*DM\s+[A-Z]+\.?/gi,
+        shouldUseVideoOverlay ? ` Text overlay: DM ${safeCta}.` : ''
+      )
+      .replace(
+        /\s*text overlay:\s*DM\s+[A-Z]+\.?/gi,
+        shouldUseVideoOverlay ? ` text overlay: DM ${safeCta}.` : ''
+      )
+      .replace(
+        /\s*\bCTA\.?$/i,
+        shouldUseVideoOverlay ? ` text overlay: DM ${safeCta}.` : ''
+      )
       .replace(/\s+([.,;])/g, '$1')
       .replace(/\s+/g, ' ')
-      .trim()
-  );
+      .trim();
+
+    cleanedItem = cleanedItem.replace(/\s+\.\s*$/g, '.').trim();
+
+    return cleanedItem;
+  }).filter(Boolean);
+
+  if (!shouldUseVideoOverlay) {
+    return cleaned;
+  }
 
   const hasExactOverlay = cleaned.some((item) =>
     new RegExp(`DM\\s+${safeCta}`, 'i').test(item)
@@ -2020,6 +2052,7 @@ Rules for uploaded visuals:
 - Safer beauty CTA phrasing: "DM DESIGN if you want help planning your next set", "DM STYLE and tell me your favorite color", or "DM BOOK with the look you want."
 - For nail visuals, prefer "next set", "next look", or "this style" over assuming "manicure", "fill", "refill", or a specific appointment type unless the user provided that context.
 - For photo uploads selected for TikTok, Instagram Reel, or YouTube Shorts, create a simple photo-to-video/slideshow plan that a business owner could build in the platform editor.
+- For Instagram Carousel, Facebook Post, LinkedIn Post, or other photo/text outputs, do not use video language such as text overlay, audio, spoken lines, clip flow, beat, final frame, or CTA screen. Use photo order, caption, hashtags, and reply only.
 - production_plan.shot_order should describe the photo, clip, or visual order.
 - production_plan.what_to_film should say what uploaded visual to use first, not ask the user to film extra footage unless extra footage is optional.
 - production_plan.audio_direction should suggest mood, pacing, or editing style. Do not name copyrighted songs, artists, or trending sounds.
@@ -3332,9 +3365,14 @@ Final silent check:
         parsed.production_plan?.audio_direction
       );
 
+      const shouldUseVideoOverlay = finalContentOutputs.some((output) =>
+        ['Instagram Reel', 'TikTok Script', 'YouTube Shorts Script'].includes(output)
+      );
+
       const cleanedShotOrder = cleanMakeMyPostShotOrder(
         parsed.production_plan?.shot_order,
-        ctaKeyword
+        ctaKeyword,
+        shouldUseVideoOverlay
       );
 
       if (cleanedAudioDirection || cleanedShotOrder.length > 0) {
