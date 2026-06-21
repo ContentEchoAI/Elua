@@ -2782,7 +2782,7 @@ function getPlatformDisplayName(value?: string) {
             </div>
           </div>
 
-          <div className="order-3 min-w-0 lg:hidden">{accountPanel}</div>
+          <div className="hidden">{accountPanel}</div>
 
 
 
