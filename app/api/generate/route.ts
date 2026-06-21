@@ -1309,6 +1309,201 @@ function cleanGeneratedValue<T>(value: T): T {
   return value;
 }
 
+
+type InvisibleMakeMyPostQualityGateOptions = {
+  hasUploadedImages: boolean;
+  selectedOutputs: string[];
+};
+
+function cleanInvisibleMakeMyPostLine(value: unknown) {
+  const raw = normalizeString(value);
+
+  if (!raw) {
+    return '';
+  }
+
+  return raw
+    .replace(/^(caption|cta|call to action|dm reply|follow[- ]?up message)\s*:\s*/i, '')
+    .replace(/\bTikTok Script\b/gi, 'TikTok')
+    .replace(/\bYouTube Shorts Script\b/gi, 'YouTube Shorts')
+    .replace(/\bDM\s+([A-Z]{2,12})(?:\s+\1\b)+/gi, 'DM $1')
+    .replace(/\bComment\s+([A-Z]{2,12})(?:\s+\1\b)+/gi, 'Comment $1')
+    .replace(/\bperfect for (any occasion|everyone|every style|any day)\b/gi, 'easy to ask about')
+    .replace(/\bfits (any occasion|everyone|every style|any day)\b/gi, 'easy to ask about')
+    .replace(/\blow[- ]maintenance\b/gi, 'clean-looking')
+    .replace(/\bbest choice\b/gi, 'option to ask about')
+    .replace(/\bbook now\b/gi, 'DM BOOK')
+    .replace(/\bspots? (are )?(filling|fill) up fast\b/gi, 'availability can vary')
+    .replace(/\bsame[- ]day availability\b/gi, 'availability')
+    .replace(/\bguaranteed\b/gi, '')
+    .replace(/\bdiagnose\b/gi, 'answer questions about')
+    .replace(/\blead capture\b/gi, 'reply path')
+    .replace(/\bwarm leads\b/gi, 'interested replies')
+    .replace(/\bconversion chances\b/gi, 'reply clarity')
+    .replace(/\s+([,.!?])/g, '$1')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+}
+
+function cleanInvisibleMakeMyPostTitle(value: unknown) {
+  const rawTitle = cleanInvisibleMakeMyPostLine(value).replace(/[.]+$/g, '');
+
+  if (!rawTitle) {
+    return '';
+  }
+
+  let cleaned = rawTitle
+    .replace(/^(post|create|make|use|show|feature|highlight|showcase)\s+(a|an|this|the)\s+/i, '')
+    .replace(/^(post|create|make|use|show|feature|highlight|showcase)\s+/i, '')
+    .replace(/\bsocial media post\b/gi, '')
+    .replace(/\bcarousel\b/gi, '')
+    .replace(/\bbooking prompt\b/gi, '')
+    .replace(/\bappointment bookings?\b/gi, 'appointments')
+    .replace(/\blead generation asset\b/gi, '')
+    .replace(/\bcontent asset\b/gi, '')
+    .replace(/\bconversion path\b/gi, '')
+    .replace(/\s+showing\s+/i, ' with ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  if (!cleaned) {
+    cleaned = rawTitle;
+  }
+
+  const words = cleaned.split(/\s+/);
+
+  if (words.length > 9) {
+    cleaned = words.slice(0, 9).join(' ');
+  }
+
+  return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
+}
+
+function cleanInvisibleMakeMyPostCta(value: unknown) {
+  const cleaned = cleanInvisibleMakeMyPostLine(value)
+    .replace(/^(use this line|end the post with)\s*:\s*/i, '')
+    .replace(/\bDM\s+DM\s+/gi, 'DM ')
+    .replace(/\bComment\s+Comment\s+/gi, 'Comment ')
+    .trim();
+
+  if (!cleaned) {
+    return '';
+  }
+
+  const keywordOnly = cleaned.match(/^[A-Z]{2,12}$/);
+
+  if (keywordOnly) {
+    return `DM ${cleaned}`;
+  }
+
+  return cleaned;
+}
+
+function hasNaturalMakeMyPostCta(value: string) {
+  return /\b(DM|comment|reply|message|send)\b/i.test(value);
+}
+
+function removeVideoLanguageFromPhotoLine(value: string) {
+  return value
+    .replace(/\bBeat\s*\d+\s*[:.-]?\s*/gi, '')
+    .replace(/\b\d+\s*[-–]\s*\d+\s*seconds?\s*[:.-]?\s*/gi, '')
+    .replace(/\bopening shot\b/gi, 'first photo')
+    .replace(/\bdetail shot\b/gi, 'detail photo')
+    .replace(/\bfinal CTA shot\b/gi, 'final photo')
+    .replace(/\btext overlay\b/gi, 'text')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+}
+
+function applyInvisibleMakeMyPostQualityGate(
+  parsed: GeneratedResponse,
+  options: InvisibleMakeMyPostQualityGateOptions
+) {
+  const selectedVideoOutput = options.selectedOutputs.some((output) =>
+    /reel|tiktok|shorts/i.test(output)
+  );
+
+  const shouldAvoidVideoLanguage =
+    options.hasUploadedImages && !selectedVideoOutput;
+
+  const currentProductionPlan = parsed.production_plan || {};
+  const currentCaption =
+    currentProductionPlan.caption || parsed.best_output?.content || '';
+
+  const cleanedCta = cleanInvisibleMakeMyPostCta(
+    currentProductionPlan.cta || parsed.monetization?.cta_strategy || ''
+  );
+
+  let cleanedCaption = cleanInvisibleMakeMyPostLine(currentCaption);
+
+  if (cleanedCaption && cleanedCta && !hasNaturalMakeMyPostCta(cleanedCaption)) {
+    cleanedCaption = `${cleanedCaption}\n\n${cleanedCta}`;
+  }
+
+  const cleanedDmReply = cleanInvisibleMakeMyPostLine(
+    currentProductionPlan.dm_reply ||
+      currentProductionPlan.follow_up_message ||
+      ''
+  );
+
+  const cleanedFollowUp = cleanInvisibleMakeMyPostLine(
+    currentProductionPlan.follow_up_message || ''
+  );
+
+  const cleanedShotOrder = normalizeStringList(
+    currentProductionPlan.shot_order
+  )
+    .map((item) => cleanInvisibleMakeMyPostLine(item))
+    .map((item) =>
+      shouldAvoidVideoLanguage ? removeVideoLanguageFromPhotoLine(item) : item
+    )
+    .filter((item) => item.length > 0);
+
+  const cleanedOnScreenText = normalizeStringList(
+    currentProductionPlan.on_screen_text
+  )
+    .map((item) => cleanInvisibleMakeMyPostLine(item))
+    .filter((item) => item.length > 0);
+
+  const cleanedTitle = cleanInvisibleMakeMyPostTitle(
+    parsed.strategy?.core_angle ||
+      currentProductionPlan.concept ||
+      parsed.best_output?.platform ||
+      ''
+  );
+
+  parsed.mode = 'make_my_post';
+
+  parsed.strategy = {
+    ...(parsed.strategy || {}),
+    ...(cleanedTitle ? { core_angle: cleanedTitle } : {}),
+  };
+
+  parsed.production_plan = {
+    ...currentProductionPlan,
+    ...(cleanedCaption ? { caption: cleanedCaption } : {}),
+    ...(cleanedCta ? { cta: cleanedCta } : {}),
+    ...(cleanedDmReply ? { dm_reply: cleanedDmReply } : {}),
+    ...(cleanedFollowUp ? { follow_up_message: cleanedFollowUp } : {}),
+    ...(cleanedShotOrder.length > 0 ? { shot_order: cleanedShotOrder } : {}),
+    ...(cleanedOnScreenText.length > 0
+      ? { on_screen_text: cleanedOnScreenText }
+      : {}),
+  };
+
+  parsed.best_output = {
+    ...(parsed.best_output || {}),
+    ...(cleanedCaption ? { content: cleanedCaption } : {}),
+  };
+
+  parsed.monetization = {
+    ...(parsed.monetization || {}),
+    ...(cleanedCta ? { cta_strategy: cleanedCta } : {}),
+  };
+
+  return parsed;
+}
+
 function strengthenBeautyShortFormOpening(
   parsed: GeneratedResponse,
   originalContent: string
@@ -3507,6 +3702,14 @@ Final silent check:
           content: promptOnlyOverride.caption,
         };
       }
+    }
+
+    if (mode === 'make_my_post') {
+      parsed = applyInvisibleMakeMyPostQualityGate(parsed, {
+        hasUploadedImages,
+        selectedOutputs: finalContentOutputs,
+      });
+      parsed = cleanGeneratedValue(parsed);
     }
 
     return NextResponse.json(parsed);
