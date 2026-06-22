@@ -2100,6 +2100,40 @@ DM CAR and I’ll send pricing.`,
 }
 
 
+function getVaguePromptOnlyLashRefillFallback(content: string) {
+  const trimmedContent = normalizeString(content);
+  const lowerContent = trimmedContent.toLowerCase();
+
+  if (!/lash|lashes/.test(lowerContent) || !/refill|fill|appointment reminder|reminder/.test(lowerContent)) {
+    return null;
+  }
+
+  const hasSpecificDetails =
+    /\b(2 weeks|3 weeks|4 weeks|two weeks|three weeks|four weeks|classic|hybrid|volume|mega|full set|foreign fill|price|discount|opening|openings|available|today|tomorrow|this week|next week|booked|policy|deposit)\b/.test(
+      lowerContent
+    );
+
+  const wordCount = lowerContent.split(/\s+/).filter(Boolean).length;
+
+  if (hasSpecificDetails || wordCount > 8) {
+    return null;
+  }
+
+  return {
+    title: 'Lash refill reminder',
+    cta: 'REFILL',
+    caption: `Lash refill reminder ✨
+
+If your lashes are starting to feel grown out, this is your reminder to check in.
+
+Tell me when your last appointment was and what you want your set to look like next.
+
+DM REFILL and I’ll help you figure out what to book.`,
+    dmReply: 'Hey! When was your last lash appointment?',
+  };
+}
+
+
 function getPromptOnlyReadyPostOverride(content: string) {
   const trimmedContent = normalizeString(content);
   const lowerContent = trimmedContent.toLowerCase();
@@ -2110,15 +2144,15 @@ function getPromptOnlyReadyPostOverride(content: string) {
     return {
       title: `Home cleaning${areaText}`,
       cta: 'QUOTE',
-      caption: `Home cleaning${areaText}.
+      caption: `Home cleaning${areaText} 🧼
 
-Some rooms just start feeling like too much.
+House starting to feel like a lot?
 
-Tell me which room or area needs the most attention, and I’ll send the next step.
+I help with the rooms you keep putting off.
 
-DM QUOTE with the room or area you want help with.`,
+DM QUOTE and tell me what area you want help with.`,
       dmReply:
-        'Thanks! What room or area needs the most attention, and about how large is the space?',
+        'Hey! What area are you looking to have cleaned?',
     };
   }
 
@@ -3752,6 +3786,61 @@ Final silent check:
     }
 
     if (mode === 'make_my_post' && !hasUploadedImages) {
+      const promptOnlyDisplayOverride = getPromptOnlyReadyPostOverride(content);
+
+      if (promptOnlyDisplayOverride) {
+        parsed.strategy = {
+          ...(parsed.strategy || {}),
+          core_angle: promptOnlyDisplayOverride.title,
+        };
+
+        parsed.production_plan = {
+          ...(parsed.production_plan || {}),
+          caption: promptOnlyDisplayOverride.caption,
+          cta: promptOnlyDisplayOverride.cta,
+          dm_reply: promptOnlyDisplayOverride.dmReply,
+          shot_order: [],
+        };
+
+        parsed.monetization = {
+          ...(parsed.monetization || {}),
+          cta_strategy: promptOnlyDisplayOverride.cta,
+        };
+
+        parsed.best_output = {
+          ...(parsed.best_output || {}),
+          content: promptOnlyDisplayOverride.caption,
+        };
+      }
+
+      const vagueLashRefillFallback =
+        getVaguePromptOnlyLashRefillFallback(content);
+
+      if (vagueLashRefillFallback) {
+        parsed.strategy = {
+          ...(parsed.strategy || {}),
+          core_angle: vagueLashRefillFallback.title,
+        };
+
+        parsed.production_plan = {
+          ...(parsed.production_plan || {}),
+          caption: vagueLashRefillFallback.caption,
+          cta: vagueLashRefillFallback.cta,
+          dm_reply: vagueLashRefillFallback.dmReply,
+          shot_order: [],
+        };
+
+        parsed.monetization = {
+          ...(parsed.monetization || {}),
+          cta_strategy: vagueLashRefillFallback.cta,
+        };
+
+        parsed.best_output = {
+          ...(parsed.best_output || {}),
+          content: vagueLashRefillFallback.caption,
+        };
+      }
+
       const vagueMobileDetailingFallback =
         getVaguePromptOnlyMobileDetailingFallback(content);
 
