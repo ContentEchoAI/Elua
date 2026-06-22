@@ -1309,6 +1309,211 @@ function cleanGeneratedValue<T>(value: T): T {
   return value;
 }
 
+
+type InvisibleMakeMyPostQualityGateOptions = {
+  hasUploadedImages: boolean;
+  selectedOutputs: string[];
+};
+
+function cleanInvisibleMakeMyPostLine(value: unknown) {
+  const raw = normalizeString(value);
+
+  if (!raw) {
+    return '';
+  }
+
+  return raw
+    .replace(/^(caption|cta|call to action|dm reply|follow[- ]?up message)\s*:\s*/i, '')
+    .replace(/\bTikTok Script\b/gi, 'TikTok')
+    .replace(/\bYouTube Shorts Script\b/gi, 'YouTube Shorts')
+    .replace(/\bDM\s+([A-Z]{2,12})(?:\s+\1\b)+/gi, 'DM $1')
+    .replace(/\bComment\s+([A-Z]{2,12})(?:\s+\1\b)+/gi, 'Comment $1')
+    .replace(/\bperfect for (any occasion|everyone|every style|any day)\b/gi, 'easy to ask about')
+    .replace(/\bfits (any occasion|everyone|every style|any day)\b/gi, 'easy to ask about')
+    .replace(/\blow[- ]maintenance\b/gi, 'clean-looking')
+    .replace(/\bbest choice\b/gi, 'option to ask about')
+    .replace(/\bbook now\b/gi, 'DM BOOK')
+    .replace(/\bspots? (are )?(filling|fill) up fast\b/gi, 'availability can vary')
+    .replace(/\bsame[- ]day availability\b/gi, 'availability')
+    .replace(/\bguaranteed\b/gi, '')
+    .replace(/\bdiagnose\b/gi, 'answer questions about')
+    .replace(/\blead capture\b/gi, 'reply path')
+    .replace(/\bwarm leads\b/gi, 'interested replies')
+    .replace(/\bI[’']m your local\b/gi, 'I do')
+    .replace(/\bwithout the hassle of driving anywhere\b/gi, 'without you having to drop it off')
+    .replace(/\bwithout the hassle\b/gi, '')
+    .replace(/\bwhat needs the most attention\b/gi, 'what you need done')
+    .replace(/\bareas need the most attention\b/gi, 'you need done')
+    .replace(/\bwhich areas need the most attention\b/gi, 'what you need done')
+    .replace(/\bI[’']ll get back to you with details\b/gi, 'I’ll reply')
+    .replace(/\bCan you tell me your car make and model and what areas need the most attention\??/gi, 'Send me the car and what you need done.')
+    .replace(/\bservice comparison\b/gi, 'local service post')
+    .replace(/\bhelp car owners decide\b/gi, 'mobile detailing in the area')
+    .replace(/\bconversion chances\b/gi, 'reply clarity')
+    .replace(/\s+([,.!?])/g, '$1')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+}
+
+function cleanInvisibleMakeMyPostTitle(value: unknown) {
+  const rawTitle = cleanInvisibleMakeMyPostLine(value).replace(/[.]+$/g, '');
+
+  if (!rawTitle) {
+    return '';
+  }
+
+  let cleaned = rawTitle
+    .replace(/^(post|create|make|use|show|feature|highlight|showcase)\s+(a|an|this|the)\s+/i, '')
+    .replace(/^(post|create|make|use|show|feature|highlight|showcase)\s+/i, '')
+    .replace(/\bsocial media post\b/gi, '')
+    .replace(/\bcarousel\b/gi, '')
+    .replace(/\bbooking prompt\b/gi, '')
+    .replace(/\bappointment bookings?\b/gi, 'appointments')
+    .replace(/\blead generation asset\b/gi, '')
+    .replace(/\bcontent asset\b/gi, '')
+    .replace(/\bconversion path\b/gi, '')
+    .replace(/\s+showing\s+/i, ' with ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  if (!cleaned) {
+    cleaned = rawTitle;
+  }
+
+  const words = cleaned.split(/\s+/);
+
+  if (words.length > 9) {
+    cleaned = words.slice(0, 9).join(' ');
+  }
+
+  return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
+}
+
+function cleanInvisibleMakeMyPostCta(value: unknown) {
+  const cleaned = cleanInvisibleMakeMyPostLine(value)
+    .replace(/^(use this line|end the post with)\s*:\s*/i, '')
+    .replace(/\bDM\s+DM\s+/gi, 'DM ')
+    .replace(/\bComment\s+Comment\s+/gi, 'Comment ')
+    .trim();
+
+  if (!cleaned) {
+    return '';
+  }
+
+  const keywordOnly = cleaned.match(/^[A-Z]{2,12}$/);
+
+  if (keywordOnly) {
+    return `DM ${cleaned}`;
+  }
+
+  return cleaned;
+}
+
+function hasNaturalMakeMyPostCta(value: string) {
+  return /\b(DM|comment|reply|message|send)\b/i.test(value);
+}
+
+function removeVideoLanguageFromPhotoLine(value: string) {
+  return value
+    .replace(/\bBeat\s*\d+\s*[:.-]?\s*/gi, '')
+    .replace(/\b\d+\s*[-–]\s*\d+\s*seconds?\s*[:.-]?\s*/gi, '')
+    .replace(/\bopening shot\b/gi, 'first photo')
+    .replace(/\bdetail shot\b/gi, 'detail photo')
+    .replace(/\bfinal CTA shot\b/gi, 'final photo')
+    .replace(/\btext overlay\b/gi, 'text')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+}
+
+function applyInvisibleMakeMyPostQualityGate(
+  parsed: GeneratedResponse,
+  options: InvisibleMakeMyPostQualityGateOptions
+) {
+  const selectedVideoOutput = options.selectedOutputs.some((output) =>
+    /reel|tiktok|shorts/i.test(output)
+  );
+
+  const shouldAvoidVideoLanguage =
+    options.hasUploadedImages && !selectedVideoOutput;
+
+  const currentProductionPlan = parsed.production_plan || {};
+  const currentCaption =
+    currentProductionPlan.caption || parsed.best_output?.content || '';
+
+  const cleanedCta = cleanInvisibleMakeMyPostCta(
+    currentProductionPlan.cta || parsed.monetization?.cta_strategy || ''
+  );
+
+  let cleanedCaption = cleanInvisibleMakeMyPostLine(currentCaption);
+
+  if (cleanedCaption && cleanedCta && !hasNaturalMakeMyPostCta(cleanedCaption)) {
+    cleanedCaption = `${cleanedCaption}\n\n${cleanedCta}`;
+  }
+
+  const cleanedDmReply = cleanInvisibleMakeMyPostLine(
+    currentProductionPlan.dm_reply ||
+      currentProductionPlan.follow_up_message ||
+      ''
+  );
+
+  const cleanedFollowUp = cleanInvisibleMakeMyPostLine(
+    currentProductionPlan.follow_up_message || ''
+  );
+
+  const cleanedShotOrder = normalizeStringList(
+    currentProductionPlan.shot_order
+  )
+    .map((item) => cleanInvisibleMakeMyPostLine(item))
+    .map((item) =>
+      shouldAvoidVideoLanguage ? removeVideoLanguageFromPhotoLine(item) : item
+    )
+    .filter((item) => item.length > 0);
+
+  const cleanedOnScreenText = normalizeStringList(
+    currentProductionPlan.on_screen_text
+  )
+    .map((item) => cleanInvisibleMakeMyPostLine(item))
+    .filter((item) => item.length > 0);
+
+  const cleanedTitle = cleanInvisibleMakeMyPostTitle(
+    parsed.strategy?.core_angle ||
+      currentProductionPlan.concept ||
+      parsed.best_output?.platform ||
+      ''
+  );
+
+  parsed.mode = 'make_my_post';
+
+  parsed.strategy = {
+    ...(parsed.strategy || {}),
+    ...(cleanedTitle ? { core_angle: cleanedTitle } : {}),
+  };
+
+  parsed.production_plan = {
+    ...currentProductionPlan,
+    ...(cleanedCaption ? { caption: cleanedCaption } : {}),
+    ...(cleanedCta ? { cta: cleanedCta } : {}),
+    ...(cleanedDmReply ? { dm_reply: cleanedDmReply } : {}),
+    ...(cleanedFollowUp ? { follow_up_message: cleanedFollowUp } : {}),
+    ...(cleanedShotOrder.length > 0 ? { shot_order: cleanedShotOrder } : {}),
+    ...(cleanedOnScreenText.length > 0
+      ? { on_screen_text: cleanedOnScreenText }
+      : {}),
+  };
+
+  parsed.best_output = {
+    ...(parsed.best_output || {}),
+    ...(cleanedCaption ? { content: cleanedCaption } : {}),
+  };
+
+  parsed.monetization = {
+    ...(parsed.monetization || {}),
+    ...(cleanedCta ? { cta_strategy: cleanedCta } : {}),
+  };
+
+  return parsed;
+}
+
 function strengthenBeautyShortFormOpening(
   parsed: GeneratedResponse,
   originalContent: string
@@ -1791,9 +1996,9 @@ function getPromptOnlyPostStructure(content: string, ctaKeyword: string) {
 
   if (/detail|detailing|car|auto|vehicle/.test(lowerContent)) {
     return [
-      'Open with a simple question about what part of the vehicle needs the most attention.',
-      'Keep the post focused on mobile detailing in the service area without making price, timing, or guarantee claims.',
-      `End with: DM ${safeCta} with your vehicle type and what area needs attention.`,
+      'Open with one plain local-service sentence a real owner would post. Do not create an educational comparison, service menu, checklist, or "help them decide" angle.',
+      'Keep the post focused on mobile detailing in the service area without making price, timing, guarantee, package, comparison, or exact service-detail claims.',
+      `End with a simple CTA like: DM ${safeCta}. Keep the public post short and put only one casual follow-up question in Reply To Send.`,
     ];
   }
 
@@ -1858,41 +2063,96 @@ function getServiceAreaFromPrompt(content: string) {
   return match[1].replace(/[.]+$/g, '').replace(/\s+/g, ' ').trim();
 }
 
+function getVaguePromptOnlyMobileDetailingFallback(content: string) {
+  const trimmedContent = normalizeString(content);
+  const lowerContent = trimmedContent.toLowerCase();
+
+  if (!/mobile\s+detail|detailing|car\s+detail|auto\s+detail/.test(lowerContent)) {
+    return null;
+  }
+
+  const hasSpecificDetails =
+    /\b(interior|exterior|inside|outside|wash|wax|ceramic|paint correction|engine|headlight|suv|truck|sedan|pet hair|stain|stains|seat|seats|carpet|mat|mats|monthly|maintenance|before|after|photo|photos|video|clip|dirty|fleet|luxury|boat|rv)\b/.test(
+      lowerContent
+    );
+
+  const wordCount = lowerContent.split(/\s+/).filter(Boolean).length;
+
+  if (hasSpecificDetails || wordCount > 8) {
+    return null;
+  }
+
+  const serviceArea = getServiceAreaFromPrompt(trimmedContent);
+  const areaText = serviceArea ? ` in ${serviceArea}` : '';
+
+  return {
+    title: `Mobile detailing${areaText}`,
+    cta: 'CAR',
+    caption: `Mobile detailing${areaText} 🚗
+
+Still driving around saying, “I need to get this car cleaned”?
+
+Skip the drop-off and the waiting around.
+
+DM CAR and I’ll send pricing.`,
+    dmReply: 'Hey! Do you know what type of service you’re interested in, or are you still deciding?',
+  };
+}
+
+
+function getVaguePromptOnlyLashRefillFallback(content: string) {
+  const trimmedContent = normalizeString(content);
+  const lowerContent = trimmedContent.toLowerCase();
+
+  if (!/lash|lashes/.test(lowerContent) || !/refill|fill|appointment reminder|reminder/.test(lowerContent)) {
+    return null;
+  }
+
+  const hasSpecificDetails =
+    /\b(2 weeks|3 weeks|4 weeks|two weeks|three weeks|four weeks|classic|hybrid|volume|mega|full set|foreign fill|price|discount|opening|openings|available|today|tomorrow|this week|next week|booked|policy|deposit)\b/.test(
+      lowerContent
+    );
+
+  const wordCount = lowerContent.split(/\s+/).filter(Boolean).length;
+
+  if (hasSpecificDetails || wordCount > 8) {
+    return null;
+  }
+
+  return {
+    title: 'Lash refill reminder',
+    cta: 'REFILL',
+    caption: `Lash refill reminder ✨
+
+If your lashes are starting to feel grown out, this is your reminder to check in.
+
+Tell me when your last appointment was and what you want your set to look like next.
+
+DM REFILL and I’ll help you figure out what to book.`,
+    dmReply: 'Hey! When was your last lash appointment?',
+  };
+}
+
+
 function getPromptOnlyReadyPostOverride(content: string) {
   const trimmedContent = normalizeString(content);
   const lowerContent = trimmedContent.toLowerCase();
   const serviceArea = getServiceAreaFromPrompt(trimmedContent);
   const areaText = serviceArea ? ` in ${serviceArea}` : '';
 
-  if (/mobile\s+detail|detailing|car\s+detail|auto\s+detail/.test(lowerContent)) {
-    return {
-      title: `Mobile detailing${areaText}`,
-      cta: 'CAR',
-      caption: `Mobile detailing${areaText}.
-
-Your car does not have to be a disaster to need a reset.
-
-If the inside, outside, or both have been sitting on your “later” list, send me what you drive and what needs the most attention.
-
-DM CAR and I’ll send the next step.`,
-      dmReply:
-        'Thanks! What kind of vehicle do you have, and what needs the most attention right now — interior, exterior, or both?',
-    };
-  }
-
   if (/cleaning|home\s+clean|house\s+clean|room\s+clean/.test(lowerContent)) {
     return {
       title: `Home cleaning${areaText}`,
       cta: 'QUOTE',
-      caption: `Home cleaning${areaText}.
+      caption: `Home cleaning${areaText} 🧼
 
-Some rooms just start feeling like too much.
+House starting to feel like a lot?
 
-Tell me which room or area needs the most attention, and I’ll send the next step.
+I help with the rooms you keep putting off.
 
-DM QUOTE with the room or area you want help with.`,
+DM QUOTE and tell me what area you want help with.`,
       dmReply:
-        'Thanks! What room or area needs the most attention, and about how large is the space?',
+        'Hey! What area are you looking to have cleaned?',
     };
   }
 
@@ -2093,10 +2353,16 @@ Rules for prompt-only Make My Post:
 - If the selected platform is Instagram Reel, TikTok, or YouTube Shorts, you may suggest an optional simple video/text-overlay idea the user could create, but do not claim footage already exists.
 - If the selected platform is Facebook Post or LinkedIn Post, write a text-first post structure only. Do not suggest camera shots or visual assets.
 - For mobile detailing, cleaning, local services, home services, beauty, wellness, catering, or fitness, do not invent prices, availability, guarantees, same-day service, licensed/insured claims, packages, before/after results, or exact service details unless provided.
-- For mobile detailing, do not invent specific dirty areas like cup holders, floor mats, pet hair, stains, door frames, or all corners unless the user mentions them. It is safe to ask what part of the vehicle needs attention.
+- For mobile detailing, do not invent service levels, package names, comparison angles, or exact service details like quick clean, full detail, shampooing carpets, polishing surfaces, cleaning vents, treating spots, cup holders, floor mats, pet hair, stains, door frames, or all corners unless the user mentions them.
+- For vague prompt-only local service requests such as "mobile detailing in Irvine", do not create an educational comparison, service menu, checklist, "which service do you need", "not sure if", or "help them decide" post unless the user asks for that.
+- Default vague prompt-only mobile detailing and local service captions to a short local DM post: where the service is, what the owner does, who it helps, and one simple CTA.
+- Public captions should sound like a real owner posting from their phone. Avoid stiff phrases like "what needs attention", "areas need the most attention", "what would you like cleaned up", "what you'd like taken care of", "pick the right option", "right option", "next step", or "quote details".
 - CTA keyword should usually be one simple word such as CAR, QUOTE, CLEAN, BOOK, DESIGN, STYLE, START, CHECK, or GUIDE. The caption can say "DM CAR" or "DM QUOTE", but production_plan.cta itself should stay one clean keyword.
-- The caption should turn the short idea into a post that can start a real conversation, quote request, booking question, or DM.
-- Reply To Send should ask for the next practical detail needed to help the customer.
+- The caption should turn the short idea into a post that can start a real conversation, quote request, booking question, or DM. For vague local-service prompts, keep it short, direct, and human instead of educational.
+- Reply To Send should sound like a real text reply. Ask one simple follow-up question only. Do not ask a multi-part intake-form question.
+- For vague prompt-only local service posts, keep the finished caption under 55 words unless the user provided real details.
+- Avoid fake-local phrases like "I’m your local", "without the hassle", "what needs the most attention", "areas need attention", "get back to you with details", "help you decide", or "pick the right option."
+- Use plain owner language. Good direction: "I do mobile detailing around Irvine. DM CAR if you want a quote." Bad direction: "I’m your local mobile detailer helping car owners decide which service is right for them."
 `
         : '';
 
@@ -3165,6 +3431,8 @@ Action Plan quality gate:
 - Better: "Ask: Are you looking for a beginner plan, accountability, or help with nutrition consistency?"
 
 Final silent check:
+- If Make My Post is prompt-only and the prompt is a vague local service request, rewrite any educational comparison, service menu, checklist, "not sure if", "help you decide", or service-level explanation into a short local DM post.
+- For prompt-only mobile detailing, remove invented service levels and tasks such as quick clean, full detail, vacuuming, shampooing carpets, cleaning vents, polishing surfaces, treating spots, and "pick the right option" unless the user provided those exact details.
 - Does this answer what to post?
 - Does this explain how it can lead to money?
 - Are all selected platform outputs present?
@@ -3505,6 +3773,100 @@ Final silent check:
         parsed.best_output = {
           ...(parsed.best_output || {}),
           content: promptOnlyOverride.caption,
+        };
+      }
+    }
+
+    if (mode === 'make_my_post') {
+      parsed = applyInvisibleMakeMyPostQualityGate(parsed, {
+        hasUploadedImages,
+        selectedOutputs: finalContentOutputs,
+      });
+      parsed = cleanGeneratedValue(parsed);
+    }
+
+    if (mode === 'make_my_post' && !hasUploadedImages) {
+      const promptOnlyDisplayOverride = getPromptOnlyReadyPostOverride(content);
+
+      if (promptOnlyDisplayOverride) {
+        parsed.strategy = {
+          ...(parsed.strategy || {}),
+          core_angle: promptOnlyDisplayOverride.title,
+        };
+
+        parsed.production_plan = {
+          ...(parsed.production_plan || {}),
+          caption: promptOnlyDisplayOverride.caption,
+          cta: promptOnlyDisplayOverride.cta,
+          dm_reply: promptOnlyDisplayOverride.dmReply,
+          shot_order: [],
+        };
+
+        parsed.monetization = {
+          ...(parsed.monetization || {}),
+          cta_strategy: promptOnlyDisplayOverride.cta,
+        };
+
+        parsed.best_output = {
+          ...(parsed.best_output || {}),
+          content: promptOnlyDisplayOverride.caption,
+        };
+      }
+
+      const vagueLashRefillFallback =
+        getVaguePromptOnlyLashRefillFallback(content);
+
+      if (vagueLashRefillFallback) {
+        parsed.strategy = {
+          ...(parsed.strategy || {}),
+          core_angle: vagueLashRefillFallback.title,
+        };
+
+        parsed.production_plan = {
+          ...(parsed.production_plan || {}),
+          caption: vagueLashRefillFallback.caption,
+          cta: vagueLashRefillFallback.cta,
+          dm_reply: vagueLashRefillFallback.dmReply,
+          shot_order: [],
+        };
+
+        parsed.monetization = {
+          ...(parsed.monetization || {}),
+          cta_strategy: vagueLashRefillFallback.cta,
+        };
+
+        parsed.best_output = {
+          ...(parsed.best_output || {}),
+          content: vagueLashRefillFallback.caption,
+        };
+      }
+
+      const vagueMobileDetailingFallback =
+        getVaguePromptOnlyMobileDetailingFallback(content);
+
+      if (vagueMobileDetailingFallback) {
+        parsed.strategy = {
+          ...(parsed.strategy || {}),
+          core_angle: vagueMobileDetailingFallback.title,
+        };
+
+        parsed.production_plan = {
+          ...(parsed.production_plan || {}),
+          caption: vagueMobileDetailingFallback.caption,
+          cta: vagueMobileDetailingFallback.cta,
+          dm_reply: vagueMobileDetailingFallback.dmReply,
+          shot_order: [],
+        };
+
+        parsed.monetization = {
+          ...(parsed.monetization || {}),
+          cta_strategy: vagueMobileDetailingFallback.cta,
+        };
+
+        parsed.best_output = {
+          ...(parsed.best_output || {}),
+          platform: parsed.best_output?.platform || 'Facebook Post',
+          content: vagueMobileDetailingFallback.caption,
         };
       }
     }
