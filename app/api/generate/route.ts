@@ -1339,6 +1339,16 @@ function cleanInvisibleMakeMyPostLine(value: unknown) {
     .replace(/\bdiagnose\b/gi, 'answer questions about')
     .replace(/\blead capture\b/gi, 'reply path')
     .replace(/\bwarm leads\b/gi, 'interested replies')
+    .replace(/\bI[’']m your local\b/gi, 'I do')
+    .replace(/\bwithout the hassle of driving anywhere\b/gi, 'without you having to drop it off')
+    .replace(/\bwithout the hassle\b/gi, '')
+    .replace(/\bwhat needs the most attention\b/gi, 'what you need done')
+    .replace(/\bareas need the most attention\b/gi, 'you need done')
+    .replace(/\bwhich areas need the most attention\b/gi, 'what you need done')
+    .replace(/\bI[’']ll get back to you with details\b/gi, 'I’ll reply')
+    .replace(/\bCan you tell me your car make and model and what areas need the most attention\??/gi, 'Send me the car and what you need done.')
+    .replace(/\bservice comparison\b/gi, 'local service post')
+    .replace(/\bhelp car owners decide\b/gi, 'mobile detailing in the area')
     .replace(/\bconversion chances\b/gi, 'reply clarity')
     .replace(/\s+([,.!?])/g, '$1')
     .replace(/\s{2,}/g, ' ')
@@ -1986,9 +1996,9 @@ function getPromptOnlyPostStructure(content: string, ctaKeyword: string) {
 
   if (/detail|detailing|car|auto|vehicle/.test(lowerContent)) {
     return [
-      'Open with a simple question about what part of the vehicle needs the most attention.',
-      'Keep the post focused on mobile detailing in the service area without making price, timing, or guarantee claims.',
-      `End with: DM ${safeCta} with your vehicle type and what area needs attention.`,
+      'Open with one plain local-service sentence a real owner would post. Do not create an educational comparison, service menu, checklist, or "help them decide" angle.',
+      'Keep the post focused on mobile detailing in the service area without making price, timing, guarantee, package, comparison, or exact service-detail claims.',
+      `End with a simple CTA like: DM ${safeCta}. Keep the public post short and put only one casual follow-up question in Reply To Send.`,
     ];
   }
 
@@ -2053,27 +2063,48 @@ function getServiceAreaFromPrompt(content: string) {
   return match[1].replace(/[.]+$/g, '').replace(/\s+/g, ' ').trim();
 }
 
+function getVaguePromptOnlyMobileDetailingFallback(content: string) {
+  const trimmedContent = normalizeString(content);
+  const lowerContent = trimmedContent.toLowerCase();
+
+  if (!/mobile\s+detail|detailing|car\s+detail|auto\s+detail/.test(lowerContent)) {
+    return null;
+  }
+
+  const hasSpecificDetails =
+    /\b(interior|exterior|inside|outside|wash|wax|ceramic|paint correction|engine|headlight|suv|truck|sedan|pet hair|stain|stains|seat|seats|carpet|mat|mats|monthly|maintenance|before|after|photo|photos|video|clip|dirty|fleet|luxury|boat|rv)\b/.test(
+      lowerContent
+    );
+
+  const wordCount = lowerContent.split(/\s+/).filter(Boolean).length;
+
+  if (hasSpecificDetails || wordCount > 8) {
+    return null;
+  }
+
+  const serviceArea = getServiceAreaFromPrompt(trimmedContent);
+  const areaText = serviceArea ? ` in ${serviceArea}` : '';
+
+  return {
+    title: `Mobile detailing${areaText}`,
+    cta: 'CAR',
+    caption: `Mobile detailing${areaText} 🚗
+
+Still driving around saying, “I need to get this car cleaned”?
+
+Skip the drop-off and the waiting around.
+
+DM CAR and I’ll send pricing.`,
+    dmReply: 'Hey! Do you know what type of service you’re interested in, or are you still deciding?',
+  };
+}
+
+
 function getPromptOnlyReadyPostOverride(content: string) {
   const trimmedContent = normalizeString(content);
   const lowerContent = trimmedContent.toLowerCase();
   const serviceArea = getServiceAreaFromPrompt(trimmedContent);
   const areaText = serviceArea ? ` in ${serviceArea}` : '';
-
-  if (/mobile\s+detail|detailing|car\s+detail|auto\s+detail/.test(lowerContent)) {
-    return {
-      title: `Mobile detailing${areaText}`,
-      cta: 'CAR',
-      caption: `Mobile detailing${areaText}.
-
-Your car does not have to be a disaster to need a reset.
-
-If the inside, outside, or both have been sitting on your “later” list, send me what you drive and what needs the most attention.
-
-DM CAR and I’ll send the next step.`,
-      dmReply:
-        'Thanks! What kind of vehicle do you have, and what needs the most attention right now — interior, exterior, or both?',
-    };
-  }
 
   if (/cleaning|home\s+clean|house\s+clean|room\s+clean/.test(lowerContent)) {
     return {
@@ -2288,10 +2319,16 @@ Rules for prompt-only Make My Post:
 - If the selected platform is Instagram Reel, TikTok, or YouTube Shorts, you may suggest an optional simple video/text-overlay idea the user could create, but do not claim footage already exists.
 - If the selected platform is Facebook Post or LinkedIn Post, write a text-first post structure only. Do not suggest camera shots or visual assets.
 - For mobile detailing, cleaning, local services, home services, beauty, wellness, catering, or fitness, do not invent prices, availability, guarantees, same-day service, licensed/insured claims, packages, before/after results, or exact service details unless provided.
-- For mobile detailing, do not invent specific dirty areas like cup holders, floor mats, pet hair, stains, door frames, or all corners unless the user mentions them. It is safe to ask what part of the vehicle needs attention.
+- For mobile detailing, do not invent service levels, package names, comparison angles, or exact service details like quick clean, full detail, shampooing carpets, polishing surfaces, cleaning vents, treating spots, cup holders, floor mats, pet hair, stains, door frames, or all corners unless the user mentions them.
+- For vague prompt-only local service requests such as "mobile detailing in Irvine", do not create an educational comparison, service menu, checklist, "which service do you need", "not sure if", or "help them decide" post unless the user asks for that.
+- Default vague prompt-only mobile detailing and local service captions to a short local DM post: where the service is, what the owner does, who it helps, and one simple CTA.
+- Public captions should sound like a real owner posting from their phone. Avoid stiff phrases like "what needs attention", "areas need the most attention", "what would you like cleaned up", "what you'd like taken care of", "pick the right option", "right option", "next step", or "quote details".
 - CTA keyword should usually be one simple word such as CAR, QUOTE, CLEAN, BOOK, DESIGN, STYLE, START, CHECK, or GUIDE. The caption can say "DM CAR" or "DM QUOTE", but production_plan.cta itself should stay one clean keyword.
-- The caption should turn the short idea into a post that can start a real conversation, quote request, booking question, or DM.
-- Reply To Send should ask for the next practical detail needed to help the customer.
+- The caption should turn the short idea into a post that can start a real conversation, quote request, booking question, or DM. For vague local-service prompts, keep it short, direct, and human instead of educational.
+- Reply To Send should sound like a real text reply. Ask one simple follow-up question only. Do not ask a multi-part intake-form question.
+- For vague prompt-only local service posts, keep the finished caption under 55 words unless the user provided real details.
+- Avoid fake-local phrases like "I’m your local", "without the hassle", "what needs the most attention", "areas need attention", "get back to you with details", "help you decide", or "pick the right option."
+- Use plain owner language. Good direction: "I do mobile detailing around Irvine. DM CAR if you want a quote." Bad direction: "I’m your local mobile detailer helping car owners decide which service is right for them."
 `
         : '';
 
@@ -3360,6 +3397,8 @@ Action Plan quality gate:
 - Better: "Ask: Are you looking for a beginner plan, accountability, or help with nutrition consistency?"
 
 Final silent check:
+- If Make My Post is prompt-only and the prompt is a vague local service request, rewrite any educational comparison, service menu, checklist, "not sure if", "help you decide", or service-level explanation into a short local DM post.
+- For prompt-only mobile detailing, remove invented service levels and tasks such as quick clean, full detail, vacuuming, shampooing carpets, cleaning vents, polishing surfaces, treating spots, and "pick the right option" unless the user provided those exact details.
 - Does this answer what to post?
 - Does this explain how it can lead to money?
 - Are all selected platform outputs present?
@@ -3710,6 +3749,37 @@ Final silent check:
         selectedOutputs: finalContentOutputs,
       });
       parsed = cleanGeneratedValue(parsed);
+    }
+
+    if (mode === 'make_my_post' && !hasUploadedImages) {
+      const vagueMobileDetailingFallback =
+        getVaguePromptOnlyMobileDetailingFallback(content);
+
+      if (vagueMobileDetailingFallback) {
+        parsed.strategy = {
+          ...(parsed.strategy || {}),
+          core_angle: vagueMobileDetailingFallback.title,
+        };
+
+        parsed.production_plan = {
+          ...(parsed.production_plan || {}),
+          caption: vagueMobileDetailingFallback.caption,
+          cta: vagueMobileDetailingFallback.cta,
+          dm_reply: vagueMobileDetailingFallback.dmReply,
+          shot_order: [],
+        };
+
+        parsed.monetization = {
+          ...(parsed.monetization || {}),
+          cta_strategy: vagueMobileDetailingFallback.cta,
+        };
+
+        parsed.best_output = {
+          ...(parsed.best_output || {}),
+          platform: parsed.best_output?.platform || 'Facebook Post',
+          content: vagueMobileDetailingFallback.caption,
+        };
+      }
     }
 
     return NextResponse.json(parsed);
