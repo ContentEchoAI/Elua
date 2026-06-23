@@ -2063,6 +2063,21 @@ function getServiceAreaFromPrompt(content: string) {
   return match[1].replace(/[.]+$/g, '').replace(/\s+/g, ' ').trim();
 }
 
+function getServiceAreaHashtagBase(serviceArea: string) {
+  const words = serviceArea
+    .replace(/[^a-z0-9\s]/gi, ' ')
+    .split(/\s+/)
+    .filter(Boolean);
+
+  return words
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join('');
+}
+
+function uniqueHashtags(hashtags: string[]) {
+  return Array.from(new Set(hashtags.filter(Boolean)));
+}
+
 function getVaguePromptOnlyMobileDetailingFallback(content: string) {
   const trimmedContent = normalizeString(content);
   const lowerContent = trimmedContent.toLowerCase();
@@ -2084,10 +2099,17 @@ function getVaguePromptOnlyMobileDetailingFallback(content: string) {
 
   const serviceArea = getServiceAreaFromPrompt(trimmedContent);
   const areaText = serviceArea ? ` in ${serviceArea}` : '';
+  const serviceAreaHashtagBase = getServiceAreaHashtagBase(serviceArea);
+  const hashtags = uniqueHashtags([
+    serviceAreaHashtagBase ? `#${serviceAreaHashtagBase}Detailing` : '#MobileDetailing',
+    '#MobileDetailing',
+    '#CarCare',
+  ]);
 
   return {
     title: `Mobile detailing${areaText}`,
     cta: 'CAR',
+    hashtags,
     caption: `Mobile detailing${areaText} 🚗
 
 Still driving around saying, “I need to get this car cleaned”?
@@ -2122,6 +2144,7 @@ function getVaguePromptOnlyLashRefillFallback(content: string) {
   return {
     title: 'Lash refill reminder',
     cta: 'REFILL',
+    hashtags: ['#lashrefill', '#lashappointment', '#lashreminder'],
     caption: `Lash refill reminder ✨
 
 If your lashes are starting to feel grown out, this is your reminder to check in.
@@ -2139,11 +2162,18 @@ function getPromptOnlyReadyPostOverride(content: string) {
   const lowerContent = trimmedContent.toLowerCase();
   const serviceArea = getServiceAreaFromPrompt(trimmedContent);
   const areaText = serviceArea ? ` in ${serviceArea}` : '';
+  const serviceAreaHashtagBase = getServiceAreaHashtagBase(serviceArea);
+  const cleaningHashtags = uniqueHashtags([
+    serviceAreaHashtagBase ? `#${serviceAreaHashtagBase}Cleaning` : '#HomeCleaning',
+    '#HouseCleaning',
+    '#CleaningQuote',
+  ]);
 
   if (/cleaning|home\s+clean|house\s+clean|room\s+clean/.test(lowerContent)) {
     return {
       title: `Home cleaning${areaText}`,
       cta: 'QUOTE',
+      hashtags: cleaningHashtags,
       caption: `Home cleaning${areaText} 🧼
 
 House starting to feel like a lot?
@@ -3762,6 +3792,8 @@ Final silent check:
           caption: promptOnlyOverride.caption,
           cta: promptOnlyOverride.cta,
           dm_reply: promptOnlyOverride.dmReply,
+          hashtags: promptOnlyOverride.hashtags,
+          on_screen_text: promptOnlyOverride.hashtags,
           shot_order: [],
         };
 
@@ -3799,6 +3831,8 @@ Final silent check:
           caption: promptOnlyDisplayOverride.caption,
           cta: promptOnlyDisplayOverride.cta,
           dm_reply: promptOnlyDisplayOverride.dmReply,
+          hashtags: promptOnlyDisplayOverride.hashtags,
+          on_screen_text: promptOnlyDisplayOverride.hashtags,
           shot_order: [],
         };
 
@@ -3827,6 +3861,8 @@ Final silent check:
           caption: vagueLashRefillFallback.caption,
           cta: vagueLashRefillFallback.cta,
           dm_reply: vagueLashRefillFallback.dmReply,
+          hashtags: vagueLashRefillFallback.hashtags,
+          on_screen_text: vagueLashRefillFallback.hashtags,
           shot_order: [],
         };
 
@@ -3855,6 +3891,8 @@ Final silent check:
           caption: vagueMobileDetailingFallback.caption,
           cta: vagueMobileDetailingFallback.cta,
           dm_reply: vagueMobileDetailingFallback.dmReply,
+          hashtags: vagueMobileDetailingFallback.hashtags,
+          on_screen_text: vagueMobileDetailingFallback.hashtags,
           shot_order: [],
         };
 
