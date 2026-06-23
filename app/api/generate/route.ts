@@ -2078,6 +2078,12 @@ function uniqueHashtags(hashtags: string[]) {
   return Array.from(new Set(hashtags.filter(Boolean)));
 }
 
+function chooseFallbackVariation<T>(variations: T[]) {
+  return (
+    variations[Math.floor(Math.random() * variations.length)] || variations[0]
+  );
+}
+
 function getVaguePromptOnlyMobileDetailingFallback(content: string) {
   const trimmedContent = normalizeString(content);
   const lowerContent = trimmedContent.toLowerCase();
@@ -2106,18 +2112,51 @@ function getVaguePromptOnlyMobileDetailingFallback(content: string) {
     '#CarCare',
   ]);
 
-  return {
-    title: `Mobile detailing${areaText}`,
-    cta: 'CAR',
-    hashtags,
-    caption: `Mobile detailing${areaText} 🚗
+  const variation = chooseFallbackVariation([
+    {
+      title: `Mobile detailing${areaText}`,
+      caption: `Mobile detailing${areaText} 🚗
 
 Still driving around saying, “I need to get this car cleaned”?
 
 Skip the drop-off and the waiting around.
 
 DM CAR and I’ll send pricing.`,
-    dmReply: 'Hey! Do you know what type of service you’re interested in, or are you still deciding?',
+      dmReply:
+        'Hey! Do you know what type of service you’re interested in, or are you still deciding?',
+    },
+    {
+      title: `Mobile detailing${areaText}`,
+      caption: `Mobile detailing${areaText} 🚗
+
+Car cleaning still sitting on your to-do list?
+
+Skip the shop visit and get it handled.
+
+DM CAR and I’ll send pricing.`,
+      dmReply:
+        'Hey! Do you know what type of service you’re interested in, or are you still deciding?',
+    },
+    {
+      title: `Mobile detailing${areaText}`,
+      caption: `Mobile detailing${areaText} 🚗
+
+Need the car cleaned before the week gets busy?
+
+Save yourself the trip to a shop.
+
+DM CAR and I’ll send pricing.`,
+      dmReply:
+        'Hey! Do you know what type of service you’re interested in, or are you still deciding?',
+    },
+  ]);
+
+  return {
+    title: variation.title,
+    cta: 'CAR',
+    hashtags,
+    caption: variation.caption,
+    dmReply: variation.dmReply,
   };
 }
 
@@ -2141,18 +2180,48 @@ function getVaguePromptOnlyLashRefillFallback(content: string) {
     return null;
   }
 
-  return {
-    title: 'Lash refill reminder',
-    cta: 'REFILL',
-    hashtags: ['#lashrefill', '#lashappointment', '#lashreminder'],
-    caption: `Lash refill reminder ✨
+  const variation = chooseFallbackVariation([
+    {
+      title: 'Lash refill reminder',
+      caption: `Lash refill reminder ✨
 
 If your lashes are starting to feel grown out, this is your reminder to check in.
 
 Tell me when your last appointment was and what you want your set to look like next.
 
 DM REFILL and I’ll help you figure out what to book.`,
-    dmReply: 'Hey! When was your last lash appointment?',
+      dmReply: 'Hey! When was your last lash appointment?',
+    },
+    {
+      title: 'Lash refill reminder',
+      caption: `Lash refill reminder ✨
+
+Not sure if it’s refill time or time for something new?
+
+Tell me when your last appointment was and what you want your lashes to look like next.
+
+DM REFILL and I’ll help you figure out what to book.`,
+      dmReply: 'Hey! When was your last lash appointment?',
+    },
+    {
+      title: 'Lash refill reminder',
+      caption: `Lash refill reminder ✨
+
+If your set is starting to feel grown out, send a quick message before guessing what to book.
+
+Tell me when your last appointment was and what look you want next.
+
+DM REFILL.`,
+      dmReply: 'Hey! When was your last lash appointment?',
+    },
+  ]);
+
+  return {
+    title: variation.title,
+    cta: 'REFILL',
+    hashtags: ['#lashrefill', '#lashappointment', '#lashreminder'],
+    caption: variation.caption,
+    dmReply: variation.dmReply,
   };
 }
 
@@ -2170,19 +2239,48 @@ function getPromptOnlyReadyPostOverride(content: string) {
   ]);
 
   if (/cleaning|home\s+clean|house\s+clean|room\s+clean/.test(lowerContent)) {
-    return {
-      title: `Home cleaning${areaText}`,
-      cta: 'QUOTE',
-      hashtags: cleaningHashtags,
-      caption: `Home cleaning${areaText} 🧼
+    const variation = chooseFallbackVariation([
+      {
+        title: `Home cleaning${areaText}`,
+        caption: `Home cleaning${areaText} 🧼
 
 House starting to feel like a lot?
 
 I help with the rooms you keep putting off.
 
 DM QUOTE and tell me what area you want help with.`,
-      dmReply:
-        'Hey! What area are you looking to have cleaned?',
+        dmReply: 'Hey! What area are you looking to have cleaned?',
+      },
+      {
+        title: `Home cleaning${areaText}`,
+        caption: `Home cleaning${areaText} 🧼
+
+Which room keeps getting pushed off?
+
+I help with the cleaning that’s been sitting on your list.
+
+DM QUOTE and tell me what area you want help with.`,
+        dmReply: 'Hey! What area are you looking to have cleaned?',
+      },
+      {
+        title: `Home cleaning${areaText}`,
+        caption: `Home cleaning${areaText} 🧼
+
+Need help getting the house back in order?
+
+Tell me which area you want help with.
+
+DM QUOTE.`,
+        dmReply: 'Hey! What area are you looking to have cleaned?',
+      },
+    ]);
+
+    return {
+      title: variation.title,
+      cta: 'QUOTE',
+      hashtags: cleaningHashtags,
+      caption: variation.caption,
+      dmReply: variation.dmReply,
     };
   }
 
