@@ -2078,13 +2078,26 @@ function uniqueHashtags(hashtags: string[]) {
   return Array.from(new Set(hashtags.filter(Boolean)));
 }
 
-function chooseFallbackVariation<T>(variations: T[]) {
+function chooseFallbackVariation<T>(
+  variations: T[],
+  variationIndex?: number
+) {
+  if (variations.length === 0) {
+    return undefined;
+  }
+
+  if (typeof variationIndex === 'number' && Number.isFinite(variationIndex)) {
+    const safeIndex = Math.abs(Math.floor(variationIndex));
+
+    return variations[safeIndex % variations.length] || variations[0];
+  }
+
   return (
     variations[Math.floor(Math.random() * variations.length)] || variations[0]
   );
 }
 
-function getVaguePromptOnlyMobileDetailingFallback(content: string) {
+function getVaguePromptOnlyMobileDetailingFallback(content: string, variationIndex?: number) {
   const trimmedContent = normalizeString(content);
   const lowerContent = trimmedContent.toLowerCase();
 
@@ -2149,19 +2162,121 @@ DM CAR and I’ll send pricing.`,
       dmReply:
         'Hey! Do you know what type of service you’re interested in, or are you still deciding?',
     },
-  ]);
+    {
+      title: `Mobile detailing${areaText}`,
+      caption: `Mobile detailing${areaText} 🚗
+
+If getting the car cleaned keeps getting pushed back, this is your reminder.
+
+DM CAR and I’ll send pricing.`,
+      dmReply:
+        'Hey! Do you know what type of service you’re interested in, or are you still deciding?',
+    },
+    {
+      title: `Mobile detailing${areaText}`,
+      caption: `Mobile detailing${areaText} 🚗
+
+Need the car cleaned but don’t want to spend part of your day at a shop?
+
+DM CAR and I’ll send pricing.`,
+      dmReply:
+        'Hey! Do you know what type of service you’re interested in, or are you still deciding?',
+    },
+    {
+      title: `Mobile detailing${areaText}`,
+      caption: `Mobile detailing${areaText} 🚗
+
+If you notice the car needs a clean every time you get in, this is your sign.
+
+DM CAR and I’ll send pricing.`,
+      dmReply:
+        'Hey! Do you know what type of service you’re interested in, or are you still deciding?',
+    },
+    {
+      title: `Mobile detailing${areaText}`,
+      caption: `Mobile detailing${areaText} 🚗
+
+Busy week and the car still needs to get cleaned?
+
+DM CAR and I’ll send pricing.`,
+      dmReply:
+        'Hey! Do you know what type of service you’re interested in, or are you still deciding?',
+    },
+    {
+      title: `Mobile detailing${areaText}`,
+      caption: `Mobile detailing${areaText} 🚗
+
+If you keep saying you’ll clean the car this weekend, I can help you get it off the list.
+
+DM CAR and I’ll send pricing.`,
+      dmReply:
+        'Hey! Do you know what type of service you’re interested in, or are you still deciding?',
+    },
+    {
+      title: `Mobile detailing${areaText}`,
+      caption: `Mobile detailing${areaText} 🚗
+
+Been meaning to get the car cleaned?
+
+DM CAR and I’ll send pricing.`,
+      dmReply:
+        'Hey! Do you know what type of service you’re interested in, or are you still deciding?',
+    },
+    {
+      title: `Mobile detailing${areaText}`,
+      caption: `Mobile detailing${areaText} 🚗
+
+Driving around with “clean the car” still on your list?
+
+DM CAR and I’ll send pricing.`,
+      dmReply:
+        'Hey! Do you know what type of service you’re interested in, or are you still deciding?',
+    },
+    {
+      title: `Mobile detailing${areaText}`,
+      caption: `Mobile detailing${areaText} 🚗
+
+One less thing to handle this week: get the car cleaned.
+
+DM CAR and I’ll send pricing.`,
+      dmReply:
+        'Hey! Do you know what type of service you’re interested in, or are you still deciding?',
+    },
+    {
+      title: `Mobile detailing${areaText}`,
+      caption: `Mobile detailing${areaText} 🚗
+
+If the car keeps ending up at the bottom of your to-do list, let’s get it handled.
+
+DM CAR and I’ll send pricing.`,
+      dmReply:
+        'Hey! Do you know what type of service you’re interested in, or are you still deciding?',
+    },
+  ], variationIndex);
+
+  const replyVariation = chooseFallbackVariation(
+    [
+      'Hey! Do you know what type of service you’re interested in, or are you still deciding?',
+      'Hey! Are you looking for a specific service, or are you still figuring out what you need?',
+      'Hey! Tell me what you’re thinking and I’ll point you in the right direction.',
+      'Hey! Do you already know what you want done, or are you still deciding?',
+      'Hey! What kind of detail are you thinking about?',
+      'Hey! What service are you leaning toward?',
+    ],
+    variationIndex
+  );
 
   return {
-    title: variation.title,
+    title: variation?.title || `Mobile detailing${areaText}`,
     cta: 'CAR',
     hashtags,
-    caption: variation.caption,
-    dmReply: variation.dmReply,
+    caption: variation?.caption || '',
+    dmReply: replyVariation || variation?.dmReply || '',
   };
 }
 
 
-function getVaguePromptOnlyLashRefillFallback(content: string) {
+function getVaguePromptOnlyLashRefillFallback(content: string, variationIndex?: number) {
   const trimmedContent = normalizeString(content);
   const lowerContent = trimmedContent.toLowerCase();
 
@@ -2214,19 +2329,19 @@ Tell me when your last appointment was and what look you want next.
 DM REFILL.`,
       dmReply: 'Hey! When was your last lash appointment?',
     },
-  ]);
+  ], variationIndex);
 
   return {
-    title: variation.title,
+    title: variation?.title || 'Lash refill reminder',
     cta: 'REFILL',
     hashtags: ['#lashrefill', '#lashappointment', '#lashreminder'],
-    caption: variation.caption,
-    dmReply: variation.dmReply,
+    caption: variation?.caption || '',
+    dmReply: variation?.dmReply || '',
   };
 }
 
 
-function getPromptOnlyReadyPostOverride(content: string) {
+function getPromptOnlyReadyPostOverride(content: string, variationIndex?: number) {
   const trimmedContent = normalizeString(content);
   const lowerContent = trimmedContent.toLowerCase();
   const serviceArea = getServiceAreaFromPrompt(trimmedContent);
@@ -2273,14 +2388,14 @@ Tell me which area you want help with.
 DM QUOTE.`,
         dmReply: 'Hey! What area are you looking to have cleaned?',
       },
-    ]);
+    ], variationIndex);
 
     return {
-      title: variation.title,
+      title: variation?.title || `Home cleaning${areaText}`,
       cta: 'QUOTE',
       hashtags: cleaningHashtags,
-      caption: variation.caption,
-      dmReply: variation.dmReply,
+      caption: variation?.caption || '',
+      dmReply: variation?.dmReply || '',
     };
   }
 
@@ -2297,8 +2412,15 @@ export async function POST(req: Request) {
       selectedOutputs,
       businessProfile,
       recentCampaigns,
+      fallbackVariationIndex,
       uploadedImages,
     } = await req.json();
+
+    const normalizedFallbackVariationIndex =
+      typeof fallbackVariationIndex === 'number' &&
+      Number.isFinite(fallbackVariationIndex)
+        ? Math.max(0, Math.floor(fallbackVariationIndex))
+        : undefined;
 
     const normalizedUploadedImages = normalizeUploadedImages(uploadedImages);
     const hasUploadedImages = normalizedUploadedImages.length > 0;
@@ -3877,7 +3999,7 @@ Final silent check:
     }
 
     if (mode === 'make_my_post' && !hasUploadedImages) {
-      const promptOnlyOverride = getPromptOnlyReadyPostOverride(content);
+      const promptOnlyOverride = getPromptOnlyReadyPostOverride(content, normalizedFallbackVariationIndex);
 
       if (promptOnlyOverride) {
         parsed.strategy = {
@@ -3916,7 +4038,7 @@ Final silent check:
     }
 
     if (mode === 'make_my_post' && !hasUploadedImages) {
-      const promptOnlyDisplayOverride = getPromptOnlyReadyPostOverride(content);
+      const promptOnlyDisplayOverride = getPromptOnlyReadyPostOverride(content, normalizedFallbackVariationIndex);
 
       if (promptOnlyDisplayOverride) {
         parsed.strategy = {
@@ -3946,7 +4068,7 @@ Final silent check:
       }
 
       const vagueLashRefillFallback =
-        getVaguePromptOnlyLashRefillFallback(content);
+        getVaguePromptOnlyLashRefillFallback(content, normalizedFallbackVariationIndex);
 
       if (vagueLashRefillFallback) {
         parsed.strategy = {
@@ -3976,7 +4098,7 @@ Final silent check:
       }
 
       const vagueMobileDetailingFallback =
-        getVaguePromptOnlyMobileDetailingFallback(content);
+        getVaguePromptOnlyMobileDetailingFallback(content, normalizedFallbackVariationIndex);
 
       if (vagueMobileDetailingFallback) {
         parsed.strategy = {
