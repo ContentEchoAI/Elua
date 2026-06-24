@@ -922,7 +922,7 @@ function getPlatformDisplayName(value?: string) {
         [savedGeneration, ...prev].slice(0, MAX_SAVED)
       );
 
-      setSavedMessage('Campaign Saved!');
+      setSavedMessage('Saved to Campaign Library');
       setTimeout(() => setSavedMessage(''), 1500);
     } catch (error) {
       console.error('Save generation error:', error);
@@ -1061,7 +1061,7 @@ function getPlatformDisplayName(value?: string) {
             Campaign Library
           </h2>
           <p className="text-xs text-zinc-500 sm:text-sm">
-            Reopen past campaigns, reuse strong ideas, and build your next weekly content plan.
+            Saved posts and campaigns live here. Click Reopen to load one back into your workspace.
           </p>
         </div>
 
@@ -1087,7 +1087,7 @@ function getPlatformDisplayName(value?: string) {
         </div>
       ) : savedGenerations.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-zinc-700 p-3 text-center">
-          <p className="text-xs text-zinc-400">No saved campaigns yet. Generate a weekly content plan, then save it here to build your campaign library.</p>
+          <p className="text-xs text-zinc-400">No saved campaigns yet. Click Save Campaign after generating a post, then it will appear here.</p>
         </div>
       ) : (
         <div className="max-h-[260px] space-y-3 overflow-y-auto pr-1">
@@ -1736,9 +1736,7 @@ function getPlatformDisplayName(value?: string) {
                 </p>
               </div>
             </div>
-            {!isMakeMyPostMode && (
-              <div className="mt-4 hidden lg:block">{savedGenerationsCard}</div>
-            )}
+            <div className="mt-4 hidden lg:block">{savedGenerationsCard}</div>
           </div>
 
           <div className="order-2 min-w-0 rounded-3xl border border-zinc-800 bg-zinc-900/90 p-4 sm:p-6 lg:flex lg:h-full lg:min-h-[760px] lg:flex-col">
@@ -2834,9 +2832,7 @@ function getPlatformDisplayName(value?: string) {
 
 
 
-          {!isMakeMyPostMode && (
-            <div className="order-4 min-w-0 lg:hidden">{savedGenerationsCard}</div>
-          )}
+          <div className="order-4 min-w-0 lg:hidden">{savedGenerationsCard}</div>
         </div>
       </div>
     </div>
