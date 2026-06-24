@@ -761,22 +761,53 @@ function getPlatformDisplayName(value?: string) {
       createdAt: saved.createdAt,
     }));
 
+    const requestContent =
+      content.trim() ||
+      (isMakeMyPostMode
+        ? 'Create the best ready-to-post social media post from the uploaded business photos or video clips.'
+        : content);
+
+    let fallbackVariationIndex = 0;
+
+    if (isMakeMyPostMode && uploadedImages.length === 0) {
+      try {
+        const normalizedVariationKey =
+          requestContent
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, ' ')
+            .trim()
+            .slice(0, 120) || 'prompt-only';
+
+        const storageKey = `hummingbird:fallback-variation:${normalizedVariationKey}`;
+        const savedIndex = Number.parseInt(
+          window.localStorage.getItem(storageKey) || '0',
+          10
+        );
+
+        fallbackVariationIndex = Number.isFinite(savedIndex) ? savedIndex : 0;
+
+        window.localStorage.setItem(
+          storageKey,
+          String(fallbackVariationIndex + 1)
+        );
+      } catch {
+        fallbackVariationIndex = Date.now();
+      }
+    }
+
     try {
       const res = await fetch('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          content:
-            content.trim() ||
-            (isMakeMyPostMode
-              ? 'Create the best ready-to-post social media post from the uploaded business photos or video clips.'
-              : content),
+          content: requestContent,
           selectedVoice,
           goal,
           generationMode,
           selectedOutputs,
           businessProfile,
           recentCampaigns,
+          fallbackVariationIndex,
           uploadedImages: isMakeMyPostMode ? uploadedImages : [],
         }),
       });
