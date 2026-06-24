@@ -57,6 +57,11 @@ type RecentCampaign = {
   mode?: string;
   goal?: string;
   createdAt?: string;
+  angle?: string;
+  caption?: string;
+  cta?: string;
+  reply?: string;
+  platform?: string;
 };
 
 type UploadedImage = {
@@ -258,6 +263,11 @@ function formatRecentCampaignsForPrompt(value: unknown) {
       const input = normalizeString(campaign.input);
       const goal = normalizeString(campaign.goal);
       const mode = normalizeString(campaign.mode);
+      const angle = normalizeString(campaign.angle);
+      const caption = normalizeString(campaign.caption);
+      const cta = normalizeString(campaign.cta);
+      const reply = normalizeString(campaign.reply);
+      const platform = normalizeString(campaign.platform);
 
       if (!title && !input) {
         return '';
@@ -269,6 +279,11 @@ function formatRecentCampaignsForPrompt(value: unknown) {
         input ? `- Original prompt: ${input}` : '',
         goal ? `- Goal: ${goal}` : '',
         mode ? `- Mode: ${mode}` : '',
+        angle ? `- Recent angle: ${angle}` : '',
+        caption ? `- Recent post/caption: ${caption}` : '',
+        cta ? `- Recent CTA: ${cta}` : '',
+        reply ? `- Recent reply: ${reply}` : '',
+        platform ? `- Recent platform: ${platform}` : '',
       ]
         .filter(Boolean)
         .join('\n');
@@ -2078,26 +2093,61 @@ function uniqueHashtags(hashtags: string[]) {
   return Array.from(new Set(hashtags.filter(Boolean)));
 }
 
+function getFallbackVariationMemoryText(value: unknown) {
+  if (!value || typeof value !== 'object') {
+    return '';
+  }
+
+  const variation = value as { caption?: unknown; title?: unknown };
+  const caption = normalizeString(variation.caption);
+  const title = normalizeString(variation.title);
+
+  return `${title}\n${caption}`.toLowerCase();
+}
+
 function chooseFallbackVariation<T>(
   variations: T[],
-  variationIndex?: number
+  variationIndex?: number,
+  recentCampaignsPrompt?: string
 ) {
   if (variations.length === 0) {
     return undefined;
   }
 
+  const recentText = normalizeString(recentCampaignsPrompt).toLowerCase();
+  const availableVariations = recentText
+    ? variations.filter((variation) => {
+        const variationText = getFallbackVariationMemoryText(variation);
+
+        if (!variationText) {
+          return true;
+        }
+
+        const meaningfulLines = variationText
+          .split('\n')
+          .map((line) => line.trim())
+          .filter((line) => line.length > 24);
+
+        return !meaningfulLines.some((line) => recentText.includes(line));
+      })
+    : variations;
+
+  const usableVariations =
+    availableVariations.length > 0 ? availableVariations : variations;
+
   if (typeof variationIndex === 'number' && Number.isFinite(variationIndex)) {
     const safeIndex = Math.abs(Math.floor(variationIndex));
 
-    return variations[safeIndex % variations.length] || variations[0];
+    return usableVariations[safeIndex % usableVariations.length] || usableVariations[0];
   }
 
   return (
-    variations[Math.floor(Math.random() * variations.length)] || variations[0]
+    usableVariations[Math.floor(Math.random() * usableVariations.length)] ||
+    usableVariations[0]
   );
 }
 
-function getVaguePromptOnlyMobileDetailingFallback(content: string, variationIndex?: number) {
+function getVaguePromptOnlyMobileDetailingFallback(content: string, variationIndex?: number, recentCampaignsPrompt?: string) {
   const trimmedContent = normalizeString(content);
   const lowerContent = trimmedContent.toLowerCase();
 
@@ -2252,7 +2302,7 @@ DM CAR and I’ll send pricing.`,
       dmReply:
         'Hey! Do you know what type of service you’re interested in, or are you still deciding?',
     },
-  ], variationIndex);
+  ], variationIndex, recentCampaignsPrompt);
 
   const replyVariation = chooseFallbackVariation(
     [
@@ -2276,7 +2326,7 @@ DM CAR and I’ll send pricing.`,
 }
 
 
-function getVaguePromptOnlyLashRefillFallback(content: string, variationIndex?: number) {
+function getVaguePromptOnlyLashRefillFallback(content: string, variationIndex?: number, recentCampaignsPrompt?: string) {
   const trimmedContent = normalizeString(content);
   const lowerContent = trimmedContent.toLowerCase();
 
@@ -2329,7 +2379,7 @@ Tell me when your last appointment was and what look you want next.
 DM REFILL.`,
       dmReply: 'Hey! When was your last lash appointment?',
     },
-  ], variationIndex);
+  ], variationIndex, recentCampaignsPrompt);
 
   return {
     title: variation?.title || 'Lash refill reminder',
@@ -2341,7 +2391,7 @@ DM REFILL.`,
 }
 
 
-function getPromptOnlyReadyPostOverride(content: string, variationIndex?: number) {
+function getPromptOnlyReadyPostOverride(content: string, variationIndex?: number, recentCampaignsPrompt?: string) {
   const trimmedContent = normalizeString(content);
   const lowerContent = trimmedContent.toLowerCase();
   const serviceArea = getServiceAreaFromPrompt(trimmedContent);
@@ -2388,7 +2438,7 @@ Tell me which area you want help with.
 DM QUOTE.`,
         dmReply: 'Hey! What area are you looking to have cleaned?',
       },
-    ], variationIndex);
+    ], variationIndex, recentCampaignsPrompt);
 
     return {
       title: variation?.title || `Home cleaning${areaText}`,
@@ -3999,7 +4049,7 @@ Final silent check:
     }
 
     if (mode === 'make_my_post' && !hasUploadedImages) {
-      const promptOnlyOverride = getPromptOnlyReadyPostOverride(content, normalizedFallbackVariationIndex);
+      const promptOnlyOverride = getPromptOnlyReadyPostOverride(content, normalizedFallbackVariationIndex, recentCampaignsPrompt);
 
       if (promptOnlyOverride) {
         parsed.strategy = {
@@ -4068,7 +4118,7 @@ Final silent check:
       }
 
       const vagueLashRefillFallback =
-        getVaguePromptOnlyLashRefillFallback(content, normalizedFallbackVariationIndex);
+        getVaguePromptOnlyLashRefillFallback(content, normalizedFallbackVariationIndex, recentCampaignsPrompt);
 
       if (vagueLashRefillFallback) {
         parsed.strategy = {
@@ -4098,7 +4148,7 @@ Final silent check:
       }
 
       const vagueMobileDetailingFallback =
-        getVaguePromptOnlyMobileDetailingFallback(content, normalizedFallbackVariationIndex);
+        getVaguePromptOnlyMobileDetailingFallback(content, normalizedFallbackVariationIndex, recentCampaignsPrompt);
 
       if (vagueMobileDetailingFallback) {
         parsed.strategy = {

@@ -753,12 +753,29 @@ function getPlatformDisplayName(value?: string) {
       setActiveTab('strategy');
     }
 
-    const recentCampaigns = savedGenerations.slice(0, 3).map((saved) => ({
+    const recentCampaigns = savedGenerations.slice(0, 5).map((saved) => ({
       title: saved.title,
       input: saved.input,
       mode: saved.mode,
       goal: saved.goal,
       createdAt: saved.createdAt,
+      angle:
+        saved.results?.strategy?.core_angle ||
+        saved.results?.production_plan?.concept ||
+        saved.title,
+      caption:
+        saved.results?.production_plan?.caption ||
+        saved.results?.best_output?.content ||
+        '',
+      cta:
+        saved.results?.production_plan?.cta ||
+        saved.results?.monetization?.cta_strategy ||
+        '',
+      reply:
+        saved.results?.production_plan?.dm_reply ||
+        saved.results?.production_plan?.follow_up_message ||
+        '',
+      platform: saved.results?.best_output?.platform || '',
     }));
 
     const requestContent =
