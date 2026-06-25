@@ -1434,7 +1434,7 @@ function getPlatformDisplayName(value?: string) {
                 {isMakeMyPostMode ? (
                   <details className="mt-4 rounded-2xl border border-zinc-800 bg-zinc-950/30 p-3">
                     <summary className="cursor-pointer text-xs font-medium uppercase tracking-wide text-zinc-500">
-                      Add details optional
+                      Post Details
                     </summary>
 
                     <textarea
@@ -1458,7 +1458,7 @@ function getPlatformDisplayName(value?: string) {
                 )}
               </div>
 
-              <div className={`mb-4 rounded-2xl border border-zinc-800 bg-zinc-950/40 p-4 ${isMakeMyPostMode ? 'hidden' : ''}`}>
+              <div className="mb-4 rounded-2xl border border-zinc-800 bg-zinc-950/40 p-4">
                 <button
                   type="button"
                   onClick={() => setShowBusinessProfile((current) => !current)}
@@ -1466,12 +1466,12 @@ function getPlatformDisplayName(value?: string) {
                 >
                   <div>
                     <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
-                      Business Profile
+                      Your Business Profile
                     </p>
                     <p className="mt-1 text-sm text-zinc-300">
                       {hasBusinessProfile
-                        ? 'Using your saved business details.'
-                        : 'Optional: add your business details once for better weekly plans.'}
+                        ? 'Using your saved business details to save time and keep posts consistent.'
+                        : 'Add your business details once so Hummingbird can save you time each week.'}
                     </p>
                   </div>
 
@@ -1491,7 +1491,7 @@ function getPlatformDisplayName(value?: string) {
                         onChange={(e) =>
                           updateBusinessProfile('businessType', e.target.value)
                         }
-                        placeholder="Example: lash artist, hair stylist, cleaner, realtor"
+                        placeholder="Example: mobile detailer, lash artist, cleaner, realtor"
                         className="w-full rounded-xl border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-100 outline-none placeholder:text-zinc-500 focus:border-purple-500"
                       />
                     </div>
@@ -1505,7 +1505,7 @@ function getPlatformDisplayName(value?: string) {
                         onChange={(e) =>
                           updateBusinessProfile('services', e.target.value)
                         }
-                        placeholder="Example: classic lashes, hybrid sets, refills"
+                        placeholder="Example: interior details, lash refills, house cleaning, seller consultations"
                         className="w-full rounded-xl border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-100 outline-none placeholder:text-zinc-500 focus:border-purple-500"
                       />
                     </div>
@@ -1513,14 +1513,14 @@ function getPlatformDisplayName(value?: string) {
 
                     <div>
                       <label className="mb-1 block text-xs font-medium text-zinc-400">
-                        How should the content sound?
+                        Writing style / business notes
                       </label>
                       <textarea
                         value={businessProfile.notes}
                         onChange={(e) =>
                           updateBusinessProfile('notes', e.target.value)
                         }
-                        placeholder="Example: friendly, helpful, practical, not pushy"
+                        placeholder="Example: casual, helpful, simple, sounds like a real person, no hype"
                         className="h-20 w-full resize-none rounded-xl border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-100 outline-none placeholder:text-zinc-500 focus:border-purple-500"
                       />
                     </div>
@@ -1625,7 +1625,7 @@ function getPlatformDisplayName(value?: string) {
 
                 <div className="mt-3">
                   <p className="mb-2 text-xs font-medium uppercase tracking-wide text-zinc-500">
-                    Tone
+                    Post Tone
                   </p>
                   <div className="flex max-w-full gap-2 overflow-x-auto pb-1">
                     {voices.map((v) => (
