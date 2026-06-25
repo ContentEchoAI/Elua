@@ -1513,14 +1513,14 @@ function getPlatformDisplayName(value?: string) {
 
                     <div>
                       <label className="mb-1 block text-xs font-medium text-zinc-400">
-                        Business notes / preferred style
+                        Writing style / business notes
                       </label>
                       <textarea
                         value={businessProfile.notes}
                         onChange={(e) =>
                           updateBusinessProfile('notes', e.target.value)
                         }
-                        placeholder="Example: friendly, direct, local, not pushy, no discounts"
+                        placeholder="Example: casual, helpful, simple, sounds like a real person, no hype"
                         className="h-20 w-full resize-none rounded-xl border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-100 outline-none placeholder:text-zinc-500 focus:border-purple-500"
                       />
                     </div>
