@@ -15,3 +15,9 @@ alter table public.meta_connections enable row level security;
 
 create index if not exists meta_connections_clerk_user_id_idx
   on public.meta_connections (clerk_user_id);
+
+grant usage on schema public to service_role;
+
+grant select, insert, update, delete
+on table public.meta_connections
+to service_role;
