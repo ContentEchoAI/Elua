@@ -174,6 +174,11 @@ export default function Home() {
   );
   const [showBusinessProfile, setShowBusinessProfile] = useState(false);
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
+  const [metaConfigured, setMetaConfigured] = useState(false);
+  const [metaConnectUrl, setMetaConnectUrl] = useState<string | null>(null);
+  const [metaStatusMessage, setMetaStatusMessage] = useState(
+    'Checking Meta setup...'
+  );
 
   const isMakeMyPostMode = generationMode === 'make_my_post';
   const isContentPlanMode =
@@ -182,6 +187,41 @@ export default function Home() {
   const MAX_FREE = 10;
   const MAX_SAVED = 20;
   const MAX_UPLOAD_IMAGES = 6;
+
+  useEffect(() => {
+    if (!isMakeMyPostMode) return;
+
+    let isActive = true;
+
+    const loadMetaStatus = async () => {
+      try {
+        const response = await fetch('/api/meta/status', { cache: 'no-store' });
+        const data = (await response.json()) as {
+          configured?: boolean;
+          authorizationUrl?: string | null;
+          message?: string;
+        };
+
+        if (!isActive) return;
+
+        setMetaConfigured(Boolean(data.configured));
+        setMetaConnectUrl(data.authorizationUrl || null);
+        setMetaStatusMessage(
+          data.message ||
+            'Publishing will always require your approval before anything goes live.'
+        );
+      } catch {
+        if (!isActive) return;
+        setMetaStatusMessage('Could not check Meta setup yet.');
+      }
+    };
+
+    loadMetaStatus();
+
+    return () => {
+      isActive = false;
+    };
+  }, [isMakeMyPostMode]);
 
   const formatGeneratedText = (value: unknown, fallback = ''): string => {
     if (typeof value === 'string') return value;
@@ -1549,8 +1589,14 @@ function getPlatformDisplayName(value?: string) {
                         Connect Instagram and Facebook so Hummingbird can help you publish faster after you approve the post.
                       </p>
                     </div>
-                    <span className="rounded-full border border-yellow-400/30 bg-yellow-400/10 px-2.5 py-1 text-[11px] font-medium text-yellow-200">
-                      Setup next
+                    <span
+                      className={`rounded-full border px-2.5 py-1 text-[11px] font-medium ${
+                        metaConfigured
+                          ? 'border-purple-400/30 bg-purple-400/10 text-purple-200'
+                          : 'border-yellow-400/30 bg-yellow-400/10 text-yellow-200'
+                      }`}
+                    >
+                      {metaConfigured ? 'Ready to connect' : 'Setup next'}
                     </span>
                   </div>
 
@@ -1572,14 +1618,25 @@ function getPlatformDisplayName(value?: string) {
 
                   <button
                     type="button"
-                    disabled
-                    className="mt-3 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-zinc-400"
+                    disabled={!metaConfigured || !metaConnectUrl}
+                    onClick={() => {
+                      if (metaConnectUrl) {
+                        window.location.href = metaConnectUrl;
+                      }
+                    }}
+                    className={`mt-3 w-full rounded-xl px-4 py-2 text-sm font-semibold transition ${
+                      metaConfigured && metaConnectUrl
+                        ? 'bg-purple-500 text-white hover:bg-purple-400'
+                        : 'border border-white/10 bg-white/5 text-zinc-400'
+                    }`}
                   >
-                    Connect Instagram/Facebook
+                    {metaConfigured
+                      ? 'Connect Instagram/Facebook'
+                      : 'Meta setup not enabled yet'}
                   </button>
 
                   <p className="mt-2 text-[11px] leading-relaxed text-zinc-400">
-                    Publishing will always require a final preview and your approval before anything goes live.
+                    {metaStatusMessage}
                   </p>
                 </div>
               )}
