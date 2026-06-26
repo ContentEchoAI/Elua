@@ -1,26 +1,22 @@
 import { NextResponse } from 'next/server';
 
 export async function GET() {
-  const hasMetaAppId = Boolean(process.env.META_APP_ID);
-  const hasMetaAppSecret = Boolean(process.env.META_APP_SECRET);
-  const hasMetaRedirectUri = Boolean(process.env.META_REDIRECT_URI);
+  const configured = Boolean(
+    process.env.META_APP_ID &&
+      process.env.META_APP_SECRET &&
+      process.env.META_REDIRECT_URI,
+  );
 
   return NextResponse.json({
     connected: false,
-    configured: hasMetaAppId && hasMetaAppSecret && hasMetaRedirectUri,
+    configured,
+    authorizationUrl: configured ? '/api/meta/connect' : null,
     platforms: [
-      {
-        name: 'Instagram',
-        connected: false,
-      },
-      {
-        name: 'Facebook',
-        connected: false,
-      },
+      { name: 'Instagram', connected: false },
+      { name: 'Facebook', connected: false },
     ],
-    message:
-      hasMetaAppId && hasMetaAppSecret && hasMetaRedirectUri
-        ? 'Meta app settings are present. OAuth and token storage still need to be connected.'
-        : 'Meta connection is not configured yet. Add Meta app environment variables before enabling publishing.',
+    message: configured
+      ? 'Meta connection is ready for authorization. Token exchange and storage still need to be completed.'
+      : 'Meta publishing setup is not enabled yet.',
   });
 }
