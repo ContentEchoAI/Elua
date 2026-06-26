@@ -1538,6 +1538,52 @@ function getPlatformDisplayName(value?: string) {
                 )}
               </div>
 
+              {isMakeMyPostMode && (
+                <div className="mb-4 rounded-2xl border border-purple-500/30 bg-purple-500/10 p-4">
+                  <div className="mb-3 flex items-start justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-semibold text-white">
+                        Connected Platforms
+                      </p>
+                      <p className="mt-1 text-xs text-zinc-300">
+                        Connect Instagram and Facebook so Hummingbird can help you publish faster after you approve the post.
+                      </p>
+                    </div>
+                    <span className="rounded-full border border-yellow-400/30 bg-yellow-400/10 px-2.5 py-1 text-[11px] font-medium text-yellow-200">
+                      Setup next
+                    </span>
+                  </div>
+
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    {['Instagram', 'Facebook'].map((platform) => (
+                      <div
+                        key={platform}
+                        className="rounded-xl border border-white/10 bg-black/20 px-3 py-2"
+                      >
+                        <p className="text-sm font-medium text-zinc-100">
+                          {platform}
+                        </p>
+                        <p className="text-xs text-zinc-400">
+                          Not connected yet
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+
+                  <button
+                    type="button"
+                    disabled
+                    className="mt-3 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-zinc-400"
+                  >
+                    Connect Instagram/Facebook
+                  </button>
+
+                  <p className="mt-2 text-[11px] leading-relaxed text-zinc-400">
+                    Publishing will always require a final preview and your approval before anything goes live.
+                  </p>
+                </div>
+              )}
+
               <div className={`mb-4 ${isMakeMyPostMode ? 'hidden' : ''}`}>
                 <p className="mb-2 text-xs font-medium uppercase tracking-wide text-zinc-500">
                   Mode
@@ -1949,6 +1995,33 @@ function getPlatformDisplayName(value?: string) {
                     </p>
                   </div>
                 </div>
+              </div>
+            )}
+
+            {isMakeMyPostMode && results && (
+              <div className="rounded-2xl border border-purple-500/30 bg-purple-500/10 p-4 md:col-span-2">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <p className="text-sm font-semibold text-white">
+                      Ready To Publish
+                    </p>
+                    <p className="mt-1 text-xs text-zinc-300">
+                      Review the post above first. Hummingbird will never publish without your approval.
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    disabled
+                    className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-zinc-400"
+                  >
+                    Approve &amp; Post
+                  </button>
+                </div>
+
+                <p className="mt-3 text-[11px] leading-relaxed text-zinc-400">
+                  Meta publishing setup is next: Instagram/Facebook connection, account status, final preview, posted/failed status, and Campaign Library tracking.
+                </p>
               </div>
             )}
 
