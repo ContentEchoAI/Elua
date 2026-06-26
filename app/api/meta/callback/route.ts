@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 function redirectHome(request: NextRequest, status: string) {
-  const redirectUrl = new URL('/', request.url);
+  const appBaseUrl = process.env.META_APP_BASE_URL || new URL('/', request.url).origin;
+  const redirectUrl = new URL('/', appBaseUrl);
   redirectUrl.searchParams.set('meta', status);
   return NextResponse.redirect(redirectUrl);
 }

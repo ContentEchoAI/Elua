@@ -1,13 +1,7 @@
 import { NextResponse } from 'next/server';
 import crypto from 'node:crypto';
 
-const META_AUTH_SCOPES = [
-  'pages_show_list',
-  'pages_read_engagement',
-  'pages_manage_posts',
-  'instagram_basic',
-  'instagram_content_publish',
-];
+const META_AUTH_SCOPES = ['public_profile'];
 
 export async function GET() {
   const appId = process.env.META_APP_ID;
