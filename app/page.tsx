@@ -2016,7 +2016,7 @@ function getPlatformDisplayName(value?: string) {
                       Ready To Publish
                     </p>
                     <p className="mt-1 text-xs text-zinc-300">
-                      Review the post first. Then connect Instagram/Facebook and approve before anything goes live.
+                      Review the post first. Publishing will stay locked until Instagram/Page permissions are enabled.
                     </p>
                   </div>
                   <span
