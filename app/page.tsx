@@ -175,7 +175,12 @@ export default function Home() {
   const [showBusinessProfile, setShowBusinessProfile] = useState(false);
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
   const [metaConfigured, setMetaConfigured] = useState(false);
+  const [metaConnected, setMetaConnected] = useState(false);
   const [metaConnectUrl, setMetaConnectUrl] = useState<string | null>(null);
+  const [metaPlatformStatuses, setMetaPlatformStatuses] = useState([
+    { name: 'Instagram', connected: false },
+    { name: 'Facebook', connected: false },
+  ]);
   const [metaStatusMessage, setMetaStatusMessage] = useState(
     'Checking Meta setup...'
   );
@@ -197,15 +202,26 @@ export default function Home() {
       try {
         const response = await fetch('/api/meta/status', { cache: 'no-store' });
         const data = (await response.json()) as {
+          connected?: boolean;
           configured?: boolean;
           authorizationUrl?: string | null;
+          platforms?: { name: string; connected: boolean }[];
           message?: string;
         };
 
         if (!isActive) return;
 
         setMetaConfigured(Boolean(data.configured));
+        setMetaConnected(Boolean(data.connected));
         setMetaConnectUrl(data.authorizationUrl || null);
+        setMetaPlatformStatuses(
+          data.platforms && data.platforms.length > 0
+            ? data.platforms
+            : [
+                { name: 'Instagram', connected: false },
+                { name: 'Facebook', connected: false },
+              ]
+        );
         setMetaStatusMessage(
           data.message ||
             'Publishing will always require your approval before anything goes live.'
@@ -2005,26 +2021,32 @@ function getPlatformDisplayName(value?: string) {
                   </div>
                   <span
                     className={`rounded-full border px-2.5 py-1 text-[11px] font-medium ${
-                      metaConfigured
-                        ? 'border-purple-400/30 bg-purple-400/10 text-purple-200'
-                        : 'border-yellow-400/30 bg-yellow-400/10 text-yellow-200'
+                      metaConnected
+                        ? 'border-emerald-400/30 bg-emerald-400/10 text-emerald-200'
+                        : metaConfigured
+                          ? 'border-purple-400/30 bg-purple-400/10 text-purple-200'
+                          : 'border-yellow-400/30 bg-yellow-400/10 text-yellow-200'
                     }`}
                   >
-                    {metaConfigured ? 'Ready to connect' : 'Setup next'}
+                    {metaConnected
+                      ? 'Connected'
+                      : metaConfigured
+                        ? 'Ready to connect'
+                        : 'Setup next'}
                   </span>
                 </div>
 
                 <div className="grid gap-2 sm:grid-cols-2">
-                  {['Instagram', 'Facebook'].map((platform) => (
+                  {metaPlatformStatuses.map((platform) => (
                     <div
-                      key={platform}
+                      key={platform.name}
                       className="rounded-xl border border-white/10 bg-black/20 px-3 py-2"
                     >
                       <p className="text-sm font-medium text-zinc-100">
-                        {platform}
+                        {platform.name}
                       </p>
                       <p className="text-xs text-zinc-400">
-                        Not connected yet
+                        {platform.connected ? 'Connected' : 'Not connected yet'}
                       </p>
                     </div>
                   ))}
@@ -2033,21 +2055,23 @@ function getPlatformDisplayName(value?: string) {
                 <div className="mt-3 grid gap-2 sm:grid-cols-2">
                   <button
                     type="button"
-                    disabled={!metaConfigured || !metaConnectUrl}
+                    disabled={metaConnected || !metaConfigured || !metaConnectUrl}
                     onClick={() => {
-                      if (metaConnectUrl) {
+                      if (!metaConnected && metaConnectUrl) {
                         window.location.href = metaConnectUrl;
                       }
                     }}
                     className={`rounded-xl px-4 py-2 text-sm font-semibold transition ${
-                      metaConfigured && metaConnectUrl
+                      !metaConnected && metaConfigured && metaConnectUrl
                         ? 'bg-purple-500 text-white hover:bg-purple-400'
                         : 'border border-white/10 bg-white/5 text-zinc-400'
                     }`}
                   >
-                    {metaConfigured
-                      ? 'Connect Instagram/Facebook'
-                      : 'Meta setup not enabled yet'}
+                    {metaConnected
+                      ? 'Facebook connected'
+                      : metaConfigured
+                        ? 'Connect Instagram/Facebook'
+                        : 'Meta setup not enabled yet'}
                   </button>
 
                   <button
