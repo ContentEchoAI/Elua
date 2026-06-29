@@ -61,6 +61,13 @@ export default function LandingPage() {
 
             </div>
 
+            <a
+              href="#how-it-works"
+              className="mt-5 inline-flex text-sm font-semibold text-purple-300 transition hover:text-purple-200"
+            >
+              ↓ See what Hummingbird creates for you
+            </a>
+
           </div>
         </section>
 
@@ -92,13 +99,49 @@ export default function LandingPage() {
             ].map((item) => (
               <div
                 key={item}
-                className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5"
+                className="border-l border-purple-500/40 py-1 pl-4"
               >
                 <p className="text-sm font-semibold text-zinc-100">
                   {item}
                 </p>
               </div>
             ))}
+          </div>
+        </section>
+
+        <section className="border-t border-zinc-900 py-12 sm:py-16">
+          <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-purple-300">
+                Built for service businesses
+              </p>
+              <h2 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
+                Better marketing without spending hours on content.
+              </h2>
+              <p className="mt-3 text-sm leading-relaxed text-zinc-400 sm:text-base">
+                Hummingbird is made for business owners who need consistent content,
+                but do not have time to plan posts, write captions, think of CTAs,
+                and figure out what to say to leads.
+              </p>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              {[
+                'Post more consistently',
+                'Sound more professional',
+                'Turn photos into marketing',
+                'Get more replies and quote requests',
+              ].map((item) => (
+                <div
+                  key={item}
+                  className="border-l border-purple-500/40 py-1 pl-4"
+                >
+                  <p className="text-sm font-semibold text-zinc-100">
+                    {item}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
       </div>
