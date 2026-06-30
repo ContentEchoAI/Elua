@@ -3,8 +3,11 @@ import Link from 'next/link';
 
 export default function LandingPage() {
   return (
-    <main className="min-h-screen bg-zinc-950 text-white">
-      <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 py-5 sm:px-6 lg:px-8">
+    <main className="relative min-h-screen overflow-hidden bg-zinc-950 text-white">
+      <div className="pointer-events-none absolute left-[-14rem] top-36 h-72 w-72 rounded-full bg-purple-500/5 blur-[160px]" />
+      <div className="pointer-events-none absolute right-[-20rem] top-52 h-96 w-96 rounded-full bg-pink-500/5 blur-[160px]" />
+
+      <div className="relative mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 py-5 sm:px-6 lg:px-8">
         <header className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <Image
