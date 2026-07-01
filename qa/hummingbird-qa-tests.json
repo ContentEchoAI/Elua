@@ -1,0 +1,89 @@
+[
+  {
+    "id": "mobile-detailing-irvine",
+    "prompt": "Mobile detailing in Irvine",
+    "businessType": "mobile detailing",
+    "city": "Irvine",
+    "services": "interior detailing, exterior detailing, maintenance details",
+    "expected": ["Irvine", "detail", "quote"],
+    "avoid": [
+      "send me what you drive",
+      "send me a couple pics",
+      "inside, outside, or both",
+      "I'm mobile, so I come to you",
+      "I’m mobile, so I come to you"
+    ]
+  },
+  {
+    "id": "house-cleaning-before-after",
+    "prompt": "House cleaning before and after photos for a cleaning business in Irvine",
+    "businessType": "house cleaning",
+    "city": "Irvine",
+    "services": "standard cleaning, deep cleaning, move-out cleaning",
+    "expected": ["clean", "Irvine", "quote"],
+    "avoid": [
+      "spotless",
+      "guarantee",
+      "save time",
+      "send me a couple pics",
+      "treat your home like our own"
+    ]
+  },
+  {
+    "id": "lash-refill-appointment",
+    "prompt": "Lash refill appointment reminder for a lash artist",
+    "businessType": "lash artist",
+    "services": "lash fills, full sets, lash care",
+    "expected": ["lash", "refill", "appointment"],
+    "avoid": [
+      "natural lash health",
+      "damage",
+      "best fit",
+      "right fit",
+      "limited spots",
+      "guarantee"
+    ]
+  },
+  {
+    "id": "nail-tech-new-set",
+    "prompt": "Nail tech promoting new sets for this week",
+    "businessType": "nail tech",
+    "services": "gel sets, acrylic sets, nail art",
+    "expected": ["nail", "set", "book"],
+    "avoid": [
+      "limited spots",
+      "guarantee",
+      "flawless",
+      "damage-free",
+      "best nails"
+    ]
+  },
+  {
+    "id": "landscaping-quote-request",
+    "prompt": "Landscaping quote request post for homeowners",
+    "businessType": "landscaping",
+    "services": "yard cleanup, lawn maintenance, planting, mulch",
+    "expected": ["landscap", "quote", "yard"],
+    "avoid": [
+      "guarantee",
+      "save money",
+      "no hidden fees",
+      "licensed and insured",
+      "send me a couple pics"
+    ]
+  },
+  {
+    "id": "fitness-coach-beginner",
+    "prompt": "Fitness coach post for beginners who want consistency",
+    "businessType": "fitness coach",
+    "services": "beginner coaching, consistency plan, accountability",
+    "expected": ["fitness", "beginner", "consistency"],
+    "avoid": [
+      "fitness journey",
+      "dream body",
+      "guarantee",
+      "before and after",
+      "transform your body"
+    ]
+  }
+]

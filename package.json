@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "qa:hummingbird": "node scripts/hummingbird-qa-bot.mjs",
+    "qa:hummingbird:checks": "node scripts/hummingbird-qa-bot.mjs --checks"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.3.0",
