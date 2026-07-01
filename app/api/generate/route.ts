@@ -1476,6 +1476,28 @@ function removeVideoLanguageFromPhotoLine(value: string) {
     .trim();
 }
 
+function cleanInvisibleMakeMyPostValue<T>(value: T): T {
+  if (typeof value === 'string') {
+    return cleanInvisibleMakeMyPostLine(value) as T;
+  }
+
+  if (Array.isArray(value)) {
+    return value.map((item) => cleanInvisibleMakeMyPostValue(item)) as T;
+  }
+
+  if (value && typeof value === 'object') {
+    const cleanedObject: Record<string, unknown> = {};
+
+    Object.entries(value as Record<string, unknown>).forEach(([key, item]) => {
+      cleanedObject[key] = cleanInvisibleMakeMyPostValue(item);
+    });
+
+    return cleanedObject as T;
+  }
+
+  return value;
+}
+
 function applyInvisibleMakeMyPostQualityGate(
   parsed: GeneratedResponse,
   options: InvisibleMakeMyPostQualityGateOptions
@@ -1562,7 +1584,7 @@ function applyInvisibleMakeMyPostQualityGate(
     ...(cleanedCta ? { cta_strategy: cleanedCta } : {}),
   };
 
-  return parsed;
+  return cleanInvisibleMakeMyPostValue(parsed);
 }
 
 function strengthenBeautyShortFormOpening(
