@@ -1351,6 +1351,10 @@ function cleanInvisibleMakeMyPostLine(value: unknown) {
     .replace(/\bspots? (are )?(filling|fill) up fast\b/gi, 'availability can vary')
     .replace(/\bsame[- ]day availability\b/gi, 'availability')
     .replace(/\bguaranteed\b/gi, '')
+    .replace(/\bguarantees?\b/gi, 'promises')
+    .replace(/Open with a simple question about which room or area needs attention\./gi, 'Start with one specific service question.')
+    .replace(/Keep the post focused on the cleaning request without making price, timing, guarantee, or specialty-service claims\./gi, 'Keep the post focused on the service request.')
+    .replace(/End with: DM ([A-Z]{2,12}) with your home size, rooms, or areas that need attention\./gi, 'Final CTA: DM $1 and ask one simple service question.')
     .replace(/\bdiagnose\b/gi, 'answer questions about')
     .replace(/\blead capture\b/gi, 'reply path')
     .replace(/\bwarm leads\b/gi, 'interested replies')
@@ -1362,6 +1366,38 @@ function cleanInvisibleMakeMyPostLine(value: unknown) {
     .replace(/\bwhich areas need the most attention\b/gi, 'what you need done')
     .replace(/\bI[’']ll get back to you with details\b/gi, 'I’ll reply')
     .replace(/\bCan you tell me your car make and model and what areas need the most attention\??/gi, 'Send me the car and what you need done.')
+    .replace(/\bstruggling with\b/gi, 'trying to improve')
+    .replace(/\ba clear option next step\b/gi, 'a simple next step')
+    .replace(/\bclear option first coaching step\b/gi, 'simple first coaching step')
+    .replace(/\bclear option fix\b/gi, 'simple fix')
+    .replace(/\bclear option\b/gi, 'simple')
+    .replace(/\bworks with your booking needs\b/gi, 'fits your week')
+    .replace(/\bclear options\b/gi, 'simple service options')
+    .replace(/\bwith your car type\b/gi, 'with the service you are interested in')
+    .replace(/\byour car type\b/gi, 'the service you are interested in')
+    .replace(/\bsend your car type\b/gi, 'send the service you are interested in')
+    .replace(/\bwith QUOTE, the service you are interested in, and which service you['’]re interested in\b/gi, 'with QUOTE and the service you are interested in')
+    .replace(/\bWhat kind of car do you have, and which service do you want\?/gi, 'Do you know what type of service you are interested in, or are you still deciding?')
+    .replace(/\bWhat kind of car do you have, and which detailing service are you interested in—interior, exterior, or maintenance\?/gi, 'Do you know what type of service you are interested in, or are you still deciding?')
+    .replace(/\bPlease send the service you are interested in and which service you want\./gi, 'Please send the service you are interested in.')
+    .replace(/\bbased on your car and needs\b/gi, 'based on what you need')
+    .replace(/\bDM me with your car type and which service you want\b/gi, 'DM me with the service you are interested in')
+    .replace(/\bsend me a DM with your car type and service you['’]re interested in\b/gi, 'send me a DM with the service you are interested in')
+    .replace(/#Spotless\b/gi, '#CleanHome')
+    .replace(/\bspotless\b/gi, 'ready for the next step')
+    .replace(/\bBooking Details Requestful\b/gi, 'booking details')
+    .replace(/\bwould you like booking details best\b/gi, 'would you like booking details?')
+    .replace(/\bSave time\b/g, 'Make the next step easier')
+    .replace(/\binterior, exterior, or both\b/gi, 'interior, exterior, or maintenance')
+    .replace(/\binterior, exterior, or a maintenance detail\b/gi, 'interior, exterior, or maintenance detailing')
+    .replace(/\bWhich service are you leaning toward — interior, exterior, or both\?/gi, 'Which service are you leaning toward — interior, exterior, or maintenance?')
+    .replace(/\bsave time\b/gi, 'make the next step easier')
+    .replace(/\bsaving time\b/gi, 'making the next step easier')
+    .replace(/\bhassle[- ]free\b/gi, 'simple')
+    .replace(/\bno hassle\b/gi, 'simple')
+    .replace(/\bclear price\b/gi, 'quote')
+    .replace(/\bclear pricing\b/gi, 'quote details')
+    .replace(/\bBooking Details Requestful\b/gi, 'booking details')
     .replace(/\bservice comparison\b/gi, 'local service post')
     .replace(/\bhelp car owners decide\b/gi, 'mobile detailing in the area')
     .replace(/\bconversion chances\b/gi, 'reply clarity')
@@ -1438,6 +1474,28 @@ function removeVideoLanguageFromPhotoLine(value: string) {
     .replace(/\btext overlay\b/gi, 'text')
     .replace(/\s{2,}/g, ' ')
     .trim();
+}
+
+function cleanInvisibleMakeMyPostValue<T>(value: T): T {
+  if (typeof value === 'string') {
+    return cleanInvisibleMakeMyPostLine(value) as T;
+  }
+
+  if (Array.isArray(value)) {
+    return value.map((item) => cleanInvisibleMakeMyPostValue(item)) as T;
+  }
+
+  if (value && typeof value === 'object') {
+    const cleanedObject: Record<string, unknown> = {};
+
+    Object.entries(value as Record<string, unknown>).forEach(([key, item]) => {
+      cleanedObject[key] = cleanInvisibleMakeMyPostValue(item);
+    });
+
+    return cleanedObject as T;
+  }
+
+  return value;
 }
 
 function applyInvisibleMakeMyPostQualityGate(
@@ -1526,7 +1584,7 @@ function applyInvisibleMakeMyPostQualityGate(
     ...(cleanedCta ? { cta_strategy: cleanedCta } : {}),
   };
 
-  return parsed;
+  return cleanInvisibleMakeMyPostValue(parsed);
 }
 
 function strengthenBeautyShortFormOpening(
@@ -1702,7 +1760,11 @@ const QUALITY_RULES = String.raw`Quality rules:
 const LOCAL_SERVICE_PLAYBOOK = String.raw`- For local service businesses such as cleaners, landscapers, contractors, home services, repair services, pet services, and mobile services: focus on quote requests, service areas, job details, estimate requests, service menu clarity, quote questions, customer concerns, and practical next steps. Only discuss availability, scheduling, booking steps, or service frequency if the user provides those details.
 - For local service outputs, do not invent operational claims like vetted team, background checks, licensed/insured status, no hidden fees, guaranteed quality, spotless results, sparkling clean, saving time, fast replies, same-day availability, treating the home like their own, or perfect results unless the user provided those facts.
 - For local service businesses, do not invent availability, openings, same-week scheduling, booking deadlines, reserved spots, consultation calls, recurring schedules, package names, service frequency, quote guarantees, or operational details unless the user provided them.
-- Local service quote paths should ask for concrete details before suggesting a service or booking: service type, property or home size, rooms or areas, current problem, preferred timing, service address or area, photos if relevant, and whether the customer wants a one-time or recurring service.
+- Local service quote paths should ask for concrete details before suggesting a service or booking, but the details must match the business type.
+  - Cleaning: service type, home size, rooms or areas, current cleaning need, preferred timing, service area, and one-time or recurring interest.
+  - Landscaping/lawn care: yard size, front yard/backyard/full yard, service requested, problem spots, preferred timing, service area, and one-time or recurring interest.
+  - Mobile detailing: vehicle type, interior/exterior/maintenance interest, service area, preferred timing, and one-time or maintenance interest.
+  - Other local services: ask for the project type, service area, timing, and one clear detail needed for an estimate.
 - Prefer "Send your home size and which rooms need the most attention" over "I’ll recommend the right package."
 - Prefer "I can prepare a quote from those details" over "I have openings next week."
 - Prefer "Do you want a quote for a one-time clean or recurring upkeep?" over "Would you like to reserve a spot?"
@@ -2012,23 +2074,23 @@ function getPromptOnlyPostStructure(content: string, ctaKeyword: string) {
   if (/detail|detailing|car|auto|vehicle/.test(lowerContent)) {
     return [
       'Open with one plain local-service sentence a real owner would post. Do not create an educational comparison, service menu, checklist, or "help them decide" angle.',
-      'Keep the post focused on mobile detailing in the service area without making price, timing, guarantee, package, comparison, or exact service-detail claims.',
+      'Keep the post focused on mobile detailing in the service area without making unsupported claims about price, timing, packages, comparisons, or exact service details.',
       `End with a simple CTA like: DM ${safeCta}. Keep the public post short and put only one casual follow-up question in Reply To Send.`,
     ];
   }
 
   if (/clean|cleaning|home|room|house/.test(lowerContent)) {
     return [
-      'Open with a simple question about which room or area needs attention.',
-      'Keep the post focused on the cleaning request without making price, timing, guarantee, or specialty-service claims.',
-      `End with: DM ${safeCta} with your home size, rooms, or areas that need attention.`,
+      'Open with a specific quote-request question that fits this business type.',
+      'Keep the post focused on the service request without making unsupported claims about price, timing, promises, or specialty services.',
+      `Final CTA: DM ${safeCta} and ask one simple service-specific question.`,
     ];
   }
 
   return [
-    'Open with the customer problem or result they want.',
-    'Keep the post simple, specific, and focused on the service.',
-    `End with: DM ${safeCta} with the details needed for the next step.`,
+    'Start with a specific first slide or shot that shows the service or result clearly.',
+    'Use short, viewer-facing text that sounds natural and specific to the business.',
+    `Final CTA: DM ${safeCta} and ask one simple next-step question.`,
   ];
 }
 
@@ -2593,7 +2655,9 @@ Rules for uploaded visuals:
 - If the selected platform is Instagram Reel, TikTok Script, or YouTube Shorts, make the output video-friendly with an opening hook, on-screen text, visual pacing, and a clear CTA.
 - For cleaning, home service, local service, detailing, landscaping, and similar service visuals, do not invent service categories like carpet cleaning, upholstery cleaning, deep clean, standard clean, move-out clean, recurring clean, same-day service, licensed/insured status, guarantees, exact pricing, exact availability, or package names unless the user provided them.
 - If a cleaning video shows vacuuming, tidying, wiping, organizing, or a room reset, call it home cleaning, living room cleaning, room reset, or cleaning in progress unless the user specifically says carpet cleaning, upholstery cleaning, deep cleaning, move-out cleaning, or another specialty service.
-- For cleaning/local service captions, prefer quote-request language: room details, home size, service area, project details, photos of the area, quote request, or which rooms need attention.
+- For cleaning captions, prefer quote-request language: room details, home size, service area, quote request, and which rooms need attention.
+- For landscaping/lawn care captions, use yard-specific quote language: yard size, front yard/backyard/full yard, service requested, problem spots, service area, and preferred timing. Do not use cleaning-specific terms like rooms, home size, standard clean, deep clean, or move-out clean for landscaping.
+- For mobile detailing captions, use car-specific quote language: vehicle type, interior/exterior/maintenance interest, service area, and preferred timing. Do not ask for photos unless the user provided that as part of their process.
 - For cleaning/local service CTA keywords, prefer QUOTE, CLEAN, ESTIMATE, or BOOK only when the caption clearly explains what the person should send.
 - Never duplicate CTA keywords. Write "DM QUOTE", not "DM QUOTE QUOTE".
 - For TikTok Script, Instagram Reel, or YouTube Shorts, treat uploaded photos as visual beats for a short-form video or slideshow. Do not treat them like a static photo carousel.
@@ -3174,7 +3238,9 @@ COMMAND CENTER STYLE:
 - The top result must feel like a simple weekly action plan, not a marketing strategy report.
 - Write the campaign in plain owner language: what to post, what to film, what to say, what CTA to use, and how to reply.
 - Avoid strategy-heavy phrases in the top result such as "capture leads", "lead capture", "conversion strategy", "buyer journey", "nurture", "campaign funnel", "positioning", or "monetization path."
-- Prefer direct sentences like: "Post a standard vs deep clean guide", "Film one messy room and one deep-clean example", "Use CTA: DM QUOTE", and "Reply by asking home size and which rooms need attention."
+- For cleaning examples, use direct sentences like: "Post a standard vs deep clean guide", "Film one messy room and one deep-clean example", "Use CTA: DM QUOTE", and "Reply by asking which rooms need attention."
+- For landscaping examples, use direct sentences like: "Post a yard cleanup quote checklist", "Film the yard area or project type", "Use CTA: DM QUOTE", and "Reply by asking yard size, service needed, problem spots, and timing."
+- For mobile detailing examples, use direct sentences like: "Post a mobile detailing intro", "Film the car or detail setup", "Use CTA: DM QUOTE", and "Reply by asking whether they are interested in interior, exterior, or maintenance detailing."
 - The command center should be useful even if the user never opens the full plan.
 - Keep production_plan.concept, production_plan.caption, production_plan.cta, production_plan.dm_reply, and production_plan.follow_up_message short, practical, and copy-ready.
 
