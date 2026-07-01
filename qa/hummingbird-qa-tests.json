@@ -5,13 +5,23 @@
     "businessType": "mobile detailing",
     "city": "Irvine",
     "services": "interior detailing, exterior detailing, maintenance details",
-    "expected": ["Irvine", "detail", "quote"],
+    "expected": [
+      "Irvine",
+      "detail",
+      "quote"
+    ],
     "avoid": [
       "send me what you drive",
       "send me a couple pics",
       "inside, outside, or both",
       "I'm mobile, so I come to you",
-      "I’m mobile, so I come to you"
+      "I\u2019m mobile, so I come to you",
+      "save time",
+      "send me your car type",
+      "with your car type",
+      "which parts you want detailed",
+      "what you want cleaned",
+      "what kind of detail are you thinking"
     ]
   },
   {
@@ -20,7 +30,11 @@
     "businessType": "house cleaning",
     "city": "Irvine",
     "services": "standard cleaning, deep cleaning, move-out cleaning",
-    "expected": ["clean", "Irvine", "quote"],
+    "expected": [
+      "clean",
+      "Irvine",
+      "quote"
+    ],
     "avoid": [
       "spotless",
       "guarantee",
@@ -34,14 +48,19 @@
     "prompt": "Lash refill appointment reminder for a lash artist",
     "businessType": "lash artist",
     "services": "lash fills, full sets, lash care",
-    "expected": ["lash", "refill", "appointment"],
+    "expected": [
+      "lash",
+      "refill",
+      "appointment"
+    ],
     "avoid": [
       "natural lash health",
       "damage",
       "best fit",
       "right fit",
       "limited spots",
-      "guarantee"
+      "guarantee",
+      "save time"
     ]
   },
   {
@@ -49,7 +68,11 @@
     "prompt": "Nail tech promoting new sets for this week",
     "businessType": "nail tech",
     "services": "gel sets, acrylic sets, nail art",
-    "expected": ["nail", "set", "book"],
+    "expected": [
+      "nail",
+      "set",
+      "book"
+    ],
     "avoid": [
       "limited spots",
       "guarantee",
@@ -63,13 +86,25 @@
     "prompt": "Landscaping quote request post for homeowners",
     "businessType": "landscaping",
     "services": "yard cleanup, lawn maintenance, planting, mulch",
-    "expected": ["landscap", "quote", "yard"],
+    "expected": [
+      "landscap",
+      "quote",
+      "yard"
+    ],
     "avoid": [
       "guarantee",
       "save money",
       "no hidden fees",
       "licensed and insured",
-      "send me a couple pics"
+      "send me a couple pics",
+      "clear price",
+      "exactly what your landscaping will cost",
+      "home size",
+      "rooms needing cleaning",
+      "which room or area",
+      "cleaning request",
+      "cleaning quote",
+      "standard, deep, or move-out"
     ]
   },
   {
@@ -77,7 +112,11 @@
     "prompt": "Fitness coach post for beginners who want consistency",
     "businessType": "fitness coach",
     "services": "beginner coaching, consistency plan, accountability",
-    "expected": ["fitness", "beginner", "consistency"],
+    "expected": [
+      "fitness",
+      "beginner",
+      "consistency"
+    ],
     "avoid": [
       "fitness journey",
       "dream body",

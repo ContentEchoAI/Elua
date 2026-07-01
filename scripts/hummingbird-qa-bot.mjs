@@ -35,6 +35,14 @@ const bannedGlobal = [
   /elevate your/i,
   /are you tired of/i,
   /struggling with/i,
+  /clear option/i,
+  /hassle[- ]?free/i,
+  /no fuss/i,
+  /peace of mind/i,
+  /clear price/i,
+  /exactly what .* will cost/i,
+  /open with the customer problem/i,
+  /keep the post simple, specific/i,
 ];
 
 const strongCtaPatterns = [
@@ -183,6 +191,36 @@ function normalizeExpectedPatterns(expected = []) {
   });
 }
 
+function getNicheLeakagePatterns(test) {
+  const context = `${test.id || ''} ${test.prompt || ''} ${test.businessType || ''}`.toLowerCase();
+
+  if (/landscap|lawn|yard/.test(context)) {
+    return [
+      /home size/i,
+      /rooms? need/i,
+      /rooms? that need/i,
+      /which room or area/i,
+      /cleaning request/i,
+      /cleaning quote/i,
+      /standard, deep, or move-out/i,
+    ];
+  }
+
+  if (/mobile detail|auto detail|car detail|detailing/.test(context)) {
+    return [
+      /send me your car type/i,
+      /with your car type/i,
+      /tell me your car type/i,
+      /which parts you want detailed/i,
+      /what you want cleaned/i,
+      /what kind of detail are you thinking/i,
+      /interior, exterior, or both/i,
+    ];
+  }
+
+  return [];
+}
+
 function scoreOutput(test, apiResult) {
   const text = extractText(apiResult.body).replace(/\n{3,}/g, '\n\n').trim();
   const warnings = [];
@@ -202,17 +240,28 @@ function scoreOutput(test, apiResult) {
     warnings.push('Output text looks too short or could not be extracted from the API response.');
   }
 
+  let maxScore = 100;
+
   const globalMatches = findMatches(text, bannedGlobal);
   for (const match of globalMatches.slice(0, 8)) {
-    score -= 8;
+    score -= 12;
+    maxScore = Math.min(maxScore, 89);
     warnings.push(`Risky/generic phrase found: "${match}".`);
   }
 
   const testAvoidPatterns = normalizeExpectedPatterns(test.avoid || []);
   const avoidMatches = findMatches(text, testAvoidPatterns);
   for (const match of avoidMatches.slice(0, 8)) {
-    score -= 12;
+    score -= 15;
+    maxScore = Math.min(maxScore, 79);
     warnings.push(`Niche-specific banned phrase found: "${match}".`);
+  }
+
+  const leakageMatches = findMatches(text, getNicheLeakagePatterns(test));
+  for (const match of leakageMatches.slice(0, 8)) {
+    score -= 15;
+    maxScore = Math.min(maxScore, 79);
+    warnings.push(`Cross-niche template leakage found: "${match}".`);
   }
 
   const expectedPatterns = normalizeExpectedPatterns(test.expected || []);
@@ -237,11 +286,11 @@ function scoreOutput(test, apiResult) {
     warnings.push('AI self-reference found.');
   }
 
-  score = Math.max(0, Math.min(100, score));
+  score = Math.max(0, Math.min(maxScore, score));
 
   return {
     score,
-    verdict: score >= 85 ? 'pass' : score >= 75 ? 'watch' : 'weak',
+    verdict: score >= 90 ? 'pass' : score >= 80 ? 'watch' : 'weak',
     text,
     warnings,
   };
