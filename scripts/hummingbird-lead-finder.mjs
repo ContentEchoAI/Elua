@@ -56,20 +56,33 @@ for (const row of leadRows) {
   const [businessName, niche, location, instagram, website, notes] = row.split(',');
   const score = scoreLead(niche, instagram, website, notes);
   const leadPriority = priority(score);
+  const bestAction =
+    score >= 80
+      ? 'Comment first, then DM if they engage or the fit is obvious.'
+      : score >= 60
+        ? 'Engage lightly first. Save for later unless the content gap is obvious.'
+        : 'Skip for now.';
 
   console.log(`- ${leadPriority} ${score}/100 — ${businessName} — ${niche} — ${location}`);
   reportLines.push(`| ${leadPriority} | ${score} | ${businessName} | ${niche} | ${location} |`);
 
   detailLines.push(`### ${businessName}`);
   detailLines.push('');
+  const observedIssue = notes || 'the next step for interested people could be clearer';
+
+  detailLines.push(`Best first action: **${bestAction}**`);
+  detailLines.push('');
+  detailLines.push(`Observed issue:`);
+  detailLines.push(`> ${observedIssue}`);
+  detailLines.push('');
   detailLines.push(`Suggested comment:`);
-  detailLines.push(`> Your ${niche} content already shows the work. The main thing I’d add is a clear CTA so people know what to message next.`);
+  detailLines.push(`> Your ${niche} content already has a good starting point. One thing I’d tighten is the CTA so people know exactly what to message next.`);
   detailLines.push('');
   detailLines.push(`Suggested DM:`);
-  detailLines.push(`> Hey — I’m building Hummingbird AI for local service businesses. It turns one service idea or photo into a ready-to-post caption, CTA, and reply path. Your ${niche} content looked like a good fit, so I made a sample prompt you could try.`);
+  detailLines.push(`> Hey — I noticed this with your ${niche} content: ${observedIssue} I’m building Hummingbird AI to help service businesses turn one post idea or photo into a ready-to-post caption, CTA, and reply path. I made a sample prompt you could try if you want.`);
   detailLines.push('');
   detailLines.push(`Demo prompt:`);
-  detailLines.push(`\`${niche} in ${location}. Turn this into an Instagram post that gets inquiries.\``);
+  detailLines.push(`\`${niche} in ${location}. Turn this into an Instagram post with a clear CTA that gets inquiries.\``);
   detailLines.push('');
 }
 
