@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "qa:hummingbird": "node scripts/hummingbird-qa-bot.mjs",
-    "qa:hummingbird:checks": "node scripts/hummingbird-qa-bot.mjs --checks"
+    "qa:hummingbird:checks": "node scripts/hummingbird-qa-bot.mjs --checks",
+    "lead:finder": "node scripts/hummingbird-lead-finder.mjs"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.3.0",
