@@ -1,7 +1,12 @@
 #!/usr/bin/env node
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 
-const inputPath = 'lead-finder/sample-leads.csv';
+const args = process.argv.slice(2);
+const inputArg = args.find((arg) => arg.startsWith('--input='));
+
+const inputPath = inputArg
+  ? inputArg.split('=').slice(1).join('=')
+  : 'lead-finder/sample-leads.csv';
 const reportDir = 'lead-finder/reports';
 
 if (!existsSync(inputPath)) {
