@@ -42,3 +42,6 @@ next-env.d.ts
 
 # Hummingbird QA Bot generated reports
 qa/reports/
+
+# Lead Finder generated reports
+lead-finder/reports/
