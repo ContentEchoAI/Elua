@@ -12,8 +12,11 @@ const shouldRunChecks = args.includes('--checks');
 const shouldFailOnWeak = args.includes('--fail-on-weak');
 const endpointArg = args.find((arg) => arg.startsWith('--endpoint='));
 const limitArg = args.find((arg) => arg.startsWith('--limit='));
+const runsArg = args.find((arg) => arg.startsWith('--runs='));
 const endpoint = endpointArg ? endpointArg.split('=').slice(1).join('=') : DEFAULT_ENDPOINT;
 const limit = limitArg ? Number.parseInt(limitArg.split('=')[1] || '', 10) : undefined;
+const requestedRuns = runsArg ? Number.parseInt(runsArg.split('=')[1] || '', 10) : 1;
+const runs = Number.isFinite(requestedRuns) && requestedRuns > 0 ? requestedRuns : 1;
 
 const bannedGlobal = [
   /send me (a couple|some|few)?\s*pics?/i,
@@ -314,16 +317,58 @@ function makeMarkdownReport(results) {
     '',
     '## Summary',
     '',
-    '| Test | Score | Verdict | Runtime | Main warnings |',
-    '|---|---:|---|---:|---|',
+    '| Test | Run | Score | Verdict | Runtime | Main warnings |',
+    '|---|---:|---:|---|---:|---|',
     ...results.map((result) => {
       const warningText = result.warnings.slice(0, 3).join('<br>') || 'None';
-      return `| ${result.id} | ${result.score} | ${result.verdict} | ${result.durationMs}ms | ${warningText.replace(/\|/g, '\\|')} |`;
+      const runText = result.runs > 1 ? `${result.run}/${result.runs}` : '1/1';
+      return `| ${result.id} | ${runText} | ${result.score} | ${result.verdict} | ${result.durationMs}ms | ${warningText.replace(/\|/g, '\\|')} |`;
     }),
     '',
-    '## Details',
-    '',
   ];
+
+  if (runs > 1) {
+    const groupedResults = new Map();
+
+    for (const result of results) {
+      const current = groupedResults.get(result.id) || [];
+      current.push(result);
+      groupedResults.set(result.id, current);
+    }
+
+    lines.push('## Stability');
+    lines.push('');
+    lines.push('| Test | Average | Worst | Best | Weak runs | Repeated warnings |');
+    lines.push('|---|---:|---:|---:|---:|---|');
+
+    for (const [id, group] of groupedResults.entries()) {
+      const average = Math.round(group.reduce((sum, result) => sum + result.score, 0) / group.length);
+      const worst = Math.min(...group.map((result) => result.score));
+      const best = Math.max(...group.map((result) => result.score));
+      const weakRuns = group.filter((result) => ['weak', 'fail'].includes(result.verdict)).length;
+      const warningCounts = new Map();
+
+      for (const result of group) {
+        for (const warning of result.warnings) {
+          warningCounts.set(warning, (warningCounts.get(warning) || 0) + 1);
+        }
+      }
+
+      const repeatedWarnings =
+        [...warningCounts.entries()]
+          .filter(([, count]) => count > 1)
+          .map(([warning]) => warning)
+          .slice(0, 3)
+          .join('<br>') || 'None';
+
+      lines.push(`| ${id} | ${average} | ${worst} | ${best} | ${weakRuns}/${group.length} | ${repeatedWarnings.replace(/\|/g, '\\|')} |`);
+    }
+
+    lines.push('');
+  }
+
+  lines.push('## Details');
+  lines.push('');
 
   for (const result of results) {
     lines.push(`### ${result.id}`);
@@ -359,36 +404,48 @@ async function main() {
   const tests = loadTests();
   mkdirSync(REPORT_DIR, { recursive: true });
 
-  console.log(`\nRunning ${tests.length} Hummingbird QA test(s) against ${endpoint}\n`);
+  const totalRuns = tests.length * runs;
+  const runLabel = runs > 1 ? ` (${totalRuns} total runs)` : '';
+  console.log(`
+Running ${tests.length} Hummingbird QA test(s) against ${endpoint}${runLabel}
+`);
 
   const results = [];
   for (const test of tests) {
-    process.stdout.write(`• ${test.id}... `);
-    try {
-      const apiResult = await callGenerate(test);
-      const scored = scoreOutput(test, apiResult);
-      results.push({
-        id: test.id,
-        prompt: test.prompt,
-        businessType: test.businessType,
-        status: apiResult.status,
-        durationMs: apiResult.durationMs,
-        ...scored,
-      });
-      console.log(`${scored.score}/100 ${scored.verdict} (${apiResult.durationMs}ms)`);
-    } catch (error) {
-      results.push({
-        id: test.id,
-        prompt: test.prompt,
-        businessType: test.businessType,
-        status: 0,
-        durationMs: 0,
-        score: 0,
-        verdict: 'fail',
-        text: '',
-        warnings: [error instanceof Error ? error.message : String(error)],
-      });
-      console.log('failed');
+    for (let run = 1; run <= runs; run += 1) {
+      const label = runs > 1 ? `${test.id} [${run}/${runs}]` : test.id;
+      process.stdout.write(`• ${label}... `);
+
+      try {
+        const apiResult = await callGenerate(test);
+        const scored = scoreOutput(test, apiResult);
+        results.push({
+          id: test.id,
+          run,
+          runs,
+          prompt: test.prompt,
+          businessType: test.businessType,
+          status: apiResult.status,
+          durationMs: apiResult.durationMs,
+          ...scored,
+        });
+        console.log(`${scored.score}/100 ${scored.verdict} (${apiResult.durationMs}ms)`);
+      } catch (error) {
+        results.push({
+          id: test.id,
+          run,
+          runs,
+          prompt: test.prompt,
+          businessType: test.businessType,
+          status: 0,
+          durationMs: 0,
+          score: 0,
+          verdict: 'fail',
+          text: '',
+          warnings: [error instanceof Error ? error.message : String(error)],
+        });
+        console.log('failed');
+      }
     }
   }
 

@@ -1362,15 +1362,32 @@ function cleanInvisibleMakeMyPostLine(value: unknown) {
     .replace(/\bwithout the hassle of driving anywhere\b/gi, 'without you having to drop it off')
     .replace(/\bwithout the hassle\b/gi, '')
     .replace(/\bwhat needs the most attention\b/gi, 'what you need done')
+    .replace(/\bwhat you want cleaned\b/gi, 'which service you are interested in')
+    .replace(/\bwhat kind of detail are you thinking(?: about)?\??/gi, 'do you know what type of service you are interested in, or are you still deciding?')
+    .replace(/Hey! What kind of detail are you thinking about\?/gi, 'Hey! Do you know what type of service you are interested in, or are you still deciding?')
+    .replace(/\bthe service you are interested in and service\b/gi, 'the service you are interested in')
+    .replace(/\bwhich service you need\b/gi, 'which service you are interested in')
+    .replace(/\bwhat service they want and their car type\b/gi, 'which service they are interested in')
+    .replace(/\bwhat type of car do you have, and which service are you interested in\b/gi, 'which service are you interested in')
+    .replace(/\bcar type and service interest\b/gi, 'service interest')
+    .replace(/\bfree estimate\b/gi, 'quote')
+    .replace(/\bsaves time\b/gi, 'makes the next step easier')
     .replace(/\bareas need the most attention\b/gi, 'you need done')
     .replace(/\bwhich areas need the most attention\b/gi, 'what you need done')
     .replace(/\bI[’']ll get back to you with details\b/gi, 'I’ll reply')
     .replace(/\bCan you tell me your car make and model and what areas need the most attention\??/gi, 'Send me the car and what you need done.')
     .replace(/\bstruggling with\b/gi, 'trying to improve')
+    .replace(/\bare you tired of\b/gi, 'have you been meaning to handle')
     .replace(/\ba clear option next step\b/gi, 'a simple next step')
     .replace(/\bclear option first coaching step\b/gi, 'simple first coaching step')
     .replace(/\bclear option fix\b/gi, 'simple fix')
     .replace(/\bclear option\b/gi, 'simple')
+    .replace(/\bright fit\b/gi, 'simple option')
+    .replace(/\bafter treatment\b/gi, 'after your visit')
+    .replace(/\btreatment plan\b/gi, 'visit questions')
+    .replace(/\btreatment\b/gi, 'visit')
+    .replace(/\bpick the simple option\b/gi, 'compare your options')
+    .replace(/\bpick a simple option\b/gi, 'compare your options')
     .replace(/\bworks with your booking needs\b/gi, 'fits your week')
     .replace(/\bclear options\b/gi, 'simple service options')
     .replace(/\bwith your car type\b/gi, 'with the service you are interested in')
@@ -2372,7 +2389,7 @@ DM CAR and I’ll send pricing.`,
       'Hey! Are you looking for a specific service, or are you still figuring out what you need?',
       'Hey! Tell me what you’re thinking and I’ll point you in the right direction.',
       'Hey! Do you already know what you want done, or are you still deciding?',
-      'Hey! What kind of detail are you thinking about?',
+      'Hey! Do you know what type of service you are interested in, or are you still deciding?',
       'Hey! What service are you leaning toward?',
     ],
     variationIndex
