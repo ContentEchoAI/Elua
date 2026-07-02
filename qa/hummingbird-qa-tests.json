@@ -124,5 +124,60 @@
       "before and after",
       "transform your body"
     ]
+  },
+  {
+    "id": "chiropractor-new-patient-questions",
+    "prompt": "Chiropractor new patient questions post",
+    "businessType": "chiropractor",
+    "services": "new patient questions, consultation readiness, posture awareness",
+    "expected": [
+      "chiropractor",
+      "question",
+      "appointment"
+    ],
+    "avoid": [
+      "fix back pain",
+      "cure headaches",
+      "realign your spine",
+      "treat injuries",
+      "pain-free",
+      "guaranteed relief",
+      "guarantee",
+      "diagnose",
+      "medical advice",
+      "correct posture",
+      "treatment plan",
+      "heal pain",
+      "healing",
+      "heals",
+      "healed",
+      "after treatment"
+    ]
+  },
+  {
+    "id": "massage-therapist-first-appointment",
+    "prompt": "Massage therapist first-time appointment post",
+    "businessType": "massage therapist",
+    "services": "first appointment questions, relaxation massage, appointment preparation",
+    "expected": [
+      "massage",
+      "appointment",
+      "question"
+    ],
+    "avoid": [
+      "pain relief",
+      "muscle recovery",
+      "healing",
+      "treatment",
+      "deep knot relief",
+      "safe for pregnancy",
+      "medical claims",
+      "guaranteed results",
+      "guarantee",
+      "fix pain",
+      "cure",
+      "detox",
+      "injury"
+    ]
   }
 ]
