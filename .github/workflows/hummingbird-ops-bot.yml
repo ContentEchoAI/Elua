@@ -40,3 +40,24 @@ jobs:
         with:
           name: lead-finder-report
           path: lead-finder/reports/
+
+      - name: Write approval summary
+        if: always()
+        run: |
+          {
+            echo "## Hummingbird Ops Bot"
+            echo ""
+            echo "### Approval rule"
+            echo ""
+            echo "Bots may run checks and prepare reports, but Brandon approval is required before:"
+            echo ""
+            echo "- merging to main"
+            echo "- deploying production"
+            echo "- publishing to Facebook/Instagram"
+            echo "- sending outreach, replies, comments, or emails"
+            echo "- changing Stripe, Clerk, Supabase, auth, API keys, or pricing"
+            echo ""
+            echo "### Review needed"
+            echo ""
+            echo "Check the workflow result, build/lint status, and uploaded Lead Finder report before approving the next action."
+          } >> "$GITHUB_STEP_SUMMARY"
