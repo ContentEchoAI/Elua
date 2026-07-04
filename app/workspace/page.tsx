@@ -184,6 +184,8 @@ export default function Home() {
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
   const [metaStatus, setMetaStatus] = useState<MetaStatus | null>(null);
   const [metaStatusLoading, setMetaStatusLoading] = useState(false);
+  const [publishLoading, setPublishLoading] = useState(false);
+  const [publishMessage, setPublishMessage] = useState('');
 
   const isMakeMyPostMode = generationMode === 'make_my_post';
   const isContentPlanMode =
@@ -1044,6 +1046,46 @@ function getPlatformDisplayName(value?: string) {
     } catch (error) {
       console.error('Clear saved generations error:', error);
       alert('Could not clear saved generations.');
+    }
+  };
+
+  const handlePublishPreview = async () => {
+    if (!results?.production_plan?.caption) {
+      setPublishMessage('Generate a caption before approving a post.');
+      return;
+    }
+
+    setPublishLoading(true);
+    setPublishMessage('');
+
+    try {
+      const res = await fetch('/api/meta/publish', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          caption: formatGeneratedText(results.production_plan.caption),
+          hashtags: results.production_plan.hashtags || [],
+          platform:
+            formatGeneratedText(results.best_output?.platform) ||
+            selectedOutputs[0] ||
+            'Facebook Post',
+          mediaUrls: [],
+        }),
+      });
+
+      const data = await res.json();
+
+      setPublishMessage(
+        data?.message ||
+          (res.ok
+            ? 'Post approved.'
+            : 'Publishing is not enabled yet. Your post is still safe.')
+      );
+    } catch (error) {
+      console.warn('Publish preview warning:', error);
+      setPublishMessage('Could not check publishing status. Please try again.');
+    } finally {
+      setPublishLoading(false);
     }
   };
 
@@ -2622,12 +2664,19 @@ function getPlatformDisplayName(value?: string) {
                             </div>
                           </div>
 
+                          {publishMessage && (
+                            <p className="mt-3 rounded-xl border border-zinc-700/70 bg-zinc-950/40 p-3 text-sm leading-relaxed text-zinc-200">
+                              {publishMessage}
+                            </p>
+                          )}
+
                           <button
                             type="button"
-                            disabled
-                            className="mt-3 w-full rounded-2xl bg-zinc-700 py-3 text-sm font-semibold text-zinc-400 opacity-70"
+                            onClick={handlePublishPreview}
+                            disabled={publishLoading}
+                            className="mt-3 w-full rounded-2xl bg-emerald-500 py-3 text-sm font-semibold text-black transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:scale-100"
                           >
-                            Approve & Post coming soon
+                            {publishLoading ? 'Checking publish status...' : 'Approve & Post'}
                           </button>
                         </div>
                       </div>
