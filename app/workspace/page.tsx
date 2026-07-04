@@ -130,6 +130,14 @@ type UploadedImage = {
   sourceLabel?: string;
 };
 
+type MetaStatus = {
+  connected: boolean;
+  configured: boolean;
+  authorizationUrl: string | null;
+  platforms: { name: string; connected: boolean }[];
+  message: string;
+};
+
 const emptyBusinessProfile: BusinessProfile = {
   businessType: '',
   services: '',
@@ -174,6 +182,10 @@ export default function Home() {
   );
   const [showBusinessProfile, setShowBusinessProfile] = useState(false);
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
+  const [metaStatus, setMetaStatus] = useState<MetaStatus | null>(null);
+  const [metaStatusLoading, setMetaStatusLoading] = useState(false);
+  const [publishLoading, setPublishLoading] = useState(false);
+  const [publishMessage, setPublishMessage] = useState('');
 
   const isMakeMyPostMode = generationMode === 'make_my_post';
   const isContentPlanMode =
@@ -671,6 +683,39 @@ function getPlatformDisplayName(value?: string) {
     loadSavedGenerations();
   }, [isLoaded, signedIn, user?.id]);
 
+  useEffect(() => {
+    const loadMetaStatus = async () => {
+      if (!isLoaded) return;
+
+      if (!signedIn) {
+        setMetaStatus(null);
+        return;
+      }
+
+      setMetaStatusLoading(true);
+
+      try {
+        const res = await fetch('/api/meta/status');
+        const data = (await res.json()) as MetaStatus;
+
+        if (!res.ok) {
+          console.warn('Meta status API error:', data);
+          setMetaStatus(null);
+          return;
+        }
+
+        setMetaStatus(data);
+      } catch (error) {
+        console.warn('Load Meta status warning:', error);
+        setMetaStatus(null);
+      } finally {
+        setMetaStatusLoading(false);
+      }
+    };
+
+    loadMetaStatus();
+  }, [isLoaded, signedIn]);
+
   const handleUpgrade = async () => {
     if (!isLoaded) {
       alert('Please wait a second while your account loads.');
@@ -1004,6 +1049,46 @@ function getPlatformDisplayName(value?: string) {
     }
   };
 
+  const handlePublishPreview = async () => {
+    if (!results?.production_plan?.caption) {
+      setPublishMessage('Generate a caption before approving a post.');
+      return;
+    }
+
+    setPublishLoading(true);
+    setPublishMessage('');
+
+    try {
+      const res = await fetch('/api/meta/publish', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          caption: formatGeneratedText(results.production_plan.caption),
+          hashtags: results.production_plan.hashtags || [],
+          platform:
+            formatGeneratedText(results.best_output?.platform) ||
+            selectedOutputs[0] ||
+            'Facebook Post',
+          mediaUrls: [],
+        }),
+      });
+
+      const data = await res.json();
+
+      setPublishMessage(
+        data?.message ||
+          (res.ok
+            ? 'Post approved.'
+            : 'Publishing is not enabled yet. Your post is still safe.')
+      );
+    } catch (error) {
+      console.warn('Publish preview warning:', error);
+      setPublishMessage('Could not check publishing status. Please try again.');
+    } finally {
+      setPublishLoading(false);
+    }
+  };
+
   const loadNextExample = () => {
     let nextIndex = Math.floor(Math.random() * examples.length);
 
@@ -1052,6 +1137,35 @@ function getPlatformDisplayName(value?: string) {
   const hooksTabs = [{ id: 'hooks', label: 'Viral Hooks', icon: '🔥' }] as const;
 
   const activeTabs = generationMode === 'viral_hooks' ? hooksTabs : growthTabs;
+
+  const platformPanel = signedIn ? (
+    <div className="mb-4 rounded-3xl border border-zinc-800 bg-zinc-900/90 p-4 sm:p-5">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="text-sm font-semibold text-white">Posting Setup</p>
+          <p className="mt-1 text-xs leading-relaxed text-zinc-400 sm:text-sm">
+            {metaStatusLoading
+              ? 'Checking Facebook and Instagram connection...'
+              : metaStatus?.message ||
+                'Connect your platforms when you are ready to publish from Hummingbird.'}
+          </p>
+        </div>
+
+        {metaStatus?.authorizationUrl ? (
+          <a
+            href={metaStatus.authorizationUrl}
+            className="rounded-2xl bg-white px-4 py-2 text-center text-xs font-semibold text-black transition hover:scale-[1.02]"
+          >
+            Connect Facebook
+          </a>
+        ) : (
+          <div className="rounded-2xl border border-zinc-700 px-4 py-2 text-center text-xs font-semibold text-zinc-300">
+            Preview + approval required
+          </div>
+        )}
+      </div>
+    </div>
+  ) : null;
 
   const savedGenerationsCard = (
     <div className="w-full min-w-0 rounded-3xl border border-zinc-800 bg-zinc-900/90 p-4 sm:p-6">
@@ -1350,6 +1464,8 @@ function getPlatformDisplayName(value?: string) {
             ))}
           </div>
         </div>
+
+        {platformPanel}
 
         <div className="grid w-full min-w-0 items-stretch gap-4 lg:grid-cols-[0.95fr_1.2fr] lg:gap-8">
           <div className="order-1 min-w-0">
@@ -2487,6 +2603,81 @@ function getPlatformDisplayName(value?: string) {
                               </p>
                             </div>
                           )}
+                        </div>
+
+                        <div className="mt-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4">
+                          <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                            <div>
+                              <p className="text-sm font-semibold text-emerald-300">
+                                Review Before Posting
+                              </p>
+                              <p className="mt-1 text-xs leading-relaxed text-zinc-300">
+                                Hummingbird will never publish automatically. Review the caption, CTA, and reply first, then approve when publishing is enabled.
+                              </p>
+                            </div>
+
+                            <div className="rounded-full border border-emerald-500/30 px-3 py-1 text-[11px] font-semibold text-emerald-200">
+                              Approval required
+                            </div>
+                          </div>
+
+                          <div className="grid gap-3 md:grid-cols-2">
+                            <div className="rounded-xl border border-zinc-700/70 bg-zinc-950/40 p-3">
+                              <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-emerald-300">
+                                Selected Platform
+                              </p>
+                              <p className="text-sm text-zinc-100">
+                                {formatGeneratedText(results.best_output?.platform) || selectedOutputs[0] || 'Choose a platform'}
+                              </p>
+                            </div>
+
+                            <div className="rounded-xl border border-zinc-700/70 bg-zinc-950/40 p-3">
+                              <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-emerald-300">
+                                Publish Status
+                              </p>
+                              <p className="text-sm text-zinc-100">
+                                Preview only — publishing is not enabled yet.
+                              </p>
+                            </div>
+                          </div>
+
+                          {results.production_plan.caption && (
+                            <div className="mt-3 rounded-xl border border-zinc-700/70 bg-zinc-950/40 p-3">
+                              <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-emerald-300">
+                                Caption Preview
+                              </p>
+                              <p className="whitespace-pre-wrap text-sm leading-relaxed text-zinc-200">
+                                {formatGeneratedText(results.production_plan.caption)}
+                              </p>
+                            </div>
+                          )}
+
+                          <div className="mt-3 rounded-xl border border-zinc-700/70 bg-zinc-950/40 p-3">
+                            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-emerald-300">
+                              Before You Post
+                            </p>
+                            <div className="grid gap-2 text-sm text-zinc-200 sm:grid-cols-2">
+                              <p>✓ Caption reviewed</p>
+                              <p>✓ CTA is clear</p>
+                              <p>✓ DM reply is ready</p>
+                              <p>✓ Final approval required</p>
+                            </div>
+                          </div>
+
+                          {publishMessage && (
+                            <p className="mt-3 rounded-xl border border-zinc-700/70 bg-zinc-950/40 p-3 text-sm leading-relaxed text-zinc-200">
+                              {publishMessage}
+                            </p>
+                          )}
+
+                          <button
+                            type="button"
+                            onClick={handlePublishPreview}
+                            disabled={publishLoading}
+                            className="mt-3 w-full rounded-2xl bg-emerald-500 py-3 text-sm font-semibold text-black transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:scale-100"
+                          >
+                            {publishLoading ? 'Checking publish status...' : 'Approve & Post'}
+                          </button>
                         </div>
                       </div>
                     )}
