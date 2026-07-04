@@ -130,6 +130,14 @@ type UploadedImage = {
   sourceLabel?: string;
 };
 
+type MetaStatus = {
+  connected: boolean;
+  configured: boolean;
+  authorizationUrl: string | null;
+  platforms: { name: string; connected: boolean }[];
+  message: string;
+};
+
 const emptyBusinessProfile: BusinessProfile = {
   businessType: '',
   services: '',
@@ -174,6 +182,8 @@ export default function Home() {
   );
   const [showBusinessProfile, setShowBusinessProfile] = useState(false);
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
+  const [metaStatus, setMetaStatus] = useState<MetaStatus | null>(null);
+  const [metaStatusLoading, setMetaStatusLoading] = useState(false);
 
   const isMakeMyPostMode = generationMode === 'make_my_post';
   const isContentPlanMode =
@@ -671,6 +681,39 @@ function getPlatformDisplayName(value?: string) {
     loadSavedGenerations();
   }, [isLoaded, signedIn, user?.id]);
 
+  useEffect(() => {
+    const loadMetaStatus = async () => {
+      if (!isLoaded) return;
+
+      if (!signedIn) {
+        setMetaStatus(null);
+        return;
+      }
+
+      setMetaStatusLoading(true);
+
+      try {
+        const res = await fetch('/api/meta/status');
+        const data = (await res.json()) as MetaStatus;
+
+        if (!res.ok) {
+          console.warn('Meta status API error:', data);
+          setMetaStatus(null);
+          return;
+        }
+
+        setMetaStatus(data);
+      } catch (error) {
+        console.warn('Load Meta status warning:', error);
+        setMetaStatus(null);
+      } finally {
+        setMetaStatusLoading(false);
+      }
+    };
+
+    loadMetaStatus();
+  }, [isLoaded, signedIn]);
+
   const handleUpgrade = async () => {
     if (!isLoaded) {
       alert('Please wait a second while your account loads.');
@@ -1053,6 +1096,35 @@ function getPlatformDisplayName(value?: string) {
 
   const activeTabs = generationMode === 'viral_hooks' ? hooksTabs : growthTabs;
 
+  const platformPanel = signedIn ? (
+    <div className="mb-4 rounded-3xl border border-zinc-800 bg-zinc-900/90 p-4 sm:p-5">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="text-sm font-semibold text-white">Posting Setup</p>
+          <p className="mt-1 text-xs leading-relaxed text-zinc-400 sm:text-sm">
+            {metaStatusLoading
+              ? 'Checking Facebook and Instagram connection...'
+              : metaStatus?.message ||
+                'Connect your platforms when you are ready to publish from Hummingbird.'}
+          </p>
+        </div>
+
+        {metaStatus?.authorizationUrl ? (
+          <a
+            href={metaStatus.authorizationUrl}
+            className="rounded-2xl bg-white px-4 py-2 text-center text-xs font-semibold text-black transition hover:scale-[1.02]"
+          >
+            Connect Facebook
+          </a>
+        ) : (
+          <div className="rounded-2xl border border-zinc-700 px-4 py-2 text-center text-xs font-semibold text-zinc-300">
+            Preview + approval required
+          </div>
+        )}
+      </div>
+    </div>
+  ) : null;
+
   const savedGenerationsCard = (
     <div className="w-full min-w-0 rounded-3xl border border-zinc-800 bg-zinc-900/90 p-4 sm:p-6">
       <div className="mb-3 flex items-center justify-between gap-4">
@@ -1350,6 +1422,8 @@ function getPlatformDisplayName(value?: string) {
             ))}
           </div>
         </div>
+
+        {platformPanel}
 
         <div className="grid w-full min-w-0 items-stretch gap-4 lg:grid-cols-[0.95fr_1.2fr] lg:gap-8">
           <div className="order-1 min-w-0">
