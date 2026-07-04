@@ -2562,6 +2562,62 @@ function getPlatformDisplayName(value?: string) {
                             </div>
                           )}
                         </div>
+
+                        <div className="mt-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4">
+                          <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                            <div>
+                              <p className="text-sm font-semibold text-emerald-300">
+                                Review Before Posting
+                              </p>
+                              <p className="mt-1 text-xs leading-relaxed text-zinc-300">
+                                Hummingbird will never publish automatically. Review the caption, CTA, and reply first, then approve when publishing is enabled.
+                              </p>
+                            </div>
+
+                            <div className="rounded-full border border-emerald-500/30 px-3 py-1 text-[11px] font-semibold text-emerald-200">
+                              Approval required
+                            </div>
+                          </div>
+
+                          <div className="grid gap-3 md:grid-cols-2">
+                            <div className="rounded-xl border border-zinc-700/70 bg-zinc-950/40 p-3">
+                              <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-emerald-300">
+                                Selected Platform
+                              </p>
+                              <p className="text-sm text-zinc-100">
+                                {formatGeneratedText(results.best_output?.platform) || selectedOutputs[0] || 'Choose a platform'}
+                              </p>
+                            </div>
+
+                            <div className="rounded-xl border border-zinc-700/70 bg-zinc-950/40 p-3">
+                              <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-emerald-300">
+                                Publish Status
+                              </p>
+                              <p className="text-sm text-zinc-100">
+                                Preview only — publishing is not enabled yet.
+                              </p>
+                            </div>
+                          </div>
+
+                          {results.production_plan.caption && (
+                            <div className="mt-3 rounded-xl border border-zinc-700/70 bg-zinc-950/40 p-3">
+                              <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-emerald-300">
+                                Caption Preview
+                              </p>
+                              <p className="whitespace-pre-wrap text-sm leading-relaxed text-zinc-200">
+                                {formatGeneratedText(results.production_plan.caption)}
+                              </p>
+                            </div>
+                          )}
+
+                          <button
+                            type="button"
+                            disabled
+                            className="mt-3 w-full rounded-2xl bg-zinc-700 py-3 text-sm font-semibold text-zinc-400 opacity-70"
+                          >
+                            Approve & Post coming soon
+                          </button>
+                        </div>
                       </div>
                     )}
 
