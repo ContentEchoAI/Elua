@@ -2610,6 +2610,18 @@ function getPlatformDisplayName(value?: string) {
                             </div>
                           )}
 
+                          <div className="mt-3 rounded-xl border border-zinc-700/70 bg-zinc-950/40 p-3">
+                            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-emerald-300">
+                              Before You Post
+                            </p>
+                            <div className="grid gap-2 text-sm text-zinc-200 sm:grid-cols-2">
+                              <p>✓ Caption reviewed</p>
+                              <p>✓ CTA is clear</p>
+                              <p>✓ DM reply is ready</p>
+                              <p>✓ Final approval required</p>
+                            </div>
+                          </div>
+
                           <button
                             type="button"
                             disabled
