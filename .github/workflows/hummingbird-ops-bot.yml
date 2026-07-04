@@ -29,6 +29,9 @@ jobs:
         run: npm run lint
 
       - name: Run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
+          SUPABASE_SECRET_KEY: ci-placeholder-secret
         run: npm run build
 
       - name: Run Lead Finder
