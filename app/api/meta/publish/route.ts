@@ -39,9 +39,13 @@ export async function POST(request: Request) {
   return NextResponse.json(
     {
       ok: false,
+      approved: true,
+      publishEnabled: false,
       code: 'meta_publish_not_enabled',
       message:
-        'Meta publishing is not enabled yet. Hummingbird will only publish after the user reviews the post and clicks Approve & Post.',
+        'Post approved. Live publishing is not enabled yet, so nothing was posted.',
+      nextStep:
+        'Connect Facebook/Page publishing permissions before enabling live posting.',
     },
     { status: 501 },
   );
