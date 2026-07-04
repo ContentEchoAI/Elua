@@ -1075,8 +1075,12 @@ function getPlatformDisplayName(value?: string) {
 
       const data = await res.json();
 
+      const publishStatusMessage = [data?.message, data?.nextStep]
+        .filter(Boolean)
+        .join(' ');
+
       setPublishMessage(
-        data?.message ||
+        publishStatusMessage ||
           (res.ok
             ? 'Post approved.'
             : 'Publishing is not enabled yet. Your post is still safe.')
