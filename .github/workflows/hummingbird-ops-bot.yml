@@ -1,0 +1,42 @@
+name: Hummingbird Ops Bot
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  checks:
+    name: Run Hummingbird checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run lint
+        run: npm run lint
+
+      - name: Run build
+        run: npm run build
+
+      - name: Run Lead Finder
+        run: npm run lead:finder
+
+      - name: Upload Lead Finder report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lead-finder-report
+          path: lead-finder/reports/
