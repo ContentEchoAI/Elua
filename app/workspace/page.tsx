@@ -2613,10 +2613,10 @@ function getPlatformDisplayName(value?: string) {
                           <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                             <div>
                               <p className="text-sm font-semibold text-emerald-300">
-                                Review Before Posting
+                                Final Review
                               </p>
                               <p className="mt-1 text-xs leading-relaxed text-zinc-300">
-                                Hummingbird will never publish automatically. Review the caption, CTA, and reply first, then approve when publishing is enabled.
+                                Review the caption, CTA, and reply before anything goes live. Hummingbird will never publish without your approval.
                               </p>
                             </div>
 
@@ -2640,7 +2640,7 @@ function getPlatformDisplayName(value?: string) {
                                 Publish Status
                               </p>
                               <p className="text-sm text-zinc-100">
-                                Preview only — publishing is not enabled yet.
+                                Safe preview — nothing has been posted.
                               </p>
                             </div>
                           </div>
@@ -2658,13 +2658,13 @@ function getPlatformDisplayName(value?: string) {
 
                           <div className="mt-3 rounded-xl border border-zinc-700/70 bg-zinc-950/40 p-3">
                             <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-emerald-300">
-                              Before You Post
+                              Ready Checklist
                             </p>
                             <div className="grid gap-2 text-sm text-zinc-200 sm:grid-cols-2">
                               <p>✓ Caption reviewed</p>
                               <p>✓ CTA is clear</p>
                               <p>✓ DM reply is ready</p>
-                              <p>✓ Final approval required</p>
+                              <p>✓ Nothing posts without approval</p>
                             </div>
                           </div>
 
@@ -2680,7 +2680,7 @@ function getPlatformDisplayName(value?: string) {
                             disabled={publishLoading}
                             className="mt-3 w-full rounded-2xl bg-emerald-500 py-3 text-sm font-semibold text-black transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:scale-100"
                           >
-                            {publishLoading ? 'Checking publish status...' : 'Approve & Post'}
+                            {publishLoading ? 'Approving safely...' : 'Approve & Post'}
                           </button>
                         </div>
                       </div>
