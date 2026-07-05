@@ -43,9 +43,9 @@ export async function POST(request: Request) {
       publishEnabled: false,
       code: 'meta_publish_not_enabled',
       message:
-        'Post approved. Live publishing is not enabled yet, so nothing was posted.',
+        'Your post is approved and ready. Nothing was posted yet.',
       nextStep:
-        'Connect Facebook/Page publishing permissions before enabling live posting.',
+        'Connect publishing when you want Hummingbird to post for you.',
     },
     { status: 501 },
   );
