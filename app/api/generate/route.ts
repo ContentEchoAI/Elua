@@ -2257,11 +2257,7 @@ function getVaguePromptOnlyMobileDetailingFallback(content: string, variationInd
   const variation = chooseFallbackVariation([
     {
       title: `Mobile detailing${areaText}`,
-      caption: `Mobile detailing${areaText} 🚗
-
-Still driving around saying, “I need to get this car cleaned”?
-
-Skip the drop-off and the waiting around.
+      caption: `Still driving around saying, “I need to get this car cleaned”?\n\nMobile detailing${areaText} 🚗\n\nSkip the drop-off and the waiting around.
 
 DM CAR and I’ll send pricing.`,
       dmReply:
@@ -2269,11 +2265,7 @@ DM CAR and I’ll send pricing.`,
     },
     {
       title: `Mobile detailing${areaText}`,
-      caption: `Mobile detailing${areaText} 🚗
-
-Car cleaning still sitting on your to-do list?
-
-Skip the shop visit and get it handled.
+      caption: `Car cleaning still sitting on your to-do list?\n\nMobile detailing${areaText} 🚗\n\nSkip the shop visit and get it handled.
 
 DM CAR and I’ll send pricing.`,
       dmReply:
@@ -2281,11 +2273,7 @@ DM CAR and I’ll send pricing.`,
     },
     {
       title: `Mobile detailing${areaText}`,
-      caption: `Mobile detailing${areaText} 🚗
-
-Need the car cleaned before the week gets busy?
-
-Save yourself the trip to a shop.
+      caption: `Need the car cleaned before the week gets busy?\n\nMobile detailing${areaText} 🚗\n\nSave yourself the trip to a shop.
 
 DM CAR and I’ll send pricing.`,
       dmReply:
@@ -2293,91 +2281,55 @@ DM CAR and I’ll send pricing.`,
     },
     {
       title: `Mobile detailing${areaText}`,
-      caption: `Mobile detailing${areaText} 🚗
-
-If getting the car cleaned keeps getting pushed back, this is your reminder.
-
-DM CAR and I’ll send pricing.`,
+      caption: `If getting the car cleaned keeps getting pushed back, this is your reminder.\n\nMobile detailing${areaText} 🚗\n\nDM CAR and I’ll send pricing.`,
       dmReply:
         'Hey! Do you know what type of service you’re interested in, or are you still deciding?',
     },
     {
       title: `Mobile detailing${areaText}`,
-      caption: `Mobile detailing${areaText} 🚗
-
-Need the car cleaned but don’t want to spend part of your day at a shop?
-
-DM CAR and I’ll send pricing.`,
+      caption: `Need the car cleaned but don’t want to spend part of your day at a shop?\n\nMobile detailing${areaText} 🚗\n\nDM CAR and I’ll send pricing.`,
       dmReply:
         'Hey! Do you know what type of service you’re interested in, or are you still deciding?',
     },
     {
       title: `Mobile detailing${areaText}`,
-      caption: `Mobile detailing${areaText} 🚗
-
-If you notice the car needs a clean every time you get in, this is your sign.
-
-DM CAR and I’ll send pricing.`,
+      caption: `If you notice the car needs a clean every time you get in, this is your sign.\n\nMobile detailing${areaText} 🚗\n\nDM CAR and I’ll send pricing.`,
       dmReply:
         'Hey! Do you know what type of service you’re interested in, or are you still deciding?',
     },
     {
       title: `Mobile detailing${areaText}`,
-      caption: `Mobile detailing${areaText} 🚗
-
-Busy week and the car still needs to get cleaned?
-
-DM CAR and I’ll send pricing.`,
+      caption: `Busy week and the car still needs to get cleaned?\n\nMobile detailing${areaText} 🚗\n\nDM CAR and I’ll send pricing.`,
       dmReply:
         'Hey! Do you know what type of service you’re interested in, or are you still deciding?',
     },
     {
       title: `Mobile detailing${areaText}`,
-      caption: `Mobile detailing${areaText} 🚗
-
-If you keep saying you’ll clean the car this weekend, I can help you get it off the list.
-
-DM CAR and I’ll send pricing.`,
+      caption: `If you keep saying you’ll clean the car this weekend, I can help you get it off the list.\n\nMobile detailing${areaText} 🚗\n\nDM CAR and I’ll send pricing.`,
       dmReply:
         'Hey! Do you know what type of service you’re interested in, or are you still deciding?',
     },
     {
       title: `Mobile detailing${areaText}`,
-      caption: `Mobile detailing${areaText} 🚗
-
-Been meaning to get the car cleaned?
-
-DM CAR and I’ll send pricing.`,
+      caption: `Been meaning to get the car cleaned?\n\nMobile detailing${areaText} 🚗\n\nDM CAR and I’ll send pricing.`,
       dmReply:
         'Hey! Do you know what type of service you’re interested in, or are you still deciding?',
     },
     {
       title: `Mobile detailing${areaText}`,
-      caption: `Mobile detailing${areaText} 🚗
-
-Driving around with “clean the car” still on your list?
-
-DM CAR and I’ll send pricing.`,
+      caption: `Driving around with “clean the car” still on your list?\n\nMobile detailing${areaText} 🚗\n\nDM CAR and I’ll send pricing.`,
       dmReply:
         'Hey! Do you know what type of service you’re interested in, or are you still deciding?',
     },
     {
       title: `Mobile detailing${areaText}`,
-      caption: `Mobile detailing${areaText} 🚗
-
-One less thing to handle this week: get the car cleaned.
-
-DM CAR and I’ll send pricing.`,
+      caption: `One less thing to handle this week: get the car cleaned.\n\nMobile detailing${areaText} 🚗\n\nDM CAR and I’ll send pricing.`,
       dmReply:
         'Hey! Do you know what type of service you’re interested in, or are you still deciding?',
     },
     {
       title: `Mobile detailing${areaText}`,
-      caption: `Mobile detailing${areaText} 🚗
-
-If the car keeps ending up at the bottom of your to-do list, let’s get it handled.
-
-DM CAR and I’ll send pricing.`,
+      caption: `If the car keeps ending up at the bottom of your to-do list, let’s get it handled.\n\nMobile detailing${areaText} 🚗\n\nDM CAR and I’ll send pricing.`,
       dmReply:
         'Hey! Do you know what type of service you’re interested in, or are you still deciding?',
     },
