@@ -1460,6 +1460,26 @@ function getPlatformDisplayName(value?: string) {
                     : 'Copy Caption'}
                 </button>
 
+                {post.cta && (
+                  <button
+                    type="button"
+                    onClick={() => copyToClipboard(post.cta, `Approved CTA ${post.id}`)}
+                    className="rounded-xl bg-zinc-700 px-3 py-2 text-xs text-zinc-100 transition hover:bg-zinc-600"
+                  >
+                    {copiedItem === `Approved CTA ${post.id}` ? 'Copied!' : 'Copy CTA'}
+                  </button>
+                )}
+
+                {post.dmReply && (
+                  <button
+                    type="button"
+                    onClick={() => copyToClipboard(post.dmReply, `Approved reply ${post.id}`)}
+                    className="rounded-xl bg-zinc-700 px-3 py-2 text-xs text-zinc-100 transition hover:bg-zinc-600"
+                  >
+                    {copiedItem === `Approved reply ${post.id}` ? 'Copied!' : 'Copy Reply'}
+                  </button>
+                )}
+
                 <span className="rounded-xl border border-emerald-500/20 px-3 py-2 text-xs text-emerald-200">
                   Approved, not posted
                 </span>
