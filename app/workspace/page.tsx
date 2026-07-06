@@ -146,6 +146,73 @@ const emptyBusinessProfile: BusinessProfile = {
   notes: '',
 };
 
+type ApprovedPost = {
+  id: string;
+  createdAt: string;
+  platform: string;
+  title: string;
+  caption: string;
+  cta: string;
+  dmReply: string;
+  hashtags: string[];
+  mediaCount: number;
+  status: 'approved_not_posted';
+};
+
+const APPROVED_POSTS_STORAGE_KEY = 'hummingbird-approved-posts-v1';
+
+function createApprovedPostId() {
+  if (
+    typeof crypto !== 'undefined' &&
+    typeof crypto.randomUUID === 'function'
+  ) {
+    return crypto.randomUUID();
+  }
+
+  return `approved-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
+
+function loadApprovedPostsFromStorage(): ApprovedPost[] {
+  if (typeof window === 'undefined') return [];
+
+  try {
+    const stored = window.localStorage.getItem(APPROVED_POSTS_STORAGE_KEY);
+    if (!stored) return [];
+
+    const parsed = JSON.parse(stored) as unknown;
+
+    if (!Array.isArray(parsed)) return [];
+
+    return parsed
+      .filter((item): item is ApprovedPost => {
+        const post = item as Partial<ApprovedPost>;
+
+        return (
+          typeof post.id === 'string' &&
+          typeof post.createdAt === 'string' &&
+          typeof post.platform === 'string' &&
+          typeof post.caption === 'string'
+        );
+      })
+      .slice(0, 12);
+  } catch {
+    return [];
+  }
+}
+
+function saveApprovedPostsToStorage(posts: ApprovedPost[]) {
+  if (typeof window === 'undefined') return;
+
+  try {
+    window.localStorage.setItem(
+      APPROVED_POSTS_STORAGE_KEY,
+      JSON.stringify(posts.slice(0, 12))
+    );
+  } catch {
+    // Local storage can fail in private browsing or locked-down browsers.
+  }
+}
+
 export default function Home() {
   const { isLoaded, isSignedIn, user } = useUser();
 
@@ -185,6 +252,13 @@ export default function Home() {
   const [metaStatus, setMetaStatus] = useState<MetaStatus | null>(null);
   const [metaStatusLoading, setMetaStatusLoading] = useState(false);
   const [publishLoading, setPublishLoading] = useState(false);
+  const [approvedPosts, setApprovedPosts] = useState<ApprovedPost[]>(() =>
+    loadApprovedPostsFromStorage()
+  );
+
+  useEffect(() => {
+    saveApprovedPostsToStorage(approvedPosts);
+  }, [approvedPosts]);
   const [publishMessage, setPublishMessage] = useState('');
 
   const isMakeMyPostMode = generationMode === 'make_my_post';
@@ -1050,10 +1124,36 @@ function getPlatformDisplayName(value?: string) {
   };
 
   const handlePublishPreview = async () => {
-    if (!results?.production_plan?.caption) {
+    const caption = formatGeneratedText(results?.production_plan?.caption);
+
+    if (!caption) {
       setPublishMessage('Generate a caption before approving a post.');
       return;
     }
+
+    const platform =
+      formatGeneratedText(results?.best_output?.platform) ||
+      selectedOutputs[0] ||
+      'Facebook Post';
+
+    const cta = formatGeneratedText(
+      results?.production_plan?.cta || results?.monetization?.cta_strategy || ''
+    );
+
+    const dmReply = formatGeneratedText(
+      results?.production_plan?.dm_reply ||
+        results?.production_plan?.follow_up_message ||
+        results?.monetization?.conversion_tips?.[0] ||
+        ''
+    );
+
+    const rawHashtags = results?.production_plan?.hashtags || [];
+    const hashtags = Array.isArray(rawHashtags)
+      ? rawHashtags.map((tag) => formatGeneratedText(tag)).filter(Boolean)
+      : formatGeneratedText(rawHashtags)
+          .split(/[\s,]+/g)
+          .map((tag) => tag.trim())
+          .filter(Boolean);
 
     setPublishLoading(true);
     setPublishMessage('');
@@ -1063,27 +1163,54 @@ function getPlatformDisplayName(value?: string) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          caption: formatGeneratedText(results.production_plan.caption),
-          hashtags: results.production_plan.hashtags || [],
-          platform:
-            formatGeneratedText(results.best_output?.platform) ||
-            selectedOutputs[0] ||
-            'Facebook Post',
+          caption,
+          hashtags,
+          platform,
           mediaUrls: [],
         }),
       });
 
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
 
       const publishStatusMessage = [data?.message, data?.nextStep]
         .filter(Boolean)
         .join(' ');
 
+      if (data?.approved) {
+        const approvedPost: ApprovedPost = {
+          id: createApprovedPostId(),
+          createdAt: new Date().toISOString(),
+          platform,
+          title:
+            formatGeneratedText(results?.strategy?.core_angle) ||
+            `${platform} post`,
+          caption,
+          cta,
+          dmReply,
+          hashtags,
+          mediaCount: uploadedImages.length,
+          status: 'approved_not_posted',
+        };
+
+        setApprovedPosts((current) =>
+          [
+            approvedPost,
+            ...current.filter(
+              (post) =>
+                post.caption !== approvedPost.caption ||
+                post.platform !== approvedPost.platform
+            ),
+          ].slice(0, 12)
+        );
+      }
+
       setPublishMessage(
-        publishStatusMessage ||
-          (res.ok
-            ? 'Post approved.'
-            : 'Publishing is not enabled yet. Your post is still safe.')
+        data?.approved
+          ? 'Approved and saved. Nothing posted yet.'
+          : publishStatusMessage ||
+              (res.ok
+                ? 'Post approved.'
+                : 'Publishing is not enabled yet. Your post is still safe.')
       );
     } catch (error) {
       console.warn('Publish preview warning:', error);
@@ -1111,6 +1238,13 @@ function getPlatformDisplayName(value?: string) {
     setTimeout(() => {
       setCopiedItem('');
     }, 1500);
+  };
+
+
+  const removeApprovedPost = (postId: string) => {
+    setApprovedPosts((current) =>
+      current.filter((post) => post.id !== postId)
+    );
   };
 
   const formatSavedDate = (isoDate: string) => {
@@ -1247,6 +1381,89 @@ function getPlatformDisplayName(value?: string) {
               <p className="mt-2 text-[11px] leading-relaxed text-zinc-500">
                 Use this to revisit the angle, CTA, Money Plan, and follow-up path before planning your next campaign.
               </p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+
+  const approvedPostsCard = (
+    <div className="w-full min-w-0 rounded-3xl border border-emerald-500/20 bg-zinc-900/90 p-4 sm:p-6">
+      <div className="mb-3 flex items-start justify-between gap-4">
+        <div>
+          <h2 className="text-lg font-semibold text-white sm:text-2xl">
+            Posting Queue
+          </h2>
+          <p className="text-xs leading-relaxed text-zinc-500 sm:text-sm">
+            Approved posts live here. They are saved on this device, but nothing has been posted yet.
+          </p>
+        </div>
+
+        {approvedPosts.length > 0 && (
+          <button
+            type="button"
+            onClick={() => setApprovedPosts([])}
+            className="rounded-xl bg-zinc-800 px-3 py-2 text-xs text-zinc-300 transition hover:bg-zinc-700"
+          >
+            Clear
+          </button>
+        )}
+      </div>
+
+      {approvedPosts.length === 0 ? (
+        <div className="rounded-2xl border border-dashed border-zinc-700 p-3 text-center">
+          <p className="text-xs text-zinc-400">
+            No approved posts yet. Click Approve & Post after reviewing a result, then it will appear here.
+          </p>
+        </div>
+      ) : (
+        <div className="max-h-[260px] space-y-3 overflow-y-auto pr-1">
+          {approvedPosts.map((post) => (
+            <div
+              key={post.id}
+              className="rounded-2xl border border-zinc-700 bg-zinc-800 p-4"
+            >
+              <div className="mb-2 flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium text-zinc-100 sm:text-base">
+                    {post.platform}
+                  </p>
+                  <p className="text-[11px] text-zinc-500">
+                    Approved {formatSavedDate(post.createdAt)} · Not posted
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => removeApprovedPost(post.id)}
+                  className="text-xs text-zinc-500 transition hover:text-red-400"
+                >
+                  Remove
+                </button>
+              </div>
+
+              <p className="line-clamp-3 whitespace-pre-wrap text-xs leading-relaxed text-zinc-300">
+                {post.caption}
+              </p>
+
+              <div className="mt-3 flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() =>
+                    copyToClipboard(post.caption, `Approved ${post.id}`)
+                  }
+                  className="rounded-xl bg-zinc-700 px-3 py-2 text-xs text-zinc-100 transition hover:bg-zinc-600"
+                >
+                  {copiedItem === `Approved ${post.id}`
+                    ? 'Copied!'
+                    : 'Copy Caption'}
+                </button>
+
+                <span className="rounded-xl border border-emerald-500/20 px-3 py-2 text-xs text-emerald-200">
+                  Approved, not posted
+                </span>
+              </div>
             </div>
           ))}
         </div>
@@ -1856,7 +2073,10 @@ function getPlatformDisplayName(value?: string) {
                 </p>
               </div>
             </div>
-            <div className="mt-4 hidden lg:block">{savedGenerationsCard}</div>
+            <div className="mt-4 hidden space-y-4 lg:block">
+              {savedGenerationsCard}
+              {approvedPostsCard}
+            </div>
           </div>
 
           <div className="order-2 min-w-0 rounded-3xl border border-zinc-800 bg-zinc-900/90 p-4 sm:p-6 lg:flex lg:h-full lg:min-h-[760px] lg:flex-col">
@@ -3027,7 +3247,10 @@ function getPlatformDisplayName(value?: string) {
 
 
 
-          <div className="order-4 min-w-0 lg:hidden">{savedGenerationsCard}</div>
+          <div className="order-4 min-w-0 space-y-4 lg:hidden">
+            {savedGenerationsCard}
+            {approvedPostsCard}
+          </div>
         </div>
       </div>
     </div>
