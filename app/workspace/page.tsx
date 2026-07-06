@@ -1414,7 +1414,7 @@ function getPlatformDisplayName(value?: string) {
       {approvedPosts.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-zinc-700 p-3 text-center">
           <p className="text-xs text-zinc-400">
-            No approved posts yet. Click Approve & Post after reviewing a result, then it will appear here.
+            No approved posts yet. Click Approve & Save to Queue after reviewing a result, then it will appear here.
           </p>
         </div>
       ) : (
@@ -2351,7 +2351,7 @@ function getPlatformDisplayName(value?: string) {
                       disabled={publishLoading}
                       className="mt-3 w-full rounded-2xl bg-emerald-500 py-3 text-sm font-semibold text-black transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:scale-100"
                     >
-                      {publishLoading ? 'Approving safely...' : 'Approve & Post'}
+                      {publishLoading ? 'Saving safely...' : 'Approve & Save to Queue'}
                     </button>
                   </div>
                 )}
@@ -2966,7 +2966,7 @@ function getPlatformDisplayName(value?: string) {
                             disabled={publishLoading}
                             className="mt-3 w-full rounded-2xl bg-emerald-500 py-3 text-sm font-semibold text-black transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:scale-100"
                           >
-                            {publishLoading ? 'Approving safely...' : 'Approve & Post'}
+                            {publishLoading ? 'Saving safely...' : 'Approve & Save to Queue'}
                           </button>
                         </div>
                       </div>
