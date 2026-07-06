@@ -2289,6 +2289,72 @@ function getPlatformDisplayName(value?: string) {
                     </p>
                   </div>
                 </div>
+
+                {isMakeMyPostMode && (
+                  <div className="mt-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4">
+                    <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                      <div>
+                        <p className="text-sm font-semibold text-emerald-300">
+                          Final Review
+                        </p>
+                        <p className="mt-1 text-xs leading-relaxed text-zinc-300">
+                          Review the caption, CTA, and reply before saving this to your Posting Queue. Hummingbird will never publish without your approval.
+                        </p>
+                      </div>
+
+                      <div className="rounded-full border border-emerald-500/30 px-3 py-1 text-[11px] font-semibold text-emerald-200">
+                        Approval required
+                      </div>
+                    </div>
+
+                    <div className="grid gap-3 md:grid-cols-2">
+                      <div className="rounded-xl border border-zinc-700/70 bg-zinc-950/40 p-3">
+                        <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-emerald-300">
+                          Selected Platform
+                        </p>
+                        <p className="text-sm text-zinc-100">
+                          {formatGeneratedText(results.best_output?.platform) || selectedOutputs[0] || 'Facebook Post'}
+                        </p>
+                      </div>
+
+                      <div className="rounded-xl border border-zinc-700/70 bg-zinc-950/40 p-3">
+                        <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-emerald-300">
+                          Publish Status
+                        </p>
+                        <p className="text-sm text-zinc-100">
+                          Safe preview — nothing has been posted.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="mt-3 rounded-xl border border-zinc-700/70 bg-zinc-950/40 p-3">
+                      <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-emerald-300">
+                        Ready Checklist
+                      </p>
+                      <div className="grid gap-2 text-sm text-zinc-200 sm:grid-cols-2">
+                        <p>✓ Caption reviewed</p>
+                        <p>✓ CTA is clear</p>
+                        <p>✓ Reply is ready</p>
+                        <p>✓ Approval saves it to Posting Queue</p>
+                      </div>
+                    </div>
+
+                    {publishMessage && (
+                      <p className="mt-3 rounded-xl border border-zinc-700/70 bg-zinc-950/40 p-3 text-sm leading-relaxed text-zinc-200">
+                        {publishMessage}
+                      </p>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={handlePublishPreview}
+                      disabled={publishLoading}
+                      className="mt-3 w-full rounded-2xl bg-emerald-500 py-3 text-sm font-semibold text-black transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:scale-100"
+                    >
+                      {publishLoading ? 'Approving safely...' : 'Approve & Post'}
+                    </button>
+                  </div>
+                )}
               </div>
             )}
 
