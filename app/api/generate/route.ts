@@ -3418,6 +3418,7 @@ Make This Post / Production Plan rules:
 - production_plan.on_screen_text must include copy-ready text overlays, slide text, or post text.
 - production_plan.spoken_lines must sound like a real business owner speaking naturally. Avoid stiff AI phrases.
 - production_plan.caption must be copy-ready and should sound like a real owner wrote it, not a marketing strategist.
+- The first line of production_plan.caption must grab attention in the first 0-3 seconds. Do not start with a generic service label like "Mobile detailing in Irvine", "Home cleaning in Dallas", or "Lash refill reminder" unless that is the strongest hook. Start with the customer feeling, problem, reminder, visible detail, or curiosity line first.
 - production_plan.cta must be copy-ready and match the Money Plan.
 - production_plan.cta should use a short, natural keyword when possible. Prefer service-specific CTAs such as "DM QUOTE", "Comment QUOTE", "DM LASHES", "DM REFILL", "DM NAILS", "DM DESIGN", "Comment NAILS", "DM COLOR", or "DM CONSULT" over generic or long resource names.
 - production_plan.dm_reply must be a copy-ready first reply to someone who comments, DMs, or asks for the resource.
