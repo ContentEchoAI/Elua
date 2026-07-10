@@ -2438,33 +2438,21 @@ function getPromptOnlyReadyPostOverride(content: string, variationIndex?: number
     const variation = chooseFallbackVariation([
       {
         title: `Home cleaning${areaText}`,
-        caption: `Home cleaning${areaText} 🧼
-
-House starting to feel like a lot?
-
-I help with the rooms you keep putting off.
+        caption: `House starting to feel like a lot?\n\nHome cleaning${areaText} 🧼\n\nI help with the rooms you keep putting off.
 
 DM QUOTE and tell me what area you want help with.`,
         dmReply: 'Hey! What area are you looking to have cleaned?',
       },
       {
         title: `Home cleaning${areaText}`,
-        caption: `Home cleaning${areaText} 🧼
-
-Which room keeps getting pushed off?
-
-I help with the cleaning that’s been sitting on your list.
+        caption: `Which room keeps getting pushed off?\n\nHome cleaning${areaText} 🧼\n\nI help with the cleaning that’s been sitting on your list.
 
 DM QUOTE and tell me what area you want help with.`,
         dmReply: 'Hey! What area are you looking to have cleaned?',
       },
       {
         title: `Home cleaning${areaText}`,
-        caption: `Home cleaning${areaText} 🧼
-
-Need help getting the house back in order?
-
-Tell me which area you want help with.
+        caption: `Need help getting the house back in order?\n\nHome cleaning${areaText} 🧼\n\nTell me which area you want help with.
 
 DM QUOTE.`,
         dmReply: 'Hey! What area are you looking to have cleaned?',
