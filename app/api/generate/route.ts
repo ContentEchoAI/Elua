@@ -2456,6 +2456,52 @@ DM QUOTE.`,
     };
   }
 
+  if (/landscap|lawn|yard care|yard cleanup|garden service/.test(lowerContent)) {
+    const landscapingHashtags = uniqueHashtags([
+      serviceAreaHashtagBase ? `#${serviceAreaHashtagBase}Landscaping` : '#Landscaping',
+      '#LawnCare',
+      '#YardCare',
+    ]);
+
+    const variation = chooseFallbackVariation([
+      {
+        title: `Landscaping${areaText}`,
+        caption: `Does the yard keep getting pushed to next weekend?
+
+Landscaping${areaText} 🌿
+
+DM QUOTE and tell me what part of the yard you want help with.`,
+        dmReply: 'Hey! What part of the yard are you looking to have worked on?',
+      },
+      {
+        title: `Landscaping${areaText}`,
+        caption: `Is the yard starting to feel like more than you want to handle?
+
+Landscaping${areaText} 🌿
+
+DM QUOTE and tell me what kind of help you need.`,
+        dmReply: 'Hey! What kind of yard work are you looking for help with?',
+      },
+      {
+        title: `Landscaping${areaText}`,
+        caption: `Been meaning to get the yard cleaned up?
+
+Landscaping${areaText} 🌿
+
+DM QUOTE and tell me what part of the yard you want help with.`,
+        dmReply: 'Hey! Is this for the front yard, backyard, or both?',
+      },
+    ], variationIndex, recentCampaignsPrompt);
+
+    return {
+      title: variation?.title || `Landscaping${areaText}`,
+      cta: 'QUOTE',
+      hashtags: landscapingHashtags,
+      caption: variation?.caption || '',
+      dmReply: variation?.dmReply || '',
+    };
+  }
+
   return null;
 }
 
