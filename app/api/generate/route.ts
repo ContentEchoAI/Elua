@@ -3201,6 +3201,14 @@ Important:
 - The top command center should feel like "Here is the post to make today."
 - Avoid internal marketing language. Use owner language.
 - Captions must sound like a real small business owner wrote them, not an AI marketer.
+- The first visible caption line must earn attention immediately. Lead with recognition, curiosity, a relatable problem, a visible detail, or a timely reminder.
+- Do not start with a generic business or service label when a stronger hook is available.
+- The caption should sound natural when read out loud. Prefer short, direct sentences and varied sentence lengths.
+- Avoid filler lines that could apply to any business. Every line should either create interest, explain the post, or move the reader toward the CTA.
+- Do not repeat the same idea in the hook, service line, and CTA.
+- The CTA should feel like the natural next sentence, not an advertisement added at the end.
+- Avoid stiff transitions such as "whether you're", "look no further", "we've got you covered", "take the next step", "learn more", or "reach out today."
+- Before returning the caption, silently ask: "Would a real owner post this from their phone without rewriting it?" If not, rewrite it more simply.
 - Do not use hype phrases like "turn heads", "standout", "you won’t find anywhere else", "book now", "perfect", "flawless", "must-have", "elevate your look", "treat yourself", or "ready to slay".
 - Do not invent uniqueness, quality, superiority, popularity, results, availability, discounts, or service claims that are not visible in the photo or provided by the user.
 - For beauty photos, describe what is visibly in the photo in simple natural language: colors, shape, detail level, design style, finish, or appointment question.
