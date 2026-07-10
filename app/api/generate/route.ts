@@ -2502,6 +2502,52 @@ DM QUOTE and tell me what part of the yard you want help with.`,
     };
   }
 
+  if (/pet\s+groom|dog\s+groom|cat\s+groom|grooming|dog\s+wash|pet\s+wash/.test(lowerContent)) {
+    const petHashtags = uniqueHashtags([
+      serviceAreaHashtagBase ? `#${serviceAreaHashtagBase}PetGrooming` : '#PetGrooming',
+      '#DogGrooming',
+      '#PetCare',
+    ]);
+
+    const variation = chooseFallbackVariation([
+      {
+        title: `Pet grooming${areaText}`,
+        caption: `Is your pet starting to look ready for a cleanup?
+
+Pet grooming${areaText} 🐾
+
+DM GROOM and tell me what kind of grooming you’re looking for.`,
+        dmReply: 'Hey! What kind of pet is this for, and what kind of grooming are you looking for?',
+      },
+      {
+        title: `Pet grooming${areaText}`,
+        caption: `Been meaning to schedule your pet’s next grooming?
+
+Pet grooming${areaText} 🐾
+
+DM GROOM and tell me what you need help with.`,
+        dmReply: 'Hey! What kind of grooming service are you looking for?',
+      },
+      {
+        title: `Pet grooming${areaText}`,
+        caption: `If grooming keeps getting pushed to next week, this is your reminder.
+
+Pet grooming${areaText} 🐾
+
+DM GROOM and tell me about your pet.`,
+        dmReply: 'Hey! What kind of pet is this for, and what service are you interested in?',
+      },
+    ], variationIndex, recentCampaignsPrompt);
+
+    return {
+      title: variation?.title || `Pet grooming${areaText}`,
+      cta: 'GROOM',
+      hashtags: petHashtags,
+      caption: variation?.caption || '',
+      dmReply: variation?.dmReply || '',
+    };
+  }
+
   return null;
 }
 
