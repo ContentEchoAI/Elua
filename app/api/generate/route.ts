@@ -2379,33 +2379,21 @@ function getVaguePromptOnlyLashRefillFallback(content: string, variationIndex?: 
   const variation = chooseFallbackVariation([
     {
       title: 'Lash refill reminder',
-      caption: `Lash refill reminder ✨
-
-If your lashes are starting to feel grown out, this is your reminder to check in.
-
-Tell me when your last appointment was and what you want your set to look like next.
+      caption: `If your lashes are starting to feel grown out, this is your reminder to check in.\n\nLash refill reminder ✨\n\nTell me when your last appointment was and what you want your set to look like next.
 
 DM REFILL and I’ll help you figure out what to book.`,
       dmReply: 'Hey! When was your last lash appointment?',
     },
     {
       title: 'Lash refill reminder',
-      caption: `Lash refill reminder ✨
-
-Not sure if it’s refill time or time for something new?
-
-Tell me when your last appointment was and what you want your lashes to look like next.
+      caption: `Not sure if it’s refill time or time for something new?\n\nLash refill reminder ✨\n\nTell me when your last appointment was and what you want your lashes to look like next.
 
 DM REFILL and I’ll help you figure out what to book.`,
       dmReply: 'Hey! When was your last lash appointment?',
     },
     {
       title: 'Lash refill reminder',
-      caption: `Lash refill reminder ✨
-
-If your set is starting to feel grown out, send a quick message before guessing what to book.
-
-Tell me when your last appointment was and what look you want next.
+      caption: `If your set is starting to feel grown out, send a quick message before guessing what to book.\n\nLash refill reminder ✨\n\nTell me when your last appointment was and what look you want next.
 
 DM REFILL.`,
       dmReply: 'Hey! When was your last lash appointment?',
