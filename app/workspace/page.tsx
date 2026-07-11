@@ -1461,7 +1461,7 @@ function getPlatformDisplayName(value?: string) {
       </h2>
 
       <p className="mt-2 text-sm leading-relaxed text-zinc-400">
-        Approve a post and it will appear here with everything you need to publish it manually.
+        Approve a post and it will appear here ready for you to use today.
       </p>
     </div>
   );
@@ -1704,6 +1704,9 @@ function getPlatformDisplayName(value?: string) {
             )}
           </div>
         </header>
+
+        {isLoaded && signedIn && todaysPostCard}
+
         <div className="mb-4 grid gap-4 lg:mb-8 lg:grid-cols-[1.25fr_0.75fr] lg:items-start">
           <div className="max-w-4xl">
             <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900 px-3 py-1.5 text-xs text-zinc-300 sm:px-4 sm:py-2 sm:text-sm">
@@ -1784,7 +1787,7 @@ function getPlatformDisplayName(value?: string) {
           </div>
         </div>
 
-        {todaysPostCard}
+        {isLoaded && !signedIn && todaysPostCard}
 
         {platformPanel}
 
