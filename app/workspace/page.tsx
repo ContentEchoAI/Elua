@@ -1391,13 +1391,13 @@ function getPlatformDisplayName(value?: string) {
   const todaysPost = approvedPosts[0];
 
   const todaysPostCard = todaysPost ? (
-    <div className="w-full rounded-3xl border border-purple-500/30 bg-gradient-to-br from-purple-950/70 to-zinc-900 p-4 sm:p-6">
+    <div className="mb-4 w-full rounded-3xl border border-purple-500/30 bg-gradient-to-br from-purple-950/70 to-zinc-900 p-4 sm:p-6 lg:mb-8">
       <p className="text-xs font-semibold uppercase tracking-wide text-purple-300">
-        Today’s Post
+        Today’s Focus
       </p>
 
       <h2 className="mt-1 text-lg font-semibold text-white sm:text-2xl">
-        Ready to publish manually
+        Post this today
       </h2>
 
       <p className="mt-1 text-xs text-zinc-400">
@@ -1450,7 +1450,21 @@ function getPlatformDisplayName(value?: string) {
         )}
       </div>
     </div>
-  ) : null;
+  ) : (
+    <div className="mb-4 w-full rounded-3xl border border-zinc-800 bg-zinc-900/90 p-4 sm:p-6 lg:mb-8">
+      <p className="text-xs font-semibold uppercase tracking-wide text-purple-300">
+        Today’s Focus
+      </p>
+
+      <h2 className="mt-1 text-lg font-semibold text-white sm:text-2xl">
+        Create today’s post
+      </h2>
+
+      <p className="mt-2 text-sm leading-relaxed text-zinc-400">
+        Approve a post and it will appear here with everything you need to publish it manually.
+      </p>
+    </div>
+  );
 
   const approvedPostsCard = (
     <div className="w-full min-w-0 rounded-3xl border border-emerald-500/20 bg-zinc-900/90 p-4 sm:p-6">
@@ -1769,6 +1783,8 @@ function getPlatformDisplayName(value?: string) {
             ))}
           </div>
         </div>
+
+        {todaysPostCard}
 
         {platformPanel}
 
@@ -2159,7 +2175,6 @@ function getPlatformDisplayName(value?: string) {
             </div>
             <div className="mt-4 hidden space-y-4 lg:block">
               {savedGenerationsCard}
-              {todaysPostCard}
               {approvedPostsCard}
             </div>
           </div>
@@ -3400,7 +3415,6 @@ function getPlatformDisplayName(value?: string) {
 
           <div className="order-4 min-w-0 space-y-4 lg:hidden">
             {savedGenerationsCard}
-            {todaysPostCard}
             {approvedPostsCard}
           </div>
         </div>
