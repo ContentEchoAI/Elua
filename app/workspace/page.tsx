@@ -1388,6 +1388,70 @@ function getPlatformDisplayName(value?: string) {
     </div>
   );
 
+  const todaysPost = approvedPosts[0];
+
+  const todaysPostCard = todaysPost ? (
+    <div className="w-full rounded-3xl border border-purple-500/30 bg-gradient-to-br from-purple-950/70 to-zinc-900 p-4 sm:p-6">
+      <p className="text-xs font-semibold uppercase tracking-wide text-purple-300">
+        Today’s Post
+      </p>
+
+      <h2 className="mt-1 text-lg font-semibold text-white sm:text-2xl">
+        Ready to publish manually
+      </h2>
+
+      <p className="mt-1 text-xs text-zinc-400">
+        {todaysPost.platform} · Approved, not posted
+      </p>
+
+      <p className="mt-4 line-clamp-4 whitespace-pre-wrap text-sm leading-relaxed text-zinc-200">
+        {todaysPost.caption}
+      </p>
+
+      <div className="mt-4 flex flex-wrap gap-2">
+        <button
+          type="button"
+          onClick={() =>
+            copyToClipboard(todaysPost.caption, `Today caption ${todaysPost.id}`)
+          }
+          className="rounded-xl bg-white px-3 py-2 text-xs font-semibold text-black"
+        >
+          {copiedItem === `Today caption ${todaysPost.id}`
+            ? 'Copied!'
+            : 'Copy Caption'}
+        </button>
+
+        {todaysPost.cta && (
+          <button
+            type="button"
+            onClick={() =>
+              copyToClipboard(todaysPost.cta, `Today CTA ${todaysPost.id}`)
+            }
+            className="rounded-xl bg-zinc-700 px-3 py-2 text-xs text-white"
+          >
+            {copiedItem === `Today CTA ${todaysPost.id}`
+              ? 'Copied!'
+              : 'Copy CTA'}
+          </button>
+        )}
+
+        {todaysPost.dmReply && (
+          <button
+            type="button"
+            onClick={() =>
+              copyToClipboard(todaysPost.dmReply, `Today reply ${todaysPost.id}`)
+            }
+            className="rounded-xl bg-zinc-700 px-3 py-2 text-xs text-white"
+          >
+            {copiedItem === `Today reply ${todaysPost.id}`
+              ? 'Copied!'
+              : 'Copy Reply'}
+          </button>
+        )}
+      </div>
+    </div>
+  ) : null;
+
   const approvedPostsCard = (
     <div className="w-full min-w-0 rounded-3xl border border-emerald-500/20 bg-zinc-900/90 p-4 sm:p-6">
       <div className="mb-3 flex items-start justify-between gap-4">
@@ -2095,6 +2159,7 @@ function getPlatformDisplayName(value?: string) {
             </div>
             <div className="mt-4 hidden space-y-4 lg:block">
               {savedGenerationsCard}
+              {todaysPostCard}
               {approvedPostsCard}
             </div>
           </div>
@@ -3335,6 +3400,7 @@ function getPlatformDisplayName(value?: string) {
 
           <div className="order-4 min-w-0 space-y-4 lg:hidden">
             {savedGenerationsCard}
+            {todaysPostCard}
             {approvedPostsCard}
           </div>
         </div>
