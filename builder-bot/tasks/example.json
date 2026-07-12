@@ -1,0 +1,20 @@
+{
+  "id": "example-small-copy-change",
+  "title": "Example small copy change",
+  "branch": "builder/example-small-copy-change",
+  "summary": "Make one narrowly scoped wording improvement.",
+  "allowedFiles": [
+    "app/workspace/page.tsx"
+  ],
+  "requirements": [
+    "Change only the requested wording.",
+    "Do not alter layout, logic, styling, authentication, billing, publishing, or API behavior."
+  ],
+  "acceptanceCriteria": [
+    "Only approved files are changed.",
+    "Lint passes.",
+    "Production build passes.",
+    "The bot stops for human approval before commit, push, merge, or deploy."
+  ],
+  "operations": []
+}

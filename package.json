@@ -9,7 +9,9 @@
     "lint": "eslint",
     "qa:hummingbird": "node scripts/hummingbird-qa-bot.mjs",
     "qa:hummingbird:checks": "node scripts/hummingbird-qa-bot.mjs --checks",
-    "lead:finder": "node scripts/hummingbird-lead-finder.mjs"
+    "lead:finder": "node scripts/hummingbird-lead-finder.mjs",
+    "builder:bot": "node scripts/hummingbird-builder-bot.mjs",
+    "builder:bot:test": "node --test scripts/hummingbird-builder-bot.test.mjs"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.3.0",
