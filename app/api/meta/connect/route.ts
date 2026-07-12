@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import crypto from 'node:crypto';
-
-const META_AUTH_SCOPES = ['public_profile'];
+import { META_AUTH_SCOPES } from '@/lib/metaAuth';
 
 export async function GET() {
   const appId = process.env.META_APP_ID;

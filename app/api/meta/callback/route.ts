@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentClerkUserId } from '@/lib/clerkServer';
 import {
   exchangeMetaCodeForToken,
+  fetchGrantedMetaScopes,
   fetchMetaProfile,
 } from '@/lib/metaAuth';
 import { saveMetaConnection } from '@/lib/metaConnections';
@@ -37,12 +38,18 @@ export async function GET(request: NextRequest) {
 
   try {
     const token = await exchangeMetaCodeForToken(code);
-    const profile = await fetchMetaProfile(token.accessToken);
+    const [profile, grantedScopes] = await Promise.all([
+      fetchMetaProfile(token.accessToken),
+      fetchGrantedMetaScopes(token.accessToken),
+    ]);
 
     const { error: saveError } = await saveMetaConnection({
       clerkUserId,
       profile,
-      token,
+      token: {
+        ...token,
+        scopes: grantedScopes,
+      },
     });
 
     if (saveError) {

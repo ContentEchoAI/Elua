@@ -1,3 +1,12 @@
+export const META_AUTH_SCOPES = [
+  'public_profile',
+  'pages_show_list',
+  'pages_read_engagement',
+  'pages_manage_posts',
+  'instagram_basic',
+  'instagram_content_publish',
+] as const;
+
 type MetaTokenResponse = {
   access_token?: string;
   token_type?: string;
@@ -10,6 +19,16 @@ type MetaTokenResponse = {
 type MetaProfileResponse = {
   id?: string;
   name?: string;
+  error?: {
+    message?: string;
+  };
+};
+
+type MetaPermissionsResponse = {
+  data?: {
+    permission?: string;
+    status?: string;
+  }[];
   error?: {
     message?: string;
   };
@@ -68,8 +87,38 @@ export async function exchangeMetaCodeForToken(
       typeof data.expires_in === 'number'
         ? new Date(Date.now() + data.expires_in * 1000).toISOString()
         : null,
-    scopes: ['public_profile'],
+    scopes: [],
   };
+}
+
+export async function fetchGrantedMetaScopes(
+  accessToken: string
+): Promise<string[]> {
+  const { graphVersion } = getMetaConfig();
+
+  const permissionsUrl = new URL(
+    `https://graph.facebook.com/${graphVersion}/me/permissions`
+  );
+  permissionsUrl.searchParams.set('access_token', accessToken);
+
+  const response = await fetch(permissionsUrl.toString(), {
+    cache: 'no-store',
+  });
+  const data = (await response.json()) as MetaPermissionsResponse;
+
+  if (!response.ok || !Array.isArray(data.data)) {
+    throw new Error(
+      data.error?.message || 'Meta permission check failed.'
+    );
+  }
+
+  return data.data
+    .filter(
+      (item) =>
+        item.status === 'granted' &&
+        typeof item.permission === 'string'
+    )
+    .map((item) => item.permission as string);
 }
 
 export async function fetchMetaProfile(
