@@ -1,8 +1,8 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'node:crypto';
 import { META_AUTH_SCOPES } from '@/lib/metaAuth';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   const appId = process.env.META_APP_ID;
   const redirectUri = process.env.META_REDIRECT_URI;
   const graphVersion = process.env.META_GRAPH_VERSION || 'v25.0';
@@ -22,6 +22,13 @@ export async function GET() {
   authUrl.searchParams.set('state', state);
   authUrl.searchParams.set('response_type', 'code');
   authUrl.searchParams.set('scope', META_AUTH_SCOPES.join(','));
+
+  const shouldRerequest =
+    new URL(request.url).searchParams.get('rerequest') === '1';
+
+  if (shouldRerequest) {
+    authUrl.searchParams.set('auth_type', 'rerequest');
+  }
 
   const response = NextResponse.redirect(authUrl.toString());
 
