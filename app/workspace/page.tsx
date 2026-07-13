@@ -1460,8 +1460,8 @@ function getPlatformDisplayName(value?: string) {
             className="shrink-0 rounded-2xl bg-white px-4 py-2 text-center text-xs font-semibold text-black transition hover:scale-[1.02]"
           >
             {metaStatus.reconnectRequired
-              ? 'Reconnect Facebook'
-              : 'Connect Facebook'}
+              ? 'Reconnect Facebook & Instagram'
+              : 'Connect Facebook & Instagram'}
           </a>
         ) : (
           <div className="shrink-0 rounded-2xl border border-zinc-700 px-4 py-2 text-center text-xs font-semibold text-zinc-300">

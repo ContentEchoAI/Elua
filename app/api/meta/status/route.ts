@@ -108,7 +108,7 @@ export async function GET() {
 
   if (reconnectRequired) {
     message =
-      'Reconnect Facebook to approve Page and Instagram access.';
+      'Reconnect Facebook and Instagram to approve access.';
   } else if (connected && !selectedPage) {
     message =
       'Facebook is authorized. Choose the Page you want Hummingbird to use.';
