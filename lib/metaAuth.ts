@@ -3,6 +3,7 @@ export const META_AUTH_SCOPES = [
   'pages_show_list',
   'pages_read_engagement',
   'pages_manage_posts',
+  'business_management',
   'instagram_basic',
   'instagram_content_publish',
 ] as const;
