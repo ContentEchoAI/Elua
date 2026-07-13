@@ -939,10 +939,7 @@ function getPlatformDisplayName(value?: string) {
           : current
       );
 
-      setMetaPageMessage(
-        data.message ||
-          `${selectedPage.name} is connected. Publishing is still disabled.`
-      );
+      setMetaPageMessage('');
     } catch (error) {
       console.warn('Meta Page selection warning:', error);
       setMetaPageMessage(
@@ -1503,13 +1500,17 @@ function getPlatformDisplayName(value?: string) {
                 type="button"
                 onClick={handleMetaPageSelection}
                 disabled={
-                  metaPageSelectionLoading || !selectedMetaPageId
+                  metaPageSelectionLoading ||
+                  !selectedMetaPageId ||
+                  selectedMetaPageId === metaStatus.selectedPage?.id
                 }
                 className="rounded-xl bg-purple-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-purple-500 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {metaPageSelectionLoading
                   ? 'Saving...'
-                  : 'Use This Page'}
+                  : selectedMetaPageId === metaStatus.selectedPage?.id
+                    ? 'Page Connected'
+                    : 'Use This Page'}
               </button>
             </div>
           ) : (
