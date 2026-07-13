@@ -1,3 +1,13 @@
+export const META_AUTH_SCOPES = [
+  'public_profile',
+  'pages_show_list',
+  'pages_read_engagement',
+  'pages_manage_posts',
+  'business_management',
+  'instagram_basic',
+  'instagram_content_publish',
+] as const;
+
 type MetaTokenResponse = {
   access_token?: string;
   token_type?: string;
@@ -13,6 +23,43 @@ type MetaProfileResponse = {
   error?: {
     message?: string;
   };
+};
+
+type MetaPermissionsResponse = {
+  data?: {
+    permission?: string;
+    status?: string;
+  }[];
+  error?: {
+    message?: string;
+  };
+};
+
+type MetaManagedPagesResponse = {
+  data?: {
+    id?: string;
+    name?: string;
+    access_token?: string;
+    tasks?: string[];
+    instagram_business_account?: {
+      id?: string;
+      username?: string;
+    };
+  }[];
+  error?: {
+    message?: string;
+  };
+};
+
+export type MetaManagedPage = {
+  id: string;
+  name: string;
+  accessToken: string;
+  tasks: string[];
+  instagramAccount: {
+    id: string;
+    username: string | null;
+  } | null;
 };
 
 export type MetaTokenResult = {
@@ -68,8 +115,91 @@ export async function exchangeMetaCodeForToken(
       typeof data.expires_in === 'number'
         ? new Date(Date.now() + data.expires_in * 1000).toISOString()
         : null,
-    scopes: ['public_profile'],
+    scopes: [],
   };
+}
+
+export async function fetchGrantedMetaScopes(
+  accessToken: string
+): Promise<string[]> {
+  const { graphVersion } = getMetaConfig();
+
+  const permissionsUrl = new URL(
+    `https://graph.facebook.com/${graphVersion}/me/permissions`
+  );
+  permissionsUrl.searchParams.set('access_token', accessToken);
+
+  const response = await fetch(permissionsUrl.toString(), {
+    cache: 'no-store',
+  });
+  const data = (await response.json()) as MetaPermissionsResponse;
+
+  if (!response.ok || !Array.isArray(data.data)) {
+    throw new Error(
+      data.error?.message || 'Meta permission check failed.'
+    );
+  }
+
+  return data.data
+    .filter(
+      (item) =>
+        item.status === 'granted' &&
+        typeof item.permission === 'string'
+    )
+    .map((item) => item.permission as string);
+}
+
+export async function fetchManagedMetaPages(
+  accessToken: string
+): Promise<MetaManagedPage[]> {
+  const { graphVersion } = getMetaConfig();
+
+  const pagesUrl = new URL(
+    `https://graph.facebook.com/${graphVersion}/me/accounts`
+  );
+
+  pagesUrl.searchParams.set(
+    'fields',
+    'id,name,access_token,tasks,instagram_business_account{id,username}'
+  );
+  pagesUrl.searchParams.set('limit', '100');
+  pagesUrl.searchParams.set('access_token', accessToken);
+
+  const response = await fetch(pagesUrl.toString(), {
+    cache: 'no-store',
+  });
+  const data = (await response.json()) as MetaManagedPagesResponse;
+
+  if (!response.ok || !Array.isArray(data.data)) {
+    throw new Error(
+      data.error?.message || 'Meta Page discovery failed.'
+    );
+  }
+
+  return data.data.flatMap((page) => {
+    if (!page.id || !page.name || !page.access_token) {
+      return [];
+    }
+
+    const instagramAccount =
+      page.instagram_business_account?.id
+        ? {
+            id: page.instagram_business_account.id,
+            username:
+              page.instagram_business_account.username || null,
+          }
+        : null;
+
+    return [
+      {
+        id: page.id,
+        name: page.name,
+        accessToken: page.access_token,
+        tasks: Array.isArray(page.tasks) ? page.tasks : [],
+        instagramAccount,
+      },
+    ];
+  });
 }
 
 export async function fetchMetaProfile(

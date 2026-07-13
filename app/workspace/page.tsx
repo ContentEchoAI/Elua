@@ -130,10 +130,31 @@ type UploadedImage = {
   sourceLabel?: string;
 };
 
+type MetaManagedPage = {
+  id: string;
+  name: string;
+  tasks: string[];
+  instagramAccount: {
+    id: string;
+    username: string | null;
+  } | null;
+};
+
 type MetaStatus = {
   connected: boolean;
   configured: boolean;
   authorizationUrl: string | null;
+  reconnectRequired: boolean;
+  missingScopes: string[];
+  selectedPage: {
+    id: string;
+    name: string;
+  } | null;
+  instagramAccount: {
+    id: string;
+    username: string | null;
+  } | null;
+  publishingEnabled: boolean;
   platforms: { name: string; connected: boolean }[];
   message: string;
 };
@@ -251,6 +272,12 @@ export default function Home() {
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
   const [metaStatus, setMetaStatus] = useState<MetaStatus | null>(null);
   const [metaStatusLoading, setMetaStatusLoading] = useState(false);
+  const [metaPages, setMetaPages] = useState<MetaManagedPage[]>([]);
+  const [metaPagesLoading, setMetaPagesLoading] = useState(false);
+  const [selectedMetaPageId, setSelectedMetaPageId] = useState('');
+  const [metaPageSelectionLoading, setMetaPageSelectionLoading] =
+    useState(false);
+  const [metaPageMessage, setMetaPageMessage] = useState('');
   const [publishLoading, setPublishLoading] = useState(false);
   const [approvedPosts, setApprovedPosts] = useState<ApprovedPost[]>(() =>
     loadApprovedPostsFromStorage()
@@ -790,6 +817,141 @@ function getPlatformDisplayName(value?: string) {
     loadMetaStatus();
   }, [isLoaded, signedIn]);
 
+  useEffect(() => {
+    const loadMetaPages = async () => {
+      if (
+        !isLoaded ||
+        !signedIn ||
+        !metaStatus?.connected ||
+        metaStatus.reconnectRequired
+      ) {
+        setMetaPages([]);
+        return;
+      }
+
+      setMetaPagesLoading(true);
+      setMetaPageMessage('');
+
+      try {
+        const res = await fetch('/api/meta/pages');
+        const data = (await res.json()) as {
+          ok?: boolean;
+          pages?: MetaManagedPage[];
+          selectedPageId?: string | null;
+          message?: string;
+        };
+
+        if (!res.ok || !data.ok) {
+          throw new Error(
+            data.message || 'Could not load your Facebook Pages.'
+          );
+        }
+
+        const pages = Array.isArray(data.pages) ? data.pages : [];
+
+        setMetaPages(pages);
+        setSelectedMetaPageId(
+          data.selectedPageId ||
+            metaStatus.selectedPage?.id ||
+            pages[0]?.id ||
+            ''
+        );
+      } catch (error) {
+        console.warn('Load Meta Pages warning:', error);
+        setMetaPages([]);
+        setMetaPageMessage(
+          error instanceof Error
+            ? error.message
+            : 'Could not load your Facebook Pages.'
+        );
+      } finally {
+        setMetaPagesLoading(false);
+      }
+    };
+
+    loadMetaPages();
+  }, [
+    isLoaded,
+    signedIn,
+    metaStatus?.connected,
+    metaStatus?.reconnectRequired,
+    metaStatus?.selectedPage?.id,
+  ]);
+
+  const handleMetaPageSelection = async () => {
+    if (!selectedMetaPageId) {
+      setMetaPageMessage('Choose a Facebook Page first.');
+      return;
+    }
+
+    setMetaPageSelectionLoading(true);
+    setMetaPageMessage('');
+
+    try {
+      const res = await fetch('/api/meta/pages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          pageId: selectedMetaPageId,
+        }),
+      });
+
+      const data = (await res.json()) as {
+        ok?: boolean;
+        selectedPage?: MetaManagedPage;
+        message?: string;
+      };
+
+      if (!res.ok || !data.ok || !data.selectedPage) {
+        throw new Error(
+          data.message || 'Could not save that Facebook Page.'
+        );
+      }
+
+      const selectedPage = data.selectedPage;
+
+      setMetaStatus((current) =>
+        current
+          ? {
+              ...current,
+              selectedPage: {
+                id: selectedPage.id,
+                name: selectedPage.name,
+              },
+              instagramAccount: selectedPage.instagramAccount,
+              publishingEnabled: false,
+              platforms: [
+                {
+                  name: 'Instagram',
+                  connected: Boolean(
+                    selectedPage.instagramAccount
+                  ),
+                },
+                {
+                  name: 'Facebook',
+                  connected: true,
+                },
+              ],
+              message:
+                data.message ||
+                `${selectedPage.name} is connected. Publishing is still disabled.`,
+            }
+          : current
+      );
+
+      setMetaPageMessage('');
+    } catch (error) {
+      console.warn('Meta Page selection warning:', error);
+      setMetaPageMessage(
+        error instanceof Error
+          ? error.message
+          : 'Could not save that Facebook Page.'
+      );
+    } finally {
+      setMetaPageSelectionLoading(false);
+    }
+  };
+
   const handleUpgrade = async () => {
     if (!isLoaded) {
       alert('Please wait a second while your account loads.');
@@ -1278,7 +1440,7 @@ function getPlatformDisplayName(value?: string) {
 
   const platformPanel = signedIn ? (
     <div className="mb-4 rounded-3xl border border-zinc-800 bg-zinc-900/90 p-4 sm:p-5">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <p className="text-sm font-semibold text-white">Posting Setup</p>
           <p className="mt-1 text-xs leading-relaxed text-zinc-400 sm:text-sm">
@@ -1292,16 +1454,91 @@ function getPlatformDisplayName(value?: string) {
         {metaStatus?.authorizationUrl ? (
           <a
             href={metaStatus.authorizationUrl}
-            className="rounded-2xl bg-white px-4 py-2 text-center text-xs font-semibold text-black transition hover:scale-[1.02]"
+            className="shrink-0 rounded-2xl bg-white px-4 py-2 text-center text-xs font-semibold text-black transition hover:scale-[1.02]"
           >
-            Connect Facebook
+            {metaStatus.reconnectRequired
+              ? 'Reconnect Facebook & Instagram'
+              : 'Connect Facebook & Instagram'}
           </a>
         ) : (
-          <div className="rounded-2xl border border-zinc-700 px-4 py-2 text-center text-xs font-semibold text-zinc-300">
-            Preview + approval required
+          <div className="shrink-0 rounded-2xl border border-zinc-700 px-4 py-2 text-center text-xs font-semibold text-zinc-300">
+            Publishing disabled
           </div>
         )}
       </div>
+
+      {metaStatus?.connected && !metaStatus.reconnectRequired && (
+        <div className="mt-4 rounded-2xl border border-zinc-800 bg-zinc-950/40 p-3 sm:p-4">
+          <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
+            Facebook Page
+          </p>
+
+          {metaPagesLoading ? (
+            <p className="mt-2 text-sm text-zinc-400">
+              Loading your Facebook Pages...
+            </p>
+          ) : metaPages.length > 0 ? (
+            <div className="mt-2 flex flex-col gap-2 sm:flex-row">
+              <select
+                value={selectedMetaPageId}
+                onChange={(event) =>
+                  setSelectedMetaPageId(event.target.value)
+                }
+                className="min-w-0 flex-1 rounded-xl border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white outline-none focus:border-purple-500"
+              >
+                {metaPages.map((page) => (
+                  <option key={page.id} value={page.id}>
+                    {page.name}
+                    {page.instagramAccount
+                      ? ' · Instagram linked'
+                      : ''}
+                  </option>
+                ))}
+              </select>
+
+              <button
+                type="button"
+                onClick={handleMetaPageSelection}
+                disabled={
+                  metaPageSelectionLoading ||
+                  !selectedMetaPageId ||
+                  selectedMetaPageId === metaStatus.selectedPage?.id
+                }
+                className="rounded-xl bg-purple-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-purple-500 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {metaPageSelectionLoading
+                  ? 'Saving...'
+                  : selectedMetaPageId === metaStatus.selectedPage?.id
+                    ? 'Page Connected'
+                    : 'Use This Page'}
+              </button>
+            </div>
+          ) : (
+            <p className="mt-2 text-sm leading-relaxed text-zinc-400">
+              No manageable Facebook Pages were found for this connection.
+            </p>
+          )}
+
+          {metaStatus.selectedPage && (
+            <p className="mt-3 text-xs leading-relaxed text-zinc-400">
+              Selected: {metaStatus.selectedPage.name}
+              {metaStatus.instagramAccount
+                ? ` · Instagram ${
+                    metaStatus.instagramAccount.username
+                      ? `@${metaStatus.instagramAccount.username}`
+                      : 'connected'
+                  }`
+                : ' · No linked Instagram professional account'}
+            </p>
+          )}
+
+          {metaPageMessage && (
+            <p className="mt-3 text-xs leading-relaxed text-purple-300">
+              {metaPageMessage}
+            </p>
+          )}
+        </div>
+      )}
     </div>
   ) : null;
 
