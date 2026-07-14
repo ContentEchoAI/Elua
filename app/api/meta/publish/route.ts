@@ -1,6 +1,13 @@
 import { NextResponse } from 'next/server';
 import { getCurrentClerkUserId } from '@/lib/clerkServer';
-import { normalizeMetaPublishPlatform } from '@/lib/metaPublishingCore';
+import {
+  createMetaCaptionHash,
+  normalizeMetaPublishPlatform,
+} from '@/lib/metaPublishingCore';
+import {
+  getMetaPublishingConnection,
+  reserveMetaPublishAttempt,
+} from '@/lib/metaPublishing';
 
 type MetaPublishRequest = {
   approvedPostId?: string;
@@ -89,15 +96,121 @@ export async function POST(request: Request) {
   }
 
   if (body.publishNow === true) {
+    const { data: connection, error: connectionError } =
+      await getMetaPublishingConnection(clerkUserId);
+
+    if (connectionError) {
+      console.error('Meta publishing connection lookup failed:', connectionError);
+
+      return NextResponse.json(
+        {
+          ok: false,
+          code: 'connection_lookup_failed',
+          message: 'Could not check the connected Meta account.',
+        },
+        { status: 500 }
+      );
+    }
+
+    const platformConnected =
+      platform === 'facebook'
+        ? Boolean(
+            connection?.facebook_page_id &&
+              connection?.page_access_token
+          )
+        : Boolean(connection?.instagram_account_id);
+
+    if (!platformConnected) {
+      return NextResponse.json(
+        {
+          ok: false,
+          code: 'platform_not_connected',
+          message:
+            platform === 'facebook'
+              ? 'Connect and select a Facebook Page before publishing.'
+              : 'Connect a professional Instagram account before publishing.',
+        },
+        { status: 409 }
+      );
+    }
+
+    const reservation = await reserveMetaPublishAttempt({
+      clerkUserId,
+      approvedPostId,
+      platform,
+      caption,
+    });
+
+    if (reservation.error || !reservation.attempt) {
+      console.error(
+        'Meta publish attempt reservation failed:',
+        reservation.error
+      );
+
+      return NextResponse.json(
+        {
+          ok: false,
+          code: 'publish_reservation_failed',
+          message: 'Could not safely reserve this publishing request.',
+        },
+        { status: 500 }
+      );
+    }
+
+    if (!reservation.created) {
+      const currentCaptionHash = createMetaCaptionHash(caption);
+
+      if (reservation.attempt.caption_hash !== currentCaptionHash) {
+        return NextResponse.json(
+          {
+            ok: false,
+            code: 'approved_post_changed',
+            message:
+              'This approved post changed after its publishing request was created. Approve it again as a new post.',
+          },
+          { status: 409 }
+        );
+      }
+
+      if (reservation.attempt.status === 'published') {
+        return NextResponse.json(
+          {
+            ok: false,
+            code: 'duplicate_publish_blocked',
+            message: 'This approved post has already been published.',
+            permalinkUrl: reservation.attempt.permalink_url || null,
+          },
+          { status: 409 }
+        );
+      }
+
+      return NextResponse.json(
+        {
+          ok: false,
+          code: 'publish_already_reserved',
+          message:
+            reservation.attempt.status === 'publishing'
+              ? 'This post is already being published.'
+              : 'This publishing request is already reserved. Nothing was posted twice.',
+          status: reservation.attempt.status,
+        },
+        { status: 409 }
+      );
+    }
+
     return NextResponse.json(
       {
         ok: false,
-        approved: false,
+        approved: true,
         publishEnabled: false,
+        duplicateProtectionReady: true,
         code: 'live_publish_not_enabled',
-        message: 'Live publishing is still disabled.',
+        approvedPostId,
+        platform,
+        message:
+          'Publishing request reserved safely. Nothing was posted yet.',
         nextStep:
-          'Hummingbird must complete the final confirmation and duplicate-protection flow first.',
+          'Live Facebook publishing still requires the final confirmation and Meta API step.',
       },
       { status: 501 }
     );
