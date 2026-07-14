@@ -1317,6 +1317,8 @@ function getPlatformDisplayName(value?: string) {
           .map((tag) => tag.trim())
           .filter(Boolean);
 
+    const approvedPostId = createApprovedPostId();
+
     setPublishLoading(true);
     setPublishMessage('');
 
@@ -1325,6 +1327,7 @@ function getPlatformDisplayName(value?: string) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          approvedPostId,
           caption,
           hashtags,
           platform,
@@ -1340,7 +1343,7 @@ function getPlatformDisplayName(value?: string) {
 
       if (data?.approved) {
         const approvedPost: ApprovedPost = {
-          id: createApprovedPostId(),
+          id: approvedPostId,
           createdAt: new Date().toISOString(),
           platform,
           title:
