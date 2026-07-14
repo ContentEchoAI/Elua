@@ -94,3 +94,77 @@ export async function reserveMetaPublishAttempt({
     error,
   };
 }
+
+export async function markMetaPublishAttemptPublishing(
+  attemptId: string
+) {
+  return supabaseAdmin
+    .from('meta_publish_attempts')
+    .update({
+      status: 'publishing',
+      error_code: null,
+      error_message: null,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', attemptId)
+    .eq('status', 'pending')
+    .select(
+      'id,status,caption_hash,meta_post_id,permalink_url,error_code,error_message,created_at,updated_at,published_at'
+    )
+    .maybeSingle();
+}
+
+export async function markMetaPublishAttemptPublished({
+  attemptId,
+  metaPostId,
+  permalinkUrl,
+}: {
+  attemptId: string;
+  metaPostId: string;
+  permalinkUrl?: string | null;
+}) {
+  const publishedAt = new Date().toISOString();
+
+  return supabaseAdmin
+    .from('meta_publish_attempts')
+    .update({
+      status: 'published',
+      meta_post_id: metaPostId,
+      permalink_url: permalinkUrl || null,
+      error_code: null,
+      error_message: null,
+      published_at: publishedAt,
+      updated_at: publishedAt,
+    })
+    .eq('id', attemptId)
+    .eq('status', 'publishing')
+    .select(
+      'id,status,caption_hash,meta_post_id,permalink_url,error_code,error_message,created_at,updated_at,published_at'
+    )
+    .maybeSingle();
+}
+
+export async function markMetaPublishAttemptFailed({
+  attemptId,
+  errorCode,
+  errorMessage,
+}: {
+  attemptId: string;
+  errorCode: string;
+  errorMessage: string;
+}) {
+  return supabaseAdmin
+    .from('meta_publish_attempts')
+    .update({
+      status: 'failed',
+      error_code: errorCode.slice(0, 120),
+      error_message: errorMessage.slice(0, 1000),
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', attemptId)
+    .in('status', ['pending', 'publishing'])
+    .select(
+      'id,status,caption_hash,meta_post_id,permalink_url,error_code,error_message,created_at,updated_at,published_at'
+    )
+    .maybeSingle();
+}
