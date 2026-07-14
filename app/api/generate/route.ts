@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { needsHumanMediaCaptionRewrite } from '@/lib/mediaCaptionQuality';
 
 type StructuredReelScene = {
   visual?: string;
@@ -2551,6 +2552,158 @@ DM GROOM and tell me about your pet.`,
   return null;
 }
 
+type MediaCaptionRewriteResponse = {
+  caption?: string;
+};
+
+async function rewriteWeakMediaCaption({
+  apiKey,
+  originalPrompt,
+  currentCaption,
+  cta,
+  voice,
+  businessContext,
+  uploadedImages,
+}: {
+  apiKey: string;
+  originalPrompt: string;
+  currentCaption: string;
+  cta: string;
+  voice: string;
+  businessContext: string;
+  uploadedImages: UploadedImage[];
+}) {
+  let captionToRewrite = currentCaption;
+
+  for (let attempt = 1; attempt <= 2; attempt += 1) {
+    try {
+      const rewritePrompt = `
+Rewrite only the social-media caption below.
+
+The current opening failed because it sounds generic, formulaic, or like an inventory of what is visible.
+
+Original request:
+${originalPrompt}
+
+Business context:
+${businessContext}
+
+Requested voice:
+${voice || 'natural'}
+
+Current caption:
+${captionToRewrite}
+
+CTA keyword or instruction:
+${cta || 'Use one simple, low-pressure next step.'}
+
+Requirements:
+- Return valid JSON only: {"caption": "..."}.
+- Write 2-4 short, natural sentences.
+- The first line must sound like a real business owner speaking to a client.
+- Base the opening on a real preference, decision, contrast, small story, honest opinion, or customer question that fits these specific images.
+- Do not start with generic praise, "Okay", "I am obsessed", "Loving this", "Can we talk about", "Look at this", "When you want", "For the person who", "POV", or a polished marketing headline.
+- Do not invent a client preference, client story, or phrases such as "Some clients want..." unless the user supplied that information.
+- Avoid polished marketing clichés such as "tell a story", "unique touch", "stands out", "fresh look", "perfect balance", "one-of-a-kind", or "without overwhelming the design".
+- Do not begin by listing colors, shapes, products, tools, rooms, vehicle parts, flowers, finishes, or other visible details.
+- Do not use phrases like "This set mixes", "This features", "This includes", "The flowers add", or "You can see".
+- Mention no more than two visual details.
+- Do not invent prices, availability, guarantees, client history, service details, or outcomes.
+- End with one simple, low-pressure CTA using the provided CTA when possible.
+- Do not use markdown.
+- Make this caption specific enough that it could not be pasted onto dozens of unrelated posts.
+${attempt > 1 ? '- The previous rewrite still failed the human-opening check. Use a completely different opening structure.' : ''}
+`.trim();
+
+      const response = await fetch(
+        'https://api.openai.com/v1/chat/completions',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${apiKey}`,
+          },
+          body: JSON.stringify({
+            model: 'gpt-4.1-mini',
+            messages: [
+              {
+                role: 'system',
+                content:
+                  'You rewrite one social-media caption so it sounds natural, specific, and human. Return valid JSON only.',
+              },
+              {
+                role: 'user',
+                content: [
+                  {
+                    type: 'text',
+                    text: rewritePrompt,
+                  },
+                  ...uploadedImages.map((image) => ({
+                    type: 'image_url',
+                    image_url: {
+                      url: image.dataUrl,
+                    },
+                  })),
+                ],
+              },
+            ],
+            temperature: 0.65,
+            max_tokens: 400,
+            response_format: { type: 'json_object' },
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        console.warn(
+          'Media caption rewrite warning:',
+          await response.text()
+        );
+        return null;
+      }
+
+      const data = await response.json();
+      const messageContent = data.choices?.[0]?.message?.content;
+
+      if (!messageContent) {
+        return null;
+      }
+
+      const parsedRewrite = JSON.parse(
+        messageContent
+      ) as MediaCaptionRewriteResponse;
+
+      let rewrittenCaption = cleanInvisibleMakeMyPostLine(
+        normalizeString(parsedRewrite.caption)
+      );
+
+      const cleanedCta = cleanInvisibleMakeMyPostCta(cta);
+
+      if (
+        rewrittenCaption &&
+        cleanedCta &&
+        !hasNaturalMakeMyPostCta(rewrittenCaption)
+      ) {
+        rewrittenCaption = `${rewrittenCaption}\n\n${cleanedCta}`;
+      }
+
+      if (
+        rewrittenCaption &&
+        !needsHumanMediaCaptionRewrite(rewrittenCaption)
+      ) {
+        return rewrittenCaption;
+      }
+
+      captionToRewrite = rewrittenCaption || captionToRewrite;
+    } catch (error) {
+      console.warn('Media caption rewrite warning:', error);
+      return null;
+    }
+  }
+
+  return null;
+}
+
 export async function POST(req: Request) {
   try {
     const {
@@ -3494,7 +3647,18 @@ Make This Post / Production Plan rules:
 - production_plan.on_screen_text must include copy-ready text overlays, slide text, or post text.
 - production_plan.spoken_lines must sound like a real business owner speaking naturally. Avoid stiff AI phrases.
 - production_plan.caption must be copy-ready and should sound like a real owner wrote it, not a marketing strategist.
-- The first line of production_plan.caption must grab attention in the first 0-3 seconds. Do not start with a generic service label like "Mobile detailing in Irvine", "Home cleaning in Dallas", or "Lash refill reminder" unless that is the strongest hook. Start with the customer feeling, problem, reminder, visible detail, or curiosity line first.
+- The first line of production_plan.caption must sound natural, specific to this post, and like something the business owner would genuinely say to a client.
+- Do not use generic reaction openings such as "Okay...", "This is way too cute", "I am obsessed", "Loving this", "Can we talk about...", "Look at this", or similar reusable praise.
+- Do not use manufactured headline formulas such as "When you want...", "For the person who...", "This is what happens when...", "Ready to...", "Looking for...", or "POV".
+- Do not open by inventorying visible colors, shapes, flowers, finishes, products, tools, rooms, vehicle parts, or service details.
+- Choose an opening based on the actual meaning of the media: a client preference, a real decision, a useful contrast, a small story, an honest owner opinion, or a question customers genuinely ask.
+- Vary the opening structure. Do not default to the same reaction, sentence pattern, or phrase across generations.
+- After the opening, write only one or two natural context sentences. Explain the overall look, feeling, result, contrast, or why the details work together instead of cataloguing everything visible.
+- Mention at most two visual details unless the user explicitly asks for a detailed description.
+- Avoid inventory phrases such as "It mixes...", "This features...", "The flowers add...", "This includes...", or "You can see...".
+- End with one simple, low-pressure CTA that sounds like the next sentence a real owner would write.
+- The caption must earn attention in the first 0-3 seconds without sounding like a slogan, advertisement, polished headline, or AI copywriting formula.
+- Before returning the caption, silently ask: "Could this opening be pasted onto dozens of unrelated posts?" If yes, rewrite it to be more specific and human.
 - production_plan.cta must be copy-ready and match the Money Plan.
 - production_plan.cta should use a short, natural keyword when possible. Prefer service-specific CTAs such as "DM QUOTE", "Comment QUOTE", "DM LASHES", "DM REFILL", "DM NAILS", "DM DESIGN", "Comment NAILS", "DM COLOR", or "DM CONSULT" over generic or long resource names.
 - production_plan.dm_reply must be a copy-ready first reply to someone who comments, DMs, or asks for the resource.
@@ -4287,6 +4451,39 @@ Final silent check:
           ...(parsed.best_output || {}),
           platform: parsed.best_output?.platform || 'Facebook Post',
           content: vagueMobileDetailingFallback.caption,
+        };
+      }
+    }
+
+    if (
+      mode === 'make_my_post' &&
+      hasUploadedImages &&
+      parsed.production_plan?.caption &&
+      needsHumanMediaCaptionRewrite(parsed.production_plan.caption)
+    ) {
+      const rewrittenCaption = await rewriteWeakMediaCaption({
+        apiKey,
+        originalPrompt: content,
+        currentCaption: parsed.production_plan.caption,
+        cta:
+          parsed.production_plan.cta ||
+          parsed.monetization?.cta_strategy ||
+          '',
+        voice: normalizeString(selectedVoice),
+        businessContext:
+          formatBusinessProfileForPrompt(businessProfile),
+        uploadedImages: normalizedUploadedImages,
+      });
+
+      if (rewrittenCaption) {
+        parsed.production_plan = {
+          ...(parsed.production_plan || {}),
+          caption: rewrittenCaption,
+        };
+
+        parsed.best_output = {
+          ...(parsed.best_output || {}),
+          content: rewrittenCaption,
         };
       }
     }
