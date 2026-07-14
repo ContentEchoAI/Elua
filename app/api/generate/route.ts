@@ -2603,6 +2603,8 @@ Requirements:
 - The first line must sound like a real business owner speaking to a client.
 - Base the opening on a real preference, decision, contrast, small story, honest opinion, or customer question that fits these specific images.
 - Do not start with generic praise, "Okay", "I am obsessed", "Loving this", "Can we talk about", "Look at this", "When you want", "For the person who", "POV", or a polished marketing headline.
+- Do not invent a client preference, client story, or phrases such as "Some clients want..." unless the user supplied that information.
+- Avoid polished marketing clichés such as "tell a story", "unique touch", "stands out", "fresh look", "perfect balance", "one-of-a-kind", or "without overwhelming the design".
 - Do not begin by listing colors, shapes, products, tools, rooms, vehicle parts, flowers, finishes, or other visible details.
 - Do not use phrases like "This set mixes", "This features", "This includes", "The flowers add", or "You can see".
 - Mention no more than two visual details.

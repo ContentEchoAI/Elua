@@ -24,11 +24,7 @@ test('flags photo-inventory openings', () => {
   ];
 
   for (const caption of weakCaptions) {
-    assert.equal(
-      needsHumanMediaCaptionRewrite(caption),
-      true,
-      caption
-    );
+    assert.equal(needsHumanMediaCaptionRewrite(caption), true, caption);
   }
 });
 
@@ -40,30 +36,44 @@ test('flags generic and formulaic openings', () => {
     'Can we talk about these nails?',
     'When you want every nail to feel different.',
     'POV: you finally found your next nail set.',
+    'Some clients want their nails to tell a story.',
   ];
 
   for (const caption of weakCaptions) {
-    assert.equal(
-      needsHumanMediaCaptionRewrite(caption),
-      true,
-      caption
-    );
+    assert.equal(needsHumanMediaCaptionRewrite(caption), true, caption);
   }
+});
+
+test('flags polished marketing clichés anywhere in the caption', () => {
+  const weakCaptions = [
+    'The floral accent adds a unique touch without overwhelming the design.',
+    'DM DESIGN if you want a set that stands out.',
+    'The details come together for a fresh look.',
+    'This is the perfect balance of bold yet wearable.',
+    'Every nail tells a story and creates a one-of-a-kind look.',
+  ];
+
+  for (const caption of weakCaptions) {
+    assert.equal(needsHumanMediaCaptionRewrite(caption), true, caption);
+  }
+});
+
+test('flags the exact failed generated caption', () => {
+  const caption =
+    'Some clients want their nails to tell a story, mixing subtle swirls with playful polka dots. The 3D floral accent adds a unique touch without overwhelming the design. DM DESIGN if you want to create a set that stands out just like this.';
+
+  assert.equal(needsHumanMediaCaptionRewrite(caption), true);
 });
 
 test('allows specific human openings', () => {
   const acceptableCaptions = [
     'She wanted every nail to feel different without the set looking random.',
     'The hardest part was choosing which detail to make the main focus.',
-    'This client knew she wanted something playful, but not overly busy.',
+    'Mixed designs can get busy fast, so I kept the colors soft and repeated the details.',
     'We kept the colors soft so the different designs still felt connected.',
   ];
 
   for (const caption of acceptableCaptions) {
-    assert.equal(
-      needsHumanMediaCaptionRewrite(caption),
-      false,
-      caption
-    );
+    assert.equal(needsHumanMediaCaptionRewrite(caption), false, caption);
   }
 });
