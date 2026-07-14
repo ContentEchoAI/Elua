@@ -6,8 +6,12 @@ import {
 } from '@/lib/metaPublishingCore';
 import {
   getMetaPublishingConnection,
+  markMetaPublishAttemptFailed,
+  markMetaPublishAttemptPublished,
+  markMetaPublishAttemptPublishing,
   reserveMetaPublishAttempt,
 } from '@/lib/metaPublishing';
+import { publishFacebookPagePost } from '@/lib/metaFacebook';
 
 type MetaPublishRequest = {
   approvedPostId?: string;
@@ -100,7 +104,10 @@ export async function POST(request: Request) {
       await getMetaPublishingConnection(clerkUserId);
 
     if (connectionError) {
-      console.error('Meta publishing connection lookup failed:', connectionError);
+      console.error(
+        'Meta publishing connection lookup failed:',
+        connectionError
+      );
 
       return NextResponse.json(
         {
@@ -112,13 +119,17 @@ export async function POST(request: Request) {
       );
     }
 
+    const facebookPageId =
+      connection?.facebook_page_id || '';
+    const facebookPageAccessToken =
+      connection?.page_access_token || '';
+    const instagramAccountId =
+      connection?.instagram_account_id || '';
+
     const platformConnected =
       platform === 'facebook'
-        ? Boolean(
-            connection?.facebook_page_id &&
-              connection?.page_access_token
-          )
-        : Boolean(connection?.instagram_account_id);
+        ? Boolean(facebookPageId && facebookPageAccessToken)
+        : Boolean(instagramAccountId);
 
     if (!platformConnected) {
       return NextResponse.json(
@@ -131,6 +142,37 @@ export async function POST(request: Request) {
               : 'Connect a professional Instagram account before publishing.',
         },
         { status: 409 }
+      );
+    }
+
+    if (platform !== 'facebook') {
+      return NextResponse.json(
+        {
+          ok: false,
+          code: 'instagram_live_publish_not_enabled',
+          message: 'Instagram live publishing is not enabled yet.',
+        },
+        { status: 501 }
+      );
+    }
+
+    const livePublishEnabled =
+      process.env.META_LIVE_PUBLISH_ENABLED === 'true';
+
+    if (!livePublishEnabled) {
+      return NextResponse.json(
+        {
+          ok: false,
+          approved: true,
+          publishEnabled: false,
+          code: 'live_publish_not_enabled',
+          approvedPostId,
+          platform,
+          message: 'Live Facebook publishing is still disabled.',
+          nextStep:
+            'Enable the final confirmation flow before turning on live publishing.',
+        },
+        { status: 501 }
       );
     }
 
@@ -198,22 +240,86 @@ export async function POST(request: Request) {
       );
     }
 
-    return NextResponse.json(
-      {
-        ok: false,
+    const attemptId = reservation.attempt.id;
+
+    const { data: publishingAttempt, error: publishingError } =
+      await markMetaPublishAttemptPublishing(attemptId);
+
+    if (publishingError || !publishingAttempt) {
+      console.error(
+        'Meta publish transition failed:',
+        publishingError
+      );
+
+      return NextResponse.json(
+        {
+          ok: false,
+          code: 'publish_transition_failed',
+          message: 'Could not safely begin publishing this post.',
+        },
+        { status: 409 }
+      );
+    }
+
+    try {
+      const published = await publishFacebookPagePost({
+        pageId: facebookPageId,
+        pageAccessToken: facebookPageAccessToken,
+        message: caption,
+      });
+
+      const { error: publishedStateError } =
+        await markMetaPublishAttemptPublished({
+          attemptId,
+          metaPostId: published.metaPostId,
+          permalinkUrl: published.permalinkUrl,
+        });
+
+      if (publishedStateError) {
+        console.error(
+          'Meta published-state save failed:',
+          publishedStateError
+        );
+      }
+
+      return NextResponse.json({
+        ok: true,
         approved: true,
-        publishEnabled: false,
-        duplicateProtectionReady: true,
-        code: 'live_publish_not_enabled',
+        publishEnabled: true,
+        published: true,
         approvedPostId,
         platform,
-        message:
-          'Publishing request reserved safely. Nothing was posted yet.',
-        nextStep:
-          'Live Facebook publishing still requires the final confirmation and Meta API step.',
-      },
-      { status: 501 }
-    );
+        metaPostId: published.metaPostId,
+        permalinkUrl: published.permalinkUrl,
+        message: 'Posted successfully to Facebook.',
+      });
+    } catch (publishError) {
+      const errorMessage =
+        publishError instanceof Error
+          ? publishError.message
+          : 'Facebook Page publishing failed.';
+
+      await markMetaPublishAttemptFailed({
+        attemptId,
+        errorCode: 'facebook_publish_failed',
+        errorMessage,
+      });
+
+      console.error('Facebook Page publishing failed:', errorMessage);
+
+      return NextResponse.json(
+        {
+          ok: false,
+          approved: true,
+          publishEnabled: true,
+          published: false,
+          code: 'facebook_publish_failed',
+          message:
+            'Facebook could not publish this post. Nothing was posted twice.',
+        },
+        { status: 502 }
+      );
+    }
   }
 
   return NextResponse.json({
