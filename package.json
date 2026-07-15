@@ -11,7 +11,10 @@
     "qa:hummingbird:checks": "node scripts/hummingbird-qa-bot.mjs --checks",
     "lead:finder": "node scripts/hummingbird-lead-finder.mjs",
     "builder:bot": "node scripts/hummingbird-builder-bot.mjs",
-    "builder:bot:test": "node --test scripts/hummingbird-builder-bot.test.mjs"
+    "builder:bot:test": "node --test scripts/hummingbird-builder-bot.test.mjs",
+    "meta:publishing:status": "node --env-file=.env.local scripts/meta-publishing-gate.mjs status",
+    "meta:publishing:enable": "node --env-file=.env.local scripts/meta-publishing-gate.mjs enable",
+    "meta:publishing:disable": "node --env-file=.env.local scripts/meta-publishing-gate.mjs disable"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.3.0",
