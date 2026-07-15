@@ -156,6 +156,25 @@ export async function POST(request: Request) {
       );
     }
 
+    const accountPublishingEnabled =
+      connection?.publishing_enabled === true;
+
+    if (!accountPublishingEnabled) {
+      return NextResponse.json(
+        {
+          ok: false,
+          approved: true,
+          publishEnabled: false,
+          code: 'account_publishing_not_enabled',
+          approvedPostId,
+          platform,
+          message:
+            'Live Facebook publishing has not been enabled for this account.',
+        },
+        { status: 403 }
+      );
+    }
+
     const livePublishEnabled =
       process.env.META_LIVE_PUBLISH_ENABLED === 'true';
 
