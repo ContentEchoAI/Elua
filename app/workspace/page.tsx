@@ -1445,6 +1445,8 @@ function getPlatformDisplayName(value?: string) {
       return;
     }
 
+    if (!metaStatus?.publishingEnabled) return;
+
     const captionPreview =
       post.caption.length > 260
         ? `${post.caption.slice(0, 257)}...`
@@ -1601,8 +1603,16 @@ function getPlatformDisplayName(value?: string) {
               : 'Connect Facebook & Instagram'}
           </a>
         ) : (
-          <div className="shrink-0 rounded-2xl border border-zinc-700 px-4 py-2 text-center text-xs font-semibold text-zinc-300">
-            Publishing disabled
+          <div
+            className={`shrink-0 rounded-2xl border px-4 py-2 text-center text-xs font-semibold ${
+              metaStatus?.publishingEnabled
+                ? 'border-emerald-500/30 text-emerald-200'
+                : 'border-zinc-700 text-zinc-300'
+            }`}
+          >
+            {metaStatus?.publishingEnabled
+              ? 'Publishing enabled'
+              : 'Publishing disabled'}
           </div>
         )}
       </div>
@@ -1950,12 +1960,17 @@ function getPlatformDisplayName(value?: string) {
                   <button
                     type="button"
                     onClick={() => handlePublishApprovedPost(post)}
-                    disabled={publishingPostId === post.id}
+                    disabled={
+                      publishingPostId === post.id ||
+                      !metaStatus?.publishingEnabled
+                    }
                     className="rounded-xl bg-blue-500 px-3 py-2 text-xs font-semibold text-white transition hover:bg-blue-400 disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {publishingPostId === post.id
                       ? 'Publishing...'
-                      : 'Publish to Facebook'}
+                      : metaStatus?.publishingEnabled
+                        ? 'Publish to Facebook'
+                        : 'Publishing disabled'}
                   </button>
                 )}
 
@@ -1987,11 +2002,15 @@ function getPlatformDisplayName(value?: string) {
                 </a>
               )}
 
-              {post.publishError && (
-                <p className="mt-3 rounded-xl border border-red-500/20 bg-red-500/5 p-3 text-xs leading-relaxed text-red-200">
-                  {post.publishError}
-                </p>
-              )}
+              {post.publishError &&
+                post.publishError !==
+                  'Live Facebook publishing is still disabled.' &&
+                post.publishError !==
+                  'Live Facebook publishing has not been enabled for this account.' && (
+                  <p className="mt-3 rounded-xl border border-red-500/20 bg-red-500/5 p-3 text-xs leading-relaxed text-red-200">
+                    {post.publishError}
+                  </p>
+                )}
             </div>
           ))}
         </div>
