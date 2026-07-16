@@ -104,6 +104,13 @@ export async function GET() {
       }
     : null;
 
+  const livePublishEnabled =
+    process.env.META_LIVE_PUBLISH_ENABLED === 'true';
+
+  const publishingEnabled = Boolean(
+    connection?.publishing_enabled && livePublishEnabled
+  );
+
   let message = 'Meta connection is ready for authorization.';
 
   if (reconnectRequired) {
@@ -116,12 +123,16 @@ export async function GET() {
     message =
       `${selectedPage.name} and ` +
       `${instagramAccount.username ? `@${instagramAccount.username}` : 'Instagram'} ` +
-      'are connected. Publishing is still disabled.';
+      (publishingEnabled
+        ? 'are connected. Facebook publishing is enabled.'
+        : 'are connected. Publishing is still disabled.');
   } else if (selectedPage) {
     message =
       `${selectedPage.name} is connected. ` +
       'No linked Instagram professional account was found. ' +
-      'Publishing is still disabled.';
+      (publishingEnabled
+        ? 'Facebook publishing is enabled.'
+        : 'Publishing is still disabled.');
   }
 
   return NextResponse.json({
@@ -137,7 +148,7 @@ export async function GET() {
     missingScopes,
     selectedPage,
     instagramAccount,
-    publishingEnabled: Boolean(connection?.publishing_enabled),
+    publishingEnabled,
     platforms: [
       {
         name: 'Instagram',

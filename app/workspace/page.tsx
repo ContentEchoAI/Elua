@@ -177,7 +177,11 @@ type ApprovedPost = {
   dmReply: string;
   hashtags: string[];
   mediaCount: number;
-  status: 'approved_not_posted';
+  status: 'approved_not_posted' | 'publishing' | 'posted' | 'failed';
+  publishedAt?: string;
+  metaPostId?: string;
+  permalinkUrl?: string;
+  publishError?: string;
 };
 
 const APPROVED_POSTS_STORAGE_KEY = 'hummingbird-approved-posts-v1';
@@ -279,6 +283,7 @@ export default function Home() {
     useState(false);
   const [metaPageMessage, setMetaPageMessage] = useState('');
   const [publishLoading, setPublishLoading] = useState(false);
+  const [publishingPostId, setPublishingPostId] = useState('');
   const [approvedPosts, setApprovedPosts] = useState<ApprovedPost[]>(() =>
     loadApprovedPostsFromStorage()
   );
@@ -1317,6 +1322,8 @@ function getPlatformDisplayName(value?: string) {
           .map((tag) => tag.trim())
           .filter(Boolean);
 
+    const approvedPostId = createApprovedPostId();
+
     setPublishLoading(true);
     setPublishMessage('');
 
@@ -1325,6 +1332,7 @@ function getPlatformDisplayName(value?: string) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          approvedPostId,
           caption,
           hashtags,
           platform,
@@ -1340,7 +1348,7 @@ function getPlatformDisplayName(value?: string) {
 
       if (data?.approved) {
         const approvedPost: ApprovedPost = {
-          id: createApprovedPostId(),
+          id: approvedPostId,
           createdAt: new Date().toISOString(),
           platform,
           title:
@@ -1403,6 +1411,140 @@ function getPlatformDisplayName(value?: string) {
   };
 
 
+  const handlePublishApprovedPost = async (post: ApprovedPost) => {
+    if (post.status === 'posted' || publishingPostId === post.id) return;
+
+    if (!signedIn) {
+      setApprovedPosts((current) =>
+        current.map((item) =>
+          item.id === post.id
+            ? {
+                ...item,
+                publishError: 'Sign in before publishing to Facebook.',
+              }
+            : item
+        )
+      );
+      return;
+    }
+
+    const facebookPageName = metaStatus?.selectedPage?.name;
+
+    if (!metaStatus?.connected || !facebookPageName) {
+      setApprovedPosts((current) =>
+        current.map((item) =>
+          item.id === post.id
+            ? {
+                ...item,
+                publishError:
+                  'Connect and select a Facebook Page before publishing.',
+              }
+            : item
+        )
+      );
+      return;
+    }
+
+    if (!metaStatus?.publishingEnabled) return;
+
+    const captionPreview =
+      post.caption.length > 260
+        ? `${post.caption.slice(0, 257)}...`
+        : post.caption;
+
+    const confirmed = window.confirm(
+      `Publish this post to ${facebookPageName} on Facebook now?\n\n${captionPreview}\n\nThis action can create a live Facebook post.`
+    );
+
+    if (!confirmed) return;
+
+    setPublishingPostId(post.id);
+    setApprovedPosts((current) =>
+      current.map((item) =>
+        item.id === post.id
+          ? {
+              ...item,
+              publishError: undefined,
+            }
+          : item
+      )
+    );
+
+    try {
+      const res = await fetch('/api/meta/publish', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          approvedPostId: post.id,
+          caption: post.caption,
+          hashtags: post.hashtags,
+          platform: 'facebook',
+          mediaUrls: [],
+          publishNow: true,
+        }),
+      });
+
+      const data = (await res.json().catch(() => ({}))) as {
+        published?: boolean;
+        code?: string;
+        message?: string;
+        metaPostId?: string;
+        permalinkUrl?: string | null;
+      };
+
+      if (res.ok && data.published) {
+        setApprovedPosts((current) =>
+          current.map((item) =>
+            item.id === post.id
+              ? {
+                  ...item,
+                  status: 'posted',
+                  publishedAt: new Date().toISOString(),
+                  metaPostId: data.metaPostId,
+                  permalinkUrl: data.permalinkUrl || undefined,
+                  publishError: undefined,
+                }
+              : item
+          )
+        );
+        return;
+      }
+
+      const publishFailed = data.code === 'facebook_publish_failed';
+
+      setApprovedPosts((current) =>
+        current.map((item) =>
+          item.id === post.id
+            ? {
+                ...item,
+                status: publishFailed ? 'failed' : 'approved_not_posted',
+                publishError:
+                  data.message ||
+                  'Facebook publishing is unavailable. Nothing was posted.',
+              }
+            : item
+        )
+      );
+    } catch (error) {
+      console.warn('Facebook publish warning:', error);
+
+      setApprovedPosts((current) =>
+        current.map((item) =>
+          item.id === post.id
+            ? {
+                ...item,
+                status: 'failed',
+                publishError:
+                  'Could not confirm whether Facebook received this post. Check the Page before trying again.',
+              }
+            : item
+        )
+      );
+    } finally {
+      setPublishingPostId('');
+    }
+  };
+
   const removeApprovedPost = (postId: string) => {
     setApprovedPosts((current) =>
       current.filter((post) => post.id !== postId)
@@ -1461,8 +1603,16 @@ function getPlatformDisplayName(value?: string) {
               : 'Connect Facebook & Instagram'}
           </a>
         ) : (
-          <div className="shrink-0 rounded-2xl border border-zinc-700 px-4 py-2 text-center text-xs font-semibold text-zinc-300">
-            Publishing disabled
+          <div
+            className={`shrink-0 rounded-2xl border px-4 py-2 text-center text-xs font-semibold ${
+              metaStatus?.publishingEnabled
+                ? 'border-emerald-500/30 text-emerald-200'
+                : 'border-zinc-700 text-zinc-300'
+            }`}
+          >
+            {metaStatus?.publishingEnabled
+              ? 'Publishing enabled'
+              : 'Publishing disabled'}
           </div>
         )}
       </div>
@@ -1745,7 +1895,18 @@ function getPlatformDisplayName(value?: string) {
                     {post.platform}
                   </p>
                   <p className="text-[11px] text-zinc-500">
-                    Approved {formatSavedDate(post.createdAt)} · Not posted
+                    Approved {formatSavedDate(post.createdAt)} ·{' '}
+                    {post.status === 'posted'
+                      ? `Posted${
+                          post.publishedAt
+                            ? ` ${formatSavedDate(post.publishedAt)}`
+                            : ''
+                        }`
+                      : post.status === 'failed'
+                        ? 'Needs review'
+                        : publishingPostId === post.id
+                          ? 'Publishing...'
+                          : 'Not posted'}
                   </p>
                 </div>
 
@@ -1795,10 +1956,61 @@ function getPlatformDisplayName(value?: string) {
                   </button>
                 )}
 
-                <span className="rounded-xl border border-emerald-500/20 px-3 py-2 text-xs text-emerald-200">
-                  Approved, not posted
+                {post.status === 'approved_not_posted' && (
+                  <button
+                    type="button"
+                    onClick={() => handlePublishApprovedPost(post)}
+                    disabled={
+                      publishingPostId === post.id ||
+                      !metaStatus?.publishingEnabled
+                    }
+                    className="rounded-xl bg-blue-500 px-3 py-2 text-xs font-semibold text-white transition hover:bg-blue-400 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {publishingPostId === post.id
+                      ? 'Publishing...'
+                      : metaStatus?.publishingEnabled
+                        ? 'Publish to Facebook'
+                        : 'Publishing disabled'}
+                  </button>
+                )}
+
+                <span
+                  className={`rounded-xl border px-3 py-2 text-xs ${
+                    post.status === 'posted'
+                      ? 'border-emerald-500/30 text-emerald-200'
+                      : post.status === 'failed'
+                        ? 'border-red-500/30 text-red-200'
+                        : 'border-amber-500/30 text-amber-200'
+                  }`}
+                >
+                  {post.status === 'posted'
+                    ? 'Posted to Facebook'
+                    : post.status === 'failed'
+                      ? 'Publishing needs review'
+                      : 'Approved, not posted'}
                 </span>
               </div>
+
+              {post.permalinkUrl && (
+                <a
+                  href={post.permalinkUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-3 inline-block text-xs font-semibold text-blue-300 underline underline-offset-2"
+                >
+                  View Facebook post
+                </a>
+              )}
+
+              {post.publishError &&
+                post.publishError !==
+                  'Live Facebook publishing is still disabled.' &&
+                post.publishError !==
+                  'Live Facebook publishing has not been enabled for this account.' && (
+                  <p className="mt-3 rounded-xl border border-red-500/20 bg-red-500/5 p-3 text-xs leading-relaxed text-red-200">
+                    {post.publishError}
+                  </p>
+                )}
             </div>
           ))}
         </div>
