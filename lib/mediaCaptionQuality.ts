@@ -55,3 +55,91 @@ export function needsHumanMediaCaptionRewrite(value: string) {
 
   return commaCount >= 3;
 }
+
+export type MediaCaptionPostType =
+  | 'transformation'
+  | 'finished_work'
+  | 'behind_the_scenes'
+  | 'education'
+  | 'proof'
+  | 'offer'
+  | 'general';
+
+export function inferMediaCaptionPostType(
+  originalRequest: string
+): MediaCaptionPostType {
+  const value = originalRequest.replace(/\s+/g, ' ').trim().toLowerCase();
+
+  if (
+    /\b(before\s*(?:and|&|\/)?\s*after|transformation|makeover|restoration|from\s+.+\s+to\s+.+|final reveal)\b/i.test(
+      value
+    )
+  ) {
+    return 'transformation';
+  }
+
+  if (
+    /\b(behind the scenes|work in progress|in progress|process|prep(?:ping)?|setting up|setup|step by step|how (?:i|we) made)\b/i.test(
+      value
+    )
+  ) {
+    return 'behind_the_scenes';
+  }
+
+  if (
+    /\b(tip|tips|how to|what to know|why |common mistake|faq|frequently asked|educat(?:e|ion|ional)|explain)\b/i.test(
+      value
+    )
+  ) {
+    return 'education';
+  }
+
+  if (
+    /\b(testimonial|review|client feedback|customer feedback|client said|customer said|case study)\b/i.test(
+      value
+    )
+  ) {
+    return 'proof';
+  }
+
+  if (
+    /\b(availability|available now|openings|appointments? available|now booking|now accepting|special offer|limited offer|sale|discount|promotion)\b/i.test(
+      value
+    )
+  ) {
+    return 'offer';
+  }
+
+  if (
+    /\b(finished|final result|completed|fresh set|new set|new look|recent work|showcase|reveal)\b/i.test(
+      value
+    )
+  ) {
+    return 'finished_work';
+  }
+
+  return 'general';
+}
+
+export function getMediaCaptionPostTypeGuidance(
+  postType: MediaCaptionPostType
+) {
+  const guidance: Record<MediaCaptionPostType, string> = {
+    transformation:
+      'Lead with the visible change or the problem that was resolved. Name one meaningful before-and-after difference, then give one next step.',
+    finished_work:
+      'Lead with the most noticeable finished detail or the customer preference it suits. Add one short reason the result matters, then give one next step.',
+    behind_the_scenes:
+      'Lead with one real decision, step, or process detail. Briefly explain why it matters to the finished work, then give one next step.',
+    education:
+      'Lead with one useful question, misconception, or practical tip. Give one clear answer without turning the caption into a lesson, then give one next step.',
+    proof:
+      'Lead with the specific feedback or result supplied by the user. Keep the claim exact and grounded, then give one next step.',
+    offer:
+      'Lead with what is genuinely available and who it is for. Include only supplied timing, pricing, or availability details, then give one next step.',
+    general:
+      'Choose the best-fitting structure from the images and request: transformation, finished work, behind the scenes, education, proof, or offer.',
+  };
+
+  return guidance[postType];
+}

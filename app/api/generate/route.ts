@@ -1,5 +1,9 @@
 import { NextResponse } from 'next/server';
-import { needsHumanMediaCaptionRewrite } from '@/lib/mediaCaptionQuality';
+import {
+  getMediaCaptionPostTypeGuidance,
+  inferMediaCaptionPostType,
+  needsHumanMediaCaptionRewrite,
+} from '@/lib/mediaCaptionQuality';
 
 type StructuredReelScene = {
   visual?: string;
@@ -2574,6 +2578,9 @@ async function rewriteWeakMediaCaption({
   uploadedImages: UploadedImage[];
 }) {
   let captionToRewrite = currentCaption;
+  const postType = inferMediaCaptionPostType(originalPrompt);
+  const postTypeGuidance =
+    getMediaCaptionPostTypeGuidance(postType);
 
   for (let attempt = 1; attempt <= 2; attempt += 1) {
     try {
@@ -2597,9 +2604,16 @@ ${captionToRewrite}
 CTA keyword or instruction:
 ${cta || 'Use one simple, low-pressure next step.'}
 
+Best-fitting post type:
+${postType.replaceAll('_', ' ')}
+
+Post-type structure:
+${postTypeGuidance}
+
 Requirements:
 - Return valid JSON only: {"caption": "..."}.
-- Write 2-4 short, natural sentences.
+- Use the post type only to guide the structure. Do not name the post type in the caption.
+- Write 1-3 short, natural sentences. Add one separate CTA line only when useful.
 - The first line must sound like a real business owner speaking to a client.
 - Base the opening on a real preference, decision, contrast, small story, honest opinion, or customer question that fits these specific images.
 - Do not start with generic praise, "Okay", "I am obsessed", "Loving this", "Can we talk about", "Look at this", "When you want", "For the person who", "POV", or a polished marketing headline.
