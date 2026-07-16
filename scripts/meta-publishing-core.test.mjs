@@ -3,6 +3,7 @@ import test from 'node:test';
 
 import {
   createMetaCaptionHash,
+  getMetaPublishConflictCode,
   normalizeMetaPublishPlatform,
 } from '../lib/metaPublishingCore.ts';
 
@@ -28,4 +29,50 @@ test('creates stable caption hashes', () => {
   assert.equal(first, second);
   assert.equal(first.length, 64);
   assert.notEqual(first, different);
+});
+
+test('blocks changed approved post content', () => {
+  assert.equal(
+    getMetaPublishConflictCode({
+      existingCaptionHash: 'original-hash',
+      currentCaptionHash: 'changed-hash',
+      status: 'pending',
+    }),
+    'approved_post_changed'
+  );
+});
+
+test('blocks duplicate published posts', () => {
+  assert.equal(
+    getMetaPublishConflictCode({
+      existingCaptionHash: 'same-hash',
+      currentCaptionHash: 'same-hash',
+      status: 'published',
+    }),
+    'duplicate_publish_blocked'
+  );
+});
+
+test('requires new approval after a failed attempt', () => {
+  assert.equal(
+    getMetaPublishConflictCode({
+      existingCaptionHash: 'same-hash',
+      currentCaptionHash: 'same-hash',
+      status: 'failed',
+    }),
+    'failed_publish_requires_new_approval'
+  );
+});
+
+test('blocks pending and publishing attempts already in progress', () => {
+  for (const status of ['pending', 'publishing']) {
+    assert.equal(
+      getMetaPublishConflictCode({
+        existingCaptionHash: 'same-hash',
+        currentCaptionHash: 'same-hash',
+        status,
+      }),
+      'publish_already_reserved'
+    );
+  }
 });

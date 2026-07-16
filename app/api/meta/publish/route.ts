@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getCurrentClerkUserId } from '@/lib/clerkServer';
 import {
   createMetaCaptionHash,
+  getMetaPublishConflictCode,
   normalizeMetaPublishPlatform,
 } from '@/lib/metaPublishingCore';
 import {
@@ -221,11 +222,17 @@ export async function POST(request: Request) {
     if (!reservation.created) {
       const currentCaptionHash = createMetaCaptionHash(caption);
 
-      if (reservation.attempt.caption_hash !== currentCaptionHash) {
+      const conflictCode = getMetaPublishConflictCode({
+        existingCaptionHash: reservation.attempt.caption_hash,
+        currentCaptionHash,
+        status: reservation.attempt.status,
+      });
+
+      if (conflictCode === 'approved_post_changed') {
         return NextResponse.json(
           {
             ok: false,
-            code: 'approved_post_changed',
+            code: conflictCode,
             message:
               'This approved post changed after its publishing request was created. Approve it again as a new post.',
           },
@@ -233,13 +240,26 @@ export async function POST(request: Request) {
         );
       }
 
-      if (reservation.attempt.status === 'published') {
+      if (conflictCode === 'duplicate_publish_blocked') {
         return NextResponse.json(
           {
             ok: false,
-            code: 'duplicate_publish_blocked',
+            code: conflictCode,
             message: 'This approved post has already been published.',
             permalinkUrl: reservation.attempt.permalink_url || null,
+          },
+          { status: 409 }
+        );
+      }
+
+      if (conflictCode === 'failed_publish_requires_new_approval') {
+        return NextResponse.json(
+          {
+            ok: false,
+            code: conflictCode,
+            message:
+              'The previous publishing attempt failed. Review the post and approve it again as a new queued post before retrying.',
+            status: reservation.attempt.status,
           },
           { status: 409 }
         );
@@ -248,7 +268,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           ok: false,
-          code: 'publish_already_reserved',
+          code: conflictCode,
           message:
             reservation.attempt.status === 'publishing'
               ? 'This post is already being published.'
