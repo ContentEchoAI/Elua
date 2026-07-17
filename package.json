@@ -21,7 +21,8 @@
     "outreach:followed-up": "node scripts/hummingbird-outreach-queue.mjs followed-up",
     "outreach:replied": "node scripts/hummingbird-outreach-queue.mjs replied",
     "outreach:close": "node scripts/hummingbird-outreach-queue.mjs close",
-    "outreach:test": "node --test scripts/hummingbird-outreach-core.test.mjs"
+    "outreach:test": "node --test scripts/hummingbird-outreach-core.test.mjs",
+    "outreach:show": "node scripts/hummingbird-outreach-queue.mjs show"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.3.0",

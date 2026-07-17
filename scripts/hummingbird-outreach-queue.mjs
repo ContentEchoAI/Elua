@@ -96,6 +96,46 @@ try {
     process.exit(0);
   }
 
+  if (command === 'show') {
+    if (!id) {
+      throw new Error('An outreach ID is required for "show".');
+    }
+
+    const { record } = findRecord(queue, id);
+    const instagramHandle = String(record.instagram || '')
+      .trim()
+      .replace(/^@/, '');
+    const instagramUrl = instagramHandle
+      ? `https://www.instagram.com/${instagramHandle}/`
+      : '';
+
+    console.log(`Business: ${record.businessName}`);
+    console.log(`Status: ${record.status}`);
+    console.log(`Channel: ${record.preferredChannel}`);
+    console.log(`Instagram: ${record.instagram || 'Not provided'}`);
+    if (instagramUrl) console.log(`Profile: ${instagramUrl}`);
+    if (record.email) console.log(`Email: ${record.email}`);
+    if (record.website) console.log(`Website: ${record.website}`);
+    console.log('');
+    console.log('Observed issue:');
+    console.log(record.observedIssue);
+    console.log('');
+    console.log('Suggested comment:');
+    console.log(record.suggestedComment);
+    console.log('');
+    console.log('Suggested DM:');
+    console.log(record.suggestedDm);
+    console.log('');
+    console.log('One follow-up:');
+    console.log(record.followUpMessage);
+    console.log('');
+    console.log('Demo prompt:');
+    console.log(record.demoPrompt);
+    console.log('');
+    console.log('Nothing was sent automatically.');
+    process.exit(0);
+  }
+
   if (!id) {
     throw new Error(
       `An outreach ID is required for "${command}".`
