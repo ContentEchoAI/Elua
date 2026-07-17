@@ -43,52 +43,6 @@ export function getSingleUploadedPhotoShotOrder({
   ];
 }
 
-export function needsMediaCaptionGroundingRewrite(
-  caption: string,
-  originalRequest: string
-) {
-  const normalizedCaption = caption.replace(/\s+/g, ' ').trim();
-  const normalizedRequest = originalRequest.replace(/\s+/g, ' ').trim();
-
-  const rules = [
-    {
-      claim:
-        /\b(?:years?|months?|weeks?) of (?:overgrowth|neglect|buildup)\b/i,
-      support:
-        /\b(?:years?|months?|weeks?) of (?:overgrowth|neglect|buildup)\b/i,
-    },
-    {
-      claim:
-        /\b(?:finally|now)\s+(?:usable|enjoyable|functional)(?:\s+again)?\b/i,
-      support: /\b(?:usable|enjoyable|functional)\b/i,
-    },
-    {
-      claim:
-        /\b(?:edged|edging|mowed|mowing|trimmed|trimming|weed control|pressure washed|pressure washing|shampooed|shampooing|deep cleaned|deep cleaning)\b/i,
-      support:
-        /\b(?:edged|edging|mowed|mowing|trimmed|trimming|weed control|pressure washed|pressure washing|shampooed|shampooing|deep cleaned|deep cleaning)\b/i,
-    },
-    {
-      claim:
-        /\b(?:cleared|removed|pulled)\s+(?:out\s+)?(?:the\s+)?weeds?\b/i,
-      support:
-        /\b(?:weed control|weeding|weeds?|cleared|removed|pulled)\b/i,
-    },
-    {
-      claim:
-        /\bshaped\s+(?:the\s+)?lawn\b/i,
-      support:
-        /\b(?:shaped?\s+(?:the\s+)?lawn|lawn shaping)\b/i,
-    },
-  ];
-
-  return rules.some(
-    ({ claim, support }) =>
-      claim.test(normalizedCaption) &&
-      !support.test(normalizedRequest)
-  );
-}
-
 export function filterGroundedMediaHashtags(
   value: unknown,
   originalRequest: string
@@ -143,4 +97,11 @@ export function filterGroundedMediaHashtags(
     );
 
   return Array.from(new Set(hashtags));
+}
+
+export function cleanCollagePanelCaptionReference(value: string) {
+  return value.replace(
+    /\bIf your (backyard|yard|lawn|garden|home|house|room|car|vehicle) looks like (?:the )?(?:top|first) (?:photo|image),?\s*/gi,
+    'If you want help with your $1, '
+  );
 }

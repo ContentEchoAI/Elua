@@ -61,49 +61,7 @@ test('does not override video frames or video outputs', () => {
   );
 });
 
-test('flags unsupported media-caption claims', async () => {
-  const { needsMediaCaptionGroundingRewrite } =
-    await import('../lib/mediaPostQuality.ts');
 
-  const request =
-    'Before and after backyard cleanup. Show the visible transformation.';
-
-  const unsupported = [
-    'We cleared out years of overgrowth.',
-    'The backyard is finally usable again.',
-    'We edged and mowed the entire yard.',
-    'I cleared the weeds from the patio and shaped the lawn for a cleaner look.',
-  ];
-
-  for (const caption of unsupported) {
-    assert.equal(
-      needsMediaCaptionGroundingRewrite(caption, request),
-      true,
-      caption
-    );
-  }
-
-  assert.equal(
-    needsMediaCaptionGroundingRewrite(
-      'The yard looks cleaner and more open after this cleanup.',
-      request
-    ),
-    false
-  );
-});
-
-test('allows supplied service-action details', async () => {
-  const { needsMediaCaptionGroundingRewrite } =
-    await import('../lib/mediaPostQuality.ts');
-
-  assert.equal(
-    needsMediaCaptionGroundingRewrite(
-      'We mowed and edged the yard.',
-      'Before and after yard cleanup with mowing and edging.'
-    ),
-    false
-  );
-});
 
 test('removes unsupported specific-service hashtags', async () => {
   const { filterGroundedMediaHashtags } =
@@ -123,5 +81,24 @@ test('removes unsupported specific-service hashtags', async () => {
       'Backyard cleanup and weed control.'
     ),
     ['#YardCleanup', '#WeedControl']
+  );
+});
+
+test('removes awkward collage-panel references without flattening the caption', async () => {
+  const { cleanCollagePanelCaptionReference } =
+    await import('../lib/mediaPostQuality.ts');
+
+  assert.equal(
+    cleanCollagePanelCaptionReference(
+      'If your backyard looks like the top photo, send me a message or comment QUOTE.'
+    ),
+    'If you want help with your backyard, send me a message or comment QUOTE.'
+  );
+
+  assert.equal(
+    cleanCollagePanelCaptionReference(
+      'The cleanup made a big difference in this backyard.'
+    ),
+    'The cleanup made a big difference in this backyard.'
   );
 });
