@@ -284,13 +284,14 @@ export default function Home() {
   const [metaPageMessage, setMetaPageMessage] = useState('');
   const [publishLoading, setPublishLoading] = useState(false);
   const [publishingPostId, setPublishingPostId] = useState('');
-  const [approvedPosts, setApprovedPosts] = useState<ApprovedPost[]>(() =>
-    loadApprovedPostsFromStorage()
-  );
+  const [approvedPosts, setApprovedPosts] = useState<ApprovedPost[]>([]);
+  const [approvedPostsHydrated, setApprovedPostsHydrated] = useState(false);
 
   useEffect(() => {
+    if (!approvedPostsHydrated) return;
+
     saveApprovedPostsToStorage(approvedPosts);
-  }, [approvedPosts]);
+  }, [approvedPosts, approvedPostsHydrated]);
   const [publishMessage, setPublishMessage] = useState('');
 
   const isMakeMyPostMode = generationMode === 'make_my_post';
@@ -682,6 +683,8 @@ function getPlatformDisplayName(value?: string) {
   useEffect(() => {
     const timer = window.setTimeout(() => {
       setMounted(true);
+      setApprovedPosts(loadApprovedPostsFromStorage());
+      setApprovedPostsHydrated(true);
 
       const savedUsed = localStorage.getItem('generationsUsed');
       const savedPro = localStorage.getItem('isPro');
