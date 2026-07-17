@@ -72,6 +72,7 @@ test('flags unsupported media-caption claims', async () => {
     'We cleared out years of overgrowth.',
     'The backyard is finally usable again.',
     'We edged and mowed the entire yard.',
+    'I cleared the weeds from the patio and shaped the lawn for a cleaner look.',
   ];
 
   for (const caption of unsupported) {

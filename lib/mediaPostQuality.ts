@@ -68,6 +68,18 @@ export function needsMediaCaptionGroundingRewrite(
       support:
         /\b(?:edged|edging|mowed|mowing|trimmed|trimming|weed control|pressure washed|pressure washing|shampooed|shampooing|deep cleaned|deep cleaning)\b/i,
     },
+    {
+      claim:
+        /\b(?:cleared|removed|pulled)\s+(?:out\s+)?(?:the\s+)?weeds?\b/i,
+      support:
+        /\b(?:weed control|weeding|weeds?|cleared|removed|pulled)\b/i,
+    },
+    {
+      claim:
+        /\bshaped\s+(?:the\s+)?lawn\b/i,
+      support:
+        /\b(?:shaped?\s+(?:the\s+)?lawn|lawn shaping)\b/i,
+    },
   ];
 
   return rules.some(
