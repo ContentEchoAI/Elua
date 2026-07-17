@@ -4,7 +4,11 @@ import {
   inferMediaCaptionPostType,
   needsHumanMediaCaptionRewrite,
 } from '@/lib/mediaCaptionQuality';
-import { getSingleUploadedPhotoShotOrder } from '@/lib/mediaPostQuality';
+import {
+  filterGroundedMediaHashtags,
+  getSingleUploadedPhotoShotOrder,
+  needsMediaCaptionGroundingRewrite,
+} from '@/lib/mediaPostQuality';
 
 type StructuredReelScene = {
   visual?: string;
@@ -2624,6 +2628,9 @@ Requirements:
 - Do not use phrases like "This set mixes", "This features", "This includes", "The flowers add", or "You can see".
 - Mention no more than two visual details.
 - Do not invent prices, availability, guarantees, client history, service details, or outcomes.
+- Do not infer how long the visible condition existed. Avoid claims like "years of overgrowth" unless the user supplied that history.
+- Do not claim the result is now usable, functional, enjoyable, safer, healthier, or restored unless the user supplied that outcome.
+- Describe the visible change instead of guessing the exact work performed. Do not claim mowing, edging, trimming, weed control, pressure washing, shampooing, or deep cleaning unless the user supplied it or the action itself is clearly shown.
 - End with one simple, low-pressure CTA using the provided CTA when possible.
 - Do not use markdown.
 - Make this caption specific enough that it could not be pasted onto dozens of unrelated posts.
@@ -2704,7 +2711,11 @@ ${attempt > 1 ? '- The previous rewrite still failed the human-opening check. Us
 
       if (
         rewrittenCaption &&
-        !needsHumanMediaCaptionRewrite(rewrittenCaption)
+        !needsHumanMediaCaptionRewrite(rewrittenCaption) &&
+        !needsMediaCaptionGroundingRewrite(
+          rewrittenCaption,
+          originalPrompt
+        )
       ) {
         return rewrittenCaption;
       }
@@ -4479,7 +4490,13 @@ Final silent check:
       mode === 'make_my_post' &&
       hasUploadedImages &&
       parsed.production_plan?.caption &&
-      needsHumanMediaCaptionRewrite(parsed.production_plan.caption)
+      (
+        needsHumanMediaCaptionRewrite(parsed.production_plan.caption) ||
+        needsMediaCaptionGroundingRewrite(
+          parsed.production_plan.caption,
+          content
+        )
+      )
     ) {
       const rewrittenCaption = await rewriteWeakMediaCaption({
         apiKey,
@@ -4517,12 +4534,40 @@ Final silent check:
           originalRequest: content,
         });
 
-      if (singlePhotoShotOrder) {
-        parsed.production_plan = {
-          ...(parsed.production_plan || {}),
-          shot_order: singlePhotoShotOrder,
-        };
-      }
+      const usesVideoOutput =
+        hasUploadedVideoFrames ||
+        finalContentOutputs.some((output) =>
+          [
+            'Instagram Reel',
+            'TikTok Script',
+            'YouTube Shorts',
+            'YouTube Shorts Script',
+          ].includes(output)
+        );
+
+      const groundedHashtags = filterGroundedMediaHashtags(
+        parsed.production_plan?.hashtags,
+        content
+      );
+
+      const groundedStaticPostTags = filterGroundedMediaHashtags(
+        parsed.production_plan?.on_screen_text,
+        content
+      );
+
+      parsed.production_plan = {
+        ...(parsed.production_plan || {}),
+        ...(singlePhotoShotOrder
+          ? { shot_order: singlePhotoShotOrder }
+          : {}),
+        ...(Array.isArray(parsed.production_plan?.hashtags)
+          ? { hashtags: groundedHashtags }
+          : {}),
+        ...(!usesVideoOutput &&
+        Array.isArray(parsed.production_plan?.on_screen_text)
+          ? { on_screen_text: groundedStaticPostTags }
+          : {}),
+      };
     }
 
     return NextResponse.json(parsed);
