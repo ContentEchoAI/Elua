@@ -4,6 +4,7 @@ import {
   inferMediaCaptionPostType,
   needsHumanMediaCaptionRewrite,
 } from '@/lib/mediaCaptionQuality';
+import { getSingleUploadedPhotoShotOrder } from '@/lib/mediaPostQuality';
 
 type StructuredReelScene = {
   visual?: string;
@@ -2846,15 +2847,19 @@ ${structuredContentEntries.join(',\n')}
       ? `
 UPLOADED VISUAL CONTEXT:
 The user uploaded ${normalizedUploadedImages.length} visual reference(s). Analyze the actual visuals and make the post from what is visible.
+This number is the number of uploaded files. A collage or split before-and-after inside one file is still one visual, not multiple photos.
 
 ${uploadedVisualSummary}
 
 ${hasUploadedVideoFrames ? '- Some uploaded visuals are frames extracted from video clips. Treat those as moments from short clips, not separate still photos.' : '- The uploaded visuals are photos.'}
 
 Rules for uploaded visuals:
+- Treat each listed visual as exactly one uploaded file. Never split panels inside a collage into separate uploaded photos.
+- When exactly one photo is uploaded, production_plan.shot_order must describe one visual only. Do not invent Photo 1, Photo 2, or a carousel sequence from panels inside that file.
+- Describe visible results only. Do not infer specific work performed such as edging, mowing, trimming, pressure washing, shampooing, or deep cleaning unless the user supplied it or the action itself is clearly shown.
 - Choose the strongest visual to use first.
 - If there are video frames, build a simple clip structure: opening visual, middle proof/detail/process moment, ending CTA.
-- If there are photos, order them in the clearest carousel or post sequence.
+- If there are multiple uploaded photos, order the files in the clearest carousel or post sequence. If there is one uploaded photo, use it as one visual.
 - If there are both photos and video frames, use the best mix and explain the visual order clearly.
 - If the selected platform is Instagram Reel, TikTok Script, or YouTube Shorts, make the output video-friendly with an opening hook, on-screen text, visual pacing, and a clear CTA.
 - For cleaning, home service, local service, detailing, landscaping, and similar service visuals, do not invent service categories like carpet cleaning, upholstery cleaning, deep clean, standard clean, move-out clean, recurring clean, same-day service, licensed/insured status, guarantees, exact pricing, exact availability, or package names unless the user provided them.
@@ -3396,7 +3401,8 @@ Important:
 - Bad nail caption example:
   "Here’s a fresh mix of pastel swirls, polka dots, and 3D flowers for your next nail set. Which design fits your style? DM DESIGN to chat about your next appointment."
 - Keep captions short enough that the user can copy and post without editing.
-- For uploaded photos, production_plan.shot_order must clearly say the photo order AND why each photo goes there. Use short lines like: "Photo 2 first — clearest full-set photo", "Photo 1 second — best close-up detail", "Photo 4 third — good side angle", "Photo 3 fourth — extra detail shot."
+- For multiple uploaded photos, production_plan.shot_order must clearly say the photo order AND why each file goes there. Use short lines like: "Photo 2 first — clearest full-set photo" and "Photo 1 second — best close-up detail."
+- For one uploaded photo, production_plan.shot_order must describe that single visual only, such as: "Use the single before-and-after image as the Facebook post visual." Never treat panels inside one collage as separately uploaded photos.
 - Do not return photo order as "Photo 1 first Photo 2 second" without reasons.
 - For uploaded photos, production_plan.concept should not sound like a strategy headline. It should sound like: "Post these nail photos as a design-inspo carousel" or "Turn this before/after into a quote-request post."
 - For Make My Post mode, avoid telling the user to film anything unless it is clearly optional. They already uploaded photos.
@@ -4498,6 +4504,23 @@ Final silent check:
         parsed.best_output = {
           ...(parsed.best_output || {}),
           content: rewrittenCaption,
+        };
+      }
+    }
+
+    if (mode === 'make_my_post' && hasUploadedImages) {
+      const singlePhotoShotOrder =
+        getSingleUploadedPhotoShotOrder({
+          uploadedVisualCount: normalizedUploadedImages.length,
+          hasUploadedVideoFrames,
+          selectedOutputs: finalContentOutputs,
+          originalRequest: content,
+        });
+
+      if (singlePhotoShotOrder) {
+        parsed.production_plan = {
+          ...(parsed.production_plan || {}),
+          shot_order: singlePhotoShotOrder,
         };
       }
     }
