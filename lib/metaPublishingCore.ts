@@ -29,6 +29,34 @@ export function createMetaCaptionHash(caption: string) {
     .digest('hex');
 }
 
+export function createMetaPublishContentHash({
+  caption,
+  mediaPaths = [],
+}: {
+  caption: string;
+  mediaPaths?: string[];
+}) {
+  const normalizedCaption = caption.trim();
+  const normalizedMediaPaths = mediaPaths.map((path) => path.trim());
+
+  // Preserve compatibility with existing text-only Facebook attempts.
+  if (normalizedMediaPaths.length === 0) {
+    return createMetaCaptionHash(normalizedCaption);
+  }
+
+  return crypto
+    .createHash('sha256')
+    .update(
+      JSON.stringify({
+        version: 1,
+        caption: normalizedCaption,
+        mediaPaths: normalizedMediaPaths,
+      }),
+      'utf8'
+    )
+    .digest('hex');
+}
+
 export type MetaPublishAttemptStatus =
   | 'pending'
   | 'publishing'

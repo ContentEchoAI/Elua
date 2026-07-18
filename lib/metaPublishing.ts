@@ -1,6 +1,6 @@
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import {
-  createMetaCaptionHash,
+  createMetaPublishContentHash,
   type MetaPublishPlatform,
 } from '@/lib/metaPublishingCore';
 
@@ -9,6 +9,7 @@ type ReserveMetaPublishAttemptInput = {
   approvedPostId: string;
   platform: MetaPublishPlatform;
   caption: string;
+  mediaPaths?: string[];
 };
 
 export async function getMetaPublishingConnection(
@@ -48,8 +49,12 @@ export async function reserveMetaPublishAttempt({
   approvedPostId,
   platform,
   caption,
+  mediaPaths = [],
 }: ReserveMetaPublishAttemptInput) {
-  const captionHash = createMetaCaptionHash(caption);
+  const contentHash = createMetaPublishContentHash({
+    caption,
+    mediaPaths,
+  });
 
   const { data, error } = await supabaseAdmin
     .from('meta_publish_attempts')
@@ -58,7 +63,9 @@ export async function reserveMetaPublishAttempt({
       approved_post_id: approvedPostId,
       platform,
       status: 'pending',
-      caption_hash: captionHash,
+      // Kept in the existing column for backward compatibility.
+      // For media posts this hashes both caption and ordered media paths.
+      caption_hash: contentHash,
       updated_at: new Date().toISOString(),
     })
     .select(

@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
 import { getCurrentClerkUserId } from '@/lib/clerkServer';
 import {
-  createMetaCaptionHash,
+  createMetaPublishContentHash,
   getMetaPublishConflictCode,
   normalizeMetaPublishPlatform,
 } from '@/lib/metaPublishingCore';
+import { normalizeMetaMediaObjectPaths } from '@/lib/metaMediaCore';
 import {
   getMetaPublishingConnection,
   markMetaPublishAttemptFailed,
@@ -19,7 +20,7 @@ type MetaPublishRequest = {
   caption?: string;
   hashtags?: string[] | string;
   platform?: string;
-  mediaUrls?: string[];
+  mediaPaths?: unknown;
   publishNow?: boolean;
 };
 
@@ -95,6 +96,29 @@ export async function POST(request: Request) {
         code: 'unsupported_platform',
         message:
           'Only connected Facebook and Instagram posts can use Meta publishing.',
+      },
+      { status: 400 }
+    );
+  }
+
+  let mediaPaths: string[];
+
+  try {
+    mediaPaths = normalizeMetaMediaObjectPaths({
+      value: body.mediaPaths,
+      clerkUserId,
+      approvedPostId,
+      allowEmpty: platform === 'facebook',
+    });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        ok: false,
+        code: 'invalid_media',
+        message:
+          error instanceof Error
+            ? error.message
+            : 'Invalid approved post media.',
       },
       { status: 400 }
     );
@@ -201,6 +225,7 @@ export async function POST(request: Request) {
       approvedPostId,
       platform,
       caption,
+      mediaPaths,
     });
 
     if (reservation.error || !reservation.attempt) {
@@ -220,11 +245,14 @@ export async function POST(request: Request) {
     }
 
     if (!reservation.created) {
-      const currentCaptionHash = createMetaCaptionHash(caption);
+      const currentContentHash = createMetaPublishContentHash({
+        caption,
+        mediaPaths,
+      });
 
       const conflictCode = getMetaPublishConflictCode({
         existingCaptionHash: reservation.attempt.caption_hash,
-        currentCaptionHash,
+        currentCaptionHash: currentContentHash,
         status: reservation.attempt.status,
       });
 

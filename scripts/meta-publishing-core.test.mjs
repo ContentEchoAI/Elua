@@ -3,6 +3,7 @@ import test from 'node:test';
 
 import {
   createMetaCaptionHash,
+  createMetaPublishContentHash,
   getMetaPublishConflictCode,
   normalizeMetaPublishPlatform,
 } from '../lib/metaPublishingCore.ts';
@@ -29,6 +30,37 @@ test('creates stable caption hashes', () => {
   assert.equal(first, second);
   assert.equal(first.length, 64);
   assert.notEqual(first, different);
+});
+
+test('locks ordered carousel media into the approved content hash', () => {
+  const textOnly = createMetaPublishContentHash({
+    caption: 'A caption to publish.',
+    mediaPaths: [],
+  });
+
+  assert.equal(
+    textOnly,
+    createMetaCaptionHash('A caption to publish.')
+  );
+
+  const first = createMetaPublishContentHash({
+    caption: 'A caption to publish.',
+    mediaPaths: ['folder/01.jpg', 'folder/02.jpg'],
+  });
+
+  const same = createMetaPublishContentHash({
+    caption: '  A caption to publish.  ',
+    mediaPaths: [' folder/01.jpg ', ' folder/02.jpg '],
+  });
+
+  const reordered = createMetaPublishContentHash({
+    caption: 'A caption to publish.',
+    mediaPaths: ['folder/02.jpg', 'folder/01.jpg'],
+  });
+
+  assert.equal(first, same);
+  assert.equal(first.length, 64);
+  assert.notEqual(first, reordered);
 });
 
 test('blocks changed approved post content', () => {
