@@ -177,6 +177,7 @@ type ApprovedPost = {
   dmReply: string;
   hashtags: string[];
   mediaCount: number;
+  mediaPaths?: string[];
   status: 'approved_not_posted' | 'publishing' | 'posted' | 'failed';
   publishedAt?: string;
   metaPostId?: string;
@@ -195,6 +196,129 @@ function createApprovedPostId() {
   }
 
   return `approved-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
+
+type PreparedMetaMedia = {
+  index: number;
+  mimeType: string;
+  sizeBytes: number;
+  contentHash: string;
+  blob: Blob;
+};
+
+type SignedMetaMediaUpload = {
+  index: number;
+  path: string;
+  mimeType: string;
+  sizeBytes: number;
+  uploadUrl: string;
+};
+
+async function prepareMetaMedia(
+  image: UploadedImage,
+  index: number
+): Promise<PreparedMetaMedia> {
+  const response = await fetch(image.dataUrl);
+
+  if (!response.ok) {
+    throw new Error(`Could not read image ${index + 1}.`);
+  }
+
+  const blob = await response.blob();
+  const bytes = await blob.arrayBuffer();
+  const digest = await crypto.subtle.digest('SHA-256', bytes);
+  const contentHash = Array.from(new Uint8Array(digest))
+    .map((value) => value.toString(16).padStart(2, '0'))
+    .join('');
+
+  return {
+    index,
+    mimeType: blob.type,
+    sizeBytes: blob.size,
+    contentHash,
+    blob,
+  };
+}
+
+async function stageMetaPostMedia({
+  approvedPostId,
+  images,
+}: {
+  approvedPostId: string;
+  images: UploadedImage[];
+}) {
+  if (images.length === 0) return [];
+
+  const prepared = await Promise.all(
+    images.map((image, index) =>
+      prepareMetaMedia(image, index)
+    )
+  );
+
+  const permissionResponse = await fetch(
+    '/api/meta/media/upload-url',
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        approvedPostId,
+        items: prepared.map((item) => ({
+          index: item.index,
+          mimeType: item.mimeType,
+          sizeBytes: item.sizeBytes,
+          contentHash: item.contentHash,
+        })),
+      }),
+    }
+  );
+
+  const permissionData = (await permissionResponse
+    .json()
+    .catch(() => ({}))) as {
+    message?: string;
+    uploads?: SignedMetaMediaUpload[];
+  };
+
+  if (
+    !permissionResponse.ok ||
+    !Array.isArray(permissionData.uploads) ||
+    permissionData.uploads.length !== prepared.length
+  ) {
+    throw new Error(
+      permissionData.message ||
+        'Could not prepare secure Instagram media uploads.'
+    );
+  }
+
+  const uploads = [...permissionData.uploads].sort(
+    (first, second) => first.index - second.index
+  );
+
+  for (const upload of uploads) {
+    const media = prepared[upload.index];
+
+    if (!media || upload.mimeType !== media.mimeType) {
+      throw new Error('Instagram media upload order changed.');
+    }
+
+    const uploadResponse = await fetch(upload.uploadUrl, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': media.mimeType,
+        'cache-control': 'max-age=3600',
+        'x-upsert': 'false',
+      },
+      body: media.blob,
+    });
+
+    if (!uploadResponse.ok) {
+      throw new Error(
+        `Could not securely upload image ${upload.index + 1}.`
+      );
+    }
+  }
+
+  return uploads.map((upload) => upload.path);
 }
 
 function loadApprovedPostsFromStorage(): ApprovedPost[] {
@@ -219,6 +343,14 @@ function loadApprovedPostsFromStorage(): ApprovedPost[] {
           typeof post.caption === 'string'
         );
       })
+      .map((post) => ({
+        ...post,
+        mediaPaths: Array.isArray(post.mediaPaths)
+          ? post.mediaPaths.filter(
+              (path): path is string => typeof path === 'string'
+            )
+          : [],
+      }))
       .slice(0, 12);
   } catch {
     return [];
@@ -1306,6 +1438,17 @@ function getPlatformDisplayName(value?: string) {
       selectedOutputs[0] ||
       'Facebook Post';
 
+    const isInstagramPost = platform
+      .toLowerCase()
+      .includes('instagram');
+
+    if (isInstagramPost && uploadedImages.length === 0) {
+      setPublishMessage(
+        'Add at least one image before approving an Instagram post.'
+      );
+      return;
+    }
+
     const cta = formatGeneratedText(
       results?.production_plan?.cta || results?.monetization?.cta_strategy || ''
     );
@@ -1331,6 +1474,13 @@ function getPlatformDisplayName(value?: string) {
     setPublishMessage('');
 
     try {
+      const mediaPaths = isInstagramPost
+        ? await stageMetaPostMedia({
+            approvedPostId,
+            images: uploadedImages,
+          })
+        : [];
+
       const res = await fetch('/api/meta/publish', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1339,7 +1489,7 @@ function getPlatformDisplayName(value?: string) {
           caption,
           hashtags,
           platform,
-          mediaUrls: [],
+          mediaPaths,
         }),
       });
 
@@ -1361,7 +1511,10 @@ function getPlatformDisplayName(value?: string) {
           cta,
           dmReply,
           hashtags,
-          mediaCount: uploadedImages.length,
+          mediaCount: isInstagramPost
+            ? mediaPaths.length
+            : uploadedImages.length,
+          mediaPaths,
           status: 'approved_not_posted',
         };
 

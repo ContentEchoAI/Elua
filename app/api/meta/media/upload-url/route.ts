@@ -95,7 +95,8 @@ export async function POST(request: Request) {
 
     const { data, error } =
       await bucket.createSignedUploadUrl(path, {
-        upsert: true,
+        // Approved media paths must never be overwritten.
+        upsert: false,
       });
 
     if (error || !data?.signedUrl) {
