@@ -7,6 +7,7 @@ type MetaGraphError = {
 
 type MetaCreatePostResponse = {
   id?: string;
+  post_id?: string;
   error?: MetaGraphError;
 };
 
@@ -45,25 +46,33 @@ export async function publishFacebookPagePost({
   pageId,
   pageAccessToken,
   message,
+  mediaUrl,
 }: {
   pageId: string;
   pageAccessToken: string;
   message: string;
+  mediaUrl?: string;
 }): Promise<FacebookPagePublishResult> {
   const graphVersion = getMetaGraphVersion();
   const postUrl =
     `https://graph.facebook.com/${graphVersion}/` +
-    `${encodeURIComponent(pageId)}/feed`;
+    `${encodeURIComponent(pageId)}/${mediaUrl ? 'photos' : 'feed'}`;
 
   const response = await fetch(postUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
-    body: new URLSearchParams({
-      message,
-      access_token: pageAccessToken,
-    }),
+    body: mediaUrl
+      ? new URLSearchParams({
+          url: mediaUrl,
+          caption: message,
+          access_token: pageAccessToken,
+        })
+      : new URLSearchParams({
+          message,
+          access_token: pageAccessToken,
+        }),
     cache: 'no-store',
   });
 
@@ -78,12 +87,13 @@ export async function publishFacebookPagePost({
     );
   }
 
+  const publishedPostId = data.post_id || data.id;
   let permalinkUrl: string | null = null;
 
   try {
     const detailsUrl = new URL(
       `https://graph.facebook.com/${graphVersion}/` +
-        encodeURIComponent(data.id)
+        encodeURIComponent(publishedPostId)
     );
 
     detailsUrl.searchParams.set('fields', 'permalink_url');
@@ -110,7 +120,7 @@ export async function publishFacebookPagePost({
   }
 
   return {
-    metaPostId: data.id,
+    metaPostId: publishedPostId,
     permalinkUrl,
   };
 }

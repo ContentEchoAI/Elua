@@ -301,10 +301,14 @@ export async function POST(request: Request) {
     }
 
     try {
+      const requestedMediaUrls = Array.isArray(body.mediaUrls)
+        ? body.mediaUrls.filter((url) => typeof url === 'string' && url)
+        : [];
       const published = await publishFacebookPagePost({
         pageId: facebookPageId,
         pageAccessToken: facebookPageAccessToken,
         message: caption,
+        mediaUrl: requestedMediaUrls[0],
       });
 
       const { error: publishedStateError } =
