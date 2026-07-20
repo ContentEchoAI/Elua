@@ -49,3 +49,4 @@ lead-finder/real-leads.csv
 
 # Builder Bot generated reports
 builder-bot/reports/
+lead-finder/outreach-queue.json
