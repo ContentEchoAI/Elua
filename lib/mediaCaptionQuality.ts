@@ -42,6 +42,9 @@ export function needsHumanMediaCaptionRewrite(value: string) {
     /\beye[- ]catching\b/i,
     /\bplayful (?:set|look|design)\b/i,
     /\bfor a (?:fun|fresh|unique|playful) look\b/i,
+    /\bfit(?:s)? (?:any|every) look\b/i,
+    /\bsimple (?:but|yet) polished\b/i,
+    /\bgoes with (?:everything|anything)\b/i,
   ];
 
   if (
