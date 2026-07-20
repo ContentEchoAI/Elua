@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, type ChangeEvent } from 'react';
+import { uploadAllImages } from '@/lib/uploadAllImages';
 import {
   SignInButton,
   SignUpButton,
@@ -177,6 +178,7 @@ type ApprovedPost = {
   dmReply: string;
   hashtags: string[];
   mediaCount: number;
+  mediaUrls?: string[];
   status: 'approved_not_posted' | 'publishing' | 'posted' | 'failed';
   publishedAt?: string;
   metaPostId?: string;
@@ -1328,6 +1330,7 @@ function getPlatformDisplayName(value?: string) {
     setPublishMessage('');
 
     try {
+      const uploadedMediaUrls = await uploadAllImages(uploadedImages);
       const res = await fetch('/api/meta/publish', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1359,6 +1362,7 @@ function getPlatformDisplayName(value?: string) {
           dmReply,
           hashtags,
           mediaCount: uploadedImages.length,
+          mediaUrls: uploadedMediaUrls,
           status: 'approved_not_posted',
         };
 
@@ -1479,7 +1483,7 @@ function getPlatformDisplayName(value?: string) {
           caption: post.caption,
           hashtags: post.hashtags,
           platform: 'facebook',
-          mediaUrls: [],
+          mediaUrls: post.mediaUrls || [],
           publishNow: true,
         }),
       });
