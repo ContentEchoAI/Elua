@@ -1941,6 +1941,13 @@ function cleanMakeMyPostAudioDirection(value: unknown) {
   return cleaned;
 }
 
+function limitShotOrderToUploadedPhotoCount(shotOrder, uploadedImageCount) {
+  if (uploadedImageCount > 1) {
+    return shotOrder;
+  }
+  return shotOrder.slice(0, 1);
+}
+
 function cleanMakeMyPostShotOrder(
   value: unknown,
   ctaKeyword: string,
@@ -4213,10 +4220,13 @@ Final silent check:
         ['Instagram Reel', 'TikTok Script', 'YouTube Shorts Script'].includes(output)
       );
 
-      const cleanedShotOrder = cleanMakeMyPostShotOrder(
-        parsed.production_plan?.shot_order,
-        ctaKeyword,
-        shouldUseVideoOverlay
+      const cleanedShotOrder = limitShotOrderToUploadedPhotoCount(
+        cleanMakeMyPostShotOrder(
+          parsed.production_plan?.shot_order,
+          ctaKeyword,
+          shouldUseVideoOverlay
+        ),
+        normalizedUploadedImages.length
       );
 
       if (cleanedAudioDirection || cleanedShotOrder.length > 0) {
