@@ -3,6 +3,8 @@ import test from 'node:test';
 
 import {
   getCaptionOpening,
+  getMediaCaptionPostTypeGuidance,
+  inferMediaCaptionPostType,
   needsHumanMediaCaptionRewrite,
 } from '../lib/mediaCaptionQuality.ts';
 
@@ -75,5 +77,37 @@ test('allows specific human openings', () => {
 
   for (const caption of acceptableCaptions) {
     assert.equal(needsHumanMediaCaptionRewrite(caption), false, caption);
+  }
+});
+
+test('infers the requested media post type', () => {
+  const cases = [
+    ['House cleaning before and after photos', 'transformation'],
+    ['Behind the scenes of preparing a lash set', 'behind_the_scenes'],
+    ['Three tips for keeping your car interior clean', 'education'],
+    ['Share this customer review', 'proof'],
+    ['Two appointments available this Friday', 'offer'],
+    ['Showcase the finished landscaping project', 'finished_work'],
+    ['Post these photos from today', 'general'],
+  ];
+
+  for (const [request, expected] of cases) {
+    assert.equal(inferMediaCaptionPostType(request), expected, request);
+  }
+});
+
+test('provides useful guidance for every media post type', () => {
+  const postTypes = [
+    'transformation',
+    'finished_work',
+    'behind_the_scenes',
+    'education',
+    'proof',
+    'offer',
+    'general',
+  ];
+
+  for (const postType of postTypes) {
+    assert.ok(getMediaCaptionPostTypeGuidance(postType).length > 40);
   }
 });

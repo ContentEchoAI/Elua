@@ -14,7 +14,15 @@
     "builder:bot:test": "node --test scripts/hummingbird-builder-bot.test.mjs",
     "meta:publishing:status": "node --env-file=.env.local scripts/meta-publishing-gate.mjs status",
     "meta:publishing:enable": "node --env-file=.env.local scripts/meta-publishing-gate.mjs enable",
-    "meta:publishing:disable": "node --env-file=.env.local scripts/meta-publishing-gate.mjs disable"
+    "meta:publishing:disable": "node --env-file=.env.local scripts/meta-publishing-gate.mjs disable",
+    "outreach:status": "node scripts/hummingbird-outreach-queue.mjs status",
+    "outreach:approve": "node scripts/hummingbird-outreach-queue.mjs approve",
+    "outreach:sent": "node scripts/hummingbird-outreach-queue.mjs sent",
+    "outreach:followed-up": "node scripts/hummingbird-outreach-queue.mjs followed-up",
+    "outreach:replied": "node scripts/hummingbird-outreach-queue.mjs replied",
+    "outreach:close": "node scripts/hummingbird-outreach-queue.mjs close",
+    "outreach:test": "node --test scripts/hummingbird-outreach-core.test.mjs",
+    "outreach:show": "node scripts/hummingbird-outreach-queue.mjs show"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.3.0",

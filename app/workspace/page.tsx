@@ -286,13 +286,14 @@ export default function Home() {
   const [metaPageMessage, setMetaPageMessage] = useState('');
   const [publishLoading, setPublishLoading] = useState(false);
   const [publishingPostId, setPublishingPostId] = useState('');
-  const [approvedPosts, setApprovedPosts] = useState<ApprovedPost[]>(() =>
-    loadApprovedPostsFromStorage()
-  );
+  const [approvedPosts, setApprovedPosts] = useState<ApprovedPost[]>([]);
+  const [approvedPostsHydrated, setApprovedPostsHydrated] = useState(false);
 
   useEffect(() => {
+    if (!approvedPostsHydrated) return;
+
     saveApprovedPostsToStorage(approvedPosts);
-  }, [approvedPosts]);
+  }, [approvedPosts, approvedPostsHydrated]);
   const [publishMessage, setPublishMessage] = useState('');
 
   const isMakeMyPostMode = generationMode === 'make_my_post';
@@ -684,6 +685,8 @@ function getPlatformDisplayName(value?: string) {
   useEffect(() => {
     const timer = window.setTimeout(() => {
       setMounted(true);
+      setApprovedPosts(loadApprovedPostsFromStorage());
+      setApprovedPostsHydrated(true);
 
       const savedUsed = localStorage.getItem('generationsUsed');
       const savedPro = localStorage.getItem('isPro');
@@ -1781,6 +1784,24 @@ function getPlatformDisplayName(value?: string) {
 
   const todaysPost = approvedPosts[0];
 
+  const todaysPostTitle =
+    todaysPost?.status === 'posted'
+      ? 'Today’s post is live'
+      : todaysPost?.status === 'publishing'
+        ? 'Publishing today’s post'
+        : todaysPost?.status === 'failed'
+          ? 'Review today’s post'
+          : 'Post this today';
+
+  const todaysPostStatus =
+    todaysPost?.status === 'posted'
+      ? 'Posted to Facebook'
+      : todaysPost?.status === 'publishing'
+        ? 'Publishing'
+        : todaysPost?.status === 'failed'
+          ? 'Publishing needs review'
+          : 'Approved, not posted';
+
   const todaysPostCard = todaysPost ? (
     <div className="mb-4 w-full rounded-3xl border border-purple-500/30 bg-gradient-to-br from-purple-950/70 to-zinc-900 p-4 sm:p-6 lg:mb-8">
       <p className="text-xs font-semibold uppercase tracking-wide text-purple-300">
@@ -1788,11 +1809,11 @@ function getPlatformDisplayName(value?: string) {
       </p>
 
       <h2 className="mt-1 text-lg font-semibold text-white sm:text-2xl">
-        Post this today
+        {todaysPostTitle}
       </h2>
 
       <p className="mt-1 text-xs text-zinc-400">
-        {todaysPost.platform} · Approved, not posted
+        {todaysPost.platform} · {todaysPostStatus}
       </p>
 
       <p className="mt-4 line-clamp-4 whitespace-pre-wrap text-sm leading-relaxed text-zinc-200">
