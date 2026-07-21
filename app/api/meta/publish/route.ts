@@ -13,6 +13,7 @@ import {
   reserveMetaPublishAttempt,
 } from '@/lib/metaPublishing';
 import { publishFacebookPagePost } from '@/lib/metaFacebook';
+import { publishInstagramImagePost } from '@/lib/metaInstagram';
 
 type MetaPublishRequest = {
   approvedPostId?: string;
@@ -146,16 +147,6 @@ export async function POST(request: Request) {
       );
     }
 
-    if (platform !== 'facebook') {
-      return NextResponse.json(
-        {
-          ok: false,
-          code: 'instagram_live_publish_not_enabled',
-          message: 'Instagram live publishing is not enabled yet.',
-        },
-        { status: 501 }
-      );
-    }
 
     const accountPublishingEnabled =
       connection?.publishing_enabled === true;
@@ -304,12 +295,32 @@ export async function POST(request: Request) {
       const requestedMediaUrls = Array.isArray(body.mediaUrls)
         ? body.mediaUrls.filter((url) => typeof url === 'string' && url)
         : [];
-      const published = await publishFacebookPagePost({
-        pageId: facebookPageId,
-        pageAccessToken: facebookPageAccessToken,
-        message: caption,
-        mediaUrl: requestedMediaUrls[0],
-      });
+
+      if (platform === 'instagram' && !requestedMediaUrls[0]) {
+        return NextResponse.json(
+          {
+            ok: false,
+            code: 'instagram_media_required',
+            message: 'A photo is required to publish to Instagram.',
+          },
+          { status: 400 }
+        );
+      }
+
+      const published =
+        platform === 'instagram'
+          ? await publishInstagramImagePost({
+              instagramAccountId,
+              pageAccessToken: facebookPageAccessToken,
+              imageUrl: requestedMediaUrls[0],
+              caption,
+            })
+          : await publishFacebookPagePost({
+              pageId: facebookPageId,
+              pageAccessToken: facebookPageAccessToken,
+              message: caption,
+              mediaUrl: requestedMediaUrls[0],
+            });
 
       const { error: publishedStateError } =
         await markMetaPublishAttemptPublished({
