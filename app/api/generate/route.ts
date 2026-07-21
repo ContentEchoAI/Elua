@@ -1941,7 +1941,7 @@ function cleanMakeMyPostAudioDirection(value: unknown) {
   return cleaned;
 }
 
-function limitShotOrderToUploadedPhotoCount(shotOrder, uploadedImageCount) {
+function limitShotOrderToUploadedPhotoCount(shotOrder: string[], uploadedImageCount: number) {
   if (uploadedImageCount > 1) {
     return shotOrder;
   }
