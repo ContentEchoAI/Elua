@@ -13,7 +13,7 @@ import {
   reserveMetaPublishAttempt,
 } from '@/lib/metaPublishing';
 import { publishFacebookPagePost } from '@/lib/metaFacebook';
-import { publishInstagramImagePost } from '@/lib/metaInstagram';
+import { publishInstagramImagePost, publishInstagramCarouselPost } from '@/lib/metaInstagram';
 
 type MetaPublishRequest = {
   approvedPostId?: string;
@@ -308,7 +308,14 @@ export async function POST(request: Request) {
       }
 
       const published =
-        platform === 'instagram'
+        platform === 'instagram' && requestedMediaUrls.length >= 2
+          ? await publishInstagramCarouselPost({
+              instagramAccountId,
+              pageAccessToken: facebookPageAccessToken,
+              imageUrls: requestedMediaUrls,
+              caption,
+            })
+          : platform === 'instagram'
           ? await publishInstagramImagePost({
               instagramAccountId,
               pageAccessToken: facebookPageAccessToken,
