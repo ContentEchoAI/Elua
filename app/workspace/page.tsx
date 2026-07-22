@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type ChangeEvent } from 'react';
 import { uploadAllImages } from '@/lib/uploadAllImages';
+import { publishPostToInstagram } from '@/lib/publishToInstagram';
 import {
   SignInButton,
   SignUpButton,
@@ -184,6 +185,11 @@ type ApprovedPost = {
   metaPostId?: string;
   permalinkUrl?: string;
   publishError?: string;
+  instagramStatus?: 'approved_not_posted' | 'publishing' | 'posted' | 'failed';
+  instagramPublishedAt?: string;
+  instagramMetaPostId?: string;
+  instagramPermalinkUrl?: string;
+  instagramPublishError?: string;
 };
 
 const APPROVED_POSTS_STORAGE_KEY = 'hummingbird-approved-posts-v1';
@@ -1552,6 +1558,69 @@ function getPlatformDisplayName(value?: string) {
     }
   };
 
+  const handlePublishApprovedPostToInstagram = async (post: ApprovedPost) => {
+    if (post.instagramStatus === 'posted' || publishingPostId === post.id) return;
+    if (!signedIn) {
+      setApprovedPosts((current) =>
+        current.map((item) =>
+          item.id === post.id
+            ? { ...item, instagramPublishError: 'Sign in before publishing to Instagram.' }
+            : item
+        )
+      );
+      return;
+    }
+    const instagramUsername = metaStatus?.instagramAccount?.username;
+    if (!metaStatus?.connected || !metaStatus?.instagramAccount?.id) {
+      setApprovedPosts((current) =>
+        current.map((item) =>
+          item.id === post.id
+            ? { ...item, instagramPublishError: 'Connect an Instagram account before publishing.' }
+            : item
+        )
+      );
+      return;
+    }
+    if (!metaStatus?.publishingEnabled) return;
+    if (!post.mediaUrls || post.mediaUrls.length === 0) {
+      setApprovedPosts((current) =>
+        current.map((item) =>
+          item.id === post.id
+            ? { ...item, instagramPublishError: 'A photo is required to publish to Instagram.' }
+            : item
+        )
+      );
+      return;
+    }
+    const captionPreview =
+      post.caption.length > 260 ? post.caption.slice(0, 257) + '...' : post.caption;
+    const confirmMessage =
+      'Publish this post to @' + (instagramUsername || 'Instagram') + ' now? ' + captionPreview;
+    const confirmed = window.confirm(confirmMessage);
+    if (!confirmed) return;
+    setPublishingPostId(post.id);
+    setApprovedPosts((current) =>
+      current.map((item) =>
+        item.id === post.id ? { ...item, instagramPublishError: undefined } : item
+      )
+    );
+    const result = await publishPostToInstagram(post);
+    setApprovedPosts((current) =>
+      current.map((item) =>
+        item.id === post.id
+          ? {
+              ...item,
+              instagramStatus: result.status,
+              instagramPublishedAt: result.publishedAt,
+              instagramMetaPostId: result.metaPostId,
+              instagramPermalinkUrl: result.permalinkUrl,
+              instagramPublishError: result.publishError,
+            }
+          : item
+      )
+    );
+    setPublishingPostId('');
+  };
   const removeApprovedPost = (postId: string) => {
     setApprovedPosts((current) =>
       current.filter((post) => post.id !== postId)
