@@ -275,6 +275,7 @@ export default function Home() {
     []
   );
   const [savedMessage, setSavedMessage] = useState('');
+  const [recentGenerationHistory, setRecentGenerationHistory] = useState<SavedGeneration[]>([]);
   const [savedLoading, setSavedLoading] = useState(false);
   const [currentExampleIndex, setCurrentExampleIndex] = useState(0);
   const [businessProfile, setBusinessProfile] = useState<BusinessProfile>(
@@ -1050,7 +1051,7 @@ function getPlatformDisplayName(value?: string) {
       setActiveTab('strategy');
     }
 
-    const recentCampaigns = savedGenerations.slice(0, 5).map((saved) => ({
+    const recentCampaigns = [...recentGenerationHistory, ...savedGenerations].slice(0, 5).map((saved) => ({
       title: saved.title,
       input: saved.input,
       mode: saved.mode,
@@ -1150,6 +1151,21 @@ function getPlatformDisplayName(value?: string) {
       }
 
       setResults(data as Results);
+      setRecentGenerationHistory((prev) =>
+        [
+          {
+            id: 'local-' + Date.now(),
+            title: content.trim().slice(0, 70) || 'Untitled generation',
+            input: content,
+            mode: generationMode,
+            goal,
+            voice: selectedVoice,
+            createdAt: new Date().toISOString(),
+            results: data as Results,
+          },
+          ...prev,
+        ].slice(0, 5)
+      );
 
       if (!isPro) {
         const nextUsed = Math.min(generationsUsed + 1, MAX_FREE);
