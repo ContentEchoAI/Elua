@@ -2116,6 +2116,15 @@ function getPlatformDisplayName(value?: string) {
                   View Facebook post
                 </a>
               )}
+              {post.instagramStatus === 'posted' && (
+                <p className="mt-3 text-xs font-semibold text-pink-300">Posted to Instagram</p>
+              )}
+              {post.instagramPermalinkUrl && (
+                <a href={post.instagramPermalinkUrl} target="_blank" rel="noreferrer" className="mt-1 inline-block text-xs font-semibold text-pink-300 underline underline-offset-2">View Instagram post</a>
+              )}
+              {post.instagramPublishError && (
+                <p className="mt-3 rounded-xl border border-red-500/20 bg-red-500/5 p-3 text-xs leading-relaxed text-red-200">{post.instagramPublishError}</p>
+              )}
 
               {post.publishError &&
                 post.publishError !==
