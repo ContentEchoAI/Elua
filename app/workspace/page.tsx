@@ -1868,8 +1868,8 @@ function getPlatformDisplayName(value?: string) {
       : todaysPost?.status === 'publishing'
         ? 'Publishing'
         : todaysPost?.status === 'failed'
-          ? 'Publishing needs review'
-          : 'Approved, not posted';
+          ? 'Facebook publishing needs review'
+          : 'Not posted to Facebook';
 
   const todaysPostCard = todaysPost ? (
     <div className="mb-4 w-full rounded-3xl border border-purple-500/30 bg-gradient-to-br from-purple-950/70 to-zinc-900 p-4 sm:p-6 lg:mb-8">
@@ -2101,8 +2101,8 @@ function getPlatformDisplayName(value?: string) {
                   {post.status === 'posted'
                     ? 'Posted to Facebook'
                     : post.status === 'failed'
-                      ? 'Publishing needs review'
-                      : 'Approved, not posted'}
+                      ? 'Facebook publishing needs review'
+                      : 'Not posted to Facebook'}
                 </span>
               </div>
 
