@@ -2067,6 +2067,27 @@ function getPlatformDisplayName(value?: string) {
                         : 'Publishing disabled'}
                   </button>
                 )}
+                {post.instagramStatus !== 'posted' && metaStatus?.instagramAccount?.id && (
+                  <button
+                    type="button"
+                    onClick={() => handlePublishApprovedPostToInstagram(post)}
+                    disabled={
+                      publishingPostId === post.id ||
+                      !metaStatus?.publishingEnabled ||
+                      !post.mediaUrls ||
+                      post.mediaUrls.length === 0
+                    }
+                    className="rounded-xl bg-pink-500 px-3 py-2 text-xs font-semibold text-white transition hover:bg-pink-400 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {publishingPostId === post.id
+                      ? 'Publishing...'
+                      : !post.mediaUrls || post.mediaUrls.length === 0
+                        ? 'Photo required'
+                        : metaStatus?.publishingEnabled
+                          ? 'Publish to Instagram'
+                          : 'Publishing disabled'}
+                  </button>
+                )}
 
                 <span
                   className={`rounded-xl border px-3 py-2 text-xs ${
