@@ -1,0 +1,46 @@
+name: Production Watchdog
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  check-production:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Check production health and drift
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          MAIN_SHA=$(git rev-parse HEAD)
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://hummingbird-ai.vercel.app/ || echo "000")
+          VERSION_JSON=$(curl -s https://hummingbird-ai.vercel.app/api/version || echo "{}")
+          DEPLOYED_SHA=$(echo "$VERSION_JSON" | grep -o '"commit":"[^"]*"' | cut -d'"' -f4)
+
+          PROBLEM=""
+          if [ "$HTTP_STATUS" != "200" ]; then
+            PROBLEM="Production site returned HTTP $HTTP_STATUS instead of 200 just now."
+          elif [ -n "$DEPLOYED_SHA" ] && [ "$DEPLOYED_SHA" != "$MAIN_SHA" ]; then
+            PROBLEM="Production is running commit $DEPLOYED_SHA but main's latest is $MAIN_SHA - production may be out of date."
+          fi
+
+          EXISTING=$(gh issue list --search "Production Watchdog Alert in:title" --state open --json number --jq '.[0].number // empty')
+
+          if [ -n "$PROBLEM" ]; then
+            if [ -z "$EXISTING" ]; then
+              gh issue create --title "Production Watchdog Alert" --body "$PROBLEM"
+            else
+              gh issue comment "$EXISTING" --body "Still failing: $PROBLEM"
+            fi
+          else
+            if [ -n "$EXISTING" ]; then
+              gh issue close "$EXISTING" --comment "Production is healthy again - closing automatically."
+            fi
+          fi
