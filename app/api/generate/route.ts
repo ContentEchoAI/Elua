@@ -2582,6 +2582,14 @@ type MediaCaptionRewriteResponse = {
   caption?: string;
 };
 
+function normalizeForComparison(value: unknown) {
+  return String(value ?? '')
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 async function rewriteWeakMediaCaption({
   apiKey,
   originalPrompt,
