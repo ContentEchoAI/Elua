@@ -292,7 +292,7 @@ export default function Home() {
     useState(false);
   const [metaPageMessage, setMetaPageMessage] = useState('');
   const [publishLoading, setPublishLoading] = useState(false);
-  const [publishingPostId, setPublishingPostId] = useState('');
+  const [publishingFacebookId, setPublishingFacebookId] = useState(''); const [publishingInstagramId, setPublishingInstagramId] = useState('');
   const [approvedPosts, setApprovedPosts] = useState<ApprovedPost[]>([]);
   const [approvedPostsHydrated, setApprovedPostsHydrated] = useState(false);
 
@@ -1441,7 +1441,7 @@ function getPlatformDisplayName(value?: string) {
 
 
   const handlePublishApprovedPost = async (post: ApprovedPost) => {
-    if (post.status === 'posted' || publishingPostId === post.id) return;
+    if (post.status === 'posted' || publishingFacebookId === post.id) return;
 
     if (!signedIn) {
       setApprovedPosts((current) =>
@@ -1487,7 +1487,7 @@ function getPlatformDisplayName(value?: string) {
 
     if (!confirmed) return;
 
-    setPublishingPostId(post.id);
+    setPublishingFacebookId(post.id);
     setApprovedPosts((current) =>
       current.map((item) =>
         item.id === post.id
@@ -1570,12 +1570,12 @@ function getPlatformDisplayName(value?: string) {
         )
       );
     } finally {
-      setPublishingPostId('');
+      setPublishingFacebookId('');
     }
   };
 
   const handlePublishApprovedPostToInstagram = async (post: ApprovedPost) => {
-    if (post.instagramStatus === 'posted' || publishingPostId === post.id) return;
+    if (post.instagramStatus === 'posted' || publishingInstagramId === post.id) return;
     if (!signedIn) {
       setApprovedPosts((current) =>
         current.map((item) =>
@@ -1614,7 +1614,7 @@ function getPlatformDisplayName(value?: string) {
       'Publish this post to @' + (instagramUsername || 'Instagram') + ' now? ' + captionPreview;
     const confirmed = window.confirm(confirmMessage);
     if (!confirmed) return;
-    setPublishingPostId(post.id);
+    setPublishingInstagramId(post.id);
     setApprovedPosts((current) =>
       current.map((item) =>
         item.id === post.id ? { ...item, instagramPublishError: undefined } : item
@@ -1635,7 +1635,7 @@ function getPlatformDisplayName(value?: string) {
           : item
       )
     );
-    setPublishingPostId('');
+    setPublishingInstagramId('');
   };
   const removeApprovedPost = (postId: string) => {
     setApprovedPosts((current) =>
@@ -2014,7 +2014,7 @@ function getPlatformDisplayName(value?: string) {
                         }`
                       : post.status === 'failed'
                         ? 'Needs review'
-                        : publishingPostId === post.id
+                        : publishingFacebookId === post.id
                           ? 'Publishing...'
                           : 'Not posted'}
                   </p>
@@ -2071,12 +2071,12 @@ function getPlatformDisplayName(value?: string) {
                     type="button"
                     onClick={() => handlePublishApprovedPost(post)}
                     disabled={
-                      publishingPostId === post.id ||
+                      publishingFacebookId === post.id ||
                       !metaStatus?.publishingEnabled
                     }
                     className="rounded-xl bg-blue-500 px-3 py-2 text-xs font-semibold text-white transition hover:bg-blue-400 disabled:cursor-not-allowed disabled:opacity-60"
                   >
-                    {publishingPostId === post.id
+                    {publishingFacebookId === post.id
                       ? 'Publishing...'
                       : metaStatus?.publishingEnabled
                         ? 'Publish to Facebook'
@@ -2088,14 +2088,14 @@ function getPlatformDisplayName(value?: string) {
                     type="button"
                     onClick={() => handlePublishApprovedPostToInstagram(post)}
                     disabled={
-                      publishingPostId === post.id ||
+                      publishingInstagramId === post.id ||
                       !metaStatus?.publishingEnabled ||
                       !post.mediaUrls ||
                       post.mediaUrls.length === 0
                     }
                     className="rounded-xl bg-pink-500 px-3 py-2 text-xs font-semibold text-white transition hover:bg-pink-400 disabled:cursor-not-allowed disabled:opacity-60"
                   >
-                    {publishingPostId === post.id
+                    {publishingInstagramId === post.id
                       ? 'Publishing...'
                       : !post.mediaUrls || post.mediaUrls.length === 0
                         ? 'Photo required'
