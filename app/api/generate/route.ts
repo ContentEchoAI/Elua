@@ -2650,6 +2650,32 @@ async function rewriteRepeatedContent(params: {
     promptLines.push('- Keep the same underlying facts about the business, but change how they are expressed.');
     promptLines.push('- Do not use markdown.');
     const rewritePrompt = promptLines.join('\n');
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + params.apiKey },
+      body: JSON.stringify({
+        model: 'gpt-4.1-mini',
+        messages: [
+          { role: 'system', content: 'You rewrite a caption and DM reply so they sound genuinely different from recent posts. Return valid JSON only.' },
+          { role: 'user', content: rewritePrompt },
+        ],
+        temperature: 0.8,
+        max_tokens: 500,
+        response_format: { type: 'json_object' },
+      }),
+    });
+    if (!response.ok) {
+      return null;
+    }
+    const data = await response.json();
+    const messageContent = data.choices?.[0]?.message?.content;
+    if (!messageContent) {
+      return null;
+    }
+    const parsed = JSON.parse(messageContent);
+    if (typeof parsed?.caption === 'string' && typeof parsed?.reply === 'string') {
+      return { caption: parsed.caption, reply: parsed.reply };
+    }
     return null;
   } catch (error) {
     console.warn('Repeated content rewrite warning:', error);
