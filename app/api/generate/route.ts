@@ -4633,8 +4633,38 @@ Final silent check:
       }
     }
 
-    if (false) {
-      console.log('todo repeat check');
+    if (
+      mode === 'make_my_post' &&
+      parsed.production_plan?.caption &&
+      isTooSimilarToRecentCampaign(
+        parsed.production_plan.caption,
+        parsed.production_plan.dm_reply,
+        recentCampaigns
+      )
+    ) {
+      const rewrittenRepeat = await rewriteRepeatedContent({
+        apiKey,
+        originalPrompt: content,
+        currentCaption: parsed.production_plan.caption,
+        currentReply: parsed.production_plan.dm_reply || '',
+        cta: parsed.production_plan.cta || parsed.monetization?.cta_strategy || '',
+        voice: normalizeString(selectedVoice),
+        businessContext: formatBusinessProfileForPrompt(businessProfile),
+        recentCampaignsPrompt,
+      });
+
+      if (rewrittenRepeat) {
+        parsed.production_plan = {
+          ...(parsed.production_plan || {}),
+          caption: rewrittenRepeat.caption,
+          dm_reply: rewrittenRepeat.reply,
+        };
+
+        parsed.best_output = {
+          ...(parsed.best_output || {}),
+          content: rewrittenRepeat.caption,
+        };
+      }
     }
 
     if (mode === 'make_my_post' && hasUploadedImages) {
