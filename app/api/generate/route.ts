@@ -3794,6 +3794,7 @@ Make This Post / Production Plan rules:
 - Do not use manufactured headline formulas such as "When you want...", "For the person who...", "This is what happens when...", "Ready to...", "Looking for...", or "POV".
 - Do not open by inventorying visible colors, shapes, flowers, finishes, products, tools, rooms, vehicle parts, or service details.
 - Choose an opening based on the actual meaning of the media: a client preference, a real decision, a useful contrast, a small story, an honest owner opinion, or a question customers genuinely ask.
+- Frame the caption around the customer, not the product: what this means for them, how it could make them feel, or an invitation to imagine themselves with this result. Do not simply describe the item, finish, or technique on its own.
 - Vary the opening structure. Do not default to the same reaction, sentence pattern, or phrase across generations.
 - After the opening, write only one or two natural context sentences. Explain the overall look, feeling, result, contrast, or why the details work together instead of cataloguing everything visible.
 - Mention at most two visual details unless the user explicitly asks for a detailed description.
