@@ -24,6 +24,10 @@ jobs:
           VERSION_JSON=$(curl -s https://hummingbird-ai.vercel.app/api/version || echo "{}")
           DEPLOYED_SHA=$(echo "$VERSION_JSON" | grep -o '"commit":"[^"]*"' | cut -d'"' -f4)
 
+          echo "main SHA:      $MAIN_SHA"
+          echo "HTTP status:   $HTTP_STATUS"
+          echo "deployed SHA:  $DEPLOYED_SHA"
+
           PROBLEM=""
           if [ "$HTTP_STATUS" != "200" ]; then
             PROBLEM="Production site returned HTTP $HTTP_STATUS instead of 200 just now."
