@@ -2590,6 +2590,35 @@ function normalizeForComparison(value: unknown) {
     .trim();
 }
 
+function isTooSimilarToRecentCampaign(caption: unknown, reply: unknown, recentCampaigns: unknown) {
+  const normalizedCaption = normalizeForComparison(caption);
+  const normalizedReply = normalizeForComparison(reply);
+  if (!Array.isArray(recentCampaigns)) {
+    return false;
+  }
+  return recentCampaigns.some((item) => {
+    if (!item || typeof item !== 'object') {
+      return false;
+    }
+    const entry = item as { caption?: unknown; reply?: unknown };
+    const recentCaption = normalizeForComparison(entry.caption);
+    const recentReply = normalizeForComparison(entry.reply);
+    const captionMatch = Boolean(
+      normalizedCaption &&
+        recentCaption &&
+        (normalizedCaption === recentCaption ||
+          normalizedCaption.slice(0, 60) === recentCaption.slice(0, 60))
+    );
+    const replyMatch = Boolean(
+      normalizedReply &&
+        recentReply &&
+        (normalizedReply === recentReply ||
+          normalizedReply.slice(0, 40) === recentReply.slice(0, 40))
+    );
+    return captionMatch || replyMatch;
+  });
+}
+
 async function rewriteWeakMediaCaption({
   apiKey,
   originalPrompt,
