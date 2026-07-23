@@ -4633,6 +4633,10 @@ Final silent check:
       }
     }
 
+    if (false) {
+      console.log('todo repeat check');
+    }
+
     if (mode === 'make_my_post' && hasUploadedImages) {
       const singlePhotoShotOrder =
         getSingleUploadedPhotoShotOrder({
