@@ -2619,6 +2619,44 @@ function isTooSimilarToRecentCampaign(caption: unknown, reply: unknown, recentCa
   });
 }
 
+async function rewriteRepeatedContent(params: {
+  apiKey: string;
+  originalPrompt: string;
+  currentCaption: string;
+  currentReply: string;
+  cta: string;
+  voice: string;
+  businessContext: string;
+  recentCampaignsPrompt: string;
+}) {
+  try {
+    const promptLines: string[] = [];
+    promptLines.push('Rewrite the caption and DM reply below because they are too similar to a recent post.');
+    promptLines.push('Recent saved campaigns to avoid matching:');
+    promptLines.push(params.recentCampaignsPrompt);
+    promptLines.push('Original request:');
+    promptLines.push(params.originalPrompt);
+    promptLines.push('Business context:');
+    promptLines.push(params.businessContext);
+    promptLines.push('Requested voice: ' + (params.voice || 'natural'));
+    promptLines.push('Current caption:');
+    promptLines.push(params.currentCaption);
+    promptLines.push('Current DM reply:');
+    promptLines.push(params.currentReply);
+    promptLines.push('CTA keyword or instruction: ' + (params.cta || 'Use one simple, low-pressure next step.'));
+    promptLines.push('Requirements:');
+    promptLines.push('- Return valid JSON only: {"caption": "...", "reply": "..."}.');
+    promptLines.push('- Both the caption and the reply must use a genuinely different opening, structure, and wording than the recent campaigns shown above.');
+    promptLines.push('- Keep the same underlying facts about the business, but change how they are expressed.');
+    promptLines.push('- Do not use markdown.');
+    const rewritePrompt = promptLines.join('\n');
+    return null;
+  } catch (error) {
+    console.warn('Repeated content rewrite warning:', error);
+    return null;
+  }
+}
+
 async function rewriteWeakMediaCaption({
   apiKey,
   originalPrompt,
