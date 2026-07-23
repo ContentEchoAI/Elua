@@ -346,6 +346,14 @@ function formatFreshCampaignInstruction({
     ].join('\n');
   }
 
+  if (recent.trim().length > 0) {
+    return [
+      'Fresh campaign instruction:',
+      '- Compare this draft against the recent saved campaigns listed above before finalizing.',
+      '- If the opening line, core angle, CTA, or DM reply closely match a recent campaign, rewrite them with a genuinely different angle, opening, and wording.',
+      '- The DM reply specifically must not repeat a recent DM reply word-for-word - vary the phrasing even if the underlying answer is similar.',
+    ].join('\n');
+  }
   return 'No extra fresh campaign instruction.';
 }
 
