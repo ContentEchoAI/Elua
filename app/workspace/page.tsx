@@ -386,12 +386,12 @@ export default function Home() {
   ];
 
   const outputOptions = [
-    { id: 'Instagram Reel', label: 'Instagram Reel', emoji: '🎬' },
+    { id: 'Instagram Reel', label: 'Instagram Reel', emoji: '🎬', comingSoon: true },
     { id: 'Instagram Carousel', label: 'Instagram Carousel', emoji: '📸' },
-    { id: 'TikTok Script', label: 'TikTok', emoji: '🎵' },
-    { id: 'LinkedIn Post', label: 'LinkedIn Post', emoji: '💼' },
+    { id: 'TikTok Script', label: 'TikTok', emoji: '🎵', comingSoon: true },
+    { id: 'LinkedIn Post', label: 'LinkedIn Post', emoji: '💼', comingSoon: true },
     { id: 'Facebook Post', label: 'Facebook Post', emoji: '📘' },
-    { id: 'YouTube Shorts Script', label: 'YouTube Shorts', emoji: '▶️' },
+    { id: 'YouTube Shorts Script', label: 'YouTube Shorts', emoji: '▶️', comingSoon: true },
   ];
 
 
@@ -2689,16 +2689,16 @@ function getPlatformDisplayName(value?: string) {
                       return (
                         <button
                           key={output.id}
-                          onClick={() => toggleOutput(output.id)}
+                          onClick={() => !output.comingSoon && toggleOutput(output.id)} disabled={output.comingSoon}
                           type="button"
                           className={`rounded-2xl border px-3 py-2.5 text-left text-xs transition sm:text-sm ${
-                            selected
+                            output.comingSoon ? 'cursor-not-allowed border-zinc-800 bg-zinc-900 text-zinc-600 opacity-60' : selected
                               ? 'border-purple-500 bg-purple-600/20 text-white shadow-lg shadow-purple-950/20'
                               : 'border-zinc-700 bg-zinc-800 text-zinc-300 hover:border-zinc-600 hover:bg-zinc-700'
                           }`}
                         >
                           <span className="mr-1.5">{output.emoji}</span>
-                          {output.label}
+                          {output.label}{output.comingSoon ? ' (Soon)' : ''}
                         </button>
                       );
                     })}
