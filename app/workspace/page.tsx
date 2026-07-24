@@ -548,6 +548,7 @@ function getPlatformDisplayName(value?: string) {
       video.load();
     });
 
+  const [uploadedVideoFile, setUploadedVideoFile] = useState<{ dataUrl: string; name: string } | null>(null);
   const handleMediaUpload = async (event: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
 
@@ -611,6 +612,10 @@ function getPlatformDisplayName(value?: string) {
           );
 
           loadedMedia.push(...videoFrames);
+          setUploadedVideoFile({
+            dataUrl: await readFileAsDataUrl(file),
+            name: file.name,
+          });
         }
       }
 
@@ -1355,7 +1360,11 @@ function getPlatformDisplayName(value?: string) {
     setPublishMessage('');
 
     try {
-      const uploadedMediaUrls = await uploadAllImages(uploadedImages);
+      const isReelPlatform = platform === 'Instagram Reel';
+      const uploadedMediaUrls =
+        isReelPlatform && uploadedVideoFile
+          ? await uploadAllImages([{ dataUrl: uploadedVideoFile.dataUrl }])
+          : await uploadAllImages(uploadedImages);
       const res = await fetch('/api/meta/publish', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
