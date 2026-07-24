@@ -617,3 +617,117 @@ export async function publishInstagramCarouselPost({
     containerId,
   };
 }
+export async function createInstagramReelContainer({
+  instagramAccountId,
+  pageAccessToken,
+  videoUrl,
+  caption,
+  fetchImpl = fetch,
+}: {
+  instagramAccountId: string;
+  pageAccessToken: string;
+  videoUrl: string;
+  caption?: string;
+  fetchImpl?: MetaFetch;
+}) {
+  const accountId = normalizeMetaId(
+    instagramAccountId,
+    'Instagram account ID'
+  );
+  const token = pageAccessToken.trim();
+
+  if (!token) {
+    throw new Error('Instagram publishing access token is missing.');
+  }
+
+  const params = new URLSearchParams({
+    media_type: 'REELS',
+    video_url: normalizePublicImageUrl(videoUrl),
+    access_token: token,
+  });
+
+  const normalizedCaption = caption?.trim();
+
+  if (normalizedCaption) {
+    params.set('caption', normalizedCaption);
+  }
+
+  const response = await fetchImpl(
+    getMetaGraphUrl(accountId, 'media'),
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: params,
+      cache: 'no-store',
+    }
+  );
+
+  const data =
+    await readMetaResponse<MetaContainerResponse>(response);
+
+  if (!response.ok || !data.id) {
+    throw new Error(
+      getMetaErrorMessage(
+        data.error,
+        'Instagram Reel container creation failed.'
+      )
+    );
+  }
+
+  return data.id;
+}
+
+export async function publishInstagramReelPost({
+  instagramAccountId,
+  pageAccessToken,
+  videoUrl,
+  caption,
+  maxStatusAttempts,
+  pollIntervalMs,
+  fetchImpl = fetch,
+}: {
+  instagramAccountId: string;
+  pageAccessToken: string;
+  videoUrl: string;
+  caption: string;
+  maxStatusAttempts?: number;
+  pollIntervalMs?: number;
+  fetchImpl?: MetaFetch;
+}): Promise<InstagramPublishResult> {
+  const containerId = await createInstagramReelContainer({
+    instagramAccountId,
+    pageAccessToken,
+    videoUrl,
+    caption,
+    fetchImpl,
+  });
+
+  await waitForInstagramContainerReady({
+    containerId,
+    pageAccessToken,
+    maxAttempts: maxStatusAttempts ?? 40,
+    pollIntervalMs: pollIntervalMs ?? 3000,
+    fetchImpl,
+  });
+
+  const metaPostId = await publishInstagramContainer({
+    instagramAccountId,
+    pageAccessToken,
+    containerId,
+    fetchImpl,
+  });
+
+  const permalinkUrl = await safelyGetInstagramPermalink({
+    mediaId: metaPostId,
+    pageAccessToken,
+    fetchImpl,
+  });
+
+  return {
+    metaPostId,
+    permalinkUrl,
+    containerId,
+  };
+}

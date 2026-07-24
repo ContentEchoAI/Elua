@@ -3,6 +3,7 @@ export type InstagramPublishablePost = {
   caption: string;
   hashtags: string[];
   mediaUrls?: string[];
+  platform?: string;
 };
 
 export type InstagramPublishResult = {
@@ -25,6 +26,7 @@ export async function publishPostToInstagram(
         caption: post.caption,
         hashtags: post.hashtags,
         platform: 'instagram',
+        isReel: post.platform === 'Instagram Reel',
         mediaUrls: post.mediaUrls || [],
         publishNow: true,
       }),

@@ -13,7 +13,7 @@ import {
   reserveMetaPublishAttempt,
 } from '@/lib/metaPublishing';
 import { publishFacebookPagePost } from '@/lib/metaFacebook';
-import { publishInstagramImagePost, publishInstagramCarouselPost } from '@/lib/metaInstagram';
+import { publishInstagramImagePost, publishInstagramCarouselPost, publishInstagramReelPost } from '@/lib/metaInstagram';
 
 type MetaPublishRequest = {
   approvedPostId?: string;
@@ -22,6 +22,7 @@ type MetaPublishRequest = {
   platform?: string;
   mediaUrls?: string[];
   publishNow?: boolean;
+  isReel?: boolean;
 };
 
 export async function POST(request: Request) {
@@ -308,7 +309,14 @@ export async function POST(request: Request) {
       }
 
       const published =
-        platform === 'instagram' && requestedMediaUrls.length >= 2
+        platform === 'instagram' && body.isReel === true
+          ? await publishInstagramReelPost({
+              instagramAccountId,
+              pageAccessToken: facebookPageAccessToken,
+              videoUrl: requestedMediaUrls[0],
+              caption,
+            })
+          : platform === 'instagram' && requestedMediaUrls.length >= 2
           ? await publishInstagramCarouselPost({
               instagramAccountId,
               pageAccessToken: facebookPageAccessToken,

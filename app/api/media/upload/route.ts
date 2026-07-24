@@ -23,11 +23,11 @@ export async function POST(request: Request) {
   }
 
   const dataUrl = typeof body.dataUrl === 'string' ? body.dataUrl : '';
-  const match = dataUrl.match(/^data:(image\/\w+);base64,(.+)$/);
+  const match = dataUrl.match(/^data:(image\/\w+|video\/\w+);base64,(.+)$/);
 
   if (!match) {
     return NextResponse.json(
-      { ok: false, code: 'invalid_media', message: 'Expected a base64 image data URL.' },
+      { ok: false, code: 'invalid_media', message: 'Expected a base64 image or video data URL.' },
       { status: 400 }
     );
   }
