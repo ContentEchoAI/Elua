@@ -2995,7 +2995,7 @@ Rules for uploaded visuals:
 - For TikTok Script, Instagram Reel, or YouTube Shorts, production_plan.shot_order should use video language such as "Beat 1", "0-2 seconds", "Opening shot", "Detail shot", or "Final CTA shot." Do not write "Photo 1 first" for video-platform outputs.
 - For TikTok Script, Instagram Reel, or YouTube Shorts, every video flow should include exact on-screen text or CTA wording in at least one beat. Do not say vague phrases like "simple text overlay" without giving the exact text.
 - Good final beat example: "Beat 4: Final close-up with text overlay: DM DESIGN for help planning your next set."
-- For TikTok Script, Instagram Reel, or YouTube Shorts, production_plan.audio_direction should be useful and specific: audio mood, pacing, edit rhythm, and on-screen text direction. Do not name copyrighted songs, artists, or trending sounds.
+- For TikTok Script, Instagram Reel, or YouTube Shorts, production_plan.audio_direction should be useful and specific: audio mood, pacing, edit rhythm, and on-screen text direction. Recommend checking the platform's own trending audio tab before posting for an algorithmic boost. Do not name copyrighted songs, artists, or trending sounds.
 - Do not make voiceover the default. Most users should be able to make the post without speaking, showing their face, or recording new audio.
 - Default video direction should use uploaded visuals, simple text overlays, natural sound, salon/shop/workspace audio if relevant, or light background music.
 - Do not suggest spoken lines, voice lines, narration, or voiceover by default. Use on-screen text instead.
@@ -3010,7 +3010,7 @@ Rules for uploaded visuals:
 - For Instagram Carousel, Facebook Post, LinkedIn Post, or other photo/text outputs, do not use video language such as text overlay, audio, spoken lines, clip flow, beat, final frame, or CTA screen. Use photo order, caption, hashtags, and reply only.
 - production_plan.shot_order should describe the photo, clip, or visual order.
 - production_plan.what_to_film should say what uploaded visual to use first, not ask the user to film extra footage unless extra footage is optional.
-- production_plan.audio_direction should suggest mood, pacing, or editing style. Do not name copyrighted songs, artists, or trending sounds.
+- production_plan.audio_direction should suggest mood, pacing, or editing style. Recommend checking the platform's own trending audio tab before posting for an algorithmic boost. Do not name copyrighted songs, artists, or trending sounds.
 - production_plan.hashtags should include 3-8 relevant hashtags when useful.
 - CTA keyword should usually be one simple word such as DESIGN, QUOTE, BOOK, MENU, STYLE, FIT, START, CHECK, GUIDE, or CLEAN. Do not write CTA keywords as "DM DESIGN"; use "DESIGN" or a clear sentence separately.
 - MAKE MY POST QUALITY RULES:
