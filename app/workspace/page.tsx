@@ -387,7 +387,7 @@ export default function Home() {
   ];
 
   const outputOptions = [
-    { id: 'Instagram Reel', label: 'Instagram Reel', emoji: '🎬', comingSoon: true },
+    { id: 'Instagram Reel', label: 'Instagram Reel', emoji: '🎬' },
     { id: 'Instagram Carousel', label: 'Instagram Carousel', emoji: '📸' },
     { id: 'TikTok Script', label: 'TikTok', emoji: '🎵', comingSoon: true },
     { id: 'LinkedIn Post', label: 'LinkedIn Post', emoji: '💼', comingSoon: true },
