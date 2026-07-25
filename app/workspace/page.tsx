@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type ChangeEvent } from 'react';
 import { uploadAllImages } from '@/lib/uploadAllImages';
+import { uploadVideoDirect } from '@/lib/uploadVideoDirect';
 import { publishPostToInstagram } from '@/lib/publishToInstagram';
 import {
   SignInButton,
@@ -548,7 +549,7 @@ function getPlatformDisplayName(value?: string) {
       video.load();
     });
 
-  const [uploadedVideoFile, setUploadedVideoFile] = useState<{ dataUrl: string; name: string } | null>(null);
+  const [uploadedVideoFile, setUploadedVideoFile] = useState<File | null>(null);
   const handleMediaUpload = async (event: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
 
@@ -612,10 +613,7 @@ function getPlatformDisplayName(value?: string) {
           );
 
           loadedMedia.push(...videoFrames);
-          setUploadedVideoFile({
-            dataUrl: await readFileAsDataUrl(file),
-            name: file.name,
-          });
+          setUploadedVideoFile(file);
         }
       }
 
@@ -1363,7 +1361,10 @@ function getPlatformDisplayName(value?: string) {
       const isReelPlatform = platform === 'Instagram Reel';
       const uploadedMediaUrls =
         isReelPlatform && uploadedVideoFile
-          ? await uploadAllImages([{ dataUrl: uploadedVideoFile.dataUrl }])
+          ? await (async () => {
+              const url = await uploadVideoDirect(uploadedVideoFile);
+              return url ? [url] : [];
+            })()
           : await uploadAllImages(uploadedImages);
       const res = await fetch('/api/meta/publish', {
         method: 'POST',
