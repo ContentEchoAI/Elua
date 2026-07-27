@@ -1878,24 +1878,29 @@ function getPlatformDisplayName(value?: string) {
   );
 
   const todaysPost = approvedPosts[0];
-
-  const todaysPostTitle =
-    todaysPost?.status === 'posted'
-      ? 'Today’s post is live'
-      : todaysPost?.status === 'publishing'
-        ? 'Publishing today’s post'
-        : todaysPost?.status === 'failed'
-          ? 'Review today’s post'
-          : 'Post this today';
-
-  const todaysPostStatus =
-    todaysPost?.status === 'posted'
-      ? 'Posted to Facebook'
-      : todaysPost?.status === 'publishing'
-        ? 'Publishing'
-        : todaysPost?.status === 'failed'
-          ? 'Facebook publishing needs review'
-          : 'Not posted to Facebook';
+  const todaysPostIsInstagram = todaysPost?.platform?.startsWith('Instagram') ?? false;
+  const todaysPostPlatformLabel = todaysPostIsInstagram ? 'Instagram' : 'Facebook';
+  const todaysPostPosted = todaysPostIsInstagram
+    ? todaysPost?.instagramStatus === 'posted'
+    : todaysPost?.status === 'posted';
+  const todaysPostFailed = todaysPostIsInstagram
+    ? todaysPost?.instagramStatus === 'failed'
+    : todaysPost?.status === 'failed';
+  const todaysPostPublishing = !todaysPostIsInstagram && todaysPost?.status === 'publishing';
+  const todaysPostTitle = todaysPostPosted
+    ? 'Today’s post is live'
+    : todaysPostPublishing
+      ? 'Publishing today’s post'
+      : todaysPostFailed
+        ? 'Review today’s post'
+        : 'Post this today';
+  const todaysPostStatus = todaysPostPosted
+    ? `Posted to ${todaysPostPlatformLabel}`
+    : todaysPostPublishing
+      ? 'Publishing'
+      : todaysPostFailed
+        ? `${todaysPostPlatformLabel} publishing needs review`
+        : `Not posted to ${todaysPostPlatformLabel}`;
 
   const todaysPostCard = todaysPost ? (
     <div className="mb-4 w-full rounded-3xl border border-purple-500/30 bg-gradient-to-br from-purple-950/70 to-zinc-900 p-4 sm:p-6 lg:mb-8">
