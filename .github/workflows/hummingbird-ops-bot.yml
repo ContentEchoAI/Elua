@@ -32,6 +32,7 @@ jobs:
         env:
           NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
           SUPABASE_SECRET_KEY: ci-placeholder-secret
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-placeholder-anon-key
         run: npm run build
 
       - name: Run Lead Finder
