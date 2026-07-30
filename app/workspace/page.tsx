@@ -390,7 +390,6 @@ export default function Home() {
     { id: 'Instagram Reel', label: 'Instagram Reel', emoji: '🎬' },
     { id: 'Instagram Carousel', label: 'Instagram Carousel', emoji: '📸' },
     { id: 'TikTok Script', label: 'TikTok', emoji: '🎵', comingSoon: true },
-    { id: 'LinkedIn Post', label: 'LinkedIn Post', emoji: '💼', comingSoon: true },
     { id: 'Facebook Post', label: 'Facebook Post', emoji: '📘' },
     { id: 'YouTube Shorts Script', label: 'YouTube Shorts', emoji: '▶️', comingSoon: true },
   ];
@@ -2698,26 +2697,29 @@ function getPlatformDisplayName(value?: string) {
                   </div>
 
                   <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                    {outputOptions.map((output) => {
+                    {outputOptions.filter((output) => !output.comingSoon).map((output) => {
                       const selected = selectedOutputs.includes(output.id);
 
                       return (
                         <button
                           key={output.id}
-                          onClick={() => !output.comingSoon && toggleOutput(output.id)} disabled={output.comingSoon}
+                          onClick={() => toggleOutput(output.id)}
                           type="button"
                           className={`rounded-2xl border px-3 py-2.5 text-left text-xs transition sm:text-sm ${
-                            output.comingSoon ? 'cursor-not-allowed border-zinc-800 bg-zinc-900 text-zinc-600 opacity-60' : selected
+                            selected
                               ? 'border-purple-500 bg-purple-600/20 text-white shadow-lg shadow-purple-950/20'
                               : 'border-zinc-700 bg-zinc-800 text-zinc-300 hover:border-zinc-600 hover:bg-zinc-700'
                           }`}
                         >
                           <span className="mr-1.5">{output.emoji}</span>
-                          {output.label}{output.comingSoon ? ' (Soon)' : ''}
+                          {output.label}
                         </button>
                       );
                     })}
                   </div>
+                  <p className="mt-2 text-xs text-zinc-600">
+                    Coming soon: {outputOptions.filter((output) => output.comingSoon).map((output) => output.label).join(', ')}
+                 </p>
                 </div>
               )}
 
