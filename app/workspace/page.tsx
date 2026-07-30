@@ -1183,7 +1183,7 @@ function getPlatformDisplayName(value?: string) {
 
       setGenerateError(
         errorMessage === 'Something went wrong'
-          ? 'Hummingbird had trouble generating that result. Please try again in a moment.'
+          ? 'Elua had trouble generating that result. Please try again in a moment.'
           : errorMessage
       );
 
@@ -1691,7 +1691,7 @@ function getPlatformDisplayName(value?: string) {
             {metaStatusLoading
               ? 'Checking Facebook and Instagram connection...'
               : metaStatus?.message ||
-                'Connect your platforms when you are ready to publish from Hummingbird.'}
+                'Connect your platforms when you are ready to publish from Elua.'}
           </p>
         </div>
 
@@ -2276,12 +2276,12 @@ function getPlatformDisplayName(value?: string) {
           <div className="flex items-center gap-3">
             <img
               src="/hummingbird-mark.jpeg"
-              alt="Hummingbird AI"
+              alt="Elua"
               className="h-11 w-11 rounded-2xl object-cover"
             />
             <div>
               <p className="text-sm font-semibold leading-none text-white sm:text-base">
-                Hummingbird AI
+                Elua
               </p>
               <p className="mt-1 text-xs text-zinc-500">
                 Photo-to-post workspace
@@ -2323,7 +2323,7 @@ function getPlatformDisplayName(value?: string) {
             </h1>
 
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-zinc-400 sm:mt-5 sm:text-lg">
-              Upload business photos or short clips. Hummingbird creates the caption, CTA,
+              Upload business photos or short clips. Elua creates the caption, CTA,
               follow-up reply, hashtags, and posting direction.
             </p>
           </div>
@@ -2341,7 +2341,7 @@ function getPlatformDisplayName(value?: string) {
                 What you get in one generation
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-zinc-400">
-                See the kind of strategy, content, CTA, and follow-up path Hummingbird
+                See the kind of strategy, content, CTA, and follow-up path Elua
                 builds from one business goal or post idea.
               </p>
             </div>
@@ -2422,7 +2422,7 @@ function getPlatformDisplayName(value?: string) {
                           Upload photos or short clips from your business
                         </p>
                         <p className="mt-1 text-xs leading-relaxed text-zinc-400 sm:text-sm">
-                          Add up to 6 photos or short clip frames. Hummingbird will choose the strongest visuals, write the caption, CTA, DM reply, hashtags, and posting direction.
+                          Add up to 6 photos or short clip frames. Elua will choose the strongest visuals, write the caption, CTA, DM reply, hashtags, and posting direction.
                         </p>
                       </div>
 
@@ -2515,7 +2515,7 @@ function getPlatformDisplayName(value?: string) {
                     <p className="mt-1 text-sm text-zinc-300">
                       {hasBusinessProfile
                         ? 'Using your saved business details to save time and keep posts consistent.'
-                        : 'Add your business details once so Hummingbird can save you time each week.'}
+                        : 'Add your business details once so Elua can save you time each week.'}
                     </p>
                   </div>
 
@@ -2800,7 +2800,7 @@ function getPlatformDisplayName(value?: string) {
                   {generationMode === 'viral_hooks'
                     ? 'Quick hook ideas for your business, offer, or content topic.'
                     : isMakeMyPostMode
-                      ? 'Upload photos or clips and Hummingbird will make the post.'
+                      ? 'Upload photos or clips and Elua will make the post.'
                       : 'Turn one business goal into ready-to-post content, hooks, CTAs, and a simple path to leads, bookings, or sales.'}
                 </p>
               </div>
@@ -3005,7 +3005,7 @@ function getPlatformDisplayName(value?: string) {
                           Final Review
                         </p>
                         <p className="mt-1 text-xs leading-relaxed text-zinc-300">
-                          Review the caption, CTA, and reply before saving this to your Posting Queue. Hummingbird will never publish without your approval.
+                          Review the caption, CTA, and reply before saving this to your Posting Queue. Elua will never publish without your approval.
                         </p>
                       </div>
 
@@ -3131,7 +3131,7 @@ function getPlatformDisplayName(value?: string) {
                       {generationMode === 'viral_hooks'
                         ? 'Generate 10 attention-grabbing hooks with angles, explanations, and a strongest-hook pick.'
                         : isMakeMyPostMode
-                          ? 'Add your business photos or short clips on the left, then Hummingbird will write the caption, CTA, DM reply, hashtags, and posting direction.'
+                          ? 'Add your business photos or short clips on the left, then Elua will write the caption, CTA, DM reply, hashtags, and posting direction.'
                           : 'Get strategy, ready-to-post content, hooks, CTAs, and a simple path to leads, bookings, or sales.'}
                     </p>
 
@@ -3191,7 +3191,7 @@ function getPlatformDisplayName(value?: string) {
 
                   <p className="mt-3 text-xs text-zinc-500 sm:text-sm">
                     High-quality generations usually take 30–45 seconds. Keep this
-                      page open while Hummingbird builds your result.
+                      page open while Elua builds your result.
                   </p>
                 </div>
               )}
@@ -3609,7 +3609,7 @@ function getPlatformDisplayName(value?: string) {
                                 Final Review
                               </p>
                               <p className="mt-1 text-xs leading-relaxed text-zinc-300">
-                                Review the caption, CTA, and reply before anything goes live. Hummingbird will never publish without your approval.
+                                Review the caption, CTA, and reply before anything goes live. Elua will never publish without your approval.
                               </p>
                             </div>
 

@@ -4,7 +4,7 @@ import { ClerkProvider } from '@clerk/nextjs';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Hummingbird AI',
+  title: 'Elua',
   description: 'AI growth engine for creators',
 };
 

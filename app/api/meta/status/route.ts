@@ -118,7 +118,7 @@ export async function GET() {
       'Reconnect Facebook and Instagram to approve access.';
   } else if (connected && !selectedPage) {
     message =
-      'Facebook is authorized. Choose the Page you want Hummingbird to use.';
+      'Facebook is authorized. Choose the Page you want Elua to use.';
   } else if (selectedPage && instagramAccount) {
     message =
       `${selectedPage.name} and ` +

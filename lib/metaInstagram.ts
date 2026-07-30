@@ -202,7 +202,7 @@ export async function createInstagramCarouselContainer({
     childContainerIds.length > MAX_META_POST_IMAGES
   ) {
     throw new Error(
-      `Instagram carousels require between ${MIN_INSTAGRAM_CAROUSEL_ITEMS} and ${MAX_META_POST_IMAGES} images in Hummingbird.`
+      `Instagram carousels require between ${MIN_INSTAGRAM_CAROUSEL_ITEMS} and ${MAX_META_POST_IMAGES} images in Elua.`
     );
   }
 
@@ -553,7 +553,7 @@ export async function publishInstagramCarouselPost({
     imageUrls.length > MAX_META_POST_IMAGES
   ) {
     throw new Error(
-      `Instagram carousels require between ${MIN_INSTAGRAM_CAROUSEL_ITEMS} and ${MAX_META_POST_IMAGES} images in Hummingbird.`
+      `Instagram carousels require between ${MIN_INSTAGRAM_CAROUSEL_ITEMS} and ${MAX_META_POST_IMAGES} images in Elua.`
     );
   }
 

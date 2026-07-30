@@ -12,7 +12,7 @@ export default function LandingPage() {
           <div className="flex items-center gap-3">
             <Image
               src="/hummingbird-mark.jpeg"
-              alt="Hummingbird AI"
+              alt="Elua"
               width={44}
               height={44}
               className="rounded-2xl"
@@ -20,7 +20,7 @@ export default function LandingPage() {
             />
             <div>
               <p className="text-sm font-semibold leading-none sm:text-base">
-                Hummingbird AI
+                Elua
               </p>
               <p className="mt-1 text-xs text-zinc-500">
                 Premium marketing workspace
@@ -47,7 +47,7 @@ export default function LandingPage() {
             </h1>
 
             <p className="mt-6 max-w-3xl text-lg leading-relaxed text-zinc-300 sm:text-xl">
-              Hummingbird AI turns your photos, short clips, or simple ideas into a ready-to-post campaign with the caption, CTA, reply message, hashtags, and posting direction already written.
+              Elua turns your photos, short clips, or simple ideas into a ready-to-post campaign with the caption, CTA, reply message, hashtags, and posting direction already written.
             </p>
 
             <p className="mt-4 max-w-2xl text-sm leading-relaxed text-zinc-500 sm:text-base">
@@ -68,7 +68,7 @@ export default function LandingPage() {
               href="#how-it-works"
               className="mt-5 inline-flex text-sm font-semibold text-purple-300 transition hover:text-purple-200"
             >
-              ↓ See what Hummingbird creates for you
+              ↓ See what Elua creates for you
             </a>
 
           </div>
@@ -80,13 +80,13 @@ export default function LandingPage() {
         >
           <div className="mb-8 max-w-3xl">
             <p className="text-sm font-semibold uppercase tracking-wide text-purple-300">
-              What Hummingbird creates for you
+              What Elua creates for you
             </p>
             <h2 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
               A complete marketing post, not just a caption.
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-zinc-400 sm:text-base">
-              Hummingbird gives service businesses the pieces they need to post faster,
+              Elua gives service businesses the pieces they need to post faster,
               sound better, and turn content into real conversations.
             </p>
           </div>
@@ -122,7 +122,7 @@ export default function LandingPage() {
                 Better marketing without spending hours on content.
               </h2>
               <p className="mt-3 text-sm leading-relaxed text-zinc-400 sm:text-base">
-                Hummingbird is made for business owners who need consistent content,
+                Elua is made for business owners who need consistent content,
                 but do not have time to plan posts, write captions, think of CTAs,
                 and figure out what to say to leads.
               </p>

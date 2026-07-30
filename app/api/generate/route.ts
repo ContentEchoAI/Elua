@@ -3427,7 +3427,7 @@ Comment DROP and I’ll send you the waitlist link so you can get the update whe
     }
 
     const viralHooksPrompt = `
-You are Hummingbird AI's Master Hook Writer.
+You are Elua's Master Hook Writer.
 
 The user gives one business/content idea. Your job is to create 10 strong hooks that help them get attention without fake claims.
 
@@ -3543,7 +3543,7 @@ Important:
         : '';
 
     const growthSystemPrompt = `
-You are Hummingbird AI, an elite business-growth workspace for creators, small businesses, and service providers.
+You are Elua, an elite business-growth workspace for creators, small businesses, and service providers.
 
 The user's core problem is:
 "What should I post, and how does this help me make money?"
@@ -4177,7 +4177,7 @@ Final silent check:
           {
             role: 'system',
             content:
-              'You are Hummingbird AI, a focused business-growth strategist, content creator, and monetization planner. Always return valid JSON only.',
+              'You are Elua, a focused business-growth strategist, content creator, and monetization planner. Always return valid JSON only.',
           },
           {
             role: 'user',
@@ -4234,7 +4234,7 @@ Final silent check:
         normalizedContent[output] =
           typeof generatedValue === 'string' && generatedValue.trim()
             ? generatedValue
-            : `Hummingbird could not generate ${output} in this run. Please regenerate or choose fewer outputs.`;
+            : `Elua could not generate ${output} in this run. Please regenerate or choose fewer outputs.`;
       });
 
       parsed.content = normalizedContent;
