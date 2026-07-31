@@ -1682,11 +1682,11 @@ function getPlatformDisplayName(value?: string) {
   const activeTabs = generationMode === 'viral_hooks' ? hooksTabs : growthTabs;
 
   const platformPanel = signedIn ? (
-    <div className="mb-4 rounded-3xl border border-zinc-800 bg-zinc-900/90 p-4 sm:p-5">
+    <div className="mb-4 rounded-3xl border border-[#152F37] bg-[#0A2830]/90 p-4 sm:p-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <p className="text-sm font-semibold text-white">Posting Setup</p>
-          <p className="mt-1 text-xs leading-relaxed text-zinc-400 sm:text-sm">
+          <p className="mt-1 text-xs leading-relaxed text-[#AFBDB9] sm:text-sm">
             {metaStatusLoading
               ? 'Checking Facebook and Instagram connection...'
               : metaStatus?.message ||
@@ -1708,7 +1708,7 @@ function getPlatformDisplayName(value?: string) {
             className={`shrink-0 rounded-2xl border px-4 py-2 text-center text-xs font-semibold ${
               metaStatus?.publishingEnabled
                 ? 'border-emerald-500/30 text-emerald-200'
-                : 'border-zinc-700 text-zinc-300'
+                : 'border-[#223F49] text-[#D9D3C4]'
             }`}
           >
             {metaStatus?.publishingEnabled
@@ -1719,13 +1719,13 @@ function getPlatformDisplayName(value?: string) {
       </div>
 
       {metaStatus?.connected && !metaStatus.reconnectRequired && (
-        <div className="mt-4 rounded-2xl border border-zinc-800 bg-zinc-950/40 p-3 sm:p-4">
-          <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
+        <div className="mt-4 rounded-2xl border border-[#152F37] bg-[#071C22]/40 p-3 sm:p-4">
+          <p className="text-xs font-medium uppercase tracking-wide text-[#8FA3A3]">
             Facebook Page
           </p>
 
           {metaPagesLoading ? (
-            <p className="mt-2 text-sm text-zinc-400">
+            <p className="mt-2 text-sm text-[#AFBDB9]">
               Loading your Facebook Pages...
             </p>
           ) : metaPages.length > 0 ? (
@@ -1735,7 +1735,7 @@ function getPlatformDisplayName(value?: string) {
                 onChange={(event) =>
                   setSelectedMetaPageId(event.target.value)
                 }
-                className="min-w-0 flex-1 rounded-xl border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white outline-none focus:border-purple-500"
+                className="min-w-0 flex-1 rounded-xl border border-[#223F49] bg-[#0E2A31] px-3 py-2 text-sm text-white outline-none focus:border-[#F2705B]"
               >
                 {metaPages.map((page) => (
                   <option key={page.id} value={page.id}>
@@ -1755,7 +1755,7 @@ function getPlatformDisplayName(value?: string) {
                   !selectedMetaPageId ||
                   selectedMetaPageId === metaStatus.selectedPage?.id
                 }
-                className="rounded-xl bg-purple-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-purple-500 disabled:cursor-not-allowed disabled:opacity-50"
+                className="rounded-xl bg-[#F2705B] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#E4614C] disabled:cursor-not-allowed disabled:bg-[#153039] disabled:text-[#7E959B]"
               >
                 {metaPageSelectionLoading
                   ? 'Saving...'
@@ -1765,13 +1765,13 @@ function getPlatformDisplayName(value?: string) {
               </button>
             </div>
           ) : (
-            <p className="mt-2 text-sm leading-relaxed text-zinc-400">
+            <p className="mt-2 text-sm leading-relaxed text-[#AFBDB9]">
               No manageable Facebook Pages were found for this connection.
             </p>
           )}
 
           {metaStatus.selectedPage && (
-            <p className="mt-3 text-xs leading-relaxed text-zinc-400">
+            <p className="mt-3 text-xs leading-relaxed text-[#AFBDB9]">
               Selected: {metaStatus.selectedPage.name}
               {metaStatus.instagramAccount
                 ? ` · Instagram ${
@@ -1784,7 +1784,7 @@ function getPlatformDisplayName(value?: string) {
           )}
 
           {metaPageMessage && (
-            <p className="mt-3 text-xs leading-relaxed text-purple-300">
+            <p className="mt-3 text-xs leading-relaxed text-[#F8A793]">
               {metaPageMessage}
             </p>
           )}
@@ -1794,13 +1794,13 @@ function getPlatformDisplayName(value?: string) {
   ) : null;
 
   const savedGenerationsCard = (
-    <div className="w-full min-w-0 rounded-3xl border border-zinc-800 bg-zinc-900/90 p-4 sm:p-6">
+    <div className="w-full min-w-0 rounded-3xl border border-[#152F37] bg-[#0A2830]/90 p-4 sm:p-6">
       <div className="mb-3 flex items-center justify-between gap-4">
         <div>
           <h2 className="text-lg font-semibold sm:text-2xl">
             Campaign Library
           </h2>
-          <p className="text-xs text-zinc-500 sm:text-sm">
+          <p className="text-xs text-[#8FA3A3] sm:text-sm">
             Saved posts and campaigns live here. Click Reopen to load one back into your workspace.
           </p>
         </div>
@@ -1808,7 +1808,7 @@ function getPlatformDisplayName(value?: string) {
         {signedIn && savedGenerations.length > 0 && (
           <button
             onClick={clearAllSavedGenerations}
-            className="rounded-xl bg-zinc-800 px-3 py-2 text-xs text-zinc-300 transition hover:bg-zinc-700"
+            className="rounded-xl bg-[#0E2A31] px-3 py-2 text-xs text-[#D9D3C4] transition hover:bg-[#153039]"
           >
             Clear All
           </button>
@@ -1816,32 +1816,32 @@ function getPlatformDisplayName(value?: string) {
       </div>
 
       {!isLoaded || savedLoading ? (
-        <div className="rounded-2xl border border-dashed border-zinc-700 p-3 text-center">
-          <p className="text-xs text-zinc-400">Loading saved generations...</p>
+        <div className="rounded-2xl border border-dashed border-[#223F49] p-3 text-center">
+          <p className="text-xs text-[#AFBDB9]">Loading saved generations...</p>
         </div>
       ) : !signedIn ? (
-        <div className="rounded-2xl border border-dashed border-zinc-700 p-3 text-center">
-          <p className="text-xs text-zinc-400">
+        <div className="rounded-2xl border border-dashed border-[#223F49] p-3 text-center">
+          <p className="text-xs text-[#AFBDB9]">
             Create a free account to save campaigns, reopen past plans, and build your next weekly content campaign later.
           </p>
         </div>
       ) : savedGenerations.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-zinc-700 p-3 text-center">
-          <p className="text-xs text-zinc-400">No saved campaigns yet. Click Save Campaign after generating a post, then it will appear here.</p>
+        <div className="rounded-2xl border border-dashed border-[#223F49] p-3 text-center">
+          <p className="text-xs text-[#AFBDB9]">No saved campaigns yet. Click Save Campaign after generating a post, then it will appear here.</p>
         </div>
       ) : (
         <div className="max-h-[260px] space-y-3 overflow-y-auto pr-1">
           {savedGenerations.map((saved) => (
             <div
               key={saved.id}
-              className="rounded-2xl border border-zinc-700 bg-zinc-800 p-4"
+              className="rounded-2xl border border-[#223F49] bg-[#0E2A31] p-4"
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-medium text-zinc-100 sm:text-base">
+                  <p className="truncate text-sm font-medium text-[#F6F1E7] sm:text-base">
                     {saved.title}
                   </p>
-                  <p className="mt-1 text-xs text-zinc-500">
+                  <p className="mt-1 text-xs text-[#8FA3A3]">
                     {saved.mode === 'viral_hooks'
                       ? '🔥 Hook Set'
                       : saved.mode === 'make_my_post'
@@ -1853,7 +1853,7 @@ function getPlatformDisplayName(value?: string) {
 
                 <button
                   onClick={() => deleteSavedGeneration(saved.id)}
-                  className="text-xs text-zinc-500 transition hover:text-red-400"
+                  className="text-xs text-[#8FA3A3] transition hover:text-red-400"
                 >
                   Delete
                 </button>
@@ -1861,12 +1861,12 @@ function getPlatformDisplayName(value?: string) {
 
               <button
                 onClick={() => loadSavedGeneration(saved)}
-                className="mt-3 w-full rounded-xl bg-zinc-700 py-2 text-sm transition hover:bg-zinc-600"
+                className="mt-3 w-full rounded-xl bg-[#153039] py-2 text-sm transition hover:bg-[#1C3D46]"
               >
                 Reopen Campaign
               </button>
 
-              <p className="mt-2 text-[11px] leading-relaxed text-zinc-500">
+              <p className="mt-2 text-[11px] leading-relaxed text-[#8FA3A3]">
                 Use this to revisit the angle, CTA, Money Plan, and follow-up path before planning your next campaign.
               </p>
             </div>
@@ -1902,8 +1902,8 @@ function getPlatformDisplayName(value?: string) {
         : `Not posted to ${todaysPostPlatformLabel}`;
 
   const todaysPostCard = todaysPost ? (
-    <div className="mb-4 w-full rounded-3xl border border-purple-500/30 bg-gradient-to-br from-purple-950/70 to-zinc-900 p-4 sm:p-6 lg:mb-8">
-      <p className="text-xs font-semibold uppercase tracking-wide text-purple-300">
+    <div className="mb-4 w-full rounded-3xl border border-[#F2705B]/30 bg-gradient-to-br from-[#0D3541]/70 to-[#0A2830] p-4 sm:p-6 lg:mb-8">
+      <p className="text-xs font-semibold uppercase tracking-wide text-[#F8A793]">
         Today’s Focus
       </p>
 
@@ -1911,11 +1911,11 @@ function getPlatformDisplayName(value?: string) {
         {todaysPostTitle}
       </h2>
 
-      <p className="mt-1 text-xs text-zinc-400">
+      <p className="mt-1 text-xs text-[#AFBDB9]">
         {todaysPost.platform} · {todaysPostStatus}
       </p>
 
-      <p className="mt-4 line-clamp-4 whitespace-pre-wrap text-sm leading-relaxed text-zinc-200">
+      <p className="mt-4 line-clamp-4 whitespace-pre-wrap text-sm leading-relaxed text-[#EDE7D9]">
         {todaysPost.caption}
       </p>
 
@@ -1938,7 +1938,7 @@ function getPlatformDisplayName(value?: string) {
             onClick={() =>
               copyToClipboard(todaysPost.cta, `Today CTA ${todaysPost.id}`)
             }
-            className="rounded-xl bg-zinc-700 px-3 py-2 text-xs text-white"
+            className="rounded-xl bg-[#153039] px-3 py-2 text-xs text-white"
           >
             {copiedItem === `Today CTA ${todaysPost.id}`
               ? 'Copied!'
@@ -1952,7 +1952,7 @@ function getPlatformDisplayName(value?: string) {
             onClick={() =>
               copyToClipboard(todaysPost.dmReply, `Today reply ${todaysPost.id}`)
             }
-            className="rounded-xl bg-zinc-700 px-3 py-2 text-xs text-white"
+            className="rounded-xl bg-[#153039] px-3 py-2 text-xs text-white"
           >
             {copiedItem === `Today reply ${todaysPost.id}`
               ? 'Copied!'
@@ -1962,8 +1962,8 @@ function getPlatformDisplayName(value?: string) {
       </div>
     </div>
   ) : (
-    <div className="mb-4 w-full rounded-3xl border border-zinc-800 bg-zinc-900/90 p-4 sm:p-6 lg:mb-8">
-      <p className="text-xs font-semibold uppercase tracking-wide text-purple-300">
+    <div className="mb-4 w-full rounded-3xl border border-[#152F37] bg-[#0A2830]/90 p-4 sm:p-6 lg:mb-8">
+      <p className="text-xs font-semibold uppercase tracking-wide text-[#F8A793]">
         Today’s Focus
       </p>
 
@@ -1971,20 +1971,20 @@ function getPlatformDisplayName(value?: string) {
         Create today’s post
       </h2>
 
-      <p className="mt-2 text-sm leading-relaxed text-zinc-400">
+      <p className="mt-2 text-sm leading-relaxed text-[#AFBDB9]">
         Approve a post and it will appear here ready for you to use today.
       </p>
     </div>
   );
 
   const approvedPostsCard = (
-    <div className="w-full min-w-0 rounded-3xl border border-emerald-500/20 bg-zinc-900/90 p-4 sm:p-6">
+    <div className="w-full min-w-0 rounded-3xl border border-emerald-500/20 bg-[#0A2830]/90 p-4 sm:p-6">
       <div className="mb-3 flex items-start justify-between gap-4">
         <div>
           <h2 className="text-lg font-semibold text-white sm:text-2xl">
             Posting Queue
           </h2>
-          <p className="text-xs leading-relaxed text-zinc-500 sm:text-sm">
+          <p className="text-xs leading-relaxed text-[#8FA3A3] sm:text-sm">
             Approved posts live here. They are saved on this device, but nothing has been posted yet.
           </p>
         </div>
@@ -1993,7 +1993,7 @@ function getPlatformDisplayName(value?: string) {
           <button
             type="button"
             onClick={() => setApprovedPosts([])}
-            className="rounded-xl bg-zinc-800 px-3 py-2 text-xs text-zinc-300 transition hover:bg-zinc-700"
+            className="rounded-xl bg-[#0E2A31] px-3 py-2 text-xs text-[#D9D3C4] transition hover:bg-[#153039]"
           >
             Clear
           </button>
@@ -2001,8 +2001,8 @@ function getPlatformDisplayName(value?: string) {
       </div>
 
       {approvedPosts.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-zinc-700 p-3 text-center">
-          <p className="text-xs text-zinc-400">
+        <div className="rounded-2xl border border-dashed border-[#223F49] p-3 text-center">
+          <p className="text-xs text-[#AFBDB9]">
             No approved posts yet. Click Approve & Save to Queue after reviewing a result, then it will appear here.
           </p>
         </div>
@@ -2011,14 +2011,14 @@ function getPlatformDisplayName(value?: string) {
           {approvedPosts.map((post) => (
             <div
               key={post.id}
-              className="rounded-2xl border border-zinc-700 bg-zinc-800 p-4"
+              className="rounded-2xl border border-[#223F49] bg-[#0E2A31] p-4"
             >
               <div className="mb-2 flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-medium text-zinc-100 sm:text-base">
+                  <p className="truncate text-sm font-medium text-[#F6F1E7] sm:text-base">
                     {post.platform}
                   </p>
-                  <p className="text-[11px] text-zinc-500">
+                  <p className="text-[11px] text-[#8FA3A3]">
                     Approved {formatSavedDate(post.createdAt)} ·{' '}
                     {post.status === 'posted'
                       ? `Posted${
@@ -2037,13 +2037,13 @@ function getPlatformDisplayName(value?: string) {
                 <button
                   type="button"
                   onClick={() => removeApprovedPost(post.id)}
-                  className="text-xs text-zinc-500 transition hover:text-red-400"
+                  className="text-xs text-[#8FA3A3] transition hover:text-red-400"
                 >
                   Remove
                 </button>
               </div>
 
-              <p className="line-clamp-3 whitespace-pre-wrap text-xs leading-relaxed text-zinc-300">
+              <p className="line-clamp-3 whitespace-pre-wrap text-xs leading-relaxed text-[#D9D3C4]">
                 {post.caption}
               </p>
 
@@ -2053,7 +2053,7 @@ function getPlatformDisplayName(value?: string) {
                   onClick={() =>
                     copyToClipboard(post.caption, `Approved ${post.id}`)
                   }
-                  className="rounded-xl bg-zinc-700 px-3 py-2 text-xs text-zinc-100 transition hover:bg-zinc-600"
+                  className="rounded-xl bg-[#153039] px-3 py-2 text-xs text-[#F6F1E7] transition hover:bg-[#1C3D46]"
                 >
                   {copiedItem === `Approved ${post.id}`
                     ? 'Copied!'
@@ -2064,7 +2064,7 @@ function getPlatformDisplayName(value?: string) {
                   <button
                     type="button"
                     onClick={() => copyToClipboard(post.cta, `Approved CTA ${post.id}`)}
-                    className="rounded-xl bg-zinc-700 px-3 py-2 text-xs text-zinc-100 transition hover:bg-zinc-600"
+                    className="rounded-xl bg-[#153039] px-3 py-2 text-xs text-[#F6F1E7] transition hover:bg-[#1C3D46]"
                   >
                     {copiedItem === `Approved CTA ${post.id}` ? 'Copied!' : 'Copy CTA'}
                   </button>
@@ -2074,7 +2074,7 @@ function getPlatformDisplayName(value?: string) {
                   <button
                     type="button"
                     onClick={() => copyToClipboard(post.dmReply, `Approved reply ${post.id}`)}
-                    className="rounded-xl bg-zinc-700 px-3 py-2 text-xs text-zinc-100 transition hover:bg-zinc-600"
+                    className="rounded-xl bg-[#153039] px-3 py-2 text-xs text-[#F6F1E7] transition hover:bg-[#1C3D46]"
                   >
                     {copiedItem === `Approved reply ${post.id}` ? 'Copied!' : 'Copy Reply'}
                   </button>
@@ -2088,7 +2088,7 @@ function getPlatformDisplayName(value?: string) {
                       publishingFacebookId === post.id ||
                       !metaStatus?.publishingEnabled
                     }
-                    className="rounded-xl bg-blue-500 px-3 py-2 text-xs font-semibold text-white transition hover:bg-blue-400 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="rounded-xl bg-blue-500 px-3 py-2 text-xs font-semibold text-white transition hover:bg-blue-400 disabled:cursor-not-allowed disabled:bg-[#153039] disabled:text-[#7E959B]"
                   >
                     {publishingFacebookId === post.id
                       ? 'Publishing...'
@@ -2107,7 +2107,7 @@ function getPlatformDisplayName(value?: string) {
                       !post.mediaUrls ||
                       post.mediaUrls.length === 0
                     }
-                    className="rounded-xl bg-pink-500 px-3 py-2 text-xs font-semibold text-white transition hover:bg-pink-400 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="rounded-xl bg-[#F2705B] px-3 py-2 text-xs font-semibold text-white transition hover:bg-[#E4614C] disabled:cursor-not-allowed disabled:bg-[#153039] disabled:text-[#7E959B]"
                   >
                     {publishingInstagramId === post.id
                       ? 'Publishing...'
@@ -2147,10 +2147,10 @@ function getPlatformDisplayName(value?: string) {
                 </a>
               )}
               {post.instagramStatus === 'posted' && (
-                <p className="mt-3 text-xs font-semibold text-pink-300">Posted to Instagram</p>
+                <p className="mt-3 text-xs font-semibold text-[#F8A793]">Posted to Instagram</p>
               )}
               {post.instagramPermalinkUrl && (
-                <a href={post.instagramPermalinkUrl} target="_blank" rel="noreferrer" className="mt-1 inline-block text-xs font-semibold text-pink-300 underline underline-offset-2">View Instagram post</a>
+                <a href={post.instagramPermalinkUrl} target="_blank" rel="noreferrer" className="mt-1 inline-block text-xs font-semibold text-[#F8A793] underline underline-offset-2">View Instagram post</a>
               )}
               {post.instagramPublishError && (
                 <p className="mt-3 rounded-xl border border-red-500/20 bg-red-500/5 p-3 text-xs leading-relaxed text-red-200">{post.instagramPublishError}</p>
@@ -2179,14 +2179,14 @@ function getPlatformDisplayName(value?: string) {
           <p className="mb-1 text-base font-semibold sm:text-lg">
             Loading account...
           </p>
-          <p className="text-sm text-zinc-600">Checking your sign-in status.</p>
+          <p className="text-sm text-[#6E8489]">Checking your sign-in status.</p>
         </>
       ) : !signedIn ? (
         <>
           <p className="mb-1 text-lg font-semibold sm:text-xl">
             Build a weekly content workspace
           </p>
-          <p className="mb-3 text-sm leading-relaxed text-zinc-600">
+          <p className="mb-3 text-sm leading-relaxed text-[#6E8489]">
               Create a free account to generate a Content + Money Plan, save your best campaigns,
               and reopen them when you are ready to post again. No spam — just your saved workspace.
           </p>
@@ -2199,7 +2199,7 @@ function getPlatformDisplayName(value?: string) {
             </SignInButton>
 
             <SignUpButton mode="modal">
-              <button className="w-full rounded-2xl border border-zinc-300 bg-zinc-100 py-3 text-sm font-semibold text-black transition hover:scale-[1.02]">
+              <button className="w-full rounded-2xl border border-[#D9D3C4] bg-[#F6F1E7] py-3 text-sm font-semibold text-black transition hover:scale-[1.02]">
                 Create Workspace
               </button>
             </SignUpButton>
@@ -2210,7 +2210,7 @@ function getPlatformDisplayName(value?: string) {
           <div className="mb-3 flex items-center justify-between gap-4">
             <div>
               <p className="text-base font-semibold sm:text-lg">Account</p>
-              <p className="text-sm text-zinc-600">You are signed in.</p>
+              <p className="text-sm text-[#6E8489]">You are signed in.</p>
             </div>
 
             <UserButton />
@@ -2221,7 +2221,7 @@ function getPlatformDisplayName(value?: string) {
                 <p className="mb-1 text-base font-semibold sm:text-lg">
                   Founder Plan Active
                 </p>
-                <p className="mb-3 text-sm leading-relaxed text-zinc-600">
+                <p className="mb-3 text-sm leading-relaxed text-[#6E8489]">
                   You have unlimited weekly execution plans that turn one business goal
                   into platform-ready posts, CTAs, lead magnet ideas, Money Plans,
                   7-Day Action Plans, hooks, and saved workspace access.
@@ -2236,13 +2236,13 @@ function getPlatformDisplayName(value?: string) {
                 <p className="mb-1 text-base font-semibold sm:text-lg">
                   Founder Plan — $19/mo
                 </p>
-                <p className="mb-3 text-sm leading-relaxed text-zinc-600">
+                <p className="mb-3 text-sm leading-relaxed text-[#6E8489]">
                   For small businesses that need to know what to post, what CTA to use,
                   and how each campaign can lead to replies, quote requests, bookings, or sales.
                 </p>
 
-                <div className="mb-3 rounded-2xl border border-zinc-200 bg-zinc-50 p-3 text-sm leading-relaxed text-zinc-700">
-                  <p className="mb-2 font-semibold text-zinc-900">
+                <div className="mb-3 rounded-2xl border border-[#EDE7D9] bg-[#FBF8F1] p-3 text-sm leading-relaxed text-[#587075]">
+                  <p className="mb-2 font-semibold text-[#092B33]">
                     Founder Plan gives you a weekly execution system:
                   </p>
                   <div className="space-y-2">
@@ -2269,7 +2269,7 @@ function getPlatformDisplayName(value?: string) {
   );
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-zinc-950 text-white">
+    <div className="min-h-screen overflow-x-hidden bg-[#071C22] text-white">
       <div className="mx-auto w-full max-w-7xl overflow-x-hidden px-4 py-4 sm:px-6 sm:py-8">
         <header className="mb-6 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -2282,7 +2282,7 @@ function getPlatformDisplayName(value?: string) {
               <p className="text-sm font-semibold leading-none text-white sm:text-base">
                 Elua
               </p>
-              <p className="mt-1 text-xs text-zinc-500">
+              <p className="mt-1 text-xs text-[#8FA3A3]">
                 Photo-to-post workspace
               </p>
             </div>
@@ -2290,10 +2290,10 @@ function getPlatformDisplayName(value?: string) {
 
           <div className="flex shrink-0 items-center gap-2">
             {!isLoaded ? (
-              <div className="h-9 w-24 animate-pulse rounded-full bg-zinc-800" />
+              <div className="h-9 w-24 animate-pulse rounded-full bg-[#0E2A31]" />
             ) : signedIn ? (
-              <div className="flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/80 px-3 py-2">
-                <span className="text-xs font-semibold text-zinc-300">
+              <div className="flex items-center gap-2 rounded-full border border-[#152F37] bg-[#0A2830]/80 px-3 py-2">
+                <span className="text-xs font-semibold text-[#D9D3C4]">
                   Account
                 </span>
                 <UserButton />
@@ -2312,8 +2312,8 @@ function getPlatformDisplayName(value?: string) {
 
         <div className="mb-4 grid gap-4 lg:mb-8 lg:grid-cols-[1.25fr_0.75fr] lg:items-start">
           <div className="max-w-4xl">
-            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900 px-3 py-1.5 text-xs text-zinc-300 sm:px-4 sm:py-2 sm:text-sm">
-              <span className="text-purple-400">✦</span>
+            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-[#152F37] bg-[#0A2830] px-3 py-1.5 text-xs text-[#D9D3C4] sm:px-4 sm:py-2 sm:text-sm">
+              <span className="text-[#F2705B]">✦</span>
               AI Posting Assistant for Small Service Businesses
             </div>
 
@@ -2321,7 +2321,7 @@ function getPlatformDisplayName(value?: string) {
               Turn your business photos into ready-to-post content.
             </h1>
 
-            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-zinc-400 sm:mt-5 sm:text-lg">
+            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#AFBDB9] sm:mt-5 sm:text-lg">
               Upload business photos or short clips. Elua creates the caption, CTA,
               follow-up reply, hashtags, and posting direction.
             </p>
@@ -2333,23 +2333,23 @@ function getPlatformDisplayName(value?: string) {
         <div className="hidden">
           <div className="mb-4 grid gap-3 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-purple-400">
+              <p className="text-xs font-semibold uppercase tracking-wide text-[#F2705B]">
                 Sample output preview
               </p>
               <h3 className="mt-1 text-xl font-semibold leading-tight text-white sm:text-2xl">
                 What you get in one generation
               </h3>
-              <p className="mt-2 text-sm leading-relaxed text-zinc-400">
+              <p className="mt-2 text-sm leading-relaxed text-[#AFBDB9]">
                 See the kind of strategy, content, CTA, and follow-up path Elua
                 builds from one business goal or post idea.
               </p>
             </div>
 
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-950/50 p-4">
-              <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-500">
+            <div className="rounded-2xl border border-[#152F37] bg-[#071C22]/50 p-4">
+              <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-[#8FA3A3]">
                 Example input
               </p>
-              <p className="text-sm leading-relaxed text-zinc-200">
+              <p className="text-sm leading-relaxed text-[#EDE7D9]">
                 “I’m a fitness coach and I want Instagram content that helps me get more
                 online coaching calls.”
               </p>
@@ -2377,12 +2377,12 @@ function getPlatformDisplayName(value?: string) {
             ].map((item) => (
               <div
                 key={item.title}
-                className="rounded-2xl border border-zinc-800 bg-zinc-950/40 p-4"
+                className="rounded-2xl border border-[#152F37] bg-[#071C22]/40 p-4"
               >
-                <p className="mb-1 text-sm font-semibold text-purple-300">
+                <p className="mb-1 text-sm font-semibold text-[#F8A793]">
                   {item.title}
                 </p>
-                <p className="text-xs leading-relaxed text-zinc-400 sm:text-sm">
+                <p className="text-xs leading-relaxed text-[#AFBDB9] sm:text-sm">
                   {item.body}
                 </p>
               </div>
@@ -2396,17 +2396,17 @@ function getPlatformDisplayName(value?: string) {
 
         <div className="grid w-full min-w-0 items-stretch gap-4 lg:grid-cols-[0.95fr_1.2fr] lg:gap-8">
           <div className="order-1 min-w-0">
-            <div className="rounded-3xl border border-zinc-800 bg-zinc-900/90 p-4 sm:p-6">
+            <div className="rounded-3xl border border-[#152F37] bg-[#0A2830]/90 p-4 sm:p-6">
               <div className="mb-4">
                 <div className="mb-2 flex items-center justify-between gap-3">
-                  <p className="text-sm font-medium text-zinc-400">
+                  <p className="text-sm font-medium text-[#AFBDB9]">
                     Upload photos or short clips
                   </p>
 
                   {!isMakeMyPostMode && (
                     <button
                       onClick={loadNextExample}
-                      className="text-xs font-medium text-purple-400 hover:text-purple-300"
+                      className="text-xs font-medium text-[#F2705B] hover:text-[#F8A793]"
                     >
                       ✨ Example
                     </button>
@@ -2414,13 +2414,13 @@ function getPlatformDisplayName(value?: string) {
                 </div>
 
                 {isMakeMyPostMode && (
-                  <div className="rounded-2xl border border-dashed border-purple-500/40 bg-purple-500/10 p-4">
+                  <div className="rounded-2xl border border-dashed border-[#F2705B]/40 bg-[#F2705B]/10 p-4">
                     <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                       <div>
-                        <p className="text-sm font-semibold text-purple-200">
+                        <p className="text-sm font-semibold text-[#FBD3C9]">
                           Upload photos or short clips from your business
                         </p>
-                        <p className="mt-1 text-xs leading-relaxed text-zinc-400 sm:text-sm">
+                        <p className="mt-1 text-xs leading-relaxed text-[#AFBDB9] sm:text-sm">
                           Add up to 6 photos or short clip frames. Elua will choose the strongest visuals, write the caption, CTA, DM reply, hashtags, and posting direction.
                         </p>
                       </div>
@@ -2442,7 +2442,7 @@ function getPlatformDisplayName(value?: string) {
                         {uploadedImages.map((image, index) => (
                           <div
                             key={image.id}
-                            className="overflow-hidden rounded-xl border border-purple-500/20 bg-zinc-950/60"
+                            className="overflow-hidden rounded-xl border border-[#F2705B]/20 bg-[#071C22]/60"
                           >
                             <div className="relative aspect-square">
                               <img
@@ -2458,7 +2458,7 @@ function getPlatformDisplayName(value?: string) {
                                 Remove
                               </button>
                             </div>
-                            <p className="truncate px-2 py-1.5 text-[11px] text-zinc-400">
+                            <p className="truncate px-2 py-1.5 text-[11px] text-[#AFBDB9]">
                               {image.sourceType === 'video_frame'
                                 ? `Video frame ${index + 1}`
                                 : `Photo ${index + 1}`}
@@ -2467,7 +2467,7 @@ function getPlatformDisplayName(value?: string) {
                         ))}
                       </div>
                     ) : (
-                      <div className="rounded-xl border border-zinc-800 bg-zinc-950/50 p-3 text-xs leading-relaxed text-zinc-400 sm:text-sm">
+                      <div className="rounded-xl border border-[#152F37] bg-[#071C22]/50 p-3 text-xs leading-relaxed text-[#AFBDB9] sm:text-sm">
                         No media uploaded yet. Upload real work photos, short clips, before/afters, product shots, client-safe examples, or workspace/service visuals.
                       </div>
                     )}
@@ -2475,8 +2475,8 @@ function getPlatformDisplayName(value?: string) {
                 )}
 
                 {isMakeMyPostMode ? (
-                  <details className="mt-4 rounded-2xl border border-zinc-800 bg-zinc-950/30 p-3">
-                    <summary className="cursor-pointer text-xs font-medium uppercase tracking-wide text-zinc-500">
+                  <details className="mt-4 rounded-2xl border border-[#152F37] bg-[#071C22]/30 p-3">
+                    <summary className="cursor-pointer text-xs font-medium uppercase tracking-wide text-[#8FA3A3]">
                       Post Details
                     </summary>
 
@@ -2484,7 +2484,7 @@ function getPlatformDisplayName(value?: string) {
                       value={content}
                       onChange={(e) => setContent(e.target.value)}
                       placeholder="Optional: add service type, location, offer, tone, or what you want more of..."
-                      className="mt-3 h-24 w-full max-w-full resize-none rounded-2xl border border-zinc-700 bg-zinc-800 p-4 text-sm text-zinc-100 outline-none placeholder:text-zinc-500 focus:border-purple-500 sm:h-28 sm:p-5 sm:text-base"
+                      className="mt-3 h-24 w-full max-w-full resize-none rounded-2xl border border-[#223F49] bg-[#0E2A31] p-4 text-sm text-[#F6F1E7] outline-none placeholder:text-[#8FA3A3] focus:border-[#F2705B] sm:h-28 sm:p-5 sm:text-base"
                     />
                   </details>
                 ) : (
@@ -2496,29 +2496,29 @@ function getPlatformDisplayName(value?: string) {
                         ? 'Example: 10 hooks for a local realtor who wants more seller leads...'
                         : 'Example: A fitness coach wants a month of posts that lead to coaching calls...'
                     }
-                    className="h-28 w-full max-w-full resize-none rounded-2xl border border-zinc-700 bg-zinc-800 p-4 text-sm text-zinc-100 outline-none placeholder:text-zinc-500 focus:border-purple-500 sm:h-48 sm:p-5 sm:text-base"
+                    className="h-28 w-full max-w-full resize-none rounded-2xl border border-[#223F49] bg-[#0E2A31] p-4 text-sm text-[#F6F1E7] outline-none placeholder:text-[#8FA3A3] focus:border-[#F2705B] sm:h-48 sm:p-5 sm:text-base"
                   />
                 )}
               </div>
 
-              <div className="mb-4 rounded-2xl border border-zinc-800 bg-zinc-950/40 p-4">
+              <div className="mb-4 rounded-2xl border border-[#152F37] bg-[#071C22]/40 p-4">
                 <button
                   type="button"
                   onClick={() => setShowBusinessProfile((current) => !current)}
                   className="flex w-full items-center justify-between gap-3 text-left"
                 >
                   <div>
-                    <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
+                    <p className="text-xs font-medium uppercase tracking-wide text-[#8FA3A3]">
                       Your Business Profile
                     </p>
-                    <p className="mt-1 text-sm text-zinc-300">
+                    <p className="mt-1 text-sm text-[#D9D3C4]">
                       {hasBusinessProfile
                         ? 'Using your saved business details to save time and keep posts consistent.'
                         : 'Add your business details once so Elua can save you time each week.'}
                     </p>
                   </div>
 
-                  <span className="shrink-0 rounded-full bg-zinc-800 px-3 py-1 text-xs text-zinc-300">
+                  <span className="shrink-0 rounded-full bg-[#0E2A31] px-3 py-1 text-xs text-[#D9D3C4]">
                     {showBusinessProfile ? 'Hide' : hasBusinessProfile ? 'Edit' : 'Add'}
                   </span>
                 </button>
@@ -2526,7 +2526,7 @@ function getPlatformDisplayName(value?: string) {
                 {showBusinessProfile && (
                   <div className="mt-4 space-y-3">
                     <div>
-                      <label className="mb-1 block text-xs font-medium text-zinc-400">
+                      <label className="mb-1 block text-xs font-medium text-[#AFBDB9]">
                         Business type
                       </label>
                       <input
@@ -2535,12 +2535,12 @@ function getPlatformDisplayName(value?: string) {
                           updateBusinessProfile('businessType', e.target.value)
                         }
                         placeholder="Example: mobile detailer, lash artist, cleaner, realtor"
-                        className="w-full rounded-xl border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-100 outline-none placeholder:text-zinc-500 focus:border-purple-500"
+                        className="w-full rounded-xl border border-[#223F49] bg-[#0E2A31] px-3 py-2 text-sm text-[#F6F1E7] outline-none placeholder:text-[#8FA3A3] focus:border-[#F2705B]"
                       />
                     </div>
 
                     <div>
-                      <label className="mb-1 block text-xs font-medium text-zinc-400">
+                      <label className="mb-1 block text-xs font-medium text-[#AFBDB9]">
                         Main services
                       </label>
                       <input
@@ -2549,13 +2549,13 @@ function getPlatformDisplayName(value?: string) {
                           updateBusinessProfile('services', e.target.value)
                         }
                         placeholder="Example: interior details, lash refills, house cleaning, seller consultations"
-                        className="w-full rounded-xl border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-100 outline-none placeholder:text-zinc-500 focus:border-purple-500"
+                        className="w-full rounded-xl border border-[#223F49] bg-[#0E2A31] px-3 py-2 text-sm text-[#F6F1E7] outline-none placeholder:text-[#8FA3A3] focus:border-[#F2705B]"
                       />
                     </div>
 
 
                     <div>
-                      <label className="mb-1 block text-xs font-medium text-zinc-400">
+                      <label className="mb-1 block text-xs font-medium text-[#AFBDB9]">
                         Writing style / business notes
                       </label>
                       <textarea
@@ -2564,7 +2564,7 @@ function getPlatformDisplayName(value?: string) {
                           updateBusinessProfile('notes', e.target.value)
                         }
                         placeholder="Example: casual, helpful, simple, sounds like a real person, no hype"
-                        className="h-20 w-full resize-none rounded-xl border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-100 outline-none placeholder:text-zinc-500 focus:border-purple-500"
+                        className="h-20 w-full resize-none rounded-xl border border-[#223F49] bg-[#0E2A31] px-3 py-2 text-sm text-[#F6F1E7] outline-none placeholder:text-[#8FA3A3] focus:border-[#F2705B]"
                       />
                     </div>
 
@@ -2572,7 +2572,7 @@ function getPlatformDisplayName(value?: string) {
                       <button
                         type="button"
                         onClick={() => setBusinessProfile(emptyBusinessProfile)}
-                        className="text-xs font-medium text-zinc-500 transition hover:text-zinc-300"
+                        className="text-xs font-medium text-[#8FA3A3] transition hover:text-[#D9D3C4]"
                       >
                         Clear business profile
                       </button>
@@ -2582,7 +2582,7 @@ function getPlatformDisplayName(value?: string) {
               </div>
 
               <div className={`mb-4 ${isMakeMyPostMode ? 'hidden' : ''}`}>
-                <p className="mb-2 text-xs font-medium uppercase tracking-wide text-zinc-500">
+                <p className="mb-2 text-xs font-medium uppercase tracking-wide text-[#8FA3A3]">
                   Mode
                 </p>
                 <div className="grid min-w-0 grid-cols-3 gap-2">
@@ -2595,8 +2595,8 @@ function getPlatformDisplayName(value?: string) {
                     }}
                     className={`rounded-2xl px-3 py-2.5 text-sm font-medium transition ${
                       generationMode === 'growth_system'
-                        ? 'bg-purple-600 text-white shadow-lg shadow-purple-900/30'
-                        : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+                        ? 'bg-[#F2705B] text-white shadow-lg shadow-[#04141A]/30'
+                        : 'bg-[#0E2A31] text-[#D9D3C4] hover:bg-[#153039]'
                     }`}
                   >
                     🚀 Content + Money Plan
@@ -2611,8 +2611,8 @@ function getPlatformDisplayName(value?: string) {
                     }}
                     className={`rounded-2xl px-3 py-2.5 text-sm font-medium transition ${
                       generationMode === 'make_my_post'
-                        ? 'bg-purple-600 text-white shadow-lg shadow-purple-900/30'
-                        : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+                        ? 'bg-[#F2705B] text-white shadow-lg shadow-[#04141A]/30'
+                        : 'bg-[#0E2A31] text-[#D9D3C4] hover:bg-[#153039]'
                     }`}
                   >
                     📸 Make My Post
@@ -2627,8 +2627,8 @@ function getPlatformDisplayName(value?: string) {
                     }}
                     className={`rounded-2xl px-3 py-2.5 text-sm font-medium transition ${
                       generationMode === 'viral_hooks'
-                        ? 'bg-pink-600 text-white shadow-lg shadow-pink-900/30'
-                        : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+                        ? 'bg-[#F2705B] text-white shadow-lg shadow-[#04141A]/30'
+                        : 'bg-[#0E2A31] text-[#D9D3C4] hover:bg-[#153039]'
                     }`}
                   >
                     🔥 Hooks Only
@@ -2637,7 +2637,7 @@ function getPlatformDisplayName(value?: string) {
               </div>
 
               <div className="mb-4">
-                <p className="mb-2 text-xs font-medium uppercase tracking-wide text-zinc-500">
+                <p className="mb-2 text-xs font-medium uppercase tracking-wide text-[#8FA3A3]">
                   Post goal
                 </p>
                 <div className="grid min-w-0 grid-cols-3 gap-2">
@@ -2651,8 +2651,8 @@ function getPlatformDisplayName(value?: string) {
                       onClick={() => setGoal(g.id)}
                       className={`rounded-2xl px-2 py-2.5 text-sm font-medium transition ${
                         goal === g.id
-                          ? 'bg-purple-600 text-white shadow-lg shadow-purple-900/30'
-                          : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+                          ? 'bg-[#F2705B] text-white shadow-lg shadow-[#04141A]/30'
+                          : 'bg-[#0E2A31] text-[#D9D3C4] hover:bg-[#153039]'
                       }`}
                     >
                       {g.label}
@@ -2661,13 +2661,13 @@ function getPlatformDisplayName(value?: string) {
                 </div>
               </div>
 
-              <details className="mb-4 rounded-2xl border border-zinc-800 bg-zinc-950/30 p-3">
-                <summary className="cursor-pointer text-xs font-medium uppercase tracking-wide text-zinc-500">
+              <details className="mb-4 rounded-2xl border border-[#152F37] bg-[#071C22]/30 p-3">
+                <summary className="cursor-pointer text-xs font-medium uppercase tracking-wide text-[#8FA3A3]">
                   More options
                 </summary>
 
                 <div className="mt-3">
-                  <p className="mb-2 text-xs font-medium uppercase tracking-wide text-zinc-500">
+                  <p className="mb-2 text-xs font-medium uppercase tracking-wide text-[#8FA3A3]">
                     Post Tone
                   </p>
                   <div className="flex max-w-full gap-2 overflow-x-auto pb-1">
@@ -2677,8 +2677,8 @@ function getPlatformDisplayName(value?: string) {
                         onClick={() => setSelectedVoice(v.id)}
                         className={`shrink-0 rounded-2xl px-3 py-2 text-xs transition sm:text-sm ${
                           selectedVoice === v.id
-                            ? 'bg-purple-600 text-white'
-                            : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+                            ? 'bg-[#F2705B] text-white'
+                            : 'bg-[#0E2A31] text-[#D9D3C4] hover:bg-[#153039]'
                         }`}
                       >
                         {v.label}
@@ -2691,7 +2691,7 @@ function getPlatformDisplayName(value?: string) {
               {isContentPlanMode && (
                 <div className="mb-4">
                   <div className="mb-2">
-                    <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
+                    <p className="text-xs font-medium uppercase tracking-wide text-[#8FA3A3]">
                       Platforms
                     </p>
                   </div>
@@ -2707,8 +2707,8 @@ function getPlatformDisplayName(value?: string) {
                           type="button"
                           className={`rounded-2xl border px-3 py-2.5 text-left text-xs transition sm:text-sm ${
                             selected
-                              ? 'border-purple-500 bg-purple-600/20 text-white shadow-lg shadow-purple-950/20'
-                              : 'border-zinc-700 bg-zinc-800 text-zinc-300 hover:border-zinc-600 hover:bg-zinc-700'
+                              ? 'border-[#F2705B] bg-[#F2705B]/20 text-white shadow-lg shadow-[#04141A]/20'
+                              : 'border-[#223F49] bg-[#0E2A31] text-[#D9D3C4] hover:border-[#2A4C57] hover:bg-[#153039]'
                           }`}
                         >
                           <span className="mr-1.5">{output.emoji}</span>
@@ -2717,7 +2717,7 @@ function getPlatformDisplayName(value?: string) {
                       );
                     })}
                   </div>
-                  <p className="mt-2 text-xs text-zinc-600">
+                  <p className="mt-2 text-xs text-[#6E8489]">
                     Coming soon: {outputOptions.filter((output) => output.comingSoon).map((output) => output.label).join(', ')}
                  </p>
                 </div>
@@ -2732,10 +2732,10 @@ function getPlatformDisplayName(value?: string) {
                     (!content.trim() &&
                       !(isMakeMyPostMode && uploadedImages.length > 0))
                   }
-                  className={`w-full rounded-2xl py-3.5 text-sm font-semibold transition hover:scale-[1.02] disabled:opacity-50 disabled:hover:scale-100 sm:py-5 sm:text-lg ${
+                  className={`w-full rounded-2xl py-3.5 text-sm font-semibold transition hover:scale-[1.02] disabled:bg-none disabled:bg-[#153039] disabled:text-[#7E959B] disabled:hover:scale-100 sm:py-5 sm:text-lg ${
                     generationMode === 'viral_hooks'
-                      ? 'bg-gradient-to-r from-orange-500 via-pink-600 to-purple-600'
-                      : 'bg-gradient-to-r from-purple-600 to-pink-600'
+                      ? 'bg-gradient-to-r from-orange-500 via-[#E4614C] to-[#D8543F]'
+                      : 'bg-gradient-to-r from-[#F2705B] to-[#D8543F]'
                   }`}
                 >
                   {loading
@@ -2760,10 +2760,10 @@ function getPlatformDisplayName(value?: string) {
                       (!content.trim() &&
                         !(isMakeMyPostMode && uploadedImages.length > 0))
                     }
-                    className={`w-full rounded-2xl py-3.5 text-sm font-semibold transition hover:scale-[1.02] disabled:opacity-50 disabled:hover:scale-100 sm:py-5 sm:text-lg ${
+                    className={`w-full rounded-2xl py-3.5 text-sm font-semibold transition hover:scale-[1.02] disabled:bg-none disabled:bg-[#153039] disabled:text-[#7E959B] disabled:hover:scale-100 sm:py-5 sm:text-lg ${
                       generationMode === 'viral_hooks'
-                        ? 'bg-gradient-to-r from-orange-500 via-pink-600 to-purple-600'
-                        : 'bg-gradient-to-r from-purple-600 to-pink-600'
+                        ? 'bg-gradient-to-r from-orange-500 via-[#E4614C] to-[#D8543F]'
+                        : 'bg-gradient-to-r from-[#F2705B] to-[#D8543F]'
                     }`}
                   >
                     Create Free Account to Generate
@@ -2771,7 +2771,7 @@ function getPlatformDisplayName(value?: string) {
                 </SignInButton>
               )}
 
-              <div className="mt-2.5 flex items-center justify-between text-xs text-zinc-400">
+              <div className="mt-2.5 flex items-center justify-between text-xs text-[#AFBDB9]">
                 <p>{freeLeft} free generations left</p>
                 <p>
                   {isPro
@@ -2788,7 +2788,7 @@ function getPlatformDisplayName(value?: string) {
             </div>
           </div>
 
-          <div className="order-2 min-w-0 rounded-3xl border border-zinc-800 bg-zinc-900/90 p-4 sm:p-6 lg:flex lg:h-full lg:min-h-[760px] lg:flex-col">
+          <div className="order-2 min-w-0 rounded-3xl border border-[#152F37] bg-[#0A2830]/90 p-4 sm:p-6 lg:flex lg:h-full lg:min-h-[760px] lg:flex-col">
             <div className="mb-3 flex shrink-0 flex-col gap-3 sm:mb-4 sm:flex-row sm:items-start sm:justify-between">
               <div>
                 <h2 className="text-2xl font-semibold sm:text-3xl">
@@ -2798,7 +2798,7 @@ function getPlatformDisplayName(value?: string) {
                       ? 'Your Post'
                       : 'Your Content + Money Plan Workspace'}
                 </h2>
-                <p className="mt-1 text-sm leading-relaxed text-zinc-400 sm:text-lg">
+                <p className="mt-1 text-sm leading-relaxed text-[#AFBDB9] sm:text-lg">
                   {generationMode === 'viral_hooks'
                     ? 'Quick hook ideas for your business, offer, or content topic.'
                     : isMakeMyPostMode
@@ -2818,10 +2818,10 @@ function getPlatformDisplayName(value?: string) {
             </div>
 
             {results && isContentPlanMode && (
-              <div className="mb-4 rounded-3xl border border-purple-500/30 bg-gradient-to-br from-purple-950/70 via-zinc-900 to-pink-950/40 p-5 shadow-2xl">
+              <div className="mb-4 rounded-3xl border border-[#F2705B]/30 bg-gradient-to-br from-[#0D3541]/70 via-[#0A2830] to-[#33201C]/40 p-5 shadow-2xl">
                 <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                   <div>
-                    <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-purple-300">
+                    <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-[#F8A793]">
                       {isMakeMyPostMode ? 'Your Post' : 'This Week’s Campaign'}
                     </p>
                     <h3 className="text-xl font-semibold text-white sm:text-2xl">
@@ -2833,7 +2833,7 @@ function getPlatformDisplayName(value?: string) {
                   </div>
 
                   {results.best_output?.platform && (
-                    <span className="w-fit rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-zinc-100">
+                    <span className="w-fit rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-[#F6F1E7]">
                       Start with {getPlatformDisplayName(results.best_output.platform)}
                     </span>
                   )}
@@ -2841,7 +2841,7 @@ function getPlatformDisplayName(value?: string) {
 
                 <div className="grid gap-3 md:grid-cols-2">
                   <div className="rounded-2xl border border-white/10 bg-black/20 p-4 md:col-span-2">
-                    <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-400">
+                    <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-[#AFBDB9]">
                       {isMakeMyPostMode
                         ? uploadedImages.length === 0
                           ? 'Ready To Post'
@@ -2860,7 +2860,7 @@ function getPlatformDisplayName(value?: string) {
                             : 'Photo Order'
                         : 'Make This First'}
                     </p>
-                    <p className="whitespace-pre-wrap text-sm leading-relaxed text-zinc-100">
+                    <p className="whitespace-pre-wrap text-sm leading-relaxed text-[#F6F1E7]">
                       {formatGeneratedText(
                         isMakeMyPostMode
                           ? uploadedImages.length === 0
@@ -2884,7 +2884,7 @@ function getPlatformDisplayName(value?: string) {
                   </div>
 
                   <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-                    <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-400">
+                    <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-[#AFBDB9]">
                       {isMakeMyPostMode
                         ? (selectedOutputs.some((output) =>
                               [
@@ -2901,7 +2901,7 @@ function getPlatformDisplayName(value?: string) {
                           : 'Hashtags'
                         : 'What To Film'}
                     </p>
-                    <p className="text-sm leading-relaxed text-zinc-100">
+                    <p className="text-sm leading-relaxed text-[#F6F1E7]">
                       {formatGeneratedText(
                         isMakeMyPostMode
                           ? (selectedOutputs.some((output) =>
@@ -2942,10 +2942,10 @@ function getPlatformDisplayName(value?: string) {
 
                   {!isMakeMyPostMode && (
                     <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-                      <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-400">
+                      <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-[#AFBDB9]">
                         What To Say
                       </p>
-                      <p className="text-sm leading-relaxed text-zinc-100">
+                      <p className="text-sm leading-relaxed text-[#F6F1E7]">
                         {formatGeneratedText(
                           results.production_plan?.spoken_lines?.[0] ||
                             results.production_plan?.on_screen_text?.[0],
@@ -2957,10 +2957,10 @@ function getPlatformDisplayName(value?: string) {
 
                   {!(isMakeMyPostMode && uploadedImages.length === 0) && (
                     <div className="rounded-2xl border border-white/10 bg-black/20 p-4 md:col-span-2">
-                      <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-400">
+                      <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-[#AFBDB9]">
                         Caption
                       </p>
-                      <p className="whitespace-pre-wrap text-sm leading-relaxed text-zinc-100">
+                      <p className="whitespace-pre-wrap text-sm leading-relaxed text-[#F6F1E7]">
                         {formatGeneratedText(
                           results.production_plan?.caption,
                           'Use the caption from Make This Post, then end with the CTA below.'
@@ -2971,10 +2971,10 @@ function getPlatformDisplayName(value?: string) {
 
                   {!isMakeMyPostMode && (
                     <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-                      <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-400">
+                      <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-[#AFBDB9]">
                         CTA To Use
                       </p>
-                      <p className="text-sm font-medium leading-relaxed text-zinc-100">
+                      <p className="text-sm font-medium leading-relaxed text-[#F6F1E7]">
                         {formatGeneratedText(
                           results.production_plan?.cta ||
                             results.monetization?.cta_strategy,
@@ -2985,10 +2985,10 @@ function getPlatformDisplayName(value?: string) {
                   )}
 
                   <div className={`rounded-2xl border border-white/10 bg-black/20 p-4 ${isMakeMyPostMode ? 'md:col-span-2' : ''}`}>
-                    <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-400">
+                    <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-[#AFBDB9]">
                       {isMakeMyPostMode ? 'Reply To Send' : 'DM Reply / Follow-Up'}
                     </p>
-                    <p className="text-sm leading-relaxed text-zinc-100">
+                    <p className="text-sm leading-relaxed text-[#F6F1E7]">
                       {formatGeneratedText(
                         results.production_plan?.dm_reply ||
                           results.production_plan?.follow_up_message ||
@@ -3006,7 +3006,7 @@ function getPlatformDisplayName(value?: string) {
                         <p className="text-sm font-semibold text-emerald-300">
                           Final Review
                         </p>
-                        <p className="mt-1 text-xs leading-relaxed text-zinc-300">
+                        <p className="mt-1 text-xs leading-relaxed text-[#D9D3C4]">
                           Review the caption, CTA, and reply before saving this to your Posting Queue. Elua will never publish without your approval.
                         </p>
                       </div>
@@ -3017,30 +3017,30 @@ function getPlatformDisplayName(value?: string) {
                     </div>
 
                     <div className="grid gap-3 md:grid-cols-2">
-                      <div className="rounded-xl border border-zinc-700/70 bg-zinc-950/40 p-3">
+                      <div className="rounded-xl border border-[#223F49]/70 bg-[#071C22]/40 p-3">
                         <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-emerald-300">
                           Selected Platform
                         </p>
-                        <p className="text-sm text-zinc-100">
+                        <p className="text-sm text-[#F6F1E7]">
                           {formatGeneratedText(results.best_output?.platform) || selectedOutputs[0] || 'Facebook Post'}
                         </p>
                       </div>
 
-                      <div className="rounded-xl border border-zinc-700/70 bg-zinc-950/40 p-3">
+                      <div className="rounded-xl border border-[#223F49]/70 bg-[#071C22]/40 p-3">
                         <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-emerald-300">
                           Publish Status
                         </p>
-                        <p className="text-sm text-zinc-100">
+                        <p className="text-sm text-[#F6F1E7]">
                           Safe preview — nothing has been posted.
                         </p>
                       </div>
                     </div>
 
-                    <div className="mt-3 rounded-xl border border-zinc-700/70 bg-zinc-950/40 p-3">
+                    <div className="mt-3 rounded-xl border border-[#223F49]/70 bg-[#071C22]/40 p-3">
                       <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-emerald-300">
                         Ready Checklist
                       </p>
-                      <div className="grid gap-2 text-sm text-zinc-200 sm:grid-cols-2">
+                      <div className="grid gap-2 text-sm text-[#EDE7D9] sm:grid-cols-2">
                         <p>✓ Caption reviewed</p>
                         <p>✓ CTA is clear</p>
                         <p>✓ Reply is ready</p>
@@ -3049,7 +3049,7 @@ function getPlatformDisplayName(value?: string) {
                     </div>
 
                     {publishMessage && (
-                      <p className="mt-3 rounded-xl border border-zinc-700/70 bg-zinc-950/40 p-3 text-sm leading-relaxed text-zinc-200">
+                      <p className="mt-3 rounded-xl border border-[#223F49]/70 bg-[#071C22]/40 p-3 text-sm leading-relaxed text-[#EDE7D9]">
                         {publishMessage}
                       </p>
                     )}
@@ -3068,13 +3068,13 @@ function getPlatformDisplayName(value?: string) {
             )}
 
             {results && generationMode === 'growth_system' && (
-              <div className="mb-3 mt-2 rounded-2xl border border-zinc-800 bg-zinc-900/60 p-3">
+              <div className="mb-3 mt-2 rounded-2xl border border-[#152F37] bg-[#0A2830]/60 p-3">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-[#8FA3A3]">
                       Want the full plan?
                     </p>
-                    <p className="mt-1 text-sm text-zinc-400">
+                    <p className="mt-1 text-sm text-[#AFBDB9]">
                       Start with the simple post plan above. Open the full strategy, content, and Money Plan only if you want more detail.
                     </p>
                   </div>
@@ -3082,7 +3082,7 @@ function getPlatformDisplayName(value?: string) {
                   <button
                     type="button"
                     onClick={() => setShowDetailedPlan((current) => !current)}
-                    className="w-fit rounded-2xl border border-zinc-700 bg-zinc-800 px-4 py-2 text-sm font-semibold text-zinc-100 transition hover:bg-zinc-700"
+                    className="w-fit rounded-2xl border border-[#223F49] bg-[#0E2A31] px-4 py-2 text-sm font-semibold text-[#F6F1E7] transition hover:bg-[#153039]"
                   >
                     {showDetailedPlan ? 'Hide full plan' : 'Open full plan'}
                   </button>
@@ -3098,8 +3098,8 @@ function getPlatformDisplayName(value?: string) {
                     onClick={() => setActiveTab(tab.id)}
                     className={`min-w-0 rounded-2xl px-3 py-2 text-sm font-medium transition ${
                       activeTab === tab.id
-                        ? 'bg-purple-600 text-white'
-                        : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+                        ? 'bg-[#F2705B] text-white'
+                        : 'bg-[#0E2A31] text-[#D9D3C4] hover:bg-[#153039]'
                     }`}
                   >
                     {tab.icon} {tab.label}
@@ -3116,7 +3116,7 @@ function getPlatformDisplayName(value?: string) {
                 : ''
             }`}>
                 {!results && !loading && (
-                  <div className="flex min-h-[300px] flex-col items-center justify-center rounded-3xl border border-dashed border-zinc-700 bg-zinc-950/30 p-5 text-center sm:min-h-[420px] lg:h-full">
+                  <div className="flex min-h-[300px] flex-col items-center justify-center rounded-3xl border border-dashed border-[#223F49] bg-[#071C22]/30 p-5 text-center sm:min-h-[420px] lg:h-full">
                     <div className="mb-3 text-4xl">
                       {generationMode === 'viral_hooks' ? '🔥' : isMakeMyPostMode ? '📸' : '✦'}
                     </div>
@@ -3129,7 +3129,7 @@ function getPlatformDisplayName(value?: string) {
                           : 'Turn your business goal into a Content + Money Plan'}
                     </p>
 
-                    <p className="max-w-md text-sm leading-relaxed text-zinc-400 sm:text-base">
+                    <p className="max-w-md text-sm leading-relaxed text-[#AFBDB9] sm:text-base">
                       {generationMode === 'viral_hooks'
                         ? 'Generate 10 attention-grabbing hooks with angles, explanations, and a strongest-hook pick.'
                         : isMakeMyPostMode
@@ -3138,14 +3138,14 @@ function getPlatformDisplayName(value?: string) {
                     </p>
 
                     {!isMakeMyPostMode && (
-                      <div className="mt-5 grid w-full max-w-md grid-cols-1 gap-2 text-xs text-zinc-300 sm:grid-cols-3">
+                      <div className="mt-5 grid w-full max-w-md grid-cols-1 gap-2 text-xs text-[#D9D3C4] sm:grid-cols-3">
                         {(generationMode === 'viral_hooks'
                           ? ['10 hooks', 'Best hook', 'Why it works']
                           : ['Strategy', 'Content', 'Money plan']
                         ).map((item) => (
                           <div
                             key={item}
-                            className="rounded-2xl border border-zinc-800 bg-zinc-900 px-3 py-2 text-center"
+                            className="rounded-2xl border border-[#152F37] bg-[#0A2830] px-3 py-2 text-center"
                           >
                             {item}
                           </div>
@@ -3172,10 +3172,10 @@ function getPlatformDisplayName(value?: string) {
               )}
 
               {loading && (
-                <div className="flex min-h-[280px] flex-col items-center justify-center overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950/40 p-6 text-center sm:min-h-[480px] lg:h-full">
+                <div className="flex min-h-[280px] flex-col items-center justify-center overflow-hidden rounded-3xl border border-[#152F37] bg-[#071C22]/40 p-6 text-center sm:min-h-[480px] lg:h-full">
                   <div className="relative mb-5">
-                    <div className="h-16 w-16 rounded-full border-4 border-zinc-800 sm:h-24 sm:w-24"></div>
-                    <div className="absolute inset-0 h-16 w-16 animate-spin rounded-full border-4 border-transparent border-r-pink-500 border-t-purple-500 sm:h-24 sm:w-24"></div>
+                    <div className="h-16 w-16 rounded-full border-4 border-[#152F37] sm:h-24 sm:w-24"></div>
+                    <div className="absolute inset-0 h-16 w-16 animate-spin rounded-full border-4 border-transparent border-r-[#F2705B] border-t-[#F8A793] sm:h-24 sm:w-24"></div>
                     <div className="absolute inset-0 flex items-center justify-center text-2xl sm:text-3xl">
                       {generationMode === 'viral_hooks' ? '🔥' : isMakeMyPostMode ? '📸' : '✦'}
                     </div>
@@ -3187,11 +3187,11 @@ function getPlatformDisplayName(value?: string) {
                       : 'Building your growth system...'}
                   </h3>
 
-                  <p className="min-h-[24px] max-w-md text-sm text-zinc-300 sm:text-base">
+                  <p className="min-h-[24px] max-w-md text-sm text-[#D9D3C4] sm:text-base">
                     {activeLoadingMessages[loadingStep]}
                   </p>
 
-                  <p className="mt-3 text-xs text-zinc-500 sm:text-sm">
+                  <p className="mt-3 text-xs text-[#8FA3A3] sm:text-sm">
                     High-quality generations usually take 30–45 seconds. Keep this
                       page open while Elua builds your result.
                   </p>
@@ -3203,7 +3203,7 @@ function getPlatformDisplayName(value?: string) {
                 generationMode === 'viral_hooks' && (
                   <div className="space-y-4">
                     {results.best_hook && (
-                      <div className="rounded-2xl bg-gradient-to-r from-orange-500 via-pink-600 to-purple-600 p-5">
+                      <div className="rounded-2xl bg-gradient-to-r from-orange-500 via-[#E4614C] to-[#D8543F] p-5">
                         <h3 className="mb-2 text-lg font-semibold">
                           🔥 Strongest Viral Hook
                         </h3>
@@ -3221,14 +3221,14 @@ function getPlatformDisplayName(value?: string) {
                     {(results.hooks || []).map((item, i) => (
                       <div
                         key={i}
-                        className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5"
+                        className="rounded-2xl border border-[#223F49] bg-[#0E2A31] p-5"
                       >
                         <div className="mb-4 flex items-start justify-between gap-4">
                           <div>
-                            <h3 className="font-semibold text-pink-400">
+                            <h3 className="font-semibold text-[#F2705B]">
                               🔥 Hook #{i + 1}
                             </h3>
-                            <p className="mt-1 text-xs capitalize text-zinc-500">
+                            <p className="mt-1 text-xs capitalize text-[#8FA3A3]">
                               {item.angle || 'Attention-driven hook'}
                             </p>
                           </div>
@@ -3237,7 +3237,7 @@ function getPlatformDisplayName(value?: string) {
                             onClick={() =>
                               copyToClipboard(item.hook || '', `Hook ${i + 1}`)
                             }
-                            className="rounded-xl bg-zinc-700 px-3 py-1.5 text-xs transition hover:bg-zinc-600"
+                            className="rounded-xl bg-[#153039] px-3 py-1.5 text-xs transition hover:bg-[#1C3D46]"
                           >
                             {copiedItem === `Hook ${i + 1}`
                               ? 'Copied!'
@@ -3245,12 +3245,12 @@ function getPlatformDisplayName(value?: string) {
                           </button>
                         </div>
 
-                        <p className="text-lg font-medium leading-relaxed text-zinc-100">
+                        <p className="text-lg font-medium leading-relaxed text-[#F6F1E7]">
                           {item.hook}
                         </p>
 
                         {item.why_it_works && (
-                          <p className="mt-3 text-sm text-zinc-400">
+                          <p className="mt-3 text-sm text-[#AFBDB9]">
                             Why it works: {item.why_it_works}
                           </p>
                         )}
@@ -3263,8 +3263,8 @@ function getPlatformDisplayName(value?: string) {
                 activeTab === 'strategy' &&
                 isContentPlanMode && (
                   <div className="space-y-4">
-                    <div className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5">
-                      <h3 className="mb-2 font-semibold text-purple-400">
+                    <div className="rounded-2xl border border-[#223F49] bg-[#0E2A31] p-5">
+                      <h3 className="mb-2 font-semibold text-[#F2705B]">
                         🎯 Best Audience
                       </h3>
                       <div className="space-y-2">
@@ -3272,15 +3272,15 @@ function getPlatformDisplayName(value?: string) {
                           results.strategy?.target_audience,
                           'The specific buyer or audience segment most likely to care about this campaign.'
                         ).map((item, i) => (
-                          <p key={i} className="text-sm leading-relaxed text-zinc-200 sm:text-base">
+                          <p key={i} className="text-sm leading-relaxed text-[#EDE7D9] sm:text-base">
                             • {item}
                           </p>
                         ))}
                       </div>
                     </div>
 
-                    <div className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5">
-                      <h3 className="mb-2 font-semibold text-purple-400">
+                    <div className="rounded-2xl border border-[#223F49] bg-[#0E2A31] p-5">
+                      <h3 className="mb-2 font-semibold text-[#F2705B]">
                         🧠 Campaign Strategy
                       </h3>
                       <div className="space-y-2">
@@ -3288,15 +3288,15 @@ function getPlatformDisplayName(value?: string) {
                           results.strategy?.core_angle,
                           'The main campaign angle that connects the business goal, audience problem, content idea, and next step.'
                         ).map((item, i) => (
-                          <p key={i} className="text-sm leading-relaxed text-zinc-200 sm:text-base">
+                          <p key={i} className="text-sm leading-relaxed text-[#EDE7D9] sm:text-base">
                             • {item}
                           </p>
                         ))}
                       </div>
                     </div>
 
-                    <div className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5">
-                      <h3 className="mb-2 font-semibold text-purple-400">
+                    <div className="rounded-2xl border border-[#223F49] bg-[#0E2A31] p-5">
+                      <h3 className="mb-2 font-semibold text-[#F2705B]">
                         🗺️ Content Path
                       </h3>
                       <div className="space-y-2">
@@ -3304,21 +3304,21 @@ function getPlatformDisplayName(value?: string) {
                           results.strategy?.content_goal,
                           'The role the content should play, from attention to interest to lead capture or sale.'
                         ).map((item, i) => (
-                          <p key={i} className="text-sm leading-relaxed text-zinc-200 sm:text-base">
+                          <p key={i} className="text-sm leading-relaxed text-[#EDE7D9] sm:text-base">
                             • {item}
                           </p>
                         ))}
                       </div>
                     </div>
 
-                    <div className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5">
-                      <h3 className="mb-3 font-semibold text-purple-400">
+                    <div className="rounded-2xl border border-[#223F49] bg-[#0E2A31] p-5">
+                      <h3 className="mb-3 font-semibold text-[#F2705B]">
                         🔥 Hook Angles
                       </h3>
                       <div className="space-y-2">
                         {formatGeneratedList(results.strategy?.hook_strategies).map(
                           (hook, i) => (
-                            <p key={i} className="text-zinc-200">
+                            <p key={i} className="text-[#EDE7D9]">
                               • {hook}
                             </p>
                           )
@@ -3326,8 +3326,8 @@ function getPlatformDisplayName(value?: string) {
                       </div>
                     </div>
 
-                    <div className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5">
-                      <h3 className="mb-2 font-semibold text-purple-400">
+                    <div className="rounded-2xl border border-[#223F49] bg-[#0E2A31] p-5">
+                      <h3 className="mb-2 font-semibold text-[#F2705B]">
                         🎬 Execution Style
                       </h3>
                       <div className="space-y-2">
@@ -3335,15 +3335,15 @@ function getPlatformDisplayName(value?: string) {
                           results.strategy?.content_style,
                           'How the campaign should sound, feel, and be executed across the selected platforms.'
                         ).map((item, i) => (
-                          <p key={i} className="text-sm leading-relaxed text-zinc-200 sm:text-base">
+                          <p key={i} className="text-sm leading-relaxed text-[#EDE7D9] sm:text-base">
                             • {item}
                           </p>
                         ))}
                       </div>
                     </div>
 
-                    <div className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5">
-                      <h3 className="mb-2 font-semibold text-purple-400">
+                    <div className="rounded-2xl border border-[#223F49] bg-[#0E2A31] p-5">
+                      <h3 className="mb-2 font-semibold text-[#F2705B]">
                         📍 Recommended Platform
                       </h3>
                       <div className="space-y-2">
@@ -3351,15 +3351,15 @@ function getPlatformDisplayName(value?: string) {
                           results.strategy?.best_platform,
                           'The selected platform most likely to work best for this campaign.'
                         ).map((item, i) => (
-                          <p key={i} className="text-sm leading-relaxed text-zinc-200 sm:text-base">
+                          <p key={i} className="text-sm leading-relaxed text-[#EDE7D9] sm:text-base">
                             • {item}
                           </p>
                         ))}
                       </div>
                     </div>
 
-                    <div className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5">
-                      <h3 className="mb-2 font-semibold text-purple-400">
+                    <div className="rounded-2xl border border-[#223F49] bg-[#0E2A31] p-5">
+                      <h3 className="mb-2 font-semibold text-[#F2705B]">
                         📈 Why This Works
                       </h3>
                       <div className="space-y-2">
@@ -3367,7 +3367,7 @@ function getPlatformDisplayName(value?: string) {
                           results.strategy?.why_it_works,
                           'Why this strategy should help the audience understand the problem, take the next step, and move closer to becoming a lead or customer.'
                         ).map((item, i) => (
-                          <p key={i} className="text-sm leading-relaxed text-zinc-200 sm:text-base">
+                          <p key={i} className="text-sm leading-relaxed text-[#EDE7D9] sm:text-base">
                             • {item}
                           </p>
                         ))}
@@ -3381,13 +3381,13 @@ function getPlatformDisplayName(value?: string) {
                 isContentPlanMode && (
                   <div className="space-y-4">
                     {results.production_plan && (
-                      <div className="rounded-2xl border border-purple-500/30 bg-purple-500/10 p-5">
+                      <div className="rounded-2xl border border-[#F2705B]/30 bg-[#F2705B]/10 p-5">
                         <div className="mb-4 flex items-start justify-between gap-4">
                           <div>
-                            <h3 className="font-semibold text-purple-300">
+                            <h3 className="font-semibold text-[#F8A793]">
                               🎬 Make This Post
                             </h3>
-                            <p className="mt-1 text-xs text-zinc-400">
+                            <p className="mt-1 text-xs text-[#AFBDB9]">
                               A practical production plan for creating the strongest content asset.
                             </p>
                           </div>
@@ -3438,7 +3438,7 @@ function getPlatformDisplayName(value?: string) {
                                 'Make This Post'
                               )
                             }
-                            className="rounded-xl bg-zinc-700 px-3 py-1.5 text-xs transition hover:bg-zinc-600"
+                            className="rounded-xl bg-[#153039] px-3 py-1.5 text-xs transition hover:bg-[#1C3D46]"
                           >
                             {copiedItem === 'Make This Post' ? 'Copied!' : 'Copy'}
                           </button>
@@ -3446,22 +3446,22 @@ function getPlatformDisplayName(value?: string) {
 
                         <div className="grid gap-3 md:grid-cols-2">
                           {results.production_plan.format && (
-                            <div className="rounded-xl border border-purple-500/20 bg-zinc-900/50 p-3">
-                              <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-purple-300">
+                            <div className="rounded-xl border border-[#F2705B]/20 bg-[#0A2830]/50 p-3">
+                              <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-[#F8A793]">
                                 Format
                               </p>
-                              <p className="text-sm text-zinc-100">
+                              <p className="text-sm text-[#F6F1E7]">
                                 {formatGeneratedText(results.production_plan.format)}
                               </p>
                             </div>
                           )}
 
                           {results.production_plan.concept && (
-                            <div className="rounded-xl border border-purple-500/20 bg-zinc-900/50 p-3">
-                              <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-purple-300">
+                            <div className="rounded-xl border border-[#F2705B]/20 bg-[#0A2830]/50 p-3">
+                              <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-[#F8A793]">
                                 Concept
                               </p>
-                              <p className="text-sm text-zinc-100">
+                              <p className="text-sm text-[#F6F1E7]">
                                 {formatGeneratedText(results.production_plan.concept)}
                               </p>
                             </div>
@@ -3469,11 +3469,11 @@ function getPlatformDisplayName(value?: string) {
                         </div>
 
                         {formatGeneratedList(results.production_plan.what_to_film).length > 0 && (
-                          <div className="mt-3 rounded-xl border border-zinc-700/70 bg-zinc-900/50 p-3">
-                            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-purple-300">
+                          <div className="mt-3 rounded-xl border border-[#223F49]/70 bg-[#0A2830]/50 p-3">
+                            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-[#F8A793]">
                               {isMakeMyPostMode ? 'Hashtags' : 'What To Film'}
                             </p>
-                            <ul className="space-y-2 text-sm text-zinc-200">
+                            <ul className="space-y-2 text-sm text-[#EDE7D9]">
                               {formatGeneratedList(results.production_plan.what_to_film).map((item, i) => (
                                 <li key={i} className="leading-relaxed">
                                   • {item}
@@ -3484,11 +3484,11 @@ function getPlatformDisplayName(value?: string) {
                         )}
 
                         {formatGeneratedList(results.production_plan.shot_order).length > 0 && (
-                          <div className="mt-3 rounded-xl border border-zinc-700/70 bg-zinc-900/50 p-3">
-                            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-purple-300">
+                          <div className="mt-3 rounded-xl border border-[#223F49]/70 bg-[#0A2830]/50 p-3">
+                            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-[#F8A793]">
                               Shot Order
                             </p>
-                            <ol className="space-y-2 text-sm text-zinc-200">
+                            <ol className="space-y-2 text-sm text-[#EDE7D9]">
                               {formatGeneratedList(results.production_plan.shot_order).map((item, i) => (
                                 <li key={i} className="leading-relaxed">
                                   {i + 1}. {item}
@@ -3500,22 +3500,22 @@ function getPlatformDisplayName(value?: string) {
 
                         <div className="mt-3 grid gap-3 md:grid-cols-2">
                           {results.production_plan.transition_idea && (
-                            <div className="rounded-xl border border-zinc-700/70 bg-zinc-900/50 p-3">
-                              <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-purple-300">
+                            <div className="rounded-xl border border-[#223F49]/70 bg-[#0A2830]/50 p-3">
+                              <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-[#F8A793]">
                                 Transition
                               </p>
-                              <p className="text-sm leading-relaxed text-zinc-200">
+                              <p className="text-sm leading-relaxed text-[#EDE7D9]">
                                 {formatGeneratedText(results.production_plan.transition_idea)}
                               </p>
                             </div>
                           )}
 
                           {results.production_plan.audio_direction && (
-                            <div className="rounded-xl border border-zinc-700/70 bg-zinc-900/50 p-3">
-                              <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-purple-300">
+                            <div className="rounded-xl border border-[#223F49]/70 bg-[#0A2830]/50 p-3">
+                              <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-[#F8A793]">
                                 Audio Direction
                               </p>
-                              <p className="text-sm leading-relaxed text-zinc-200">
+                              <p className="text-sm leading-relaxed text-[#EDE7D9]">
                                 {formatGeneratedText(results.production_plan.audio_direction)}
                               </p>
                             </div>
@@ -3523,15 +3523,15 @@ function getPlatformDisplayName(value?: string) {
                         </div>
 
                         {formatGeneratedList(results.production_plan.on_screen_text).length > 0 && (
-                          <div className="mt-3 rounded-xl border border-zinc-700/70 bg-zinc-900/50 p-3">
-                            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-purple-300">
+                          <div className="mt-3 rounded-xl border border-[#223F49]/70 bg-[#0A2830]/50 p-3">
+                            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-[#F8A793]">
                               On-Screen Text
                             </p>
                             <div className="space-y-2">
                               {formatGeneratedList(results.production_plan.on_screen_text).map((item, i) => (
                                 <p
                                   key={i}
-                                  className="rounded-lg border border-zinc-700/60 bg-zinc-950/40 p-2 text-sm text-zinc-200"
+                                  className="rounded-lg border border-[#223F49]/60 bg-[#071C22]/40 p-2 text-sm text-[#EDE7D9]"
                                 >
                                   {item}
                                 </p>
@@ -3541,15 +3541,15 @@ function getPlatformDisplayName(value?: string) {
                         )}
 
                         {formatGeneratedList(results.production_plan.spoken_lines).length > 0 && (
-                          <div className="mt-3 rounded-xl border border-zinc-700/70 bg-zinc-900/50 p-3">
-                            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-purple-300">
+                          <div className="mt-3 rounded-xl border border-[#223F49]/70 bg-[#0A2830]/50 p-3">
+                            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-[#F8A793]">
                               What To Say
                             </p>
                             <div className="space-y-2">
                               {formatGeneratedList(results.production_plan.spoken_lines).map((item, i) => (
                                 <p
                                   key={i}
-                                  className="rounded-lg border border-zinc-700/60 bg-zinc-950/40 p-2 text-sm text-zinc-200"
+                                  className="rounded-lg border border-[#223F49]/60 bg-[#071C22]/40 p-2 text-sm text-[#EDE7D9]"
                                 >
                                   {item}
                                 </p>
@@ -3559,11 +3559,11 @@ function getPlatformDisplayName(value?: string) {
                         )}
 
                         {results.production_plan.caption && (
-                          <div className="mt-3 rounded-xl border border-zinc-700/70 bg-zinc-900/50 p-3">
-                            <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-purple-300">
+                          <div className="mt-3 rounded-xl border border-[#223F49]/70 bg-[#0A2830]/50 p-3">
+                            <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-[#F8A793]">
                               Caption
                             </p>
-                            <p className="whitespace-pre-wrap text-sm leading-relaxed text-zinc-200">
+                            <p className="whitespace-pre-wrap text-sm leading-relaxed text-[#EDE7D9]">
                               {formatGeneratedText(results.production_plan.caption)}
                             </p>
                           </div>
@@ -3571,33 +3571,33 @@ function getPlatformDisplayName(value?: string) {
 
                         <div className="mt-3 grid gap-3 md:grid-cols-3">
                           {results.production_plan.cta && (
-                            <div className="rounded-xl border border-zinc-700/70 bg-zinc-900/50 p-3">
-                              <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-purple-300">
+                            <div className="rounded-xl border border-[#223F49]/70 bg-[#0A2830]/50 p-3">
+                              <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-[#F8A793]">
                                 Call To Action
                               </p>
-                              <p className="text-sm leading-relaxed text-zinc-200">
+                              <p className="text-sm leading-relaxed text-[#EDE7D9]">
                                 {formatGeneratedText(results.production_plan.cta)}
                               </p>
                             </div>
                           )}
 
                           {results.production_plan.dm_reply && (
-                            <div className="rounded-xl border border-zinc-700/70 bg-zinc-900/50 p-3">
-                              <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-purple-300">
+                            <div className="rounded-xl border border-[#223F49]/70 bg-[#0A2830]/50 p-3">
+                              <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-[#F8A793]">
                                 DM Reply
                               </p>
-                              <p className="text-sm leading-relaxed text-zinc-200">
+                              <p className="text-sm leading-relaxed text-[#EDE7D9]">
                                 {formatGeneratedText(results.production_plan.dm_reply)}
                               </p>
                             </div>
                           )}
 
                           {results.production_plan.follow_up_message && (
-                            <div className="rounded-xl border border-zinc-700/70 bg-zinc-900/50 p-3">
-                              <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-purple-300">
+                            <div className="rounded-xl border border-[#223F49]/70 bg-[#0A2830]/50 p-3">
+                              <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-[#F8A793]">
                                 Follow-Up
                               </p>
-                              <p className="text-sm leading-relaxed text-zinc-200">
+                              <p className="text-sm leading-relaxed text-[#EDE7D9]">
                                 {formatGeneratedText(results.production_plan.follow_up_message)}
                               </p>
                             </div>
@@ -3610,7 +3610,7 @@ function getPlatformDisplayName(value?: string) {
                               <p className="text-sm font-semibold text-emerald-300">
                                 Final Review
                               </p>
-                              <p className="mt-1 text-xs leading-relaxed text-zinc-300">
+                              <p className="mt-1 text-xs leading-relaxed text-[#D9D3C4]">
                                 Review the caption, CTA, and reply before anything goes live. Elua will never publish without your approval.
                               </p>
                             </div>
@@ -3621,41 +3621,41 @@ function getPlatformDisplayName(value?: string) {
                           </div>
 
                           <div className="grid gap-3 md:grid-cols-2">
-                            <div className="rounded-xl border border-zinc-700/70 bg-zinc-950/40 p-3">
+                            <div className="rounded-xl border border-[#223F49]/70 bg-[#071C22]/40 p-3">
                               <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-emerald-300">
                                 Selected Platform
                               </p>
-                              <p className="text-sm text-zinc-100">
+                              <p className="text-sm text-[#F6F1E7]">
                                 {formatGeneratedText(results.best_output?.platform) || selectedOutputs[0] || 'Choose a platform'}
                               </p>
                             </div>
 
-                            <div className="rounded-xl border border-zinc-700/70 bg-zinc-950/40 p-3">
+                            <div className="rounded-xl border border-[#223F49]/70 bg-[#071C22]/40 p-3">
                               <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-emerald-300">
                                 Publish Status
                               </p>
-                              <p className="text-sm text-zinc-100">
+                              <p className="text-sm text-[#F6F1E7]">
                                 Safe preview — nothing has been posted.
                               </p>
                             </div>
                           </div>
 
                           {results.production_plan.caption && (
-                            <div className="mt-3 rounded-xl border border-zinc-700/70 bg-zinc-950/40 p-3">
+                            <div className="mt-3 rounded-xl border border-[#223F49]/70 bg-[#071C22]/40 p-3">
                               <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-emerald-300">
                                 Caption Preview
                               </p>
-                              <p className="whitespace-pre-wrap text-sm leading-relaxed text-zinc-200">
+                              <p className="whitespace-pre-wrap text-sm leading-relaxed text-[#EDE7D9]">
                                 {formatGeneratedText(results.production_plan.caption)}
                               </p>
                             </div>
                           )}
 
-                          <div className="mt-3 rounded-xl border border-zinc-700/70 bg-zinc-950/40 p-3">
+                          <div className="mt-3 rounded-xl border border-[#223F49]/70 bg-[#071C22]/40 p-3">
                             <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-emerald-300">
                               Ready Checklist
                             </p>
-                            <div className="grid gap-2 text-sm text-zinc-200 sm:grid-cols-2">
+                            <div className="grid gap-2 text-sm text-[#EDE7D9] sm:grid-cols-2">
                               <p>✓ Caption reviewed</p>
                               <p>✓ CTA is clear</p>
                               <p>✓ DM reply is ready</p>
@@ -3664,7 +3664,7 @@ function getPlatformDisplayName(value?: string) {
                           </div>
 
                           {publishMessage && (
-                            <p className="mt-3 rounded-xl border border-zinc-700/70 bg-zinc-950/40 p-3 text-sm leading-relaxed text-zinc-200">
+                            <p className="mt-3 rounded-xl border border-[#223F49]/70 bg-[#071C22]/40 p-3 text-sm leading-relaxed text-[#EDE7D9]">
                               {publishMessage}
                             </p>
                           )}
@@ -3706,17 +3706,17 @@ function getPlatformDisplayName(value?: string) {
                       return (
                         <div
                           key={platform}
-                          className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5"
+                          className="rounded-2xl border border-[#223F49] bg-[#0E2A31] p-5"
                         >
                           <div className="mb-4 flex items-start justify-between gap-4">
                             <div>
                               <div className="flex flex-wrap items-center gap-2">
-                                <h3 className="font-semibold text-purple-400">
+                                <h3 className="font-semibold text-[#F2705B]">
                                   🚀 {platform}
                                 </h3>
 
                                 {results.best_output?.platform === platform && (
-                                  <span className="rounded-full bg-purple-600/20 px-2 py-0.5 text-[11px] font-semibold text-purple-300">
+                                  <span className="rounded-full bg-[#F2705B]/20 px-2 py-0.5 text-[11px] font-semibold text-[#F8A793]">
                                     ⭐ Best Pick
                                   </span>
                                 )}
@@ -3724,14 +3724,14 @@ function getPlatformDisplayName(value?: string) {
 
                               {results.best_output?.platform === platform &&
                                 results.best_output.reason && (
-                                  <p className="mt-1 text-xs text-zinc-400">
+                                  <p className="mt-1 text-xs text-[#AFBDB9]">
                                     {formatGeneratedText(results.best_output.reason)}
                                   </p>
                                 )}
 
                               {results.best_output?.platform === platform && (
-                                <div className="mt-3 rounded-xl border border-purple-500/30 bg-purple-500/10 p-3 text-sm text-zinc-100">
-                                  <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-purple-300">
+                                <div className="mt-3 rounded-xl border border-[#F2705B]/30 bg-[#F2705B]/10 p-3 text-sm text-[#F6F1E7]">
+                                  <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-[#F8A793]">
                                     Use this first
                                   </p>
                                   <p className="leading-relaxed">
@@ -3740,7 +3740,7 @@ function getPlatformDisplayName(value?: string) {
                                 </div>
                               )}
 
-                              <p className="mt-1 text-xs text-zinc-500">
+                              <p className="mt-1 text-xs text-[#8FA3A3]">
                                 Optimized for platform-native performance
                               </p>
                             </div>
@@ -3749,29 +3749,29 @@ function getPlatformDisplayName(value?: string) {
                               onClick={() =>
                                 copyToClipboard(formatGeneratedText(text), platform)
                               }
-                              className="rounded-xl bg-zinc-700 px-3 py-1.5 text-xs transition hover:bg-zinc-600"
+                              className="rounded-xl bg-[#153039] px-3 py-1.5 text-xs transition hover:bg-[#1C3D46]"
                             >
                               {copiedItem === platform ? 'Copied!' : 'Copy'}
                             </button>
                           </div>
 
                           {reelScenes && reelScenes.length > 0 ? (
-                            <div className="space-y-3 text-zinc-200">
+                            <div className="space-y-3 text-[#EDE7D9]">
                               {reelScenes.map((scene, index) => (
                                 <div
                                   key={index}
-                                  className="rounded-xl border border-zinc-700/70 bg-zinc-900/40 p-3 text-sm leading-relaxed"
+                                  className="rounded-xl border border-[#223F49]/70 bg-[#0A2830]/40 p-3 text-sm leading-relaxed"
                                 >
-                                  <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-purple-300">
+                                  <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-[#F8A793]">
                                     Scene {index + 1}
                                   </p>
 
                                   {scene.visual && (
                                     <div className="mb-2">
-                                      <p className="text-[11px] font-semibold uppercase tracking-wide text-zinc-500">
+                                      <p className="text-[11px] font-semibold uppercase tracking-wide text-[#8FA3A3]">
                                         Visual
                                       </p>
-                                      <p className="whitespace-pre-wrap text-zinc-200">
+                                      <p className="whitespace-pre-wrap text-[#EDE7D9]">
                                         {formatGeneratedText(scene.visual)}
                                       </p>
                                     </div>
@@ -3779,10 +3779,10 @@ function getPlatformDisplayName(value?: string) {
 
                                   {scene.spoken_line && (
                                     <div className="mb-2">
-                                      <p className="text-[11px] font-semibold uppercase tracking-wide text-zinc-500">
+                                      <p className="text-[11px] font-semibold uppercase tracking-wide text-[#8FA3A3]">
                                         Spoken Line
                                       </p>
-                                      <p className="whitespace-pre-wrap text-zinc-200">
+                                      <p className="whitespace-pre-wrap text-[#EDE7D9]">
                                         {formatGeneratedText(scene.spoken_line)}
                                       </p>
                                     </div>
@@ -3790,10 +3790,10 @@ function getPlatformDisplayName(value?: string) {
 
                                   {scene.on_screen_text && (
                                     <div>
-                                      <p className="text-[11px] font-semibold uppercase tracking-wide text-zinc-500">
+                                      <p className="text-[11px] font-semibold uppercase tracking-wide text-[#8FA3A3]">
                                         On-Screen Text
                                       </p>
-                                      <p className="whitespace-pre-wrap text-zinc-200">
+                                      <p className="whitespace-pre-wrap text-[#EDE7D9]">
                                         {formatGeneratedText(scene.on_screen_text)}
                                       </p>
                                     </div>
@@ -3802,23 +3802,23 @@ function getPlatformDisplayName(value?: string) {
                               ))}
                             </div>
                           ) : carouselSlides && carouselSlides.length > 0 ? (
-                            <div className="space-y-3 text-zinc-200">
+                            <div className="space-y-3 text-[#EDE7D9]">
                               {carouselSlides.map((slide, index) => (
                                 <div
                                   key={index}
-                                  className="rounded-xl border border-zinc-700/70 bg-zinc-900/40 p-3 text-sm leading-relaxed"
+                                  className="rounded-xl border border-[#223F49]/70 bg-[#0A2830]/40 p-3 text-sm leading-relaxed"
                                 >
-                                  <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-purple-300">
+                                  <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-[#F8A793]">
                                     Slide {slide.slide_number || index + 1}
                                   </p>
-                                  <p className="whitespace-pre-wrap text-zinc-200">
+                                  <p className="whitespace-pre-wrap text-[#EDE7D9]">
                                     {formatGeneratedText(slide.text)}
                                   </p>
                                 </div>
                               ))}
                             </div>
                           ) : (
-                            <div className="space-y-3 text-zinc-200">
+                            <div className="space-y-3 text-[#EDE7D9]">
                               {formatGeneratedText(text)
                                 .replace(/\s+(?=Scene \d+:|Slide \d+:|\d+\. Slide|Hook:|Point \d+:|Payoff:|CTA:|\d+[-–]\d+s\s+(?:Hook|Problem|Insight|Solution|CTA):|\d+[-–]\d+\s+seconds?:)/g, '\n\n')
                                 .split(/\n{2,}/g)
@@ -3843,7 +3843,7 @@ function getPlatformDisplayName(value?: string) {
                                 .map((section, index) => (
                                   <p
                                     key={index}
-                                    className="whitespace-pre-wrap rounded-xl border border-zinc-700/70 bg-zinc-900/40 p-3 text-sm leading-relaxed"
+                                    className="whitespace-pre-wrap rounded-xl border border-[#223F49]/70 bg-[#0A2830]/40 p-3 text-sm leading-relaxed"
                                   >
                                     {section}
                                   </p>
@@ -3860,7 +3860,7 @@ function getPlatformDisplayName(value?: string) {
                 activeTab === 'monetization' &&
                 isContentPlanMode && (
                   <div className="space-y-4">
-                    <div className="rounded-2xl bg-gradient-to-r from-purple-600 to-pink-600 p-5">
+                    <div className="rounded-2xl bg-gradient-to-r from-[#F2705B] to-[#D8543F] p-5">
                       <h3 className="mb-2 text-lg font-semibold">
                         💰 Your Revenue Path
                       </h3>
@@ -3870,8 +3870,8 @@ function getPlatformDisplayName(value?: string) {
                       </p>
                     </div>
 
-                    <div className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5">
-                      <h3 className="mb-3 font-semibold text-purple-400">
+                    <div className="rounded-2xl border border-[#223F49] bg-[#0E2A31] p-5">
+                      <h3 className="mb-3 font-semibold text-[#F2705B]">
                         🗓️ Your Action Plan
                       </h3>
 
@@ -3879,30 +3879,30 @@ function getPlatformDisplayName(value?: string) {
                         {(results.monetization?.action_plan || []).map((step, i) => (
                           <div
                             key={i}
-                            className="rounded-xl border border-zinc-700 bg-zinc-900/70 p-4"
+                            className="rounded-xl border border-[#223F49] bg-[#0A2830]/70 p-4"
                           >
-                            <p className="mb-2 text-xs font-medium uppercase tracking-wide text-zinc-500">
+                            <p className="mb-2 text-xs font-medium uppercase tracking-wide text-[#8FA3A3]">
                               {formatGeneratedText(step.day || `Day ${i + 1}`)}
                             </p>
 
-                            <div className="space-y-2 text-sm leading-relaxed text-zinc-200">
+                            <div className="space-y-2 text-sm leading-relaxed text-[#EDE7D9]">
                               {step.action && (
                                 <p>
-                                  <span className="font-semibold text-zinc-100">Action: </span>
+                                  <span className="font-semibold text-[#F6F1E7]">Action: </span>
                                   {formatGeneratedText(step.action)}
                                 </p>
                               )}
 
                               {step.cta && (
                                 <p>
-                                  <span className="font-semibold text-zinc-100">Call to action: </span>
+                                  <span className="font-semibold text-[#F6F1E7]">Call to action: </span>
                                   {formatGeneratedText(step.cta)}
                                 </p>
                               )}
 
                               {step.follow_up && (
                                 <p>
-                                  <span className="font-semibold text-zinc-100">Follow-up: </span>
+                                  <span className="font-semibold text-[#F6F1E7]">Follow-up: </span>
                                   {formatGeneratedText(step.follow_up)}
                                 </p>
                               )}
@@ -3912,8 +3912,8 @@ function getPlatformDisplayName(value?: string) {
                       </div>
                     </div>
 
-                    <div className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5">
-                      <h3 className="mb-3 font-semibold text-purple-400">
+                    <div className="rounded-2xl border border-[#223F49] bg-[#0E2A31] p-5">
+                      <h3 className="mb-3 font-semibold text-[#F2705B]">
                         💰 Revenue Opportunities
                       </h3>
 
@@ -3921,22 +3921,22 @@ function getPlatformDisplayName(value?: string) {
                         {(results.monetization?.offer_ideas || []).map((offer, i) => (
                           <div
                             key={i}
-                            className="rounded-xl border border-zinc-700 bg-zinc-900/70 p-4"
+                            className="rounded-xl border border-[#223F49] bg-[#0A2830]/70 p-4"
                           >
-                            <p className="mb-1 text-xs font-medium uppercase tracking-wide text-zinc-500">
+                            <p className="mb-1 text-xs font-medium uppercase tracking-wide text-[#8FA3A3]">
                               Offer #{i + 1}
                             </p>
-                            <p className="leading-relaxed text-zinc-200">{formatGeneratedText(offer)}</p>
+                            <p className="leading-relaxed text-[#EDE7D9]">{formatGeneratedText(offer)}</p>
                           </div>
                         ))}
                       </div>
                     </div>
 
-                    <div className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5">
-                      <h3 className="mb-3 font-semibold text-purple-400">
+                    <div className="rounded-2xl border border-[#223F49] bg-[#0E2A31] p-5">
+                      <h3 className="mb-3 font-semibold text-[#F2705B]">
                         🧲 Lead Magnet Idea
                       </h3>
-                      <p className="leading-relaxed text-zinc-200">
+                      <p className="leading-relaxed text-[#EDE7D9]">
                         {formatGeneratedText(
                           results.monetization?.lead_magnet ||
                             'Create a simple checklist, template, or guide related to this content idea.'
@@ -3944,17 +3944,17 @@ function getPlatformDisplayName(value?: string) {
                       </p>
                     </div>
 
-                    <div className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5">
-                      <h3 className="mb-4 font-semibold text-purple-400">
+                    <div className="rounded-2xl border border-[#223F49] bg-[#0E2A31] p-5">
+                      <h3 className="mb-4 font-semibold text-[#F2705B]">
                         🧭 Simple Funnel
                       </h3>
 
                       <div className="space-y-3">
-                        <div className="rounded-xl border border-zinc-700 bg-zinc-900/70 p-4">
-                          <p className="mb-1 text-xs font-medium uppercase tracking-wide text-zinc-500">
+                        <div className="rounded-xl border border-[#223F49] bg-[#0A2830]/70 p-4">
+                          <p className="mb-1 text-xs font-medium uppercase tracking-wide text-[#8FA3A3]">
                             Step 1 — Attract
                           </p>
-                          <p className="leading-relaxed text-zinc-200">
+                          <p className="leading-relaxed text-[#EDE7D9]">
                             {formatGeneratedText(
                               results.monetization?.funnel?.step_1 ||
                                 'Use the strongest content piece to attract the right audience with a clear problem, promise, or result.'
@@ -3962,11 +3962,11 @@ function getPlatformDisplayName(value?: string) {
                           </p>
                         </div>
 
-                        <div className="rounded-xl border border-zinc-700 bg-zinc-900/70 p-4">
-                          <p className="mb-1 text-xs font-medium uppercase tracking-wide text-zinc-500">
+                        <div className="rounded-xl border border-[#223F49] bg-[#0A2830]/70 p-4">
+                          <p className="mb-1 text-xs font-medium uppercase tracking-wide text-[#8FA3A3]">
                             Step 2 — Capture
                           </p>
-                          <p className="leading-relaxed text-zinc-200">
+                          <p className="leading-relaxed text-[#EDE7D9]">
                             {formatGeneratedText(
                               results.monetization?.funnel?.step_2 ||
                                 'Send interested people to the lead magnet so they can take the next step and join your audience.'
@@ -3974,11 +3974,11 @@ function getPlatformDisplayName(value?: string) {
                           </p>
                         </div>
 
-                        <div className="rounded-xl border border-zinc-700 bg-zinc-900/70 p-4">
-                          <p className="mb-1 text-xs font-medium uppercase tracking-wide text-zinc-500">
+                        <div className="rounded-xl border border-[#223F49] bg-[#0A2830]/70 p-4">
+                          <p className="mb-1 text-xs font-medium uppercase tracking-wide text-[#8FA3A3]">
                             Step 3 — Convert
                           </p>
-                          <p className="leading-relaxed text-zinc-200">
+                          <p className="leading-relaxed text-[#EDE7D9]">
                             {formatGeneratedText(
                               results.monetization?.funnel?.step_3 ||
                                 'Follow up with a simple paid offer that directly solves the problem introduced in the content.'
@@ -3988,11 +3988,11 @@ function getPlatformDisplayName(value?: string) {
                       </div>
                     </div>
 
-                    <div className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5">
-                      <h3 className="mb-3 font-semibold text-purple-400">
+                    <div className="rounded-2xl border border-[#223F49] bg-[#0E2A31] p-5">
+                      <h3 className="mb-3 font-semibold text-[#F2705B]">
                         ⚡ Conversion Strategy
                       </h3>
-                      <p className="leading-relaxed text-zinc-200">
+                      <p className="leading-relaxed text-[#EDE7D9]">
                         {formatGeneratedText(
                           results.monetization?.cta_strategy ||
                             'Use a direct CTA that connects the content promise to a clear next step.'
@@ -4000,14 +4000,14 @@ function getPlatformDisplayName(value?: string) {
                       </p>
                     </div>
 
-                    <div className="rounded-2xl border border-zinc-700 bg-zinc-800 p-5">
-                      <h3 className="mb-3 font-semibold text-purple-400">
+                    <div className="rounded-2xl border border-[#223F49] bg-[#0E2A31] p-5">
+                      <h3 className="mb-3 font-semibold text-[#F2705B]">
                         🎯 Conversion Tips
                       </h3>
 
                       <div className="space-y-2">
                         {(results.monetization?.conversion_tips || []).map((tip, i) => (
-                          <p key={i} className="leading-relaxed text-zinc-200">
+                          <p key={i} className="leading-relaxed text-[#EDE7D9]">
                             • {formatGeneratedText(tip)}
                           </p>
                         ))}
