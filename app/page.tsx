@@ -11,7 +11,7 @@ export default function LandingPage() {
         <header className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <Image
-              src="/hummingbird-mark.jpeg"
+              src="/elua-favicon.png"
               alt="Elua"
               width={44}
               height={44}

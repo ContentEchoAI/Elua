@@ -2274,7 +2274,7 @@ function getPlatformDisplayName(value?: string) {
         <header className="mb-6 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <img
-              src="/hummingbird-mark.jpeg"
+              src="/elua-favicon.png"
               alt="Elua"
               className="h-11 w-11 rounded-2xl object-cover"
             />
