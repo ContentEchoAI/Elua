@@ -1229,7 +1229,7 @@ function getPlatformDisplayName(value?: string) {
         body: JSON.stringify({
           clerkUserId: user.id,
           title: content.trim().slice(0, 70) || 'Untitled generation',
-          input: content,
+          input: content.trim() || 'Photo-based post (media upload)',
           mode: generationMode,
           goal,
           voice: selectedVoice,
