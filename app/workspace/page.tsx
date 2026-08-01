@@ -2314,11 +2314,22 @@ function getPlatformDisplayName(value?: string) {
             {!isLoaded ? (
               <div className="h-9 w-24 animate-pulse rounded-full bg-[#0B1518]" />
             ) : signedIn ? (
-              <div className="flex items-center gap-2 rounded-full border border-[#1E3238] bg-[#101D20]/80 px-3 py-2">
-                <span className="text-xs font-semibold text-[#C6CFCB]">
-                  Account
-                </span>
-                <UserButton />
+              <div className="flex items-center gap-2">
+                {!isPro && (
+                  <button
+                    onClick={handleUpgrade}
+                    disabled={upgradeLoading}
+                    className="rounded-full bg-[#F2705B] px-4 py-2 text-xs font-bold text-white transition hover:bg-[#e4614c] disabled:opacity-60"
+                  >
+                    {upgradeLoading ? 'Opening...' : 'Upgrade'}
+                  </button>
+                )}
+                <div className="flex items-center gap-2 rounded-full border border-[#1E3238] bg-[#101D20]/80 px-3 py-2">
+                  <span className="text-xs font-semibold text-[#C6CFCB]">
+                    Account
+                  </span>
+                  <UserButton />
+                </div>
               </div>
             ) : (
               <SignInButton mode="modal">
@@ -2795,13 +2806,19 @@ function getPlatformDisplayName(value?: string) {
 
               <div className="mt-2.5 flex items-center justify-between text-xs text-[#A8B5B2]">
                 <p>{freeLeft} free generations {signedIn ? 'left' : 'with a free account'}</p>
-                <p>
-                  {signedIn && isPro
-                    ? 'Pro active'
-                    : signedIn
-                      ? 'Free plan'
-                      : 'Free account required'}
-                </p>
+                {signedIn && isPro ? (
+                  <p>Pro active</p>
+                ) : signedIn ? (
+                  <button
+                    onClick={handleUpgrade}
+                    disabled={upgradeLoading}
+                    className="font-semibold text-[#F2705B] underline underline-offset-2 transition hover:text-[#e4614c] disabled:opacity-60"
+                  >
+                    {upgradeLoading ? 'Opening checkout...' : 'Upgrade — $19/mo'}
+                  </button>
+                ) : (
+                  <p>Free account required</p>
+                )}
               </div>
             </div>
             <div className="mt-4 hidden space-y-4 lg:block">
