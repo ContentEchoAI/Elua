@@ -81,9 +81,13 @@ export default function LandingPage() {
                 href="/workspace"
                 className="rounded-2xl bg-[#F2705B] px-6 py-4 text-center text-sm font-bold text-white shadow-lg shadow-black/30 transition hover:bg-[#e4614c]"
               >
-                Make My Post
+                Make My Post — Free
               </Link>
             </div>
+
+            <p className="mt-3 text-sm font-semibold text-[#F6F1E7]/80">
+              10 free generations with a free account. No credit card needed.
+            </p>
 
             <a
               href="#how-it-works"
