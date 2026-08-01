@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { auth, clerkClient } from '@clerk/nextjs/server';
 import {
   getMediaCaptionPostTypeGuidance,
   inferMediaCaptionPostType,
@@ -2842,6 +2843,31 @@ ${attempt > 1 ? '- The previous rewrite still failed the human-opening check. Us
 }
 
 export async function POST(req: Request) {
+  const { userId } = await auth();
+  if (!userId) {
+    return NextResponse.json(
+      { error: 'Please sign in to generate posts.' },
+      { status: 401 }
+    );
+  }
+
+  const clerk = await clerkClient();
+  const clerkUser = await clerk.users.getUser(userId);
+  const generationsUsed =
+    (clerkUser.privateMetadata?.generationsUsed as number) || 0;
+  const isProUser = clerkUser.privateMetadata?.isPro === true;
+
+  if (!isProUser && generationsUsed >= 10) {
+    return NextResponse.json(
+      { error: 'You have used all 10 free generations. Upgrade to Pro to continue.' },
+      { status: 403 }
+    );
+  }
+
+  await clerk.users.updateUserMetadata(userId, {
+    privateMetadata: { generationsUsed: generationsUsed + 1 },
+  });
+
   try {
     const {
       content,
