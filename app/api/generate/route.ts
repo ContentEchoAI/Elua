@@ -4750,3 +4750,16 @@ Final silent check:
     );
   }
 }
+
+export async function GET() {
+  const { userId } = await auth();
+  if (!userId) {
+    return NextResponse.json({ generationsUsed: 0, isPro: false });
+  }
+  const clerk = await clerkClient();
+  const clerkUser = await clerk.users.getUser(userId);
+  return NextResponse.json({
+    generationsUsed: (clerkUser.privateMetadata?.generationsUsed as number) || 0,
+    isPro: clerkUser.privateMetadata?.isPro === true,
+  });
+}

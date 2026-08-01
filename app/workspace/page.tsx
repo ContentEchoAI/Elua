@@ -733,6 +733,19 @@ function getPlatformDisplayName(value?: string) {
         setGenerationsUsed(parseInt(savedUsed));
       }
 
+      fetch('/api/generate')
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (data && typeof data.generationsUsed === 'number') {
+            setGenerationsUsed(data.generationsUsed);
+            localStorage.setItem('generationsUsed', String(data.generationsUsed));
+          }
+          if (data && data.isPro === true) {
+            setIsPro(true);
+          }
+        })
+        .catch(() => {});
+
       if (savedPro === 'true' || params.get('success') === 'true') {
         setIsPro(true);
       }
