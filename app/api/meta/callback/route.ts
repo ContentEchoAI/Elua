@@ -10,7 +10,7 @@ import { saveMetaConnection } from '@/lib/metaConnections';
 function redirectHome(request: NextRequest, status: string) {
   const appBaseUrl =
     process.env.META_APP_BASE_URL || new URL('/', request.url).origin;
-  const redirectUrl = new URL('/', appBaseUrl);
+  const redirectUrl = new URL('/workspace', appBaseUrl);
   redirectUrl.searchParams.set('meta', status);
   return NextResponse.redirect(redirectUrl);
 }
