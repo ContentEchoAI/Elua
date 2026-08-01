@@ -1666,7 +1666,7 @@ function getPlatformDisplayName(value?: string) {
   };
 
   const freeLeft = mounted
-    ? isPro
+    ? signedIn && isPro
       ? '∞'
       : Math.max(0, MAX_FREE - generationsUsed)
     : MAX_FREE;
@@ -2772,9 +2772,9 @@ function getPlatformDisplayName(value?: string) {
               )}
 
               <div className="mt-2.5 flex items-center justify-between text-xs text-[#A8B5B2]">
-                <p>{freeLeft} free generations left</p>
+                <p>{freeLeft} free generations {signedIn ? 'left' : 'with a free account'}</p>
                 <p>
-                  {isPro
+                  {signedIn && isPro
                     ? 'Pro active'
                     : signedIn
                       ? 'Free plan'
