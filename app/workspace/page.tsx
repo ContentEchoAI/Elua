@@ -2349,7 +2349,7 @@ function getPlatformDisplayName(value?: string) {
             </p>
           </div>
 
-          <div>{accountPanel}</div>
+          <div className="hidden">{accountPanel}</div>
         </div>
 
         <div className="hidden">
@@ -4040,7 +4040,7 @@ function getPlatformDisplayName(value?: string) {
             </div>
           </div>
 
-          <div>{accountPanel}</div>
+          <div className="hidden">{accountPanel}</div>
 
 
 
