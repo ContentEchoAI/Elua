@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { auth } from '@clerk/nextjs/server';
 import { createClient } from '@supabase/supabase-js';
 
 export const dynamic = 'force-dynamic';
@@ -36,6 +37,11 @@ export async function DELETE(req: Request, context: RouteContext) {
     const { id } = await context.params;
     const body = await req.json();
     const clerkUserId = body?.clerkUserId;
+
+    const { userId: authedUserId } = await auth();
+    if (!authedUserId || authedUserId !== clerkUserId) {
+      return NextResponse.json({ error: 'Unauthorized.' }, { status: 401 });
+    }
 
     if (!id) {
       return NextResponse.json(
