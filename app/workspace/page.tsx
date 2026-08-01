@@ -308,7 +308,7 @@ export default function Home() {
   const isContentPlanMode =
     generationMode === 'growth_system' || isMakeMyPostMode;
 
-  const MAX_FREE = 10;
+  const MAX_FREE = 5;
   const MAX_SAVED = 20;
   const MAX_UPLOAD_IMAGES = 6;
 
@@ -1058,7 +1058,7 @@ function getPlatformDisplayName(value?: string) {
     }
 
     if (!isPro && generationsUsed >= MAX_FREE) {
-      alert("You've reached your 10 free generations. Upgrade to Pro!");
+      alert("You've reached your 5 free generations. Upgrade to Pro!");
       return;
     }
 

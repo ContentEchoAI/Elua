@@ -2857,9 +2857,9 @@ export async function POST(req: Request) {
     (clerkUser.privateMetadata?.generationsUsed as number) || 0;
   const isProUser = clerkUser.privateMetadata?.isPro === true;
 
-  if (!isProUser && generationsUsed >= 10) {
+  if (!isProUser && generationsUsed >= 5) {
     return NextResponse.json(
-      { error: 'You have used all 10 free generations. Upgrade to Pro to continue.' },
+      { error: 'You have used all 5 free generations. Upgrade to Pro to continue.' },
       { status: 403 }
     );
   }

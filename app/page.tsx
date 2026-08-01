@@ -86,7 +86,7 @@ export default function LandingPage() {
             </div>
 
             <p className="mt-3 text-sm font-semibold text-[#F6F1E7]/80">
-              10 free generations with a free account. No credit card needed.
+              5 free generations with a free account. No credit card needed.
             </p>
 
             <a
