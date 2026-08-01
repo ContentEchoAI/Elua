@@ -64,7 +64,7 @@ export async function POST(req: Request) {
           quantity: 1,
         },
       ],
-      success_url: `${appUrl}?success=true`,
+      success_url: `${appUrl}/workspace?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${appUrl}?canceled=true`,
       client_reference_id: clerkUserId,
       metadata: {

@@ -737,8 +737,20 @@ function getPlatformDisplayName(value?: string) {
         setIsPro(true);
       }
 
-      if (params.get('success') === 'true') {
-        localStorage.setItem('isPro', 'true');
+      const stripeSessionId = params.get('session_id');
+      if (stripeSessionId) {
+        fetch('/api/stripe/confirm', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sessionId: stripeSessionId }),
+        })
+          .then((res) => {
+            if (res.ok) {
+              localStorage.setItem('isPro', 'true');
+              window.location.reload();
+            }
+          })
+          .catch(() => {});
         window.history.replaceState({}, document.title, window.location.pathname);
       }
     }, 0);

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { auth } from '@clerk/nextjs/server';
 import { createClient } from '@supabase/supabase-js';
 
 export const dynamic = 'force-dynamic';
@@ -64,6 +65,11 @@ export async function GET(req: Request) {
     const url = new URL(req.url);
     const clerkUserId = url.searchParams.get('clerkUserId');
 
+    const { userId: authedUserId } = await auth();
+    if (!authedUserId || authedUserId !== clerkUserId) {
+      return NextResponse.json({ error: 'Unauthorized.' }, { status: 401 });
+    }
+
     if (!clerkUserId) {
       return NextResponse.json(
         { error: 'Missing Clerk user ID.' },
@@ -119,6 +125,11 @@ export async function POST(req: Request) {
     const body = (await req.json()) as SaveBody;
 
     const clerkUserId = body.clerkUserId;
+
+    const { userId: authedUserId } = await auth();
+    if (!authedUserId || authedUserId !== clerkUserId) {
+      return NextResponse.json({ error: 'Unauthorized.' }, { status: 401 });
+    }
     const title = body.title?.trim();
     const input = body.input?.trim();
     const mode = body.mode;
@@ -192,6 +203,11 @@ export async function DELETE(req: Request) {
 
     const body = await req.json();
     const clerkUserId = body?.clerkUserId;
+
+    const { userId: authedUserId } = await auth();
+    if (!authedUserId || authedUserId !== clerkUserId) {
+      return NextResponse.json({ error: 'Unauthorized.' }, { status: 401 });
+    }
 
     if (!clerkUserId) {
       return NextResponse.json(
