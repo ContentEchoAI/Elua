@@ -698,7 +698,6 @@ function getPlatformDisplayName(value?: string) {
       setApprovedPostsHydrated(true);
 
       const savedUsed = localStorage.getItem('generationsUsed');
-      const savedPro = localStorage.getItem('isPro');
       const savedBusinessProfile = localStorage.getItem('businessProfile');
       const params = new URLSearchParams(window.location.search);
 
@@ -740,15 +739,13 @@ function getPlatformDisplayName(value?: string) {
             setGenerationsUsed(data.generationsUsed);
             localStorage.setItem('generationsUsed', String(data.generationsUsed));
           }
-          if (data && data.isPro === true) {
-            setIsPro(true);
+          if (data) {
+            setIsPro(data.isPro === true);
+            localStorage.setItem('isPro', data.isPro === true ? 'true' : 'false');
           }
         })
         .catch(() => {});
 
-      if (savedPro === 'true' || params.get('success') === 'true') {
-        setIsPro(true);
-      }
 
       const stripeSessionId = params.get('session_id');
       if (stripeSessionId) {
