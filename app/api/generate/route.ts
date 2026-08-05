@@ -3505,11 +3505,28 @@ Rules:
 - best_hook must be one of the 10 hooks.
 `;
 
+    const postAngles = [
+      'DESCRIBE THE WORK: describe the visible details of the work in plain, natural language.',
+      'SERVICE MOMENT: frame the post around the experience of getting this service or seeing this result, using only what is visible in the photos. No invented names, quotes, or outcomes.',
+      'EDUCATIONAL TIP: teach one practical, genuinely useful tip related to what is visible (care, upkeep, choosing a style or service), then invite the DM.',
+      'BEHIND THE SCENES: talk about the process, craft, or care behind the visible work, not just the finished result.',
+      'BOOKING PUSH: a direct, natural invitation to book this service, anchored on one visible detail. Stay factual - no invented availability, urgency, or discounts.',
+      'ENGAGEMENT QUESTION: open with a question that makes viewers pick, compare, or react to something visible in the photos, then give the CTA.',
+    ];
+    const chosenAngle =
+      postAngles[Math.floor(Math.random() * postAngles.length)];
     const makeMyPostPromptExtras =
       mode === 'make_my_post'
         ? `
 MAKE MY POST MODE:
 The user is not asking for a big strategy report. They want the easiest possible ready-to-use posting pack.
+
+ASSIGNED POST ANGLE (variety for repeat users - captions must never feel like the same post twice):
+${chosenAngle}
+- Build the caption around this assigned angle. The opening line type, caption structure, and CTA phrasing must follow the angle, and must clearly differ from the user's recent campaigns if any are provided in this prompt.
+- When an assigned angle is present, adapt any fixed line-by-line caption structure below to the angle: the first line follows the angle, not always a visual description.
+- Rotate the CTA keyword naturally to fit the angle and business type (for example DESIGN, BOOK, QUOTE, INFO) instead of always reusing the same keyword.
+- Vary hashtag selection between generations: reuse at most 3 hashtags from any recent campaign, and order them differently.
 
 Primary job:
 Turn the user's real business photo description, service photo idea, before/after, client result, product photo, workspace photo, or service example into one clear post they can publish.
