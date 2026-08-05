@@ -3539,6 +3539,16 @@ Rules:
     ];
     const chosenAngle =
       postAngles[Math.floor(Math.random() * postAngles.length)];
+    const ctaKeywords = ['BOOK', 'QUOTE', 'INFO', 'START', 'DETAILS', 'DESIGN'];
+    const chosenCtaKeyword =
+      ctaKeywords[Math.floor(Math.random() * ctaKeywords.length)];
+    const replyStyles = [
+      'PREFERENCE QUESTION: warmly ask which style or option they are leaning toward.',
+      'LOGISTICS FIRST: warmly ask for the one practical detail needed to give a price or time (size, area, date, or current state). No more than one question.',
+      'NEXT STEP: thank them and give one clear, easy next step to lock in a time. No question stack.',
+    ];
+    const chosenReplyStyle =
+      replyStyles[Math.floor(Math.random() * replyStyles.length)];
     const makeMyPostPromptExtras =
       mode === 'make_my_post'
         ? `
@@ -3549,7 +3559,8 @@ ASSIGNED POST ANGLE (variety for repeat users - captions must never feel like th
 ${chosenAngle}
 - Build the caption around this assigned angle. The opening line type, caption structure, and CTA phrasing must follow the angle, and must clearly differ from the user's recent campaigns if any are provided in this prompt.
 - When an assigned angle is present, adapt any fixed line-by-line caption structure below to the angle: the first line follows the angle, not always a visual description.
-- Rotate the CTA keyword naturally to fit the angle and business type (for example DESIGN, BOOK, QUOTE, INFO) instead of always reusing the same keyword.
+- Use ${chosenCtaKeyword} as the DM keyword in the caption CTA and in the dm_reply, unless it clearly does not fit this business or angle - then pick the closest natural alternative. Do not default to DESIGN.
+- Write the dm_reply in this assigned style: ${chosenReplyStyle}
 - Vary hashtag selection between generations: reuse at most 3 hashtags from any recent campaign, and order them differently.
 
 Primary job:
