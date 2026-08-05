@@ -254,7 +254,10 @@ export default function Home() {
   const [guestUsed, setGuestUsed] = useState(false);
   useEffect(() => {
     try {
-      if (window.localStorage.getItem('eluaGuestUsed')) setGuestUsed(true);
+      if (window.localStorage.getItem('eluaGuestUsed')) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time init from localStorage
+        setGuestUsed(true);
+      }
     } catch {}
   }, []);
 
