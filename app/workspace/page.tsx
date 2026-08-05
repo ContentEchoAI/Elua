@@ -251,6 +251,12 @@ export default function Home() {
   const { isLoaded, isSignedIn, user } = useUser();
 
   const signedIn = isLoaded && isSignedIn;
+  const [guestUsed, setGuestUsed] = useState(false);
+  useEffect(() => {
+    try {
+      if (window.localStorage.getItem('eluaGuestUsed')) setGuestUsed(true);
+    } catch {}
+  }, []);
 
   const [content, setContent] = useState('');
   const [selectedVoice, setSelectedVoice] = useState('professional');
@@ -1058,16 +1064,20 @@ function getPlatformDisplayName(value?: string) {
     }
   };
 
+  const guestGenerate = async () => {
+    await generateContent();
+    try {
+      window.localStorage.setItem('eluaGuestUsed', '1');
+    } catch {}
+    setGuestUsed(true);
+  };
   const generateContent = async () => {
     if (!isLoaded) {
       alert('Please wait a second while your account loads.');
       return;
     }
 
-    if (!signedIn) {
-      alert('Please sign in before generating content.');
-      return;
-    }
+
 
     if (!content.trim() && !(isMakeMyPostMode && uploadedImages.length > 0)) {
       alert(
@@ -1083,7 +1093,7 @@ function getPlatformDisplayName(value?: string) {
       return;
     }
 
-    if (!isPro && generationsUsed >= MAX_FREE) {
+    if (signedIn && !isPro && generationsUsed >= MAX_FREE) {
       alert("You've reached your 5 free generations. Upgrade to Pro!");
       return;
     }
@@ -2811,27 +2821,29 @@ function getPlatformDisplayName(value?: string) {
                           : 'Make My Post'
                         : 'Generate My Content + Money Plan'}
                 </button>
-              ) : (
+              ) : guestUsed ? (
                 <SignInButton mode="modal">
-                  <button
-                    disabled={
-                      !isLoaded ||
-                      (!content.trim() &&
-                        !(isMakeMyPostMode && uploadedImages.length > 0))
-                    }
-                    className={`w-full rounded-2xl py-3.5 text-sm font-semibold transition hover:scale-[1.02] disabled:bg-none disabled:bg-[#16262B] disabled:text-[#8A9A98] disabled:hover:scale-100 sm:py-5 sm:text-lg ${
-                      generationMode === 'viral_hooks'
-                        ? 'bg-gradient-to-r from-orange-500 via-[#E4614C] to-[#D8543F]'
-                        : 'bg-gradient-to-r from-[#F2705B] to-[#D8543F]'
-                    }`}
-                  >
-                    Create Free Account to Generate
+                  <button className="w-full rounded-2xl bg-gradient-to-r from-[#F2705B] to-[#D8543F] py-3.5 text-sm font-semibold transition hover:scale-[1.02] sm:py-5 sm:text-lg">
+                    Create Free Account for 5 More Free Posts
                   </button>
                 </SignInButton>
+              ) : (
+                <button
+                  onClick={guestGenerate}
+                  disabled={
+                    loading ||
+                    !isLoaded ||
+                    (!content.trim() &&
+                      !(isMakeMyPostMode && uploadedImages.length > 0))
+                  }
+                  className="w-full rounded-2xl bg-gradient-to-r from-[#F2705B] to-[#D8543F] py-3.5 text-sm font-semibold transition hover:scale-[1.02] disabled:bg-none disabled:bg-[#16262B] disabled:text-[#8A9A98] disabled:hover:scale-100 sm:py-5 sm:text-lg"
+                >
+                  {loading ? 'Making your post...' : 'Make My Free Post — No Account Needed'}
+                </button>
               )}
 
               <div className="mt-2.5 flex items-center justify-between text-xs text-[#A8B5B2]">
-                <p>{freeLeft} free generations {signedIn ? 'left' : 'with a free account'}</p>
+                <p>{signedIn ? `${freeLeft} free generations left` : guestUsed ? 'Free post used · create a free account for 5 more' : '1 free post now · 5 more with a free account'}</p>
                 {signedIn && isPro ? (
                   <p>Pro active</p>
                 ) : signedIn ? (

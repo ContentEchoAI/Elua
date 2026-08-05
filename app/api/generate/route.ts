@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { auth, clerkClient } from '@clerk/nextjs/server';
+import { cookies } from 'next/headers';
 import {
   getMediaCaptionPostTypeGuidance,
   inferMediaCaptionPostType,
@@ -2844,29 +2845,38 @@ ${attempt > 1 ? '- The previous rewrite still failed the human-opening check. Us
 
 export async function POST(req: Request) {
   const { userId } = await auth();
+  const cookieStore = await cookies();
+  let generationsUsed = 0;
+  let isProUser = false;
   if (!userId) {
-    return NextResponse.json(
-      { error: 'Please sign in to generate posts.' },
-      { status: 401 }
-    );
+    if (cookieStore.get('elua_guest_used')) {
+      return NextResponse.json(
+        { error: 'You used your free guest post. Create a free account to get 5 more.' },
+        { status: 401 }
+      );
+    }
+    cookieStore.set('elua_guest_used', '1', {
+      maxAge: 60 * 60 * 24 * 365,
+      httpOnly: true,
+      sameSite: 'lax',
+      path: '/',
+    });
+  } else {
+    const clerk = await clerkClient();
+    const clerkUser = await clerk.users.getUser(userId);
+    generationsUsed =
+      (clerkUser.privateMetadata?.generationsUsed as number) || 0;
+    isProUser = clerkUser.privateMetadata?.isPro === true;
+    if (!isProUser && generationsUsed >= 5) {
+      return NextResponse.json(
+        { error: 'You have used all 5 free generations. Upgrade to Pro to continue.' },
+        { status: 403 }
+      );
+    }
+    await clerk.users.updateUserMetadata(userId, {
+      privateMetadata: { generationsUsed: generationsUsed + 1 },
+    });
   }
-
-  const clerk = await clerkClient();
-  const clerkUser = await clerk.users.getUser(userId);
-  const generationsUsed =
-    (clerkUser.privateMetadata?.generationsUsed as number) || 0;
-  const isProUser = clerkUser.privateMetadata?.isPro === true;
-
-  if (!isProUser && generationsUsed >= 5) {
-    return NextResponse.json(
-      { error: 'You have used all 5 free generations. Upgrade to Pro to continue.' },
-      { status: 403 }
-    );
-  }
-
-  await clerk.users.updateUserMetadata(userId, {
-    privateMetadata: { generationsUsed: generationsUsed + 1 },
-  });
 
   try {
     const {
