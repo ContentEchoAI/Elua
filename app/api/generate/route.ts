@@ -2843,9 +2843,33 @@ ${attempt > 1 ? '- The previous rewrite still failed the human-opening check. Us
   return null;
 }
 
+const ipHits = new Map<string, { count: number; day: string }>();
+
 export async function POST(req: Request) {
   const { userId } = await auth();
   const cookieStore = await cookies();
+  const clientIp =
+    req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+  const ipDay = new Date().toISOString().slice(0, 10);
+  const ipEntry = ipHits.get(clientIp);
+  if (ipEntry && ipEntry.day === ipDay && ipEntry.count >= 30) {
+    return NextResponse.json(
+      {
+        error:
+          'Daily generation limit reached from this network. Please try again tomorrow.',
+      },
+      { status: 429 }
+    );
+  }
+  ipHits.set(clientIp, {
+    day: ipDay,
+    count: ipEntry && ipEntry.day === ipDay ? ipEntry.count + 1 : 1,
+  });
+  if (ipHits.size > 5000) {
+    for (const [k, v] of ipHits) {
+      if (v.day !== ipDay) ipHits.delete(k);
+    }
+  }
   let generationsUsed = 0;
   let isProUser = false;
   if (!userId) {
