@@ -3579,6 +3579,7 @@ Important:
 - production_plan.caption must be the main copy-ready caption.
 - production_plan.cta must be short and natural.
 - production_plan.dm_reply must be the first message to send if someone comments or DMs.
+- In the next-step / posting guidance, always include this pro checklist so the post performs like a seasoned owner posted it: tag your business location, tag any product brands visible in the photos, and add a trending audio track when posting.
 - monetization.action_plan should be light and practical. It should not overwhelm the user.
 - The top command center should feel like "Here is the post to make today."
 - Avoid internal marketing language. Use owner language.
@@ -3594,6 +3595,7 @@ Important:
 - Do not use hype phrases like "turn heads", "standout", "you won’t find anywhere else", "book now", "perfect", "flawless", "must-have", "elevate your look", "treat yourself", or "ready to slay".
 - Do not invent uniqueness, quality, superiority, popularity, results, availability, discounts, or service claims that are not visible in the photo or provided by the user.
 - For beauty photos, describe what is visibly in the photo in simple natural language: colors, shape, detail level, design style, finish, or appointment question.
+- When the service or treatment in the photos is identifiable, you may include one genuinely useful, accurate fact about what it does or one practical tip - written like a knowledgeable owner sharing expertise, not a brochure. Keep it simple, true, and specific; never invent benefits, results, or claims.
 - For cleaning/detailing/local service photos, describe the visible before/after, area, project type, or quote detail needed. Do not claim spotless, guaranteed, fast, same-day, or perfect results.
 - Caption style should usually be 2-5 short lines with natural line breaks, not a big paragraph.
 - Use plain language a real owner would post on Instagram or Facebook.
