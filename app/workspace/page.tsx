@@ -2861,6 +2861,9 @@ function getPlatformDisplayName(value?: string) {
                   <p>Free account required</p>
                 )}
               </div>
+              <p className="mt-2 text-center text-xs text-[#6E7F7E]">
+                Nothing posts without your approval · Photos stay private
+              </p>
             </div>
             <div className="mt-4 hidden space-y-4 lg:block">
               {savedGenerationsCard}

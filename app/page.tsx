@@ -89,6 +89,10 @@ export default function LandingPage() {
               5 free generations with a free account. No credit card needed.
             </p>
 
+            <p className="mt-2 text-xs font-medium text-[#F6F1E7]/60">
+              ✓ Nothing posts without your approval · 🔒 Photos only used to make your post · 💳 Payments by Stripe
+            </p>
+
             <a
               href="#how-it-works"
               className="mt-5 inline-flex text-sm font-semibold text-[#F6F1E7]/60 transition hover:text-[#F6F1E7]"
