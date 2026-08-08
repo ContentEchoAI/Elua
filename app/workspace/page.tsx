@@ -1091,7 +1091,7 @@ function getPlatformDisplayName(value?: string) {
       return;
     }
 
-    if (isContentPlanMode && selectedOutputs.length === 0) {
+    if (signedIn && isContentPlanMode && selectedOutputs.length === 0) {
       alert('Please select at least one platform.');
       return;
     }
@@ -2462,9 +2462,7 @@ function getPlatformDisplayName(value?: string) {
           </div>
         </div>
 
-        {isLoaded && !signedIn && todaysPostCard}
-
-        {platformPanel}
+        {signedIn && platformPanel}
 
         <div className="grid w-full min-w-0 items-stretch gap-4 lg:grid-cols-[0.95fr_1.2fr] lg:gap-8">
           <div className="order-1 min-w-0">
@@ -2573,7 +2571,7 @@ function getPlatformDisplayName(value?: string) {
                 )}
               </div>
 
-              <div className="mb-4 rounded-2xl border border-[#1E3238] bg-[#092B33]/40 p-4">
+              <div className={signedIn ? "mb-4 rounded-2xl border border-[#1E3238] bg-[#092B33]/40 p-4" : "hidden"}>
                 <button
                   type="button"
                   onClick={() => setShowBusinessProfile((current) => !current)}
@@ -2708,7 +2706,7 @@ function getPlatformDisplayName(value?: string) {
                 </div>
               </div>
 
-              <div className="mb-4">
+              <div className={signedIn ? "mb-4" : "hidden"}>
                 <p className="mb-2 text-xs font-medium uppercase tracking-wide text-[#8A9A98]">
                   Post goal
                 </p>
@@ -2733,7 +2731,7 @@ function getPlatformDisplayName(value?: string) {
                 </div>
               </div>
 
-              <details className="mb-4 rounded-2xl border border-[#1E3238] bg-[#092B33]/30 p-3">
+              <details className={signedIn ? "mb-4 rounded-2xl border border-[#1E3238] bg-[#092B33]/30 p-3" : "hidden"}>
                 <summary className="cursor-pointer text-xs font-medium uppercase tracking-wide text-[#8A9A98]">
                   More options
                 </summary>
@@ -2760,7 +2758,7 @@ function getPlatformDisplayName(value?: string) {
                 </div>
               </details>
 
-              {isContentPlanMode && (
+              {signedIn && isContentPlanMode && (
                 <div className="mb-4">
                   <div className="mb-2">
                     <p className="text-xs font-medium uppercase tracking-wide text-[#8A9A98]">
@@ -2866,8 +2864,8 @@ function getPlatformDisplayName(value?: string) {
               </p>
             </div>
             <div className="mt-4 hidden space-y-4 lg:block">
-              {savedGenerationsCard}
-              {approvedPostsCard}
+              {signedIn && savedGenerationsCard}
+              {signedIn && approvedPostsCard}
             </div>
           </div>
 
@@ -3216,7 +3214,7 @@ function getPlatformDisplayName(value?: string) {
                       {generationMode === 'viral_hooks'
                         ? 'Generate 10 attention-grabbing hooks with angles, explanations, and a strongest-hook pick.'
                         : isMakeMyPostMode
-                          ? 'Add your business photos or short clips on the left, then Elua will write the caption, CTA, DM reply, hashtags, and posting direction.'
+                          ? 'Add your business photos or short clips above, then Elua will write the caption, CTA, DM reply, hashtags, and posting direction.'
                           : 'Get strategy, ready-to-post content, hooks, CTAs, and a simple path to leads, bookings, or sales.'}
                     </p>
 
@@ -4105,7 +4103,7 @@ function getPlatformDisplayName(value?: string) {
 
 
 
-          <div className="order-4 min-w-0 space-y-4 lg:hidden">
+          <div className={signedIn ? "order-4 min-w-0 space-y-4 lg:hidden" : "hidden"}>
             {savedGenerationsCard}
             {approvedPostsCard}
           </div>
