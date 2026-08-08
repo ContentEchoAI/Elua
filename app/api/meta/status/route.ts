@@ -87,8 +87,13 @@ export async function GET() {
       )
     : [];
 
+  const tokenExpired = Boolean(
+    connected &&
+      connection?.expires_at &&
+      new Date(connection.expires_at).getTime() < Date.now()
+  );
   const reconnectRequired =
-    connected && missingScopes.length > 0;
+    connected && (missingScopes.length > 0 || tokenExpired);
 
   const selectedPage = connection?.facebook_page_id
     ? {
@@ -113,7 +118,10 @@ export async function GET() {
 
   let message = 'Meta connection is ready for authorization.';
 
-  if (reconnectRequired) {
+  if (tokenExpired) {
+    message =
+      'Connection expired - reconnect Facebook and Instagram to keep publishing.';
+  } else if (reconnectRequired) {
     message =
       'Reconnect Facebook and Instagram to approve access.';
   } else if (connected && !selectedPage) {

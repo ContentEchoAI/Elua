@@ -42,7 +42,7 @@ export async function getMetaConnection(clerkUserId: string) {
   return supabaseAdmin
     .from('meta_connections')
     .select(
-      'meta_user_name,access_token,scopes,facebook_page_id,facebook_page_name,instagram_account_id,instagram_username,publishing_enabled'
+      'meta_user_name,access_token,expires_at,scopes,facebook_page_id,facebook_page_name,instagram_account_id,instagram_username,publishing_enabled'
     )
     .eq('clerk_user_id', clerkUserId)
     .maybeSingle();
