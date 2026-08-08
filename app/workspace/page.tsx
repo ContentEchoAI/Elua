@@ -1742,6 +1742,25 @@ function getPlatformDisplayName(value?: string) {
 
   const activeTabs = generationMode === 'viral_hooks' ? hooksTabs : growthTabs;
 
+  const handleMetaDisconnect = async () => {
+    if (!window.confirm('Disconnect Facebook & Instagram? Elua will forget this connection. Nothing already posted is affected.')) return;
+    try {
+      const res = await fetch('/api/meta/disconnect', { method: 'POST' });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data?.error || 'Could not disconnect. Try again.');
+        return;
+      }
+      setMetaPages([]);
+      setSelectedMetaPageId('');
+      const statusRes = await fetch('/api/meta/status');
+      const statusData = (await statusRes.json()) as MetaStatus;
+      setMetaStatus(statusRes.ok ? statusData : null);
+    } catch (error) {
+      console.warn('Meta disconnect warning:', error);
+      alert('Could not disconnect. Try again.');
+    }
+  };
   const platformPanel = signedIn ? (
     <div className="mb-4 rounded-3xl border border-[#1E3238] bg-[#101D20]/90 p-4 sm:p-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -1781,9 +1800,18 @@ function getPlatformDisplayName(value?: string) {
 
       {metaStatus?.connected && !metaStatus.reconnectRequired && (
         <div className="mt-4 rounded-2xl border border-[#1E3238] bg-[#092B33]/40 p-3 sm:p-4">
-          <p className="text-xs font-medium uppercase tracking-wide text-[#8A9A98]">
-            Facebook Page
-          </p>
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-xs font-medium uppercase tracking-wide text-[#8A9A98]">
+              Facebook Page
+            </p>
+            <button
+              type="button"
+              onClick={handleMetaDisconnect}
+              className="text-xs font-medium text-[#8A9A98] underline-offset-2 hover:text-[#F8A793] hover:underline"
+            >
+              Disconnect
+            </button>
+          </div>
 
           {metaPagesLoading ? (
             <p className="mt-2 text-sm text-[#A8B5B2]">

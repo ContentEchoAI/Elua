@@ -70,3 +70,9 @@ export async function saveSelectedMetaPage({
     })
     .eq('clerk_user_id', clerkUserId);
 }
+export async function deleteMetaConnection(clerkUserId: string) {
+  return supabaseAdmin
+    .from('meta_connections')
+    .delete()
+    .eq('clerk_user_id', clerkUserId);
+}
