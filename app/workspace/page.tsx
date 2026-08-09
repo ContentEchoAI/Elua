@@ -2643,7 +2643,7 @@ function getPlatformDisplayName(value?: string) {
                     <textarea
                       value={content}
                       onChange={(e) => setContent(e.target.value)}
-                      placeholder="Optional: add service type, location, offer, tone, or what you want more of..."
+                      placeholder="Optional: add service type, location, offer, tone, or what you want more of - any language works..."
                       className="mt-3 h-24 w-full max-w-full resize-none rounded-2xl border border-[#27404A] bg-[#0B1518] p-4 text-sm text-[#EDF1EF] outline-none placeholder:text-[#8A9A98] focus:border-[#F2705B] sm:h-28 sm:p-5 sm:text-base"
                     />
                   </details>
@@ -2950,7 +2950,7 @@ function getPlatformDisplayName(value?: string) {
                 )}
               </div>
               <p className="mt-2 text-center text-xs text-[#6E7F7E]">
-                Nothing posts without your approval · Photos stay private
+                Nothing posts without your approval · Photos stay private · ¿Hablas español? Elua responde en español
               </p>
             </div>
             <div className="mt-4 hidden space-y-4 lg:block">
