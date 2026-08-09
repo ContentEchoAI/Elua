@@ -298,6 +298,7 @@ export default function Home() {
   const [metaPages, setMetaPages] = useState<MetaManagedPage[]>([]);
   const [metaPagesLoading, setMetaPagesLoading] = useState(false);
   const [selectedMetaPageId, setSelectedMetaPageId] = useState('');
+  const [metaPublishingSaving, setMetaPublishingSaving] = useState(false);
   const [metaPageSelectionLoading, setMetaPageSelectionLoading] =
     useState(false);
   const [metaPageMessage, setMetaPageMessage] = useState('');
@@ -1742,6 +1743,32 @@ function getPlatformDisplayName(value?: string) {
 
   const activeTabs = generationMode === 'viral_hooks' ? hooksTabs : growthTabs;
 
+  const handleTogglePublishing = async () => {
+    if (!metaStatus) return;
+    const next = !metaStatus.publishingEnabled;
+    setMetaPublishingSaving(true);
+    try {
+      const res = await fetch('/api/meta/publishing', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ enabled: next }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data?.error || 'Could not update publishing.');
+        return;
+      }
+      const statusRes = await fetch('/api/meta/status');
+      const statusData = (await statusRes.json()) as MetaStatus;
+      setMetaStatus(statusRes.ok ? statusData : null);
+    } catch (error) {
+      console.warn('Toggle publishing warning:', error);
+      alert('Could not update publishing.');
+    } finally {
+      setMetaPublishingSaving(false);
+    }
+  };
+
   const handleMetaDisconnect = async () => {
     if (!window.confirm('Disconnect Facebook & Instagram? Elua will forget this connection. Nothing already posted is affected.')) return;
     try {
@@ -1784,17 +1811,22 @@ function getPlatformDisplayName(value?: string) {
               : 'Connect Facebook & Instagram'}
           </a>
         ) : (
-          <div
-            className={`shrink-0 rounded-2xl border px-4 py-2 text-center text-xs font-semibold ${
+          <button
+            type="button"
+            onClick={handleTogglePublishing}
+            disabled={metaPublishingSaving || metaStatusLoading}
+            className={`shrink-0 rounded-2xl border px-4 py-2 text-center text-xs font-semibold transition hover:scale-[1.02] disabled:opacity-60 ${
               metaStatus?.publishingEnabled
                 ? 'border-emerald-500/30 text-emerald-200'
                 : 'border-[#27404A] text-[#C6CFCB]'
             }`}
           >
-            {metaStatus?.publishingEnabled
-              ? 'Publishing enabled'
-              : 'Publishing disabled'}
-          </div>
+            {metaPublishingSaving
+              ? 'Saving...'
+              : metaStatus?.publishingEnabled
+                ? 'Publishing enabled - click to disable'
+                : 'Enable publishing'}
+          </button>
         )}
       </div>
 

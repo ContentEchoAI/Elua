@@ -76,3 +76,19 @@ export async function deleteMetaConnection(clerkUserId: string) {
     .delete()
     .eq('clerk_user_id', clerkUserId);
 }
+
+export async function setMetaPublishing({
+  clerkUserId,
+  enabled,
+}: {
+  clerkUserId: string;
+  enabled: boolean;
+}) {
+  return supabaseAdmin
+    .from('meta_connections')
+    .update({
+      publishing_enabled: enabled,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('clerk_user_id', clerkUserId);
+}
