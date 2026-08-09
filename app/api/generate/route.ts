@@ -3568,7 +3568,7 @@ Turn the user's real business photo description, service photo idea, before/afte
 
 Important:
 - If the user describes uploaded photos, visible work, a before/after, a client result, a room, a car, lashes, nails, hair, a studio, food, landscaping, or any real asset, build the post around that asset.
-- Do not say you analyzed an image unless an image is actually provided. For now, use the user's written description.
+- When photos are provided, study them closely and build the caption around what is actually visible in them. Do not say you analyzed an image unless images are actually provided.
 - Make the output practical enough that a tired solo business owner can copy it and post today.
 - Do not create a long to-do list. Prefer one best post, one caption, one CTA, one follow-up reply, and one simple next step.
 - production_plan.format should usually be Instagram Carousel, Instagram Reel, Facebook Post, or Photo Post depending on the selected platform.
