@@ -3554,6 +3554,13 @@ Rules:
         ? `
 MAKE MY POST MODE:
 The user is not asking for a big strategy report. They want the easiest possible ready-to-use posting pack.
+${userId && businessProfilePrompt === 'No saved business profile provided.' ? `
+PROFILE GUESS (required this run):
+Also return a top-level "profile_guess" object with string keys businessType, services, idealClient, mainCta.
+Base it only on the provided photos and the user's text. Plain owner language.
+Do not invent specifics the user did not provide (no city, prices, years in business).
+Keep each value short: businessType 2-4 words, services one line, idealClient one line, mainCta a few words.
+` : ''}
 
 ASSIGNED POST ANGLE (variety for repeat users - captions must never feel like the same post twice):
 ${chosenAngle}
