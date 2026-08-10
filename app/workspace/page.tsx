@@ -294,6 +294,7 @@ export default function Home() {
   );
   const [showBusinessProfile, setShowBusinessProfile] = useState(false);
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
+  const [demoLoading, setDemoLoading] = useState(false);
   const [metaStatus, setMetaStatus] = useState<MetaStatus | null>(null);
   const [metaStatusLoading, setMetaStatusLoading] = useState(false);
   const [metaPages, setMetaPages] = useState<MetaManagedPage[]>([]);
@@ -1066,6 +1067,33 @@ function getPlatformDisplayName(value?: string) {
       console.error('Upgrade error:', error);
     } finally {
       setUpgradeLoading(false);
+    }
+  };
+
+  const handleDemoPhoto = async () => {
+    setDemoLoading(true);
+    try {
+      const res = await fetch('/demo-yard.jpg');
+      const blob = await res.blob();
+      const dataUrl = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = () => reject(new Error('read failed'));
+        reader.readAsDataURL(blob);
+      });
+      setUploadedImages([
+        {
+          id: 'demo-yard',
+          name: 'demo-yard.jpg',
+          dataUrl,
+          sourceType: 'image',
+        },
+      ]);
+    } catch (error) {
+      console.warn('Demo photo load warning:', error);
+      alert('Could not load the demo photo. Try uploading one instead.');
+    } finally {
+      setDemoLoading(false);
     }
   };
 
@@ -2629,6 +2657,16 @@ function getPlatformDisplayName(value?: string) {
                     ) : (
                       <div className="rounded-xl border border-[#1E3238] bg-[#092B33]/50 p-3 text-xs leading-relaxed text-[#A8B5B2] sm:text-sm">
                         No media uploaded yet. Upload real work photos, short clips, before/afters, product shots, client-safe examples, or workspace/service visuals.
+                        {!signedIn && (
+                          <button
+                            type="button"
+                            onClick={handleDemoPhoto}
+                            disabled={demoLoading}
+                            className="mt-2 block w-full rounded-xl border border-[#F2705B]/40 bg-[#F2705B]/10 px-3 py-2 text-center text-xs font-semibold text-[#FBD3C9] transition hover:bg-[#F2705B]/20 disabled:opacity-60"
+                          >
+                            {demoLoading ? 'Loading demo photo...' : 'No photo handy? Try a demo photo'}
+                          </button>
+                        )}
                       </div>
                     )}
                   </div>
