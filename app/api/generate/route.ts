@@ -2971,12 +2971,12 @@ export async function POST(req: Request) {
         ? selectedOutputs.filter((output) =>
             allowedContentOutputs.includes(output)
           )
-        : ['Instagram Reel', 'Instagram Carousel', 'LinkedIn Post'];
+        : ['Instagram Carousel', 'Facebook Post'];
 
     const finalContentOutputs =
       requestedContentOutputs.length > 0
         ? requestedContentOutputs
-        : ['Instagram Reel', 'Instagram Carousel', 'LinkedIn Post'];
+        : ['Instagram Carousel', 'Facebook Post'];
 
     const contentJsonShape = finalContentOutputs
       .map((output) => `    "${output}": ""`)
