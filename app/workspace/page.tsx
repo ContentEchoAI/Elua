@@ -1089,6 +1089,7 @@ function getPlatformDisplayName(value?: string) {
           sourceType: 'image',
         },
       ]);
+      setContent((current) => current || 'Yard cleanup before and after for a local lawn care business');
     } catch (error) {
       console.warn('Demo photo load warning:', error);
       alert('Could not load the demo photo. Try uploading one instead.');
