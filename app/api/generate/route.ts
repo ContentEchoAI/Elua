@@ -2656,7 +2656,7 @@ async function rewriteRepeatedContent(params: {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + params.apiKey },
       body: JSON.stringify({
-        model: 'gpt-4.1-mini',
+        model: 'gpt-5.4-mini',
         messages: [
           { role: 'system', content: 'You rewrite a caption and DM reply so they sound genuinely different from recent posts. Return valid JSON only.' },
           { role: 'user', content: rewritePrompt },
@@ -2763,7 +2763,7 @@ ${attempt > 1 ? '- The previous rewrite still failed the human-opening check. Us
             Authorization: `Bearer ${apiKey}`,
           },
           body: JSON.stringify({
-            model: 'gpt-4.1-mini',
+            model: 'gpt-5.4-mini',
             messages: [
               {
                 role: 'system',
@@ -3553,6 +3553,7 @@ Rules:
       mode === 'make_my_post'
         ? `
 MAKE MY POST MODE:
+TOP PRIORITY OVERRIDE: If the user gives explicit instructions in Post Details about voice, point of view, format, language, or content, those instructions override every style rule and default below. Follow them exactly, even when they conflict with the caption style guidance in this prompt.
 The user is not asking for a big strategy report. They want the easiest possible ready-to-use posting pack.
 ${userId && businessProfilePrompt === 'No saved business profile provided.' ? `
 PROFILE GUESS (required this run):
@@ -4270,7 +4271,7 @@ Final silent check:
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: mode === 'viral_hooks' ? 'gpt-4o-mini' : 'gpt-4.1-mini',
+        model: mode === 'viral_hooks' ? 'gpt-4.1-mini' : 'gpt-5.4-mini',
         messages: [
           {
             role: 'system',
