@@ -4791,6 +4791,15 @@ Final silent check:
         parsed.production_plan?.hashtags,
         content
       );
+      const rawHashtagSource = Array.isArray(parsed.production_plan?.hashtags)
+        ? parsed.production_plan.hashtags.join(' ')
+        : String(parsed.production_plan?.hashtags || '');
+      const strictHashtags = (
+        (Array.isArray(groundedHashtags) && groundedHashtags.length > 0
+          ? groundedHashtags.join(' ')
+          : rawHashtagSource
+        ).match(/#[A-Za-z0-9_]+/g) || []
+      ).slice(0, 8);
 
       const groundedStaticPostTags = filterGroundedMediaHashtags(
         parsed.production_plan?.on_screen_text,
@@ -4802,9 +4811,7 @@ Final silent check:
         ...(singlePhotoShotOrder
           ? { shot_order: singlePhotoShotOrder }
           : {}),
-        ...(Array.isArray(parsed.production_plan?.hashtags)
-          ? { hashtags: groundedHashtags }
-          : {}),
+        ...{ hashtags: strictHashtags },
         ...(!usesVideoOutput &&
         Array.isArray(parsed.production_plan?.on_screen_text)
           ? { on_screen_text: groundedStaticPostTags }
