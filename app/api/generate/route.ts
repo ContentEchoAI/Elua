@@ -2656,7 +2656,7 @@ async function rewriteRepeatedContent(params: {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + params.apiKey },
       body: JSON.stringify({
-        model: 'gpt-5.4-mini',
+        model: 'gpt-5-mini',
         messages: [
           { role: 'system', content: 'You rewrite a caption and DM reply so they sound genuinely different from recent posts. Return valid JSON only.' },
           { role: 'user', content: rewritePrompt },
@@ -2763,7 +2763,7 @@ ${attempt > 1 ? '- The previous rewrite still failed the human-opening check. Us
             Authorization: `Bearer ${apiKey}`,
           },
           body: JSON.stringify({
-            model: 'gpt-5.4-mini',
+            model: 'gpt-5-mini',
             messages: [
               {
                 role: 'system',
@@ -4271,7 +4271,7 @@ Final silent check:
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: mode === 'viral_hooks' ? 'gpt-4.1-mini' : 'gpt-5.4-mini',
+        model: mode === 'viral_hooks' ? 'gpt-4.1-mini' : 'gpt-5-mini',
         messages: [
           {
             role: 'system',
