@@ -2661,8 +2661,7 @@ async function rewriteRepeatedContent(params: {
           { role: 'system', content: 'You rewrite a caption and DM reply so they sound genuinely different from recent posts. Return valid JSON only.' },
           { role: 'user', content: rewritePrompt },
         ],
-        temperature: 0.8,
-        max_tokens: 500,
+        max_completion_tokens: 2000,
         response_format: { type: 'json_object' },
       }),
     });
@@ -2786,8 +2785,7 @@ ${attempt > 1 ? '- The previous rewrite still failed the human-opening check. Us
                 ],
               },
             ],
-            temperature: 0.65,
-            max_tokens: 400,
+            max_completion_tokens: 1600,
             response_format: { type: 'json_object' },
           }),
         }
@@ -4296,8 +4294,7 @@ Final silent check:
               : prompt,
           },
         ],
-        temperature: mode === 'viral_hooks' ? 0.75 : 0.62,
-        max_tokens: mode === 'viral_hooks' ? 1800 : 4200,
+        max_completion_tokens: mode === 'viral_hooks' ? 4000 : 9000,
         response_format: { type: 'json_object' },
       }),
     });
