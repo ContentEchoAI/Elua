@@ -1447,11 +1447,9 @@ function cleanInvisibleMakeMyPostLine(value: unknown) {
 
 function cleanInvisibleMakeMyPostTitle(value: unknown) {
   const rawTitle = cleanInvisibleMakeMyPostLine(value).replace(/[.]+$/g, '');
-
   if (!rawTitle) {
     return '';
   }
-
   let cleaned = rawTitle
     .replace(/^(post|create|make|use|show|feature|highlight|showcase)\s+(a|an|this|the)\s+/i, '')
     .replace(/^(post|create|make|use|show|feature|highlight|showcase)\s+/i, '')
@@ -1465,17 +1463,19 @@ function cleanInvisibleMakeMyPostTitle(value: unknown) {
     .replace(/\s+showing\s+/i, ' with ')
     .replace(/\s+/g, ' ')
     .trim();
-
   if (!cleaned) {
     cleaned = rawTitle;
   }
-
   const words = cleaned.split(/\s+/);
-
-  if (words.length > 9) {
-    cleaned = words.slice(0, 9).join(' ');
+  if (words.length > 12) {
+    cleaned = words.slice(0, 12).join(' ');
   }
-
+  const trailingStopwords = new Set(['a','an','and','as','at','but','by','for','from','in','into','of','on','or','so','than','that','the','their','then','this','to','what','when','which','with','your','you']);
+  const titleParts = cleaned.split(' ');
+  while (titleParts.length > 3 && trailingStopwords.has(titleParts[titleParts.length - 1].toLowerCase())) {
+    titleParts.pop();
+  }
+  cleaned = titleParts.join(' ');
   return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
 }
 
