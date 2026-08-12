@@ -4802,6 +4802,16 @@ Final silent check:
           : rawHashtagSource
         ).match(/#[A-Za-z0-9_]+/g) || []
       ).slice(0, 8);
+      const bareTagFallback =
+        strictHashtags.length === 0 && Array.isArray(parsed.production_plan?.hashtags)
+          ? parsed.production_plan.hashtags
+              .filter((item): item is string => typeof item === 'string')
+              .map((item) => item.trim())
+              .filter((item) => item.length > 1 && item.length <= 30 && !item.includes(' '))
+              .map((item) => (item.startsWith('#') ? item : '#' + item))
+              .slice(0, 6)
+          : [];
+      const finalHashtags = strictHashtags.length > 0 ? strictHashtags : bareTagFallback;
 
       const groundedStaticPostTags = filterGroundedMediaHashtags(
         parsed.production_plan?.on_screen_text,
@@ -4813,7 +4823,7 @@ Final silent check:
         ...(singlePhotoShotOrder
           ? { shot_order: singlePhotoShotOrder }
           : {}),
-        ...{ hashtags: strictHashtags },
+        ...{ hashtags: finalHashtags },
         ...(!usesVideoOutput &&
         Array.isArray(parsed.production_plan?.on_screen_text)
           ? { on_screen_text: groundedStaticPostTags }
