@@ -3071,7 +3071,8 @@ Rules for uploaded visuals:
 - production_plan.shot_order should describe the photo, clip, or visual order.
 - production_plan.what_to_film should say what uploaded visual to use first, not ask the user to film extra footage unless extra footage is optional.
 - production_plan.audio_direction should suggest mood, pacing, or editing style. Recommend checking the platform's own trending audio tab before posting for an algorithmic boost. Do not name copyrighted songs, artists, or trending sounds.
-- production_plan.hashtags should include 3-8 relevant hashtags when useful.
+- production_plan.hashtags is REQUIRED: an array of 3-6 short hashtag strings, each starting with #. Never put sentences, questions, or instructions in the hashtags field.
+- The post title/concept must be a short COMPLETE phrase - never cut off mid-sentence.
 - CTA keyword should usually be one simple word such as DESIGN, QUOTE, BOOK, MENU, STYLE, FIT, START, CHECK, GUIDE, or CLEAN. Do not write CTA keywords as "DM DESIGN"; use "DESIGN" or a clear sentence separately.
 - MAKE MY POST QUALITY RULES:
   - strategy.core_angle should be a short, natural post title under 9 words. It should sound like a finished post title, not an instruction. Never start with "Post a", "Post this", "Create a", "Make a", "Use a", "Show a", "Show this", "Feature a", or "Highlight a".
