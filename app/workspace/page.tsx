@@ -295,6 +295,8 @@ export default function Home() {
   const [showBusinessProfile, setShowBusinessProfile] = useState(false);
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
   const [demoLoading, setDemoLoading] = useState(false);
+  const [editingCaption, setEditingCaption] = useState(false);
+  const [captionDraft, setCaptionDraft] = useState('');
   const [metaStatus, setMetaStatus] = useState<MetaStatus | null>(null);
   const [metaStatusLoading, setMetaStatusLoading] = useState(false);
   const [metaPages, setMetaPages] = useState<MetaManagedPage[]>([]);
@@ -3167,15 +3169,69 @@ function getPlatformDisplayName(value?: string) {
 
                   {!(isMakeMyPostMode && uploadedImages.length === 0) && (
                     <div className="rounded-2xl border border-white/10 bg-black/20 p-4 md:col-span-2">
-                      <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-[#A8B5B2]">
-                        Caption
-                      </p>
-                      <p className="whitespace-pre-wrap text-sm leading-relaxed text-[#EDF1EF]">
-                        {formatGeneratedText(
-                          results.production_plan?.caption,
-                          'Use the caption from Make This Post, then end with the CTA below.'
-                        )}
-                      </p>
+                      <div className="mb-1 flex items-center justify-between gap-3">
+                        <p className="text-xs font-semibold uppercase tracking-wide text-[#A8B5B2]">
+                          Caption
+                        </p>
+                        {!editingCaption ? (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setCaptionDraft(results.production_plan?.caption || '');
+                              setEditingCaption(true);
+                            }}
+                            className="text-xs font-medium text-[#8A9A98] underline-offset-2 hover:text-[#F8A793] hover:underline"
+                          >
+                            Edit
+                          </button>
+                        ) : null}
+                      </div>
+                      {editingCaption ? (
+                        <div>
+                          <textarea
+                            value={captionDraft}
+                            onChange={(event) => setCaptionDraft(event.target.value)}
+                            rows={6}
+                            className="w-full rounded-xl border border-[#27404A] bg-[#0B1518] p-3 text-sm leading-relaxed text-white outline-none focus:border-[#F2705B]"
+                          />
+                          <div className="mt-2 flex gap-2">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setResults((current) =>
+                                  current
+                                    ? {
+                                        ...current,
+                                        production_plan: {
+                                          ...(current.production_plan || {}),
+                                          caption: captionDraft,
+                                        },
+                                      }
+                                    : current
+                                );
+                                setEditingCaption(false);
+                              }}
+                              className="rounded-xl bg-white px-4 py-2 text-xs font-semibold text-black transition hover:scale-[1.03]"
+                            >
+                              Save Caption
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setEditingCaption(false)}
+                              className="rounded-xl border border-[#27404A] px-4 py-2 text-xs font-semibold text-[#C6CFCB]"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <p className="whitespace-pre-wrap text-sm leading-relaxed text-[#EDF1EF]">
+                          {formatGeneratedText(
+                            results.production_plan?.caption,
+                            'Use the caption from Make This Post, then end with the CTA below.'
+                          )}
+                        </p>
+                      )}
                     </div>
                   )}
 
