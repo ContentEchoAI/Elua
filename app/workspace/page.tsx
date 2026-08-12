@@ -2943,7 +2943,7 @@ function getPlatformDisplayName(value?: string) {
                     ? generationMode === 'viral_hooks'
                       ? 'Generating hooks...'
                       : isMakeMyPostMode
-                        ? 'Making your post...'
+                        ? activeLoadingMessages[loadingStep]
                         : 'Building content plan...'
                     : generationMode === 'viral_hooks'
                       ? 'Generate 10 Viral Hooks'
@@ -2970,7 +2970,7 @@ function getPlatformDisplayName(value?: string) {
                   }
                   className="w-full rounded-2xl bg-gradient-to-r from-[#F2705B] to-[#D8543F] py-3.5 text-sm font-semibold transition hover:scale-[1.02] disabled:bg-none disabled:bg-[#16262B] disabled:text-[#8A9A98] disabled:hover:scale-100 sm:py-5 sm:text-lg"
                 >
-                  {loading ? 'Making your post...' : 'Make My Free Post — No Account Needed'}
+                  {loading ? activeLoadingMessages[loadingStep] : 'Make My Free Post — No Account Needed'}
                 </button>
               )}
 
