@@ -3129,8 +3129,7 @@ function getPlatformDisplayName(value?: string) {
                               ))
                             ? results.production_plan?.audio_direction ||
                                 results.production_plan?.on_screen_text?.join(' ')
-                            : results.production_plan?.hashtags?.join(' ') ||
-                                results.production_plan?.on_screen_text?.join(' ')
+                            : results.production_plan?.hashtags?.join(' ')
                           : results.production_plan?.what_to_film?.[0] ||
                               results.production_plan?.shot_order?.[0],
                         isMakeMyPostMode
