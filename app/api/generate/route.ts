@@ -1470,7 +1470,7 @@ function cleanInvisibleMakeMyPostTitle(value: unknown) {
   if (words.length > 12) {
     cleaned = words.slice(0, 12).join(' ');
   }
-  const trailingStopwords = new Set(['a','an','and','as','at','but','by','for','from','in','into','of','on','or','so','than','that','the','their','then','this','to','what','when','which','with','your','you']);
+  const trailingStopwords = new Set(['a','an','and','as','at','but','by','for','from','in','into','of','on','or','so','than','that','the','their','then','this','to','what','when','which','with','your','you','looks','look','feels','feel','makes','make','gets','get','goes','means','helps','keeps']);
   const titleParts = cleaned.split(' ');
   while (titleParts.length > 3 && trailingStopwords.has(titleParts[titleParts.length - 1].toLowerCase())) {
     titleParts.pop();
