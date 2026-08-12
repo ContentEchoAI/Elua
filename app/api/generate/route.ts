@@ -2662,6 +2662,7 @@ async function rewriteRepeatedContent(params: {
           { role: 'user', content: rewritePrompt },
         ],
         max_completion_tokens: 2000,
+        reasoning_effort: 'low',
         response_format: { type: 'json_object' },
       }),
     });
@@ -2786,6 +2787,7 @@ ${attempt > 1 ? '- The previous rewrite still failed the human-opening check. Us
               },
             ],
             max_completion_tokens: 1600,
+            reasoning_effort: 'low',
             response_format: { type: 'json_object' },
           }),
         }
@@ -4295,6 +4297,7 @@ Final silent check:
           },
         ],
         max_completion_tokens: mode === 'viral_hooks' ? 4000 : 9000,
+        ...(mode === 'viral_hooks' ? {} : { reasoning_effort: 'low' as const }),
         response_format: { type: 'json_object' },
       }),
     });
