@@ -3799,6 +3799,7 @@ ${contentJsonShape}
     "on_screen_text": ["", "", ""],
     "spoken_lines": ["", "", ""],
     "caption": "",
+    "hashtags": ["#example1", "#example2", "#example3"],
     "cta": "",
     "dm_reply": "",
     "follow_up_message": ""
@@ -4815,7 +4816,6 @@ Final silent check:
               .slice(0, 6)
           : [];
       const finalHashtags = strictHashtags.length > 0 ? strictHashtags : bareTagFallback;
-      console.log('HASHTAG_DEBUG', JSON.stringify({ raw_pp: parsed.production_plan?.hashtags, raw_top: (parsed as { hashtags?: unknown }).hashtags, original: originalModelHashtags, strict: strictHashtags, final: finalHashtags }));
 
       const groundedStaticPostTags = filterGroundedMediaHashtags(
         parsed.production_plan?.on_screen_text,
