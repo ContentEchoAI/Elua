@@ -4324,6 +4324,7 @@ Final silent check:
     }
 
     let parsed = JSON.parse(messageContent) as GeneratedResponse;
+    const originalModelHashtags = Array.isArray(parsed.production_plan?.hashtags) ? [...parsed.production_plan.hashtags] : [];
 
     if (mode !== 'viral_hooks') {
       const normalizedContent: Record<string, string> = {};
@@ -4795,7 +4796,7 @@ Final silent check:
       );
       const rawHashtagSource = Array.isArray(parsed.production_plan?.hashtags)
         ? parsed.production_plan.hashtags.join(' ')
-        : String(parsed.production_plan?.hashtags || '');
+        : String(parsed.production_plan?.hashtags || originalModelHashtags.join(' '));
       const strictHashtags = (
         (Array.isArray(groundedHashtags) && groundedHashtags.length > 0
           ? groundedHashtags.join(' ')
@@ -4803,8 +4804,10 @@ Final silent check:
         ).match(/#[A-Za-z0-9_]+/g) || []
       ).slice(0, 8);
       const bareTagFallback =
-        strictHashtags.length === 0 && Array.isArray(parsed.production_plan?.hashtags)
-          ? parsed.production_plan.hashtags
+        strictHashtags.length === 0
+          ? (Array.isArray(parsed.production_plan?.hashtags)
+              ? parsed.production_plan.hashtags
+              : originalModelHashtags)
               .filter((item): item is string => typeof item === 'string')
               .map((item) => item.trim())
               .filter((item) => item.length > 1 && item.length <= 30 && !item.includes(' '))
@@ -4812,7 +4815,7 @@ Final silent check:
               .slice(0, 6)
           : [];
       const finalHashtags = strictHashtags.length > 0 ? strictHashtags : bareTagFallback;
-      console.log('HASHTAG_DEBUG', JSON.stringify({ raw_pp: parsed.production_plan?.hashtags, raw_top: (parsed as { hashtags?: unknown }).hashtags, strict: strictHashtags, final: finalHashtags }));
+      console.log('HASHTAG_DEBUG', JSON.stringify({ raw_pp: parsed.production_plan?.hashtags, raw_top: (parsed as { hashtags?: unknown }).hashtags, original: originalModelHashtags, strict: strictHashtags, final: finalHashtags }));
 
       const groundedStaticPostTags = filterGroundedMediaHashtags(
         parsed.production_plan?.on_screen_text,
