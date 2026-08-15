@@ -63,13 +63,13 @@ export default function LandingPage() {
             </div>
 
             <h1 className="max-w-5xl font-serif text-5xl font-semibold leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl">
-              Save time every week creating high-quality marketing content for your business.
+              Got photos of your work? Turn them into your next post.
             </h1>
 
             <Wave className="mt-6 h-3 w-40" />
 
             <p className="mt-6 max-w-3xl text-lg leading-relaxed text-[#F6F1E7]/80 sm:text-xl">
-              Elua turns your photos, short clips, or simple ideas into a ready-to-post campaign with the caption, CTA, reply message, hashtags, and posting direction already written.
+              Upload a photo. Elua writes the caption, CTA, hashtags, and reply for you.
             </p>
 
             <p className="mt-4 max-w-2xl text-sm leading-relaxed text-[#F6F1E7]/55 sm:text-base">
@@ -86,7 +86,7 @@ export default function LandingPage() {
             </div>
 
             <p className="mt-3 text-sm font-semibold text-[#F6F1E7]/80">
-              5 free generations with a free account. No credit card needed.
+              1 free post now, no account needed — 5 more with a free account. No credit card needed.
             </p>
 
             <p className="mt-2 text-xs font-medium text-[#F6F1E7]/60">
