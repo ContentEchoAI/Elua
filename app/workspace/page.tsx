@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, type ChangeEvent } from 'react';
+import { track } from '@vercel/analytics';
 import { uploadAllImages } from '@/lib/uploadAllImages';
 import { uploadVideoDirect } from '@/lib/uploadVideoDirect';
 import { publishPostToInstagram } from '@/lib/publishToInstagram';
@@ -1092,6 +1093,7 @@ function getPlatformDisplayName(value?: string) {
         },
       ]);
       setContent((current) => current || 'Yard cleanup before and after for a local lawn care business');
+      track('demo_photo');
     } catch (error) {
       console.warn('Demo photo load warning:', error);
       alert('Could not load the demo photo. Try uploading one instead.');
@@ -1101,6 +1103,9 @@ function getPlatformDisplayName(value?: string) {
   };
 
   const guestGenerate = async () => {
+    track('guest_generate', {
+      source: uploadedImages.some((img) => img.id === 'demo-yard') ? 'demo' : 'upload',
+    });
     await generateContent();
     try {
       window.localStorage.setItem('eluaGuestUsed', '1');
@@ -2954,11 +2959,14 @@ function getPlatformDisplayName(value?: string) {
                         : 'Generate My Content + Money Plan'}
                 </button>
               ) : guestUsed ? (
-                <SignInButton mode="modal">
-                  <button className="w-full rounded-2xl bg-gradient-to-r from-[#F2705B] to-[#D8543F] py-3.5 text-sm font-semibold transition hover:scale-[1.02] sm:py-5 sm:text-lg">
+                <SignUpButton mode="modal">
+                  <button
+                    onClick={() => track('guest_signup_click')}
+                    className="w-full rounded-2xl bg-gradient-to-r from-[#F2705B] to-[#D8543F] py-3.5 text-sm font-semibold transition hover:scale-[1.02] sm:py-5 sm:text-lg"
+                  >
                     Create Free Account for 5 More Free Posts
                   </button>
-                </SignInButton>
+                </SignUpButton>
               ) : (
                 <button
                   onClick={guestGenerate}
