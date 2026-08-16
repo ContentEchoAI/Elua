@@ -2681,7 +2681,7 @@ function getPlatformDisplayName(value?: string) {
                             disabled={demoLoading}
                             className="mt-2 block w-full rounded-xl border border-[#F2705B]/40 bg-[#F2705B]/10 px-3 py-2 text-center text-xs font-semibold text-[#FBD3C9] transition hover:bg-[#F2705B]/20 disabled:opacity-60"
                           >
-                            {demoLoading ? 'Loading demo photo...' : 'No photo handy? Try a demo photo'}
+                            {demoLoading ? 'Loading demo photo...' : 'Just want to see how it works? Try Elua with a sample photo →'}
                           </button>
                         )}
                       </div>
@@ -3003,9 +3003,7 @@ function getPlatformDisplayName(value?: string) {
                   >
                     {upgradeLoading ? 'Opening checkout...' : 'Upgrade — $19/mo'}
                   </button>
-                ) : (
-                  <p>Free account required</p>
-                )}
+                ) : null}
               </div>
               <p className="mt-2 text-center text-xs text-[#6E7F7E]">
                 Nothing posts without your approval · Photos stay private · ¿Hablas español? Elua responde en español
