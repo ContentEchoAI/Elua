@@ -1082,10 +1082,16 @@ function getPlatformDisplayName(value?: string) {
     }
   };
 
-  const handleDemoPhoto = async () => {
+  const DEMO_PHOTOS = [
+    { id: 'demo-yard', file: '/demo-yard.jpg', label: 'Landscaping', prompt: 'Yard cleanup before and after for a local lawn care business' },
+    { id: 'demo-carwash', file: '/demo-carwash.jpg', label: 'Car detailing', prompt: 'Car wash and detailing service for a local auto detailer' },
+    { id: 'demo-nails', file: '/demo-nails.jpg', label: 'Nail tech', prompt: 'Fresh manicure set for a local nail salon' },
+    { id: 'demo-cleaning', file: '/demo-cleaning.jpg', label: 'Cleaning', prompt: 'Home cleaning service before and after for a local cleaning business' },
+  ];
+  const handleDemoPhoto = async (demo: (typeof DEMO_PHOTOS)[number]) => {
     setDemoLoading(true);
     try {
-      const res = await fetch('/demo-yard.jpg');
+      const res = await fetch(demo.file);
       const blob = await res.blob();
       const dataUrl = await new Promise<string>((resolve, reject) => {
         const reader = new FileReader();
@@ -1095,14 +1101,14 @@ function getPlatformDisplayName(value?: string) {
       });
       setUploadedImages([
         {
-          id: 'demo-yard',
-          name: 'demo-yard.jpg',
+          id: demo.id,
+          name: `${demo.id}.jpg`,
           dataUrl,
           sourceType: 'image',
         },
       ]);
-      setContent((current) => current || 'Yard cleanup before and after for a local lawn care business');
-      logEvent('demo_photo');
+      setContent((current) => current || demo.prompt);
+      logEvent('demo_photo', { trade: demo.id });
     } catch (error) {
       console.warn('Demo photo load warning:', error);
       alert('Could not load the demo photo. Try uploading one instead.');
@@ -1113,7 +1119,7 @@ function getPlatformDisplayName(value?: string) {
 
   const guestGenerate = async () => {
     logEvent('guest_generate', {
-      source: uploadedImages.some((img) => img.id === 'demo-yard') ? 'demo' : 'upload',
+      source: uploadedImages.some((img) => img.id.startsWith('demo-')) ? 'demo' : 'upload',
     });
     await generateContent();
     try {
@@ -2675,14 +2681,24 @@ function getPlatformDisplayName(value?: string) {
                       <div className="rounded-xl border border-[#1E3238] bg-[#092B33]/50 p-3 text-xs leading-relaxed text-[#A8B5B2] sm:text-sm">
                         No media uploaded yet. Upload real work photos, short clips, before/afters, product shots, client-safe examples, or workspace/service visuals.
                         {!signedIn && (
-                          <button
-                            type="button"
-                            onClick={handleDemoPhoto}
-                            disabled={demoLoading}
-                            className="mt-2 block w-full rounded-xl border border-[#F2705B]/40 bg-[#F2705B]/10 px-3 py-2 text-center text-xs font-semibold text-[#FBD3C9] transition hover:bg-[#F2705B]/20 disabled:opacity-60"
-                          >
-                            {demoLoading ? 'Loading demo photo...' : 'Just want to see how it works? Try Elua with a sample photo →'}
-                          </button>
+                          <div className="mt-2">
+                            <p className="mb-1.5 text-center text-xs font-semibold text-[#FBD3C9]">
+                              {demoLoading ? 'Loading demo photo...' : 'Just want to see how it works? Pick a sample photo →'}
+                            </p>
+                            <div className="grid grid-cols-2 gap-1.5">
+                              {DEMO_PHOTOS.map((demo) => (
+                                <button
+                                  key={demo.id}
+                                  type="button"
+                                  onClick={() => handleDemoPhoto(demo)}
+                                  disabled={demoLoading}
+                                  className="rounded-xl border border-[#F2705B]/40 bg-[#F2705B]/10 px-3 py-2 text-center text-xs font-semibold text-[#FBD3C9] transition hover:bg-[#F2705B]/20 disabled:opacity-60"
+                                >
+                                  {demo.label}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
                         )}
                       </div>
                     )}
