@@ -3083,6 +3083,8 @@ Rules for uploaded visuals:
   - The caption should be as long as needed to showcase the uploaded visual and create action, but it should not become a dense paragraph.
   - Use 2-5 short lines when helpful. Each line should have a job: showcase the visual, create desire/relevance, invite a simple next step, or start a conversation.
   - The caption must make the uploaded photo or clip feel worth noticing. Do not merely describe it; turn the visible detail into a reason someone might DM, comment, book, request a quote, ask a question, or buy.
+  - NEVER assert specific physical conditions, substances, damage, dirt, or states in the photo unless they are clearly and unambiguously visible: no salt build-up, handprints, stains, grime, scratches, wear, or mess unless plainly shown. Do not invent seasonal or situational context (winter, summer, before-an-event) around the photo.
+  - When tempted to name a specific detail you cannot clearly see, use a general truthful phrase instead: "a full clean" not "removing the salt build-up"; "a tidy result" not "wiped away the handprints".
   - Keep caption claims grounded in what is visible. Do not add broad generic phrases like "perfect for any occasion", "fits every style", "fits everyday style", "for everyone", "works for any day", "everyday look", "low-maintenance", "without being too bold", or "simple but polished" unless the user provided that context.
   - Do not tell people when or where the style/service is for unless the user provided that occasion, lifestyle, event, or use-case context.
   - For beauty captions, make the visual detail do the selling: color, shape, shine, texture, flower detail, swirl detail, soft finish, bold contrast, clean result, or visible transformation.
