@@ -2706,6 +2706,8 @@ Your ONLY job: find any claim about the business's policies, practices, routines
 
 This includes indirect or reworded versions of the same idea, not just exact phrases - for example "skip the guesswork", "straightforward pricing", "I don't surprise customers", "I rinse X first so Y" are all violations if the user never said them.
 
+ALSO flag any invented diagnostic test, method, or technique the caption claims the business uses to assess the item or decide next steps (e.g. spraying water to see if it beads or clings, checking how something reacts to touch or light, any "if X then Y" diagnostic the user never described). These are just as fabricated as invented policies, even when they sound plausible or technical.
+
 Owner's original input:
 ${originalPrompt || '(no additional text provided)'}
 
