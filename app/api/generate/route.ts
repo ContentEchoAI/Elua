@@ -4303,7 +4303,7 @@ Final silent check:
           },
         ],
         max_completion_tokens: mode === 'viral_hooks' ? 4000 : 9000,
-        ...(mode === 'viral_hooks' ? {} : { reasoning_effort: 'minimal' as const }),
+        ...(mode === 'viral_hooks' ? {} : { reasoning_effort: 'low' as const }),
         response_format: { type: 'json_object' },
       }),
     });
