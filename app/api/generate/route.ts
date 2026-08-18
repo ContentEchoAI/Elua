@@ -4,7 +4,6 @@ import { cookies } from 'next/headers';
 import {
   getMediaCaptionPostTypeGuidance,
   inferMediaCaptionPostType,
-  needsGroundingRewrite,
   needsHumanMediaCaptionRewrite,
 } from '@/lib/mediaCaptionQuality';
 import {
@@ -2686,6 +2685,103 @@ async function rewriteRepeatedContent(params: {
   }
 }
 
+async function verifyCaptionIsGrounded({
+  apiKey,
+  originalPrompt,
+  caption,
+  dmReply,
+  uploadedImages,
+}: {
+  apiKey: string;
+  originalPrompt: string;
+  caption: string;
+  dmReply: string;
+  uploadedImages: UploadedImage[];
+}): Promise<{ caption: string; dmReply: string } | null> {
+  try {
+    const verifyPrompt = `
+You are a strict fact-checker reviewing a social media caption and DM reply for a local service business, written from an uploaded photo.
+
+Your ONLY job: find any claim about the business's policies, practices, routines, process, pricing approach, or promises (e.g. how quotes are calculated, when inspections happen, what determines price, claims about honesty or "no surprises"/"no guesswork"/"no hidden fees", habitual actions like "I always" or "we start by") that the business owner did NOT explicitly state in their own words below and that is NOT clearly, unambiguously visible in the photo.
+
+This includes indirect or reworded versions of the same idea, not just exact phrases - for example "skip the guesswork", "straightforward pricing", "I don't surprise customers", "I rinse X first so Y" are all violations if the user never said them.
+
+Owner's original input:
+${originalPrompt || '(no additional text provided)'}
+
+Caption to check:
+${caption}
+
+DM reply to check:
+${dmReply || '(none provided)'}
+
+If there are NO violations, return exactly: {"has_violation": false, "caption": ${JSON.stringify(caption)}, "dm_reply": ${JSON.stringify(dmReply)}}
+
+If there IS a violation, rewrite ONLY the offending portion(s) so the caption and DM reply describe just what is visible in the photo or what the owner actually said, keeping everything else (tone, CTA keyword, structure) unchanged. Prefer a general truthful phrase over removing the line entirely. Return valid JSON only: {"has_violation": true, "caption": "...", "dm_reply": "..."}
+`.trim();
+    const response = await fetch(
+      'https://api.openai.com/v1/chat/completions',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model: 'gpt-5-mini',
+          messages: [
+            {
+              role: 'system',
+              content:
+                'You are a precise fact-checking editor. Always return valid JSON only.',
+            },
+            {
+              role: 'user',
+              content: uploadedImages.length
+                ? [
+                    { type: 'text', text: verifyPrompt },
+                    ...uploadedImages.map((image) => ({
+                      type: 'image_url',
+                      image_url: { url: image.dataUrl },
+                    })),
+                  ]
+                : verifyPrompt,
+            },
+          ],
+          max_completion_tokens: 1200,
+          response_format: { type: 'json_object' },
+        }),
+      }
+    );
+    if (!response.ok) {
+      return null;
+    }
+    const data = await response.json();
+    const messageContent = data.choices?.[0]?.message?.content;
+    if (!messageContent) {
+      return null;
+    }
+    const parsedResult = JSON.parse(messageContent) as {
+      has_violation?: boolean;
+      caption?: string;
+      dm_reply?: string;
+    };
+    if (!parsedResult.has_violation) {
+      return null;
+    }
+    if (!parsedResult.caption) {
+      return null;
+    }
+    return {
+      caption: parsedResult.caption,
+      dmReply: parsedResult.dm_reply || dmReply,
+    };
+  } catch (error) {
+    console.warn('verifyCaptionIsGrounded warning:', error);
+    return null;
+  }
+}
+
 async function rewriteWeakMediaCaption({
   apiKey,
   originalPrompt,
@@ -4746,30 +4842,24 @@ Final silent check:
     if (
       mode === 'make_my_post' &&
       hasUploadedImages &&
-      parsed.production_plan?.caption &&
-      needsGroundingRewrite(parsed.production_plan.caption, parsed.production_plan.dm_reply)
+      parsed.production_plan?.caption
     ) {
-      const groundedRewrite = await rewriteWeakMediaCaption({
+      const groundingCheck = await verifyCaptionIsGrounded({
         apiKey,
         originalPrompt: content,
-        currentCaption: parsed.production_plan.caption,
-        cta:
-          parsed.production_plan.cta ||
-          parsed.monetization?.cta_strategy ||
-          '',
-        voice: normalizeString(selectedVoice),
-        businessContext:
-          formatBusinessProfileForPrompt(businessProfile),
+        caption: parsed.production_plan.caption,
+        dmReply: parsed.production_plan.dm_reply || '',
         uploadedImages: normalizedUploadedImages,
       });
-      if (groundedRewrite) {
+      if (groundingCheck) {
         parsed.production_plan = {
           ...(parsed.production_plan || {}),
-          caption: groundedRewrite,
+          caption: groundingCheck.caption,
+          dm_reply: groundingCheck.dmReply,
         };
         parsed.best_output = {
           ...(parsed.best_output || {}),
-          content: groundedRewrite,
+          content: groundingCheck.caption,
         };
       }
     }
