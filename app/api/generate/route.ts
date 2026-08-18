@@ -2685,7 +2685,7 @@ async function rewriteRepeatedContent(params: {
   }
 }
 
-async function verifyCaptionIsGrounded({
+async function runGroundingCheckOnce({
   apiKey,
   originalPrompt,
   caption,
@@ -2751,6 +2751,7 @@ If there IS a violation, rewrite ONLY the offending portion(s) so the caption an
             },
           ],
           max_completion_tokens: 1200,
+          reasoning_effort: 'high',
           response_format: { type: 'json_object' },
         }),
       }
@@ -2779,9 +2780,30 @@ If there IS a violation, rewrite ONLY the offending portion(s) so the caption an
       dmReply: parsedResult.dm_reply || dmReply,
     };
   } catch (error) {
-    console.warn('verifyCaptionIsGrounded warning:', error);
+    console.warn('runGroundingCheckOnce warning:', error);
     return null;
   }
+}
+
+async function verifyCaptionIsGrounded({
+  apiKey,
+  originalPrompt,
+  caption,
+  dmReply,
+  uploadedImages,
+}: {
+  apiKey: string;
+  originalPrompt: string;
+  caption: string;
+  dmReply: string;
+  uploadedImages: UploadedImage[];
+}): Promise<{ caption: string; dmReply: string } | null> {
+  const args = { apiKey, originalPrompt, caption, dmReply, uploadedImages };
+  const [first, second] = await Promise.all([
+    runGroundingCheckOnce(args),
+    runGroundingCheckOnce(args),
+  ]);
+  return first || second || null;
 }
 
 async function rewriteWeakMediaCaption({
