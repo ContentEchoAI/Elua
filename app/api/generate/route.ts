@@ -3535,12 +3535,12 @@ Rules:
 `;
 
     const postAngles = [
-      'DESCRIBE THE WORK: describe the visible details of the work in plain, natural language.',
+      'DESCRIBE THE WORK: describe the visible details of the work in plain, natural language. Stay strictly to what is visible - no invented condition, process, routine, or service-delivery detail.',
       'SERVICE MOMENT: frame the post around the experience of getting this service or seeing this result, using only what is visible in the photos. No invented names, quotes, or outcomes.',
-      'EDUCATIONAL TIP: teach one practical, genuinely useful tip related to what is visible (care, upkeep, choosing a style or service), then invite the DM.',
-      'BEHIND THE SCENES: talk about the process, craft, or care behind the visible work, not just the finished result.',
+      'EDUCATIONAL TIP: teach one practical, genuinely useful tip related to what is visible (care, upkeep, choosing a style or service), then invite the DM. The tip must be general, truthful, widely-applicable advice - not a claim about this specific photo, this business, or an invented condition in the image.',
+      'BEHIND THE SCENES: talk about the process, craft, or care behind the visible work, not just the finished result. Describe process only in general, truthful terms (e.g. "a full wash", "careful attention to detail") - do not invent a specific step, routine, personal preference, or condition the user did not state and that is not clearly visible.',
       'BOOKING PUSH: a direct, natural invitation to book this service, anchored on one visible detail. Stay factual - no invented availability, urgency, or discounts.',
-      'ENGAGEMENT QUESTION: open with a question that makes viewers pick, compare, or react to something visible in the photos, then give the CTA.',
+      'ENGAGEMENT QUESTION: open with a question that makes viewers pick, compare, or react to something visible in the photos, then give the CTA. The question must reference only what is visible - no invented comparison points, conditions, or scenarios.',
     ];
     const chosenAngle =
       postAngles[Math.floor(Math.random() * postAngles.length)];
