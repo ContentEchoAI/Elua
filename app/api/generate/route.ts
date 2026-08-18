@@ -2730,7 +2730,7 @@ If there IS a violation, rewrite ONLY the offending portion(s) so the caption an
           Authorization: `Bearer ${apiKey}`,
         },
         body: JSON.stringify({
-          model: 'gpt-5-mini',
+          model: 'gpt-4.1-mini',
           messages: [
             {
               role: 'system',
@@ -2751,7 +2751,6 @@ If there IS a violation, rewrite ONLY the offending portion(s) so the caption an
             },
           ],
           max_completion_tokens: 1200,
-          reasoning_effort: 'high',
           response_format: { type: 'json_object' },
         }),
       }
