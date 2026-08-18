@@ -4868,12 +4868,18 @@ Final silent check:
       hasUploadedImages &&
       parsed.production_plan?.caption
     ) {
+      const originalCaptionBeforeCheck = parsed.production_plan.caption;
       const groundingCheck = await verifyCaptionIsGrounded({
         apiKey,
         originalPrompt: content,
         caption: parsed.production_plan.caption,
         dmReply: parsed.production_plan.dm_reply || '',
         uploadedImages: normalizedUploadedImages,
+      });
+      console.log('GROUNDING CHECK DIAGNOSTIC', {
+        original: originalCaptionBeforeCheck,
+        flaggedViolation: !!groundingCheck,
+        rewrittenTo: groundingCheck ? groundingCheck.caption : null,
       });
       if (groundingCheck) {
         parsed.production_plan = {
