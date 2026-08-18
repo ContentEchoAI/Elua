@@ -4,6 +4,7 @@ import { cookies } from 'next/headers';
 import {
   getMediaCaptionPostTypeGuidance,
   inferMediaCaptionPostType,
+  needsGroundingRewrite,
   needsHumanMediaCaptionRewrite,
 } from '@/lib/mediaCaptionQuality';
 import {
@@ -2748,6 +2749,7 @@ Requirements:
 - Do not use phrases like "This set mixes", "This features", "This includes", "The flowers add", or "You can see".
 - Mention no more than two visual details.
 - Do not invent prices, availability, guarantees, client history, service details, or outcomes.
+- Do not invent a pre-quote inspection, routine, habit, or process the business owner did not state (examples to avoid: "I always start by", "we do a quick inspection", "before we quote", "to avoid unexpected add-ons", "hidden dirt/grime", "so your estimate is accurate"). Describe only the visible result or a simple, generic next step.
 - End with one simple, low-pressure CTA using the provided CTA when possible.
 - Do not use markdown.
 - Make this caption specific enough that it could not be pasted onto dozens of unrelated posts.
@@ -4303,7 +4305,7 @@ Final silent check:
           },
         ],
         max_completion_tokens: mode === 'viral_hooks' ? 4000 : 9000,
-        ...(mode === 'viral_hooks' ? {} : { reasoning_effort: 'low' as const }),
+        ...(mode === 'viral_hooks' ? {} : { reasoning_effort: 'minimal' as const }),
         response_format: { type: 'json_object' },
       }),
     });
@@ -4741,6 +4743,36 @@ Final silent check:
       }
     }
 
+    if (
+      mode === 'make_my_post' &&
+      hasUploadedImages &&
+      parsed.production_plan?.caption &&
+      needsGroundingRewrite(parsed.production_plan.caption, parsed.production_plan.dm_reply)
+    ) {
+      const groundedRewrite = await rewriteWeakMediaCaption({
+        apiKey,
+        originalPrompt: content,
+        currentCaption: parsed.production_plan.caption,
+        cta:
+          parsed.production_plan.cta ||
+          parsed.monetization?.cta_strategy ||
+          '',
+        voice: normalizeString(selectedVoice),
+        businessContext:
+          formatBusinessProfileForPrompt(businessProfile),
+        uploadedImages: normalizedUploadedImages,
+      });
+      if (groundedRewrite) {
+        parsed.production_plan = {
+          ...(parsed.production_plan || {}),
+          caption: groundedRewrite,
+        };
+        parsed.best_output = {
+          ...(parsed.best_output || {}),
+          content: groundedRewrite,
+        };
+      }
+    }
     if (
       mode === 'make_my_post' &&
       parsed.production_plan?.caption &&

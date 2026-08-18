@@ -59,6 +59,25 @@ export function needsHumanMediaCaptionRewrite(value: string) {
   return commaCount >= 3;
 }
 
+export function needsGroundingRewrite(caption: string, dmReply?: string) {
+  const combined = `${caption} ${dmReply || ''}`.replace(/\s+/g, ' ').trim();
+
+  const inventedRoutinePatterns = [
+    /\bi\s+(?:prefer|always|usually|typically|generally|start\s+by|start\s+every)\b/i,
+    /\bwe\s+(?:always|usually|typically|generally|start\s+(?:by|with)|perform|do\s+a\s+(?:quick|fast|brief))\b/i,
+    /\bbefore\s+(?:we\s+quote|quoting|giving\s+(?:a|the)\s+(?:price|estimate)|pricing)\b/i,
+    /\bto\s+(?:avoid|ensure)\s+(?:unexpected|surprises|hidden|no\s+surprises)\b/i,
+    /\b(?:reveals?|hides?|hiding)\s+hidden\b/i,
+    /\bhidden\s+(?:dirt|grime|damage|issues|grit)\b/i,
+    /\bso\s+(?:your|the)\s+(?:estimate|quote|price)\s+(?:is|matches|reflects)\b/i,
+    /\b(?:quick|fast|brief)\s+inspection\b/i,
+    /\binspection\s+rinse\b/i,
+    /\bfirm\s+estimate\s+before\b/i,
+  ];
+
+  return inventedRoutinePatterns.some((pattern) => pattern.test(combined));
+}
+
 export type MediaCaptionPostType =
   | 'transformation'
   | 'finished_work'
