@@ -305,6 +305,7 @@ export default function Home() {
   const [showBusinessProfile, setShowBusinessProfile] = useState(false);
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
   const [demoLoading, setDemoLoading] = useState(false);
+  const [loadingDemoId, setLoadingDemoId] = useState<string | null>(null);
   const [editingCaption, setEditingCaption] = useState(false);
   const [captionDraft, setCaptionDraft] = useState('');
   const [metaStatus, setMetaStatus] = useState<MetaStatus | null>(null);
@@ -1090,6 +1091,7 @@ function getPlatformDisplayName(value?: string) {
   ];
   const handleDemoPhoto = async (demo: (typeof DEMO_PHOTOS)[number]) => {
     setDemoLoading(true);
+    setLoadingDemoId(demo.id);
     try {
       const res = await fetch(demo.file);
       const blob = await res.blob();
@@ -1114,6 +1116,7 @@ function getPlatformDisplayName(value?: string) {
       alert('Could not load the demo photo. Try uploading one instead.');
     } finally {
       setDemoLoading(false);
+      setLoadingDemoId(null);
     }
   };
 
@@ -2694,7 +2697,7 @@ function getPlatformDisplayName(value?: string) {
                                   disabled={demoLoading}
                                   className="rounded-xl border border-[#F2705B]/40 bg-[#F2705B]/10 px-3 py-2 text-center text-xs font-semibold text-[#FBD3C9] transition hover:bg-[#F2705B]/20 disabled:opacity-60"
                                 >
-                                  {demo.label}
+                                  {loadingDemoId === demo.id ? 'Loading…' : demo.label}
                                 </button>
                               ))}
                             </div>
