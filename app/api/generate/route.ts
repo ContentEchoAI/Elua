@@ -2697,7 +2697,7 @@ async function runGroundingCheckOnce({
   caption: string;
   dmReply: string;
   uploadedImages: UploadedImage[];
-}): Promise<{ caption: string; dmReply: string } | null> {
+}): Promise<{ hasViolation: boolean; violationNotes: string } | null> {
   try {
     const verifyPrompt = `
 You are a strict fact-checker reviewing a social media caption and DM reply for a local service business, written from an uploaded photo.
@@ -2717,9 +2717,9 @@ ${caption}
 DM reply to check:
 ${dmReply || '(none provided)'}
 
-If there are NO violations, return exactly: {"has_violation": false, "caption": ${JSON.stringify(caption)}, "dm_reply": ${JSON.stringify(dmReply)}}
+Return valid JSON only. If there are NO violations, return exactly: {"has_violation": false}
 
-If there IS a violation, rewrite ONLY the offending portion(s) so the caption and DM reply describe just what is visible in the photo or what the owner actually said, keeping everything else (tone, CTA keyword, structure) unchanged. Prefer a general truthful phrase over removing the line entirely. Return valid JSON only: {"has_violation": true, "caption": "...", "dm_reply": "..."}
+If there IS a violation, return: {"has_violation": true, "violation_notes": "quote the exact offending phrase(s) from the caption/DM reply and briefly say why each is fabricated"}
 `.trim();
     const response = await fetch(
       'https://api.openai.com/v1/chat/completions',
@@ -2750,7 +2750,7 @@ If there IS a violation, rewrite ONLY the offending portion(s) so the caption an
                 : verifyPrompt,
             },
           ],
-          max_completion_tokens: 1200,
+          max_completion_tokens: 500,
           response_format: { type: 'json_object' },
         }),
       }
@@ -2765,12 +2765,99 @@ If there IS a violation, rewrite ONLY the offending portion(s) so the caption an
     }
     const parsedResult = JSON.parse(messageContent) as {
       has_violation?: boolean;
+      violation_notes?: string;
+    };
+    return {
+      hasViolation: !!parsedResult.has_violation,
+      violationNotes: parsedResult.violation_notes || '',
+    };
+  } catch (error) {
+    console.warn('runGroundingCheckOnce warning:', error);
+    return null;
+  }
+}
+
+async function rewriteGroundedCaption({
+  apiKey,
+  originalPrompt,
+  caption,
+  dmReply,
+  uploadedImages,
+  violationNotes,
+}: {
+  apiKey: string;
+  originalPrompt: string;
+  caption: string;
+  dmReply: string;
+  uploadedImages: UploadedImage[];
+  violationNotes: string;
+}): Promise<{ caption: string; dmReply: string } | null> {
+  try {
+    const rewritePrompt = `
+You are editing a social media caption and DM reply for a local service business to remove fabricated claims.
+
+A fact-checker found the following problem(s) with this content:
+${violationNotes || 'Contains an unstated claim about business policy, routine, or process.'}
+
+Owner's original input:
+${originalPrompt || '(no additional text provided)'}
+
+Caption:
+${caption}
+
+DM reply:
+${dmReply || '(none provided)'}
+
+Rewrite ONLY the offending portion(s) so the caption and DM reply describe just what is visible in the photo or what the owner actually said. Keep everything else (tone, CTA keyword, structure, length) unchanged. Prefer a general truthful phrase over removing the line entirely. Grammar must stay natural - do not produce broken or awkward phrasing to force out a fabricated detail. Before returning, double-check your own rewritten caption and DM reply: they must not still contain the flagged phrase(s), and must not contain the same type of fabricated claim reworded differently.
+
+Return valid JSON only: {"caption": "...", "dm_reply": "..."}
+`.trim();
+    const response = await fetch(
+      'https://api.openai.com/v1/chat/completions',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model: 'gpt-4.1-mini',
+          messages: [
+            {
+              role: 'system',
+              content:
+                'You are a precise editor who removes fabricated claims while preserving voice, tone, and structure. Always return valid JSON only.',
+            },
+            {
+              role: 'user',
+              content: uploadedImages.length
+                ? [
+                    { type: 'text', text: rewritePrompt },
+                    ...uploadedImages.map((image) => ({
+                      type: 'image_url',
+                      image_url: { url: image.dataUrl },
+                    })),
+                  ]
+                : rewritePrompt,
+            },
+          ],
+          max_completion_tokens: 1200,
+          response_format: { type: 'json_object' },
+        }),
+      }
+    );
+    if (!response.ok) {
+      return null;
+    }
+    const data = await response.json();
+    const messageContent = data.choices?.[0]?.message?.content;
+    if (!messageContent) {
+      return null;
+    }
+    const parsedResult = JSON.parse(messageContent) as {
       caption?: string;
       dm_reply?: string;
     };
-    if (!parsedResult.has_violation) {
-      return null;
-    }
     if (!parsedResult.caption) {
       return null;
     }
@@ -2779,7 +2866,7 @@ If there IS a violation, rewrite ONLY the offending portion(s) so the caption an
       dmReply: parsedResult.dm_reply || dmReply,
     };
   } catch (error) {
-    console.warn('runGroundingCheckOnce warning:', error);
+    console.warn('rewriteGroundedCaption warning:', error);
     return null;
   }
 }
@@ -2802,7 +2889,25 @@ async function verifyCaptionIsGrounded({
     runGroundingCheckOnce(args),
     runGroundingCheckOnce(args),
   ]);
-  return first || second || null;
+
+  const flagged = [first, second].filter((r) => r?.hasViolation);
+  if (flagged.length === 0) {
+    return null;
+  }
+
+  const violationNotes = flagged
+    .map((r) => r?.violationNotes)
+    .filter(Boolean)
+    .join(' | ');
+
+  return rewriteGroundedCaption({
+    apiKey,
+    originalPrompt,
+    caption,
+    dmReply,
+    uploadedImages,
+    violationNotes,
+  });
 }
 
 async function rewriteWeakMediaCaption({
