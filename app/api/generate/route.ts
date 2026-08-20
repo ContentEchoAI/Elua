@@ -3327,6 +3327,10 @@ Rules for uploaded visuals:
   - Avoid captions like: "Save this if you like colorful nails with mixed designs" unless saving is the actual goal.
   - The caption can include "DM DESIGN" as a full instruction sentence, but production_plan.cta itself must stay one clean keyword like "DESIGN".
   - DM replies should feel like a real business owner responding, not a bot. Ask one simple question that moves the conversation forward.
+  - VOICE CHECK: the grounding rules above are about factual accuracy only - they are not a reason to write flat, cautious, or form-like. A caption can be fully grounded in what is visible AND still sound like a real, confident business owner who is proud of their work. Favor specific, sensory, energetic language over generic safe phrasing.
+    Good local-service example: "Fresh off the lot and looking like it just rolled out of the showroom. DM QUOTE with your vehicle type and I'll get you a price."
+    Avoid flat/form-like: "DM QUOTE with your vehicle type and service for an estimate."
+  - Before returning the caption, silently ask: "Does this sound like an owner excited to show off their work, or like a cautious intake form?" If it reads like a form, rewrite with more warmth and specificity while keeping every fact grounded.
 - Do not invent anything not visible or provided by the user: prices, availability, guarantees, client outcomes, medical claims, service packages, discounts, or exact timing.
 - If you are unsure what a visual shows, say it as a cautious visual observation and create a safe post angle around what the business owner can truthfully say.
 `
