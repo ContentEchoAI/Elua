@@ -2816,7 +2816,7 @@ Rewrite ONLY the offending portion(s) so the caption and DM reply describe just 
 
 If the flagged phrase uses a first-person or collective ownership framing ("I prefer...", "I always...", "we start by...", "what I love about...", "our approach is..."), you must remove that framing entirely, not just swap out the claim inside it. For example, "I prefer giving quotes based on X" is STILL a violation even if X is now truthful - the fix is to drop "I prefer" and state the fact plainly instead (e.g. "Quotes are based on X" or simply describe what's in the photo). Keeping the "I prefer/I always" sentence shape and only changing its object is not a valid fix.
 
-Before returning, double-check your own rewritten caption and DM reply: they must not still contain the flagged phrase(s) or framing, and must not contain the same type of fabricated claim reworded differently.
+Before returning, double-check your own rewritten caption and DM reply against ALL of the following, not just the flagged issue above: they must not still contain the flagged phrase(s) or framing, must not contain the same type of fabricated claim reworded differently, and must not introduce a NEW problem while fixing the old one - especially meta-narration ("this photo shows...", "here's a look at...", "this was taken...", "in this image..."). When removing a flagged phrase, replace it with something the caption itself would naturally say (a direct statement, a question, a CTA line) - never with a description of the photograph as a fallback, even as a "safe" neutral option.
 
 Return valid JSON only: {"caption": "...", "dm_reply": "..."}
 `.trim();
