@@ -2808,7 +2808,11 @@ ${caption}
 DM reply:
 ${dmReply || '(none provided)'}
 
-Rewrite ONLY the offending portion(s) so the caption and DM reply describe just what is visible in the photo or what the owner actually said. Keep everything else (tone, CTA keyword, structure, length) unchanged. Prefer a general truthful phrase over removing the line entirely. Grammar must stay natural - do not produce broken or awkward phrasing to force out a fabricated detail. Before returning, double-check your own rewritten caption and DM reply: they must not still contain the flagged phrase(s), and must not contain the same type of fabricated claim reworded differently.
+Rewrite ONLY the offending portion(s) so the caption and DM reply describe just what is visible in the photo or what the owner actually said. Keep everything else (tone, CTA keyword, structure, length) unchanged. Prefer a general truthful phrase over removing the line entirely. Grammar must stay natural - do not produce broken or awkward phrasing to force out a fabricated detail.
+
+If the flagged phrase uses a first-person or collective ownership framing ("I prefer...", "I always...", "we start by...", "what I love about...", "our approach is..."), you must remove that framing entirely, not just swap out the claim inside it. For example, "I prefer giving quotes based on X" is STILL a violation even if X is now truthful - the fix is to drop "I prefer" and state the fact plainly instead (e.g. "Quotes are based on X" or simply describe what's in the photo). Keeping the "I prefer/I always" sentence shape and only changing its object is not a valid fix.
+
+Before returning, double-check your own rewritten caption and DM reply: they must not still contain the flagged phrase(s) or framing, and must not contain the same type of fabricated claim reworded differently.
 
 Return valid JSON only: {"caption": "...", "dm_reply": "..."}
 `.trim();
