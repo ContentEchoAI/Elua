@@ -2710,6 +2710,8 @@ ALSO flag any invented diagnostic test, method, or technique the caption claims 
 
 ALSO flag any invented customer request, feedback, complaint, or statement (e.g. "customers asked for...", "clients love how...", "someone said...", "people always tell us...") that the business owner did not state in their original input. This is fabricated even when it sounds like a plausible, common customer request - the business owner never said a customer asked for it, so it must not be claimed as a customer's words or wish.
 
+ALSO flag any meta-narration where the caption describes the photo as an object from outside it, rather than reading as the post itself (e.g. "this photo shows...", "in this image...", "pictured here is...", "this was taken...", "here's a look at...", "here we're..."). This includes indirect versions, not just exact phrases - any construction that frames the caption as commentary ABOUT a picture rather than the actual post a business owner would write. A real owner captions the moment or result directly; they don't describe a photograph of it.
+
 Owner's original input:
 ${originalPrompt || '(no additional text provided)'}
 
