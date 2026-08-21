@@ -3775,12 +3775,12 @@ Rules:
 `;
 
     const postAngles = [
-      'DESCRIBE THE WORK: describe the visible details of the work in plain, natural language. Stay strictly to what is visible - no invented condition, process, routine, or service-delivery detail.',
+      'DESCRIBE THE WORK: describe the visible details of the work with real energy and specificity - color, shine, texture, contrast, the visible result - the way a proud owner would show it off, not a service listing. Stay strictly to what is visible - no invented condition, process, routine, or service-delivery detail. Avoid generic phrases like "thorough washing" or "cleaned just the way you want" - name the specific visible detail instead.',
       'SERVICE MOMENT: frame the post around the experience of getting this service or seeing this result, using only what is visible in the photos. No invented names, quotes, or outcomes.',
       'EDUCATIONAL TIP: teach one practical, genuinely useful tip related to what is visible (care, upkeep, choosing a style or service), then invite the DM. The tip must be general, truthful, widely-applicable advice - not a claim about this specific photo, this business, or an invented condition in the image.',
       'BEHIND THE SCENES: talk about the process, craft, or care behind the visible work, not just the finished result. Describe process only in general, truthful terms (e.g. "a full wash", "careful attention to detail") - do not invent a specific step, routine, personal preference, or condition the user did not state and that is not clearly visible.',
       'BOOKING PUSH: a direct, natural invitation to book this service, anchored on one visible detail. Stay factual - no invented availability, urgency, or discounts.',
-      'ENGAGEMENT QUESTION: open with a question that makes viewers pick, compare, or react to something visible in the photos, then give the CTA. The question must reference only what is visible - no invented comparison points, conditions, or scenarios.',
+      'ENGAGEMENT QUESTION: open with a question that makes viewers pick, compare, or react to something visible in the photos, then give the CTA. The question must reference only what is visible - no invented comparison points, conditions, or scenarios. Only offer a choice between things that are genuinely distinct and comparable in the photo (e.g. two different finished results, before/after) - never invent a false or nonsensical split (like "wheels or body" for one wash) just to fill the question format. If the photo shows one unified result with no real comparison available, ask a reaction question instead ("Which detail catches your eye first?") rather than forcing a pick-between-two-things question.',
     ];
     const chosenAngle =
       postAngles[Math.floor(Math.random() * postAngles.length)];
