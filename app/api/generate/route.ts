@@ -2820,6 +2820,8 @@ If the flagged phrase uses a first-person or collective ownership framing ("I pr
 
 Before returning, double-check your own rewritten caption and DM reply against ALL of the following, not just the flagged issue above: they must not still contain the flagged phrase(s) or framing, must not contain the same type of fabricated claim reworded differently, and must not introduce a NEW problem while fixing the old one - especially meta-narration ("this photo shows...", "here's a look at...", "this was taken...", "in this image..."). When removing a flagged phrase, replace it with something the caption itself would naturally say (a direct statement, a question, a CTA line) - never with a description of the photograph as a fallback, even as a "safe" neutral option.
 
+Example of the difference: if the flagged line was "I prefer finishing every wash with a careful rinse so the paint and wheels look consistently clean," a BAD rewrite (meta-narration, do NOT do this) is "A vehicle getting a thorough rinse in the wash bay" - that just describes the photo as an object. A GOOD rewrite (grounded but still marketing copy) is "That streak-free shine on the paint and wheels comes from a full rinse, top to bottom" - it states a real, visible result with energy, not a caption-writer narrating a picture. Match the GOOD pattern: state what's true and visible as a confident claim about the result, never as "a [thing] doing [action]" or "a photo of X."
+
 Return valid JSON only: {"caption": "...", "dm_reply": "..."}
 `.trim();
     const response = await fetch(
