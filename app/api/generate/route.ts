@@ -4995,6 +4995,7 @@ Final silent check:
         uploadedImages: normalizedUploadedImages,
       });
       console.log('GROUNDING CHECK DIAGNOSTIC', {
+        angle: chosenAngle,
         original: originalCaptionBeforeCheck,
         flaggedViolation: !!groundingCheck,
         rewrittenTo: groundingCheck ? groundingCheck.caption : null,
