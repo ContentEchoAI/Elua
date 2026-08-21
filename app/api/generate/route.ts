@@ -2712,6 +2712,8 @@ ALSO flag any invented customer request, feedback, complaint, or statement (e.g.
 
 ALSO flag any meta-narration where the caption describes the photo as an object from outside it, rather than reading as the post itself (e.g. "this photo shows...", "in this image...", "pictured here is...", "this was taken...", "here's a look at...", "here we're..."). This includes indirect versions, not just exact phrases - any construction that frames the caption as commentary ABOUT a picture rather than the actual post a business owner would write. A real owner captions the moment or result directly; they don't describe a photograph of it.
 
+ALSO flag any question or comparison that forces the reader to pick between two things that are not actually separate, comparable options in the photo (e.g. "which would you fix first - the wheels or the body?" for a single wash that visibly cleaned both). Nothing about the individual items has to be false for this to be a violation - the fabrication is implying they are two distinct, separately choosable things when the photo shows one unified result or service. A valid comparison needs two genuinely different, separately visible outcomes (e.g. a real before/after, or two different finished vehicles) - not two parts of the same single result split apart just to create a question format.
+
 Owner's original input:
 ${originalPrompt || '(no additional text provided)'}
 
