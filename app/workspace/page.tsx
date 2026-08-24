@@ -2686,7 +2686,7 @@ function getPlatformDisplayName(value?: string) {
                         {!signedIn && (
                           <div className="mt-3 rounded-xl border border-[#F2705B]/50 bg-[#F2705B]/15 p-3">
                             <p className="mb-2 text-center text-sm font-bold text-white">
-                              {demoLoading ? 'Loading demo photo...' : 'See it in 10 seconds — tap a sample photo →'}
+                              {demoLoading ? 'Loading demo photo...' : 'No photo needed — just tap a sample →'}
                             </p>
                             <div className="grid grid-cols-2 gap-2">
                               {DEMO_PHOTOS.map((demo) => (
