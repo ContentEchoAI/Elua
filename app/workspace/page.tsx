@@ -2639,7 +2639,7 @@ function getPlatformDisplayName(value?: string) {
                         </p>
                       </div>
 
-                      <label className="w-fit cursor-pointer rounded-xl bg-white px-3 py-2 text-xs font-semibold text-black transition hover:scale-[1.03]">
+                      <label className={!signedIn ? "w-fit cursor-pointer rounded-xl border border-white/25 bg-transparent px-3 py-2 text-xs font-medium text-[#A8B5B2] transition hover:border-white/40 hover:text-white" : "w-fit cursor-pointer rounded-xl bg-white px-3 py-2 text-xs font-semibold text-black transition hover:scale-[1.03]"}>
                         Add Media
                         <input
                           type="file"
@@ -2684,18 +2684,18 @@ function getPlatformDisplayName(value?: string) {
                       <div className="rounded-xl border border-[#1E3238] bg-[#092B33]/50 p-3 text-xs leading-relaxed text-[#A8B5B2] sm:text-sm">
                         No media uploaded yet. Upload real work photos, short clips, before/afters, product shots, client-safe examples, or workspace/service visuals.
                         {!signedIn && (
-                          <div className="mt-2">
-                            <p className="mb-1.5 text-center text-xs font-semibold text-[#FBD3C9]">
-                              {demoLoading ? 'Loading demo photo...' : 'Just want to see how it works? Pick a sample photo →'}
+                          <div className="mt-3 rounded-xl border border-[#F2705B]/50 bg-[#F2705B]/15 p-3">
+                            <p className="mb-2 text-center text-sm font-bold text-white">
+                              {demoLoading ? 'Loading demo photo...' : 'See it in 10 seconds — tap a sample photo →'}
                             </p>
-                            <div className="grid grid-cols-2 gap-1.5">
+                            <div className="grid grid-cols-2 gap-2">
                               {DEMO_PHOTOS.map((demo) => (
                                 <button
                                   key={demo.id}
                                   type="button"
                                   onClick={() => handleDemoPhoto(demo)}
                                   disabled={demoLoading}
-                                  className="rounded-xl border border-[#F2705B]/40 bg-[#F2705B]/10 px-3 py-2 text-center text-xs font-semibold text-[#FBD3C9] transition hover:bg-[#F2705B]/20 disabled:opacity-60"
+                                  className="rounded-xl bg-[#F2705B] px-3 py-2.5 text-center text-xs font-bold text-white shadow-md transition hover:scale-[1.03] hover:bg-[#F8836B] disabled:opacity-60"
                                 >
                                   {loadingDemoId === demo.id ? 'Loading…' : demo.label}
                                 </button>
