@@ -3361,6 +3361,22 @@ function getPlatformDisplayName(value?: string) {
                     >
                       {publishLoading ? 'Saving safely...' : 'Approve & Save to Queue'}
                     </button>
+
+                    {!signedIn && guestUsed && (
+                      <div className="mt-4 lg:hidden">
+                        <SignUpButton mode="modal">
+                          <button
+                            onClick={() => logEvent('guest_signup_click')}
+                            className="w-full rounded-2xl bg-gradient-to-r from-[#F2705B] to-[#D8543F] py-3.5 text-sm font-semibold transition hover:scale-[1.02] sm:py-5 sm:text-lg"
+                          >
+                            Create Free Account for 5 More Free Posts
+                          </button>
+                        </SignUpButton>
+                        <p className="mt-2 text-center text-xs text-[#A8B5B2]">
+                          Free post used · create a free account for 5 more
+                        </p>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
