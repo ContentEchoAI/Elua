@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { cleanPromptOnlyDetailingCaption } from '@/lib/promptOnlyDetailingQuality';
 import { auth, clerkClient } from '@clerk/nextjs/server';
 import { cookies } from 'next/headers';
 import {
@@ -5114,6 +5115,34 @@ Final silent check:
           ? { on_screen_text: groundedStaticPostTags }
           : {}),
       };
+    }
+
+    if (
+      mode === 'make_my_post' &&
+      !hasUploadedImages &&
+      /\b(?:mobile\s+detail|detailing|car\s+detail|auto\s+detail)/i.test(content) &&
+      parsed.production_plan?.caption
+    ) {
+      const safeCaption = cleanPromptOnlyDetailingCaption(
+        parsed.production_plan.caption,
+        content
+      );
+
+      parsed.production_plan.caption = safeCaption;
+
+      parsed.best_output = {
+        ...(parsed.best_output || {}),
+        content: safeCaption,
+      };
+
+      for (const output of finalContentOutputs) {
+        if (['Facebook Post', 'Instagram Post', 'LinkedIn Post'].includes(output)) {
+          parsed.content = {
+            ...(parsed.content || {}),
+            [output]: safeCaption,
+          };
+        }
+      }
     }
 
     return NextResponse.json(parsed);
